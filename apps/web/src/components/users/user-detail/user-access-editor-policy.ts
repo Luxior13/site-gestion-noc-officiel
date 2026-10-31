@@ -155,7 +155,7 @@ export const decideUserAccessMutation = (
   } else if (enabled && !canGrant) {
     return {
       allowed: false,
-      reason: "Le droit d'accorder des autorisations est requis.",
+      reason: 'Le droit d’accorder des autorisations est requis.',
     };
   } else if (!enabled && !canRevoke) {
     return {

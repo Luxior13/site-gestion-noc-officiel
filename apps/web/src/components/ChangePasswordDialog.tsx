@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, Circle, KeyRound } from 'lucide-react';
+import { Check, Circle, KeyRound, X } from 'lucide-react';
 import React, { type FC, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useUser } from '$context/UserContext';
@@ -23,6 +23,20 @@ import {
   PASSWORD_RULES,
   validatePassword,
 } from '$utils/password.utils';
+
+type PasswordRuleState = 'failed' | 'met' | 'pending';
+
+const RULE_TONES: Record<PasswordRuleState, string> = {
+  failed: 'text-destructive',
+  met: 'text-success',
+  pending: 'text-muted-foreground',
+};
+
+const RULE_STATE_LABELS: Record<PasswordRuleState, string> = {
+  failed: ' : non respectée',
+  met: ' : respectée',
+  pending: ' : à respecter',
+};
 
 type ChangePasswordDialogProps = {
   onCancel?: () => void;
@@ -62,23 +76,29 @@ const ChangePasswordDialogContent: FC<ChangePasswordDialogProps> = ({
     [newPassword, userData],
   );
   // The common-password list is checked by the server, which answers in the
-  // alert above the fields.
-  const passwordRules = [
+  // alert above the fields. A broken rule says so (audit AC-34): the length
+  // only grows, the other rules can be failed by what is typed.
+  const ruleState = (violated: boolean): PasswordRuleState =>
+    newPassword.length === 0 ? 'pending' : violated ? 'failed' : 'met';
+  const passwordRules: { label: string; state: PasswordRuleState }[] = [
     {
       label: `${PASSWORD_MIN_LENGTH} caractères au moins`,
-      met: getPasswordLength(newPassword) >= PASSWORD_MIN_LENGTH,
+      state:
+        getPasswordLength(newPassword) >= PASSWORD_MIN_LENGTH
+          ? 'met'
+          : 'pending',
     },
     {
       label: 'Ni suite ni répétition simple (« azertyuiop »)',
-      met:
-        newPassword.length > 0 &&
-        !passwordValidation.errors.includes(PASSWORD_RULES.trivial),
+      state: ruleState(
+        passwordValidation.errors.includes(PASSWORD_RULES.trivial),
+      ),
     },
     {
       label: 'Ni votre identifiant, ni votre nom, ni « Noctambule »',
-      met:
-        newPassword.length > 0 &&
-        !passwordValidation.errors.includes(PASSWORD_RULES.personal),
+      state: ruleState(
+        passwordValidation.errors.includes(PASSWORD_RULES.personal),
+      ),
     },
   ];
   const exceedsMaxLength = passwordValidation.errors.includes(
@@ -279,18 +299,20 @@ const ChangePasswordDialogContent: FC<ChangePasswordDialogProps> = ({
                         key={rule.label}
                         className={cn(
                           'flex items-start gap-1.5',
-                          rule.met ? 'text-success' : 'text-muted-foreground',
+                          RULE_TONES[rule.state],
                         )}
                       >
-                        {rule.met ? (
+                        {rule.state === 'met' ? (
                           <Check aria-hidden className="mt-px size-3.5" />
+                        ) : rule.state === 'failed' ? (
+                          <X aria-hidden className="mt-px size-3.5" />
                         ) : (
                           <Circle aria-hidden className="mt-px size-3.5" />
                         )}
                         <span>
                           {rule.label}
                           <span className="sr-only">
-                            {rule.met ? ' : respectée' : ' : à respecter'}
+                            {RULE_STATE_LABELS[rule.state]}
                           </span>
                         </span>
                       </li>

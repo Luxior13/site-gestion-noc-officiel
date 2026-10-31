@@ -11,6 +11,7 @@ export const JOURNAL_ACTION_LABELS: Record<AuditAction, string> = {
   ACCOUNT_LOCKED: 'Compte verrouillé',
   ATTEMPTS_BLOCKED: 'Tentatives bloquées',
   AUDIT_EXPORT: 'Journal exporté',
+  AUDIT_PURGE: 'Journal purgé',
   AUDIT_VIEW: 'Journal consulté',
   BACKGROUND_JOB_UPDATE: 'Tâche de fond modifiée',
   INTERNAL_ANNOUNCEMENT_PIN_UPDATE: 'Annonce épinglée ou désépinglée',
@@ -72,7 +73,7 @@ export const PERSON_FIELD_LABELS: Readonly<Record<string, string>> = {
   nickname: 'Pseudo',
   phone: 'Téléphone',
   profileUrl: 'Lien du profil',
-  structureStatus: 'Rattachement',
+  structureStatus: 'Statut dans la structure',
 };
 
 /** Account fields recorded in `before` / `after`, in display order. */
@@ -101,7 +102,24 @@ export const BLOCKED_ATTEMPT_PROOFS: Readonly<Record<string, string>> = {
   password: 'Mot de passe',
 };
 
+/** Every reason the login service writes (audit of 31 October 2026). */
 export const LOGIN_FAILURE_REASONS: Readonly<Record<string, string>> = {
   ACCOUNT_DISABLED: 'Compte désactivé',
+  // Written before 31 October 2026, when both cases shared one reason.
   INVALID_CREDENTIALS: 'Identifiant ou mot de passe incorrect',
+  MFA_INVALID: 'Code de double authentification incorrect ou expiré',
+  MFA_SETUP_INVALID:
+    'Code incorrect ou expiré à l’activation de la double authentification',
+  MFA_STATE_INCONSISTENT: 'Double authentification du compte incohérente',
+  PASSWORD_INVALID: 'Mot de passe incorrect',
+  UNKNOWN_LOGIN: 'Identifiant inconnu',
+};
+
+/** Reasons of a refused proof before a sensitive action (`recordRefusedProof`). */
+export const STEP_UP_FAILURE_REASONS: Readonly<Record<string, string>> = {
+  NEW_TOTP_INVALID: 'Code de la nouvelle application incorrect ou expiré',
+  PASSWORD_INVALID: 'Mot de passe incorrect',
+  PROOF_REPLAYED: 'Code déjà utilisé',
+  SECURITY_STATE_CHANGED: 'Session à renouveler',
+  TOTP_INVALID: 'Code de double authentification incorrect ou expiré',
 };

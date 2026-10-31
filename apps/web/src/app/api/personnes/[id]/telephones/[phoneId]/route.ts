@@ -16,7 +16,6 @@ import {
   apiErrors,
   apiSuccess,
   parseJsonBody,
-  withPrivateNoStore,
   zodErrorDetails,
 } from '$server/api-response';
 
@@ -47,13 +46,11 @@ export async function PATCH(
   try {
     await assertPersonFeatureReady();
 
-    return withPrivateNoStore(
-      apiSuccess(
-        await updatePersonPhone(id, phoneId, parsed.data, {
-          ...auth.user,
-          session: auth.session,
-        }),
-      ),
+    return apiSuccess(
+      await updatePersonPhone(id, phoneId, parsed.data, {
+        ...auth.user,
+        session: auth.session,
+      }),
     );
   } catch (error) {
     return handlePersonApiError('PERSON_PHONE_UPDATE', error, request);
@@ -85,14 +82,12 @@ export async function DELETE(
   try {
     await assertPersonFeatureReady();
 
-    return withPrivateNoStore(
-      apiSuccess({
-        person: await deletePersonPhone(id, phoneId, parsed.data, {
-          ...auth.user,
-          session: auth.session,
-        }),
+    return apiSuccess({
+      person: await deletePersonPhone(id, phoneId, parsed.data, {
+        ...auth.user,
+        session: auth.session,
       }),
-    );
+    });
   } catch (error) {
     return handlePersonApiError('PERSON_PHONE_DELETE', error, request);
   }

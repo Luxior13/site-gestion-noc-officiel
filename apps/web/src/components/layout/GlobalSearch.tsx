@@ -21,7 +21,6 @@ import {
   getVisibleNavigationSpaces,
 } from '$constants/app.constants';
 import { getNavigationIcon } from '$constants/navigation-icon.constants';
-import { useFeatureAvailability } from '$context/FeatureAvailabilityContext';
 import { useUser } from '$context/UserContext';
 import {
   buildSearchCatalog,
@@ -59,21 +58,14 @@ export const QuickNavigation: FC = () => {
   const pathname = usePathname();
   const router = useRouter();
   const { userData } = useUser();
-  const { featureAvailabilityLoaded, navigableFeatureIds } =
-    useFeatureAvailability();
   const [activeResultHref, setActiveResultHref] = useState('');
   const [open, setOpen] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [query, setQuery] = useState('');
   const searchInputRef = useRef<HTMLInputElement>(null);
   const spaces = useMemo(
-    () =>
-      getVisibleNavigationSpaces(
-        userData,
-        'live',
-        featureAvailabilityLoaded ? navigableFeatureIds : undefined,
-      ),
-    [featureAvailabilityLoaded, navigableFeatureIds, userData],
+    () => getVisibleNavigationSpaces(userData, 'live'),
+    [userData],
   );
   const activeSpace = useMemo(
     () => getActiveNavigationSpace(pathname, spaces),
@@ -203,7 +195,7 @@ export const QuickNavigation: FC = () => {
             data-lpignore="true"
             maxLength={SEARCH_QUERY_MAX_LENGTH}
             name="page-search"
-            placeholder="Rechercher une page..."
+            placeholder="Rechercher une page…"
             ref={searchInputRef}
             spellCheck={false}
             value={query}

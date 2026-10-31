@@ -50,7 +50,6 @@ import {
 } from './PersonCollectionFields';
 
 type PersonChildDialogProps = {
-  available?: boolean;
   canEdit: boolean;
   defaultPrimary: boolean;
   item: PersonChildItem | null;
@@ -69,7 +68,6 @@ type ValidationResult =
   | { data: Record<string, unknown>; success: true };
 
 const PersonChildDialogContent: FC<PersonChildDialogProps> = ({
-  available = true,
   canEdit,
   defaultPrimary,
   item,
@@ -211,7 +209,7 @@ const PersonChildDialogContent: FC<PersonChildDialogProps> = ({
   const handleSave = async (): Promise<void> => {
     if (!canEdit || operationRef.current || !mountedRef.current) return;
     if (saved) return close();
-    if (!available || conflict) return;
+    if (conflict) return;
     if (item && !isDirty) return;
     const payload = getPayload();
     const validation = validate(payload);
@@ -473,13 +471,6 @@ const PersonChildDialogContent: FC<PersonChildDialogProps> = ({
               </DialogDescription>
             </DialogHeader>
             <div className="min-h-0 space-y-4 overflow-y-auto px-4 py-4 sm:px-5">
-              {!available && (
-                <p role="status" className="text-warning text-sm">
-                  Le répertoire est temporairement indisponible. Votre saisie
-                  est conservée ; l’enregistrement reprendra après son
-                  rétablissement.
-                </p>
-              )}
               {(saveError || conflict || saved) && (
                 <div
                   ref={feedbackRef}
@@ -504,7 +495,7 @@ const PersonChildDialogContent: FC<PersonChildDialogProps> = ({
                     <ContentState
                       action={
                         <Button
-                          disabled={busy || !available}
+                          disabled={busy}
                           loading={isRefreshing}
                           onClick={() => void refreshVersions()}
                           size="sm"
@@ -577,7 +568,7 @@ const PersonChildDialogContent: FC<PersonChildDialogProps> = ({
             <DialogFooter className="border-border-divider bg-surface-inset border-t px-4 py-4 sm:justify-between sm:px-5">
               {canEdit && item && !saved && (
                 <Button
-                  disabled={busy || !available}
+                  disabled={busy}
                   onClick={onDelete}
                   type="button"
                   variant="destructive"
@@ -606,8 +597,7 @@ const PersonChildDialogContent: FC<PersonChildDialogProps> = ({
                     <Button
                       disabled={
                         busy ||
-                        (!saved &&
-                          (!available || conflict || Boolean(item && !isDirty)))
+                        (!saved && (conflict || Boolean(item && !isDirty)))
                       }
                       loading={busy}
                       type="submit"

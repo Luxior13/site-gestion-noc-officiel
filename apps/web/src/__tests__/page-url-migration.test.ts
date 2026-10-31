@@ -2,11 +2,7 @@ import { existsSync } from 'node:fs';
 
 import { describe, expect, it } from 'vitest';
 
-import {
-  canOpenNavigationHref,
-  getActiveNavigationSpace,
-} from '$constants/app.constants';
-import { PERMISSIONS } from '$constants/permissions.constants';
+import { getActiveNavigationSpace } from '$constants/app.constants';
 import {
   LEGACY_PAGE_ALIASES,
   PAGE_PATHS,
@@ -174,16 +170,6 @@ describe('page URL migration', () => {
         (redirect) => redirect.source === PAGE_PATHS.systemActivity,
       ),
     ).toBe(false);
-  });
-
-  it('checks the same navigation permission for the canonical and legacy list', () => {
-    const user = {
-      isProtected: false,
-      permissions: { [PERMISSIONS.PERSONS.VIEW]: false },
-      role: 'USER' as const,
-    };
-    expect(canOpenNavigationHref(user, '/vie-interne/repertoire')).toBe(false);
-    expect(canOpenNavigationHref(user, PAGE_PATHS.persons)).toBe(false);
   });
 
   it('assigns canonical details to the right pole and encodes record IDs', () => {

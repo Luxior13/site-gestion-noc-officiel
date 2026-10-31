@@ -1,11 +1,12 @@
 'use client';
 
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, UserRound, Users } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { type FC, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { RubricCard } from '$components/layout/RubricCard';
 import { SectionActionBar } from '$components/layout/SectionActionBar';
 import { UnsavedNavigationDialog } from '$components/layout/UnsavedNavigationDialog';
 import { personDetailPath } from '$constants/routes.constants';
@@ -25,15 +26,13 @@ import { ApiClientError } from '$utils/api.utils';
 
 import { createPerson } from '../person.api';
 import { PERSON_DIRECTORY_PATH, zodErrorMap } from '../person.ui';
-import { createPersonSchema } from '../schemas/person.schemas';
+import { personIdentitySchema } from '../schemas/person-identity.schemas';
 import {
   PersonIdentityFields,
   type PersonIdentityFormValue,
 } from './PersonIdentityFields';
 
 type PersonCreateFormProps = {
-  available?: boolean;
-  onRetryAvailability?: () => Promise<void>;
   returnHref: string;
 };
 
@@ -45,24 +44,19 @@ const INITIAL_FORM: PersonIdentityFormValue = {
   structureStatus: 'OUTSIDE_STRUCTURE',
 };
 
+// The identity schema alone keeps the phone library out of this page
+// (AC-49); the server checks the full creation payload.
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Preserve the schema's discriminated result.
 const validateIdentity = (form: PersonIdentityFormValue) =>
-  createPersonSchema.safeParse({
+  personIdentitySchema.safeParse({
     birthDate: null,
-    emails: [],
     firstName: form.firstName || null,
     lastName: form.lastName || null,
     nickname: form.nickname || null,
-    phones: [],
-    socialProfiles: [],
     structureStatus: form.structureStatus,
   });
 
-export const PersonCreateForm: FC<PersonCreateFormProps> = ({
-  available = true,
-  onRetryAvailability,
-  returnHref,
-}) => {
+export const PersonCreateForm: FC<PersonCreateFormProps> = ({ returnHref }) => {
   const router = useRouter();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState<PersonIdentityFormValue>(INITIAL_FORM);
@@ -71,7 +65,6 @@ export const PersonCreateForm: FC<PersonCreateFormProps> = ({
   const [uncertain, setUncertain] = useState(false);
   const [retryConfirmed, setRetryConfirmed] = useState(false);
   const [createdHref, setCreatedHref] = useState<string | null>(null);
-  const [isChecking, setIsChecking] = useState(false);
   const submittedRef = useRef(false);
   const mountedRef = useRef(false);
   const leavingRef = useRef(false);
@@ -134,7 +127,6 @@ export const PersonCreateForm: FC<PersonCreateFormProps> = ({
       submittedRef.current ||
       !mountedRef.current ||
       leavingRef.current ||
-      !available ||
       (uncertain && !retryConfirmed)
     )
       return;
@@ -225,18 +217,6 @@ export const PersonCreateForm: FC<PersonCreateFormProps> = ({
     }
   };
 
-  const checkAvailability = async (): Promise<void> => {
-    if (!onRetryAvailability || isChecking) return;
-    setIsChecking(true);
-    try {
-      await onRetryAvailability();
-    } catch {
-      // The unavailable state remains visible and the draft stays in place.
-    } finally {
-      if (mountedRef.current) setIsChecking(false);
-    }
-  };
-
   if (createdHref) {
     return (
       <Card>
@@ -272,34 +252,11 @@ export const PersonCreateForm: FC<PersonCreateFormProps> = ({
       <form
         autoComplete="off"
         aria-busy={isSubmitting || undefined}
-        className="space-y-4"
+        className="space-y-3"
         noValidate
         onSubmit={(event) => void handleSubmit(event)}
         ref={formRef}
       >
-        {!available && (
-          <Alert>
-            <AlertTitle>Répertoire temporairement indisponible</AlertTitle>
-            <AlertDescription>
-              <p>
-                Votre saisie est conservée. La création sera possible lorsque le
-                service sera rétabli.
-              </p>
-              {onRetryAvailability && (
-                <Button
-                  disabled={isChecking}
-                  loading={isChecking}
-                  onClick={() => void checkAvailability()}
-                  size="sm"
-                  type="button"
-                  variant="outline"
-                >
-                  Revérifier
-                </Button>
-              )}
-            </AlertDescription>
-          </Alert>
-        )}
         {submitError && (
           <Alert
             ref={feedbackRef}
@@ -354,24 +311,44 @@ export const PersonCreateForm: FC<PersonCreateFormProps> = ({
             </AlertDescription>
           </Alert>
         )}
-        {/* The hero explains the flow and the field states the rule once. */}
-        <Card>
-          <CardContent className="p-4 sm:p-5">
-            <PersonIdentityFields
-              disabled={isSubmitting || uncertain}
-              errors={errors}
-              idPrefix="create-person"
-              onChange={handleChange}
-              showBirthDate={false}
-              value={form}
-            />
-          </CardContent>
-        </Card>
+        {/* Gabarit C (31 October 2026): the rubric cards of the record it
+            opens; the hero explains the flow, each field states its rule. */}
+        <h2 className="sr-only">Informations de la fiche</h2>
+        <RubricCard
+          icon={<UserRound />}
+          id="create-person-names-title"
+          title="Pseudo et nom"
+        >
+          <PersonIdentityFields
+            disabled={isSubmitting || uncertain}
+            errors={errors}
+            idPrefix="create-person"
+            onChange={handleChange}
+            part="names"
+            value={form}
+          />
+        </RubricCard>
+        <RubricCard
+          icon={<Users />}
+          id="create-person-status-title"
+          title="Statut"
+        >
+          <PersonIdentityFields
+            disabled={isSubmitting || uncertain}
+            errors={errors}
+            idPrefix="create-person"
+            onChange={handleChange}
+            part="situation"
+            showBirthDate={false}
+            value={form}
+          />
+        </RubricCard>
         <SectionActionBar
           cancelHref={returnHref}
           isSaving={isSubmitting}
           label="Création de la fiche"
-          saveDisabled={!available || (uncertain && !retryConfirmed)}
+          placement="inline"
+          saveDisabled={uncertain && !retryConfirmed}
           saveLabel={
             uncertain ? 'Relancer la création' : 'Créer et ouvrir la fiche'
           }

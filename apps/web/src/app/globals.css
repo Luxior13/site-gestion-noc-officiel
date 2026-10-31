@@ -441,15 +441,6 @@
     opacity: 1;
   }
 
-  /* Keep full icon targets when collapsed; scrolling remains available. */
-  [data-slot='sidebar'][data-collapsible='icon'] .sidebar-scrollbar {
-    scrollbar-width: none;
-  }
-
-  [data-slot='sidebar'][data-collapsible='icon']
-    .sidebar-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
 }
 
 /* 5. User accessibility preferences override the palette and motion. */
@@ -493,8 +484,7 @@
     outline-offset: 2px !important;
   }
 
-  [data-sidebar='space-switcher'] a:focus-visible,
-  [data-slot='sidebar'][data-collapsible='icon'] :focus-visible {
+  [data-sidebar='space-switcher'] a:focus-visible {
     outline-offset: -2px !important;
   }
 

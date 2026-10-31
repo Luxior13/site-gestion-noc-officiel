@@ -117,7 +117,7 @@ export const buildUserDetailSaves = ({
   ): Promise<void> => {
     if (!isMounted()) return;
     if (!canEditTargetProfile && !canEditTargetContact && !canEditTargetLogin) {
-      toast.error('Permission insuffisante pour modifier cet utilisateur');
+      toast.error('Autorisation insuffisante pour modifier cet utilisateur');
 
       return;
     }
@@ -172,9 +172,9 @@ export const buildUserDetailSaves = ({
       confirm: {
         action: {
           description:
-            "La modification de l'identifiant de connexion ferme toutes les sessions de l’utilisateur.",
+            'L’utilisateur se connectera désormais avec ce nouvel identifiant ; ses sessions ouvertes restent actives.',
           execute: () => handleSaveProfile(true),
-          title: "Confirmer la modification de l'identifiant",
+          title: 'Confirmer la modification de l’identifiant',
         },
         request: requestStepUpForResponse,
       },
@@ -198,7 +198,7 @@ export const buildUserDetailSaves = ({
   const handleSaveAccess = async (): Promise<void> => {
     if (!isMounted()) return;
     if (!canEditTargetRole && !canManageTargetAccessPermissions) {
-      toast.error("Vous n'êtes pas autorisé à modifier ces autorisations");
+      toast.error('Vous n’êtes pas autorisé à modifier ces autorisations');
 
       return;
     }
@@ -243,7 +243,7 @@ export const buildUserDetailSaves = ({
       confirm: {
         action: {
           description:
-            'Ce changement peut modifier le rôle ou les autorisations sensibles de l’utilisateur et fermer ses sessions.',
+            'Ce changement modifie le rôle ou des autorisations sensibles de l’utilisateur ; il s’applique dès sa prochaine action, sans le déconnecter.',
           execute: handleSaveAccess,
           title: 'Confirmer la modification des autorisations',
         },
@@ -271,7 +271,7 @@ export const buildUserDetailSaves = ({
     if (!isMounted()) return;
     if (!canManageTargetAccountPolicy) {
       toast.error(
-        "Permission insuffisante pour modifier l'autonomie du compte",
+        'Autorisation insuffisante pour modifier l’autonomie du compte',
       );
 
       return;
@@ -316,7 +316,7 @@ export const buildUserDetailSaves = ({
   const handleSaveSecurity = async (): Promise<void> => {
     if (!isMounted()) return;
     if (!canEditTargetStatus || isSelf) {
-      toast.error('Permission insuffisante pour modifier cet état');
+      toast.error('Autorisation insuffisante pour modifier cet état');
 
       return;
     }
@@ -344,9 +344,9 @@ export const buildUserDetailSaves = ({
       confirm: {
         action: {
           description:
-            "Ce changement peut désactiver le compte et fermer l'accès de l’utilisateur.",
+            'Ce changement peut désactiver le compte : l’utilisateur serait alors déconnecté de toutes ses sessions.',
           execute: handleSaveSecurity,
-          title: "Confirmer le changement d'état",
+          title: 'Confirmer le changement d’état',
         },
         request: requestStepUpForResponse,
       },

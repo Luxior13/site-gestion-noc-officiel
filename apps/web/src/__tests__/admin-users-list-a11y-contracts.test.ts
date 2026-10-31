@@ -9,9 +9,9 @@ const readSourceFile = (relativePath: string): string => {
 };
 
 const usersListSource = [
-  '../features/users/UsersListPage.tsx',
-  '../features/users/UsersListResults.tsx',
-  '../features/users/UsersListToolbar.tsx',
+  '../features/users/components/UsersListPage.tsx',
+  '../features/users/components/UsersListResults.tsx',
+  '../features/users/components/UsersListToolbar.tsx',
 ]
   .map(readSourceFile)
   .join('\n');

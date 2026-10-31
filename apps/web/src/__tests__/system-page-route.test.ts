@@ -1,3 +1,6 @@
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
@@ -7,9 +10,6 @@ import {
 
 const mocks = vi.hoisted(() => ({
   getPageAuthSession: vi.fn(),
-  notFound: vi.fn(() => {
-    throw new Error('NOT_FOUND');
-  }),
   redirect: vi.fn((href: string) => {
     throw new Error(`REDIRECT:${href}`);
   }),
@@ -17,7 +17,6 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock('next/navigation', () => ({
-  notFound: mocks.notFound,
   redirect: mocks.redirect,
 }));
 
@@ -25,11 +24,13 @@ vi.mock('$server/session', () => ({
   getPageAuthSession: mocks.getPageAuthSession,
 }));
 
-vi.mock('$features/settings/SystemSettingsPage', () => ({
+vi.mock('$features/settings/components/SystemSettingsPage', () => ({
   SystemSettingsPage: mocks.SystemSettingsPage,
 }));
 
-describe('/systeme route availability', () => {
+const APP_ROOT = resolve(import.meta.dirname, '../app/systeme');
+
+describe('/systeme routes (explicit since 31 October 2026, SYS-14)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -70,63 +71,31 @@ describe('/systeme route availability', () => {
     ],
   ])('redirects the system root to an accessible page', async (user, href) => {
     mocks.getPageAuthSession.mockResolvedValue({ user });
-    const { default: SystemePage } =
-      await import('$app/systeme/[[...slug]]/page');
+    const { default: SystemIndexPage } = await import('$app/systeme/page');
 
-    await expect(
-      SystemePage({ params: Promise.resolve({ slug: [] }) }),
-    ).rejects.toThrow(`REDIRECT:${href}`);
-    expect(mocks.notFound).not.toHaveBeenCalled();
+    await expect(SystemIndexPage()).rejects.toThrow(`REDIRECT:${href}`);
   });
 
-  it('rejects the removed activity journal destination', async () => {
-    const { default: SystemePage } =
-      await import('$app/systeme/[[...slug]]/page');
+  it('renders the settings page from its own route, named in the tab', async () => {
+    const route = await import('$app/systeme/parametres/page');
 
-    await expect(
-      SystemePage({ params: Promise.resolve({ slug: ['journal-activite'] }) }),
-    ).rejects.toThrow('NOT_FOUND');
-    expect(mocks.notFound).toHaveBeenCalledTimes(1);
+    expect(route.default()).toMatchObject({ type: mocks.SystemSettingsPage });
+    expect(route.metadata.title).toBe('Paramètres système · Noctambule');
   });
 
-  it('renders the operational system settings page', async () => {
-    const { default: SystemePage } =
-      await import('$app/systeme/[[...slug]]/page');
-
-    const result = await SystemePage({
-      params: Promise.resolve({ slug: ['parametres'] }),
-    });
-
-    expect(result).toMatchObject({
-      props: {
-        item: expect.objectContaining({ href: '/systeme/parametres' }),
-        space: expect.objectContaining({ id: 'system' }),
-      },
-      type: mocks.SystemSettingsPage,
-    });
-    expect(mocks.notFound).not.toHaveBeenCalled();
-  });
-
-  it.each([['modeles-documents']])(
-    'rejects the planned destination /systeme/%s',
-    async (slug) => {
-      const { default: SystemePage } =
-        await import('$app/systeme/[[...slug]]/page');
-
-      await expect(
-        SystemePage({ params: Promise.resolve({ slug: [slug] }) }),
-      ).rejects.toThrow('NOT_FOUND');
-      expect(mocks.notFound).toHaveBeenCalledTimes(1);
-    },
-  );
-
-  it('rejects an unknown system destination', async () => {
-    const { default: SystemePage } =
-      await import('$app/systeme/[[...slug]]/page');
-
-    await expect(
-      SystemePage({ params: Promise.resolve({ slug: ['inconnue'] }) }),
-    ).rejects.toThrow('NOT_FOUND');
-    expect(mocks.notFound).toHaveBeenCalledTimes(1);
+  it('keeps no generic route: an unknown destination is a plain 404', () => {
+    // Paths are constants of the application tree.
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    expect(existsSync(resolve(APP_ROOT, '[[...slug]]'))).toBe(false);
+    for (const page of [
+      'page.tsx',
+      'parametres/page.tsx',
+      'journal-activite/page.tsx',
+      'utilisateurs/page.tsx',
+      'feuille-de-route/page.tsx',
+    ]) {
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
+      expect(existsSync(resolve(APP_ROOT, page))).toBe(true);
+    }
   });
 });

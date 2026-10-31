@@ -87,15 +87,26 @@ export const PageState: FC<PageStateProps> = ({
   );
 };
 
+type AccessDeniedBack = { href: string; label: string };
+
+const HOME_BACK: AccessDeniedBack = { href: '/', label: 'Retour à l’accueil' };
+
+/**
+ * One refusal screen for the whole site (audit of 31 October 2026):
+ * « Vous n’avez pas l’autorisation de … », then a way back — home unless a
+ * nearer page is given, none for a refused section inside a page.
+ */
 export const AccessDeniedState: FC<{
-  actionHref?: string;
-  actionLabel?: string;
-  description: ReactNode;
-}> = ({ actionHref, actionLabel, description }) => (
+  /** What the reader may not do: « consulter le répertoire ». */
+  action: string;
+  back?: AccessDeniedBack | null;
+  /** One more sentence when the refusal needs it (rights changed meanwhile). */
+  note?: string;
+}> = ({ action, back = HOME_BACK, note }) => (
   <PageState
-    actionHref={actionHref}
-    actionLabel={actionLabel}
-    description={description}
+    actionHref={back?.href}
+    actionLabel={back?.label}
+    description={`Vous n’avez pas l’autorisation de ${action}.${note ? ` ${note}` : ''}`}
     title="Accès refusé"
     tone="destructive"
   />

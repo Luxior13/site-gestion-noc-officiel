@@ -46,9 +46,8 @@ export function RouteErrorState({
               Une erreur est survenue
             </h1>
             <p className="text-muted-foreground">
-              La page n&apos;a pas pu s&apos;afficher. Vous pouvez la recharger
-              ou revenir à l&apos;accueil. Si le problème persiste, contactez un
-              administrateur.
+              La page n’a pas pu s’afficher. Vous pouvez la recharger ou revenir
+              à l’accueil. Si le problème persiste, contactez un administrateur.
             </p>
           </div>
           {digest ? (
@@ -77,7 +76,7 @@ export function RouteErrorState({
               {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
               <a href="/">
                 <ArrowLeft aria-hidden="true" className="size-4" />
-                Retour à l&apos;accueil
+                Retour à l’accueil
               </a>
             </Button>
           </div>

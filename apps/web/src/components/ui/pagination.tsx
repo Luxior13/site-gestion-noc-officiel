@@ -161,7 +161,8 @@ const ListPagination: FC<ListPaginationProps> = ({
   >
     <p>
       Page <strong>{page.toLocaleString('fr-FR')}</strong>
-      {totalPages !== undefined && totalPages > 1 && totalPages >= page && (
+      {/* Same form on every list once the total is known (« Page 1 sur 1 »). */}
+      {totalPages !== undefined && totalPages >= page && (
         <>
           {' '}
           sur <strong>{totalPages.toLocaleString('fr-FR')}</strong>

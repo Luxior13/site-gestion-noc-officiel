@@ -1,3 +1,5 @@
+import { unmapIpv4Address } from './ip-address.utils';
+
 const MAX_IP_LENGTH = 64;
 const MAX_USER_AGENT_LENGTH = 512;
 const REQUEST_ID_PATTERN =
@@ -35,7 +37,8 @@ const isValidIpv6Address = (value: string): boolean => {
 };
 
 const normalizeIpAddress = (value: string | null): string | null => {
-  const normalized = value?.trim();
+  const trimmed = value?.trim();
+  const normalized = trimmed ? unmapIpv4Address(trimmed) : trimmed;
 
   if (
     !normalized ||

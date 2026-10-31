@@ -100,8 +100,9 @@ src/app/api/<module>/route.ts   adaptateur HTTP mince
 
 Une route enchaîne toujours : `requireAuth()` → `requirePermission(user,
 PERMISSIONS.X.Y)` (`$server/api-auth`) → `parseJsonBody` + `schema.safeParse` →
-service de `features/<module>/server` → `apiSuccess` / `apiErrors` enveloppés
-dans `withPrivateNoStore` (`$server/api-response`). Un service signale un refus
+service de `features/<module>/server` → `apiSuccess` / `apiErrors`
+(`$server/api-response`, qui marquent chaque réponse `private, no-store` ;
+`withPrivateNoStore` ne sert qu’à une réponse brute). Un service signale un refus
 en levant une `ServiceError` (`$server/service-error`, avec `assertPermission`
 et `assertRecent…` pour les droits et preuves) ; la route la traduit avec
 `serviceErrorResponse`. Les mutations utilisent une version optimiste et

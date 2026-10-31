@@ -58,7 +58,10 @@ export const UserAuthorizationsSection: FC<{
 
   if (!canViewAccess && !canViewPersonalAccount) {
     return (
-      <AccessDeniedState description="Vous n'avez pas la permission de consulter les autorisations de cet utilisateur." />
+      <AccessDeniedState
+        action="consulter les autorisations de cet utilisateur"
+        back={null}
+      />
     );
   }
 

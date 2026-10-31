@@ -7,10 +7,9 @@ import React, { type FC, Suspense, useState } from 'react';
 
 import AuthenticatedLayout from '$components/AuthenticatedLayout';
 import { PageIdentityHero } from '$components/layout/PageIdentityHero';
-import { AccessDeniedState, PageState } from '$components/layout/PageState';
+import { AccessDeniedState } from '$components/layout/PageState';
 import { FEATURES } from '$constants/feature-registry.constants';
 import { PAGE_PATHS } from '$constants/routes.constants';
-import { useFeatureAvailability } from '$context/FeatureAvailabilityContext';
 import { useUser } from '$context/UserContext';
 import { PersonsDirectorySkeleton } from '$features/persons/components/PersonsDirectorySkeleton';
 import { PersonsList } from '$features/persons/components/PersonsList';
@@ -32,11 +31,6 @@ type PersonsPageClientProps = {
 
 const PersonsPageContent: FC<PersonsPageClientProps> = ({ initialState }) => {
   const searchParams = useSearchParams();
-  const {
-    featureAvailabilityLoaded,
-    operationalFeatureIds,
-    refreshFeatureAvailability,
-  } = useFeatureAvailability();
   const { userData } = useUser();
   const { canCreate, canView, canViewContact } =
     getPersonCapabilities(userData);
@@ -45,30 +39,7 @@ const PersonsPageContent: FC<PersonsPageClientProps> = ({ initialState }) => {
   const createHref = `${PAGE_PATHS.newPerson}?${new URLSearchParams({ returnTo: returnHref })}`;
 
   if (!canView) {
-    return (
-      <AccessDeniedState
-        actionHref="/"
-        actionLabel="Retour à l'accueil"
-        description="Vous n'avez pas la permission de consulter le répertoire."
-      />
-    );
-  }
-
-  if (!featureAvailabilityLoaded && !initialState) return <ListPageSkeleton />;
-
-  if (
-    featureAvailabilityLoaded &&
-    !initialState &&
-    !operationalFeatureIds.has(FEATURES.persons.id)
-  ) {
-    return (
-      <PageState
-        actionLabel="Revérifier"
-        description="Ce service ne peut pas être confirmé comme disponible pour le moment. Réessayez dans quelques instants."
-        onAction={() => void refreshFeatureAvailability()}
-        title="Répertoire temporairement indisponible"
-      />
-    );
+    return <AccessDeniedState action="consulter le répertoire" />;
   }
 
   return (

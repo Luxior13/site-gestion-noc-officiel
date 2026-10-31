@@ -15,7 +15,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '$ui/dropdown-menu';
-import { useSidebar } from '$ui/sidebar';
 import { cn } from '$utils/css.utils';
 import { requestGuardedNavigation } from '$utils/guarded-navigation.utils';
 
@@ -37,8 +36,6 @@ export const PoleNavigation: FC<PoleNavigationProps> = ({
 }) => {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  const { isMobile, setOpen, state } = useSidebar();
-  const isCollapsed = !isMobile && state === 'collapsed';
   const activeTone = getNavigationSpaceToneClasses(activeSpace.tone);
   const ActiveIcon = getNavigationIcon(activeSpace.icon);
 
@@ -46,7 +43,7 @@ export const PoleNavigation: FC<PoleNavigationProps> = ({
     <nav
       aria-label="Rubriques"
       data-sidebar="space-switcher"
-      className="border-border-content w-full shrink-0 border-b px-2 py-2 group-data-[collapsible=icon]/sidebar:border-b-0 group-data-[collapsible=icon]/sidebar:px-1"
+      className="border-border-content w-full shrink-0 border-b px-2 py-2"
     >
       <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
         <DropdownMenuTrigger asChild>
@@ -54,7 +51,7 @@ export const PoleNavigation: FC<PoleNavigationProps> = ({
             aria-label={`Rubriques : ${activeSpace.label}`}
             className={cn(
               'group/rubriques text-foreground hover:bg-surface-navigation-hover data-[state=open]:bg-surface-navigation-active focus-visible:ring-sidebar-ring flex h-11 w-full min-w-0 items-center justify-start gap-2.5 rounded-sm border border-transparent bg-transparent px-2.5 text-left text-sm font-medium shadow-none transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset sm:h-10 lg:h-9',
-              'group-data-[collapsible=icon]/sidebar:h-10 group-data-[collapsible=icon]/sidebar:w-10 group-data-[collapsible=icon]/sidebar:justify-center group-data-[collapsible=icon]/sidebar:gap-0 group-data-[collapsible=icon]/sidebar:self-center group-data-[collapsible=icon]/sidebar:px-0',
+              '',
             )}
             type="button"
             variant="ghost"
@@ -63,12 +60,10 @@ export const PoleNavigation: FC<PoleNavigationProps> = ({
               aria-hidden="true"
               className={cn('size-4 shrink-0', activeTone.iconForeground)}
             />
-            <span className="min-w-0 flex-1 truncate group-data-[collapsible=icon]/sidebar:hidden">
-              {activeSpace.label}
-            </span>
+            <span className="min-w-0 flex-1 truncate">{activeSpace.label}</span>
             <ChevronDown
               aria-hidden="true"
-              className="text-muted-foreground size-4 shrink-0 transition-transform group-data-[collapsible=icon]/sidebar:hidden group-data-[state=open]/rubriques:rotate-180 motion-reduce:transition-none"
+              className="text-muted-foreground size-4 shrink-0 transition-transform group-data-[state=open]/rubriques:rotate-180 motion-reduce:transition-none"
             />
           </Button>
         </DropdownMenuTrigger>
@@ -76,7 +71,7 @@ export const PoleNavigation: FC<PoleNavigationProps> = ({
           align="start"
           className={RUBRIQUES_PANEL_CLASS}
           collisionPadding={8}
-          side={isCollapsed ? 'right' : 'bottom'}
+          side="bottom"
           sideOffset={6}
         >
           {spaces.map((space) => {
@@ -117,12 +112,6 @@ export const PoleNavigation: FC<PoleNavigationProps> = ({
                       });
 
                       return;
-                    }
-                    if (isCollapsed) {
-                      setOpen(true);
-                      // Reopening the current space must preserve its current
-                      // detail page and filters instead of returning to its root.
-                      if (isActive) event.preventDefault();
                     }
                     if (!event.defaultPrevented) onNavigate(space.href);
                     setMenuOpen(false);

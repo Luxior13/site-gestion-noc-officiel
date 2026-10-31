@@ -45,7 +45,7 @@ export const createUser = async (
       if (!authorized.user.isProtected)
         throw new UserActionAuthorizationError(
           ErrorCode.FORBIDDEN,
-          "Vous n'êtes pas autorisé à créer des comptes administrateurs",
+          'Vous n’êtes pas autorisé à créer des comptes administrateurs',
           403,
         );
       if (

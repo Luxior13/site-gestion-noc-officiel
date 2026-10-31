@@ -602,9 +602,11 @@ describe('person short-lived sensitive UX contracts', () => {
 
   it('keeps initial creation minimal and completes the fiche after redirect', () => {
     expect(createFormSource).toContain('showBirthDate={false}');
-    expect(createFormSource).toContain('emails: []');
-    expect(createFormSource).toContain('phones: []');
-    expect(createFormSource).toContain('socialProfiles: []');
+    // Identity only, through its own schema: the phone library stays out
+    // of the creation page (AC-49); the server defaults the contact lists.
+    expect(createFormSource).toContain('personIdentitySchema');
+    expect(createFormSource).not.toContain('createPersonSchema');
+    expect(createFormSource).not.toContain('person.schemas');
     expect(createFormSource).toContain('Créer et ouvrir la fiche');
     expect(createFormSource).toContain("section: 'identite'");
     expect(createFormSource).toContain('returnTo: returnHref');
@@ -649,7 +651,7 @@ describe('person short-lived sensitive UX contracts', () => {
     expect(entityDetailLayoutSource).toContain('compact');
     expect(detailPageSource).not.toContain('Fiche du répertoire');
     expect(detailPageSource).not.toContain(
-      "sans lien avec un compte d'accès au site",
+      'sans lien avec un compte d’accès au site',
     );
     expect(detailPageSource).toContain(
       '<section aria-label="Identité" className="space-y-5">',
@@ -687,17 +689,12 @@ describe('person short-lived sensitive UX contracts', () => {
     expect(identitySectionSource).toContain("'Quitter sans enregistrer ?'");
   });
 
-  it('waits for operational readiness before fetching a person detail', () => {
-    expect(detailPageSource).toContain('featureAvailabilityLoaded');
-    expect(detailPageSource).toContain(
-      'operationalFeatureIds.has(FEATURES.persons.id)',
-    );
-    expect(detailPageSource).toMatch(
-      /!featureAvailabilityLoaded\s*\|\|\s*!featureOperational/,
-    );
-    expect(detailPageSource).toContain(
-      'title="Répertoire temporairement indisponible"',
-    );
+  // SYS-11 (31 October 2026): the record loads at once; a database not yet
+  // migrated answers an explicit 503 that the load error state shows.
+  it('loads a person detail without waiting for a readiness probe', () => {
+    expect(detailPageSource).not.toContain('FeatureAvailability');
+    expect(detailPageSource).not.toContain('temporairement indisponible');
+    expect(detailPageSource).toContain('title="Chargement impossible"');
   });
 
   it('shows the members pole and directory hierarchy without inventing a pole hub link', () => {

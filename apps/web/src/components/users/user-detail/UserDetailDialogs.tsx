@@ -25,6 +25,8 @@ type UserLoginChangeDialogProps = {
   onConfirm: () => void;
   onOpenChange: (open: boolean) => void;
   open: boolean;
+  /** Account named in the title (audit of 31 October 2026). */
+  targetName: string;
 };
 
 export const UserLoginChangeDialog: React.FC<UserLoginChangeDialogProps> = ({
@@ -32,6 +34,7 @@ export const UserLoginChangeDialog: React.FC<UserLoginChangeDialogProps> = ({
   onConfirm,
   onOpenChange,
   open,
+  targetName,
 }) => (
   <AlertDialog open={open} onOpenChange={onOpenChange}>
     <AlertDialogContent className="overflow-y-auto p-0">
@@ -41,12 +44,12 @@ export const UserLoginChangeDialog: React.FC<UserLoginChangeDialogProps> = ({
             <div className="bg-warning/10 flex h-8 w-8 items-center justify-center rounded-lg">
               <AlertTriangle size={16} className="text-warning" />
             </div>
-            Modifier l&apos;identifiant de connexion ?
+            Modifier l’identifiant de {targetName} ?
           </AlertDialogTitle>
           <AlertDialogDescription className="text-muted-foreground">
             Il devra utiliser le nouvel identifiant <strong>{loginName}</strong>{' '}
             à sa prochaine connexion. Ses sessions ouvertes restent actives et
-            l&apos;ancien identifiant reste réservé à ce compte.
+            l’ancien identifiant reste réservé à ce compte.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="mt-4">
@@ -57,7 +60,7 @@ export const UserLoginChangeDialog: React.FC<UserLoginChangeDialogProps> = ({
             className="bg-warning text-warning-foreground hover:bg-warning/90"
             onClick={onConfirm}
           >
-            Modifier l&apos;identifiant
+            Modifier l’identifiant
           </AlertDialogAction>
         </AlertDialogFooter>
       </div>
@@ -74,11 +77,12 @@ type UserPasswordResetDialogProps = {
   onConfirm: () => void;
   onOpenChange: (open: boolean) => void;
   open: boolean;
+  targetName: string;
 };
 
 export const UserPasswordResetDialog: React.FC<
   UserPasswordResetDialogProps
-> = ({ isResetting, onConfirm, onOpenChange, open }) => (
+> = ({ isResetting, onConfirm, onOpenChange, open, targetName }) => (
   <AlertDialog open={open} onOpenChange={onOpenChange}>
     <AlertDialogContent className="overflow-y-auto p-0">
       <div className="p-6">
@@ -87,12 +91,12 @@ export const UserPasswordResetDialog: React.FC<
             <div className="bg-warning/10 flex h-8 w-8 items-center justify-center rounded-lg">
               <AlertTriangle size={16} className="text-warning" />
             </div>
-            Réinitialiser le mot de passe ?
+            Réinitialiser le mot de passe de {targetName} ?
           </AlertDialogTitle>
           <AlertDialogDescription className="text-muted-foreground">
-            Un nouveau mot de passe temporaire sera généré. L&apos;utilisateur
-            devra le changer à sa prochaine connexion. Toutes ses sessions
-            actives seront invalidées.
+            Un nouveau mot de passe temporaire sera généré. L’utilisateur devra
+            le changer à sa prochaine connexion. Toutes ses sessions actives
+            seront invalidées.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="mt-4">
@@ -123,11 +127,19 @@ type UserRevokeSessionsDialogProps = {
   onConfirm: () => void;
   onOpenChange: (open: boolean) => void;
   open: boolean;
+  targetName: string;
 };
 
 export const UserRevokeSessionsDialog: React.FC<
   UserRevokeSessionsDialogProps
-> = ({ isRevoking, onCloseAutoFocus, onConfirm, onOpenChange, open }) => (
+> = ({
+  isRevoking,
+  onCloseAutoFocus,
+  onConfirm,
+  onOpenChange,
+  open,
+  targetName,
+}) => (
   <AlertDialog open={open} onOpenChange={onOpenChange}>
     <AlertDialogContent
       className="overflow-y-auto p-0"
@@ -139,7 +151,7 @@ export const UserRevokeSessionsDialog: React.FC<
             <div className="bg-warning/10 flex h-8 w-8 items-center justify-center rounded-lg">
               <AlertTriangle size={16} className="text-warning" />
             </div>
-            Révoquer les sessions ?
+            Révoquer les sessions de {targetName} ?
           </AlertDialogTitle>
           <AlertDialogDescription className="text-muted-foreground">
             Toutes les sessions actives de cet utilisateur seront déconnectées.
@@ -202,7 +214,8 @@ export const UserDeleteDialog: React.FC<UserDeleteDialogProps> = ({
             <div className="bg-destructive/10 flex h-8 w-8 items-center justify-center rounded-lg">
               <AlertTriangle size={16} className="text-destructive" />
             </div>
-            Supprimer définitivement cet utilisateur ?
+            Supprimer définitivement le compte de{' '}
+            {`${firstName} ${lastName}`.trim() || loginName} ?
           </AlertDialogTitle>
           <AlertDialogDescription className="text-muted-foreground">
             Le compte de{' '}
@@ -211,9 +224,8 @@ export const UserDeleteDialog: React.FC<UserDeleteDialogProps> = ({
             </strong>{' '}
             sera supprimé de manière irréversible et ne pourra pas être
             restauré. Son profil sera anonymisé et ses secrets
-            d&apos;authentification supprimés. Les traces indispensables au
-            journal d&apos;audit et la réservation de son identifiant seront
-            conservées.
+            d’authentification supprimés. Les traces indispensables au journal
+            d’audit et la réservation de son identifiant seront conservées.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="mt-4 space-y-2">

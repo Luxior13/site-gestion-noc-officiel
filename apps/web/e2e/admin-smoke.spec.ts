@@ -377,7 +377,7 @@ async function expectPersonsListFilteringAndPagination(
       url.searchParams.get('structureStatus') === 'IN_STRUCTURE'
     );
   });
-  await expect(pagination.locator('p')).toHaveText('Page 1');
+  await expect(pagination.locator('p')).toHaveText('Page 1 sur 1');
   await expect(nextPageButton).toBeDisabled();
 
   await statusFilters.getByRole('button', { name: /^Tous/ }).click();
@@ -871,29 +871,21 @@ async function expectPersonIdentityLifecycle(page: Page): Promise<void> {
   page.off('request', onHistoryRequest);
 
   await expectPersonsListFilteringAndPagination(page, uniqueSuffix);
-  const readinessResponsePromise = page.waitForResponse(
-    (response) => new URL(response.url()).pathname === '/api/health/ready',
-  );
+  // No page polls the readiness probe anymore (SYS-11, 31 October 2026):
+  // the record opens directly, without an availability notice.
+  let readinessRequests = 0;
+  const onReadinessRequest = (request: { url: () => string }): void => {
+    if (new URL(request.url()).pathname === '/api/health/ready')
+      readinessRequests += 1;
+  };
+  page.on('request', onReadinessRequest);
   await page.goto(`/membres/repertoire/${personId}`);
-  let readinessResponse = await readinessResponsePromise;
-  if (readinessResponse.status() === 429) {
-    // Repeated full navigations in this smoke can consume the real readiness
-    // quota. Respect its response instead of changing the limiter or forcing UI.
-    const seconds = Number(readinessResponse.headers()['retry-after']);
-    expect(Number.isFinite(seconds) && seconds > 0 && seconds <= 60).toBe(true);
-    await new Promise((resolve) => setTimeout(resolve, seconds * 1_000));
-    [readinessResponse] = await Promise.all([
-      page.waitForResponse(
-        (response) => new URL(response.url()).pathname === '/api/health/ready',
-      ),
-      page.getByRole('button', { exact: true, name: 'Revérifier' }).click(),
-    ]);
-  }
-  expect(readinessResponse.status()).toBe(200);
-  expect((await readinessResponse.json()).checks.persons).toBe('ready');
   await expect(
     page.getByRole('heading', { exact: true, name: updatedNickname }),
   ).toBeVisible();
+  page.off('request', onReadinessRequest);
+  expect(readinessRequests).toBe(0);
+  await expect(page.getByText(/temporairement indisponible/)).toHaveCount(0);
 
   await page.getByRole('button', { name: 'Supprimer la fiche' }).click();
   const [deletionResponse] = await Promise.all([

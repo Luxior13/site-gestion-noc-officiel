@@ -483,6 +483,87 @@ describe('/api/auth/mfa/setup invariants', () => {
     );
   });
 
+  // Audit of 31 October 2026 (AC-42): a wrong first code left no trace.
+  it('journals a wrong first code as a failed login, without a session', async () => {
+    // Not the full arrangement: its one-shot session double would leak.
+    mocks.getMfaChallengeToken.mockResolvedValue('raw-ordinary-challenge');
+    mocks.prisma.mfaLoginChallenge.findUnique.mockResolvedValue(
+      buildMandatoryBootstrapChallenge(true),
+    );
+    mocks.verifyTotpCode.mockResolvedValue(null);
+    const { PUT } = await import('$app/api/auth/mfa/setup/route');
+
+    const response = await PUT(
+      new NextRequest('http://localhost/api/auth/mfa/setup', {
+        body: JSON.stringify({ code: '000000' }),
+        method: 'PUT',
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    expect(mocks.createSession).not.toHaveBeenCalled();
+    expect(mocks.createAuditLogWithHeaders).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: 'LOGIN_FAILED',
+        metadata: expect.objectContaining({ reason: 'MFA_SETUP_INVALID' }),
+        targetUserId: BOOTSTRAP_USER_ID,
+        userId: null,
+      }),
+    );
+  });
+
+  it('journals a wrong code of a replacement application as a refused proof', async () => {
+    mocks.getMfaChallengeToken.mockResolvedValue('raw-challenge');
+    mocks.prisma.mfaLoginChallenge.findUnique.mockResolvedValue({
+      credentialUpdatedAt: CREDENTIAL_UPDATED_AT,
+      expiresAt: new Date('2026-07-14T20:10:00.000Z'),
+      purpose: 'SETUP',
+      rememberMe: false,
+      securityVersion: 3,
+      user: {
+        deletedAt: null,
+        isActive: true,
+        isProtected: false,
+        loginName: 'user.name',
+        mfaEnabledAt: new Date('2026-07-01T12:00:00.000Z'),
+        securityVersion: 3,
+        totpCredential: { updatedAt: CREDENTIAL_UPDATED_AT },
+        totpEnrollment: {
+          expiresAt: new Date('2026-07-14T20:10:00.000Z'),
+          secretAuthTag: 'auth-tag',
+          secretCiphertext: 'ciphertext',
+          secretIv: 'iv',
+          secretKeyVersion: 1,
+          updatedAt: new Date('2026-07-14T19:59:00.000Z'),
+        },
+      },
+      userId: 'user-1',
+    });
+    mocks.verifyTotpCode.mockResolvedValue(null);
+    const { PUT } = await import('$app/api/auth/mfa/setup/route');
+
+    const response = await PUT(
+      new NextRequest('http://localhost/api/auth/mfa/setup', {
+        body: JSON.stringify({ code: '000000' }),
+        method: 'PUT',
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    expect(mocks.createSession).not.toHaveBeenCalled();
+    expect(mocks.createAuditLogWithHeaders).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: 'STEP_UP_FAILED',
+        metadata: expect.objectContaining({
+          reason: 'NEW_TOTP_INVALID',
+          step: 'mfa_setup',
+        }),
+        targetUserId: 'user-1',
+        userId: 'user-1',
+      }),
+    );
+  });
+
   it('keeps mandatory bootstrap valid when permissions change before locked revalidation', async () => {
     arrangeMandatoryBootstrapConfirmation({
       [PERMISSIONS.USERS.UPDATE_LOGIN]: true,

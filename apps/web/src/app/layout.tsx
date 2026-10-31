@@ -9,7 +9,6 @@ import { PersistentAuthenticatedShell } from '$components/AuthenticatedLayout';
 import { WebVitalsReporter } from '$components/observability/WebVitalsReporter';
 import { SITE_CONFIG } from '$constants/app.constants';
 import { isPublicPagePath } from '$constants/security.constants';
-import { FeatureAvailabilityProvider } from '$context/FeatureAvailabilityContext';
 import { UserProvider } from '$context/UserContext';
 import { env } from '$env';
 import { getPageAuthSession } from '$server/session';
@@ -78,11 +77,9 @@ const RootLayout = async ({
           initialSessionRememberMe={initialSessionRememberMe}
           initialUser={initialUser}
         >
-          <FeatureAvailabilityProvider>
-            <PersistentAuthenticatedShell>
-              {children}
-            </PersistentAuthenticatedShell>
-          </FeatureAvailabilityProvider>
+          <PersistentAuthenticatedShell>
+            {children}
+          </PersistentAuthenticatedShell>
           {initialUser ? <WebVitalsReporter /> : null}
         </UserProvider>
       </body>

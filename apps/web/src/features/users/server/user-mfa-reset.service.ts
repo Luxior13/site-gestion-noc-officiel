@@ -14,6 +14,7 @@ import {
   clearRateLimit,
   reserveSensitiveActionRateLimit,
 } from '$server/rate-limiter';
+import { recordRefusedProof } from '$server/refused-proof-audit';
 import { serviceErrors } from '$server/service-error';
 import { authorizeUserAction } from '$server/user-action-authorization';
 import { mapUserToUserType } from '$server/user-projection';
@@ -79,12 +80,12 @@ export const resetUserMfaForActor = async (input: {
   // Same boundary as every other delegated action on an administrator.
   if (target.role === 'ADMIN' && !actorRow.isProtected) {
     throw serviceErrors.forbidden(
-      "Seul le superadmin peut réinitialiser la double authentification d'un administrateur",
+      'Seul le superadmin peut réinitialiser la double authentification d’un administrateur',
     );
   }
   if (target.mfaEnabledAt === null || !target.totpCredential)
     throw serviceErrors.conflict(
-      "La double authentification n'est pas activée",
+      'La double authentification n’est pas activée',
     );
 
   const passwordRateLimitKey = `admin-mfa-reset-password:${actorRow.id}`;
@@ -100,8 +101,14 @@ export const resetUserMfaForActor = async (input: {
   );
   if (!passwordLimit.allowed)
     throw serviceErrors.rateLimited(passwordLimit.retryAfter);
-  if (!(await verifyPassword(input.currentPassword, actorRow.passwordHash)))
+  if (!(await verifyPassword(input.currentPassword, actorRow.passwordHash))) {
+    await recordRefusedProof({
+      actorUserId: actorRow.id,
+      reason: 'PASSWORD_INVALID',
+      step: 'mfa_reset',
+    });
     throw serviceErrors.invalidCredentials('Mot de passe actuel incorrect');
+  }
   await clearRateLimit(passwordRateLimitKey);
 
   const totpRateLimitKey = `admin-mfa-reset-totp:${actorRow.id}`;
@@ -118,8 +125,14 @@ export const resetUserMfaForActor = async (input: {
     recoveryCodes: [],
     userId: actorRow.id,
   });
-  if (!proof || proof.method !== 'TOTP')
+  if (!proof || proof.method !== 'TOTP') {
+    await recordRefusedProof({
+      actorUserId: actorRow.id,
+      reason: 'TOTP_INVALID',
+      step: 'mfa_reset',
+    });
     throw serviceErrors.invalidCredentials('Code actuel incorrect ou expiré');
+  }
 
   const targetName =
     target.firstName && target.lastName
@@ -198,7 +211,7 @@ export const resetUserMfaForActor = async (input: {
         {
           action: 'MFA_RESET',
           category: 'AUTH',
-          description: `Double authentification réinitialisée pour: ${target.loginName}`,
+          description: `Double authentification réinitialisée : ${target.loginName}`,
           metadata: {
             ...USERS_SECURITY_AUDIT_LOCATION,
             actorIsProtected: actorRow.isProtected,

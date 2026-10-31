@@ -103,10 +103,9 @@ async function seedSuperadmin() {
   const adminLoginName = normalizeLoginName(
     configuredLoginName ?? 'superadmin',
   );
-  const configuredContactEmail =
-    process.env.SEED_SUPERADMIN_CONTACT_EMAIL ??
-    process.env.SEED_SUPERADMIN_EMAIL ??
-    process.env.SEED_ADMIN_EMAIL;
+  // Former names (SEED_SUPERADMIN_EMAIL, SEED_ADMIN_*) are no longer read
+  // (audit of 31 October 2026): one name per setting, as in .env.sample.
+  const configuredContactEmail = process.env.SEED_SUPERADMIN_CONTACT_EMAIL;
   const adminContactEmail = normalizeOptionalContactEmail(
     configuredContactEmail,
   );
@@ -160,8 +159,7 @@ async function seedSuperadmin() {
     console.log('Superadmin deja existant:', existing.loginName);
     return existing;
   }
-  const configuredPassword =
-    process.env.SEED_SUPERADMIN_PASSWORD ?? process.env.SEED_ADMIN_PASSWORD;
+  const configuredPassword = process.env.SEED_SUPERADMIN_PASSWORD;
   const generatedPassword = configuredPassword
     ? null
     : generateDevelopmentPassword();

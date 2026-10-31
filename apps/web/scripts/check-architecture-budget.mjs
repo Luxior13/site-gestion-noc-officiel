@@ -5,9 +5,9 @@ const sourceRoot = resolve(import.meta.dirname, '../src');
 const DEFAULT_SOURCE_LIMIT = 800;
 const SERVER_ONLY_DATABASE_IMPORT_PATTERN =
   /(?:from\s+|import\s*)['"](?:@repo\/database|@prisma\/client)(?:\/[^'"]*)?['"]/u;
-const LEGACY_LIMITS = new Map([
-  ['components/ui/sidebar.tsx', 815],
-]);
+// No historical exception remains since 31 October 2026 (the reduced
+// sidebar mode, removed by the owner on 27 September, kept it over 800).
+const LEGACY_LIMITS = new Map();
 
 async function collectSourceFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });

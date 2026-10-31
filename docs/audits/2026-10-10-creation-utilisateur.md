@@ -198,10 +198,10 @@ tableau de clôture sont dans le [suivi de page](../pages/systeme/utilisateurs/c
 
 ### Changements
 
-- Validation commune [client/serveur](../../apps/web/src/features/users/create-user.schema.ts),
+- Validation commune [client/serveur](../../apps/web/src/features/users/schemas/create-user.schema.ts),
   nom facultatif cohérent, erreurs persistantes par champ et erreur de commande.
 - Radios masquées de 1 × 1 px, focus après succès, remise à zéro et vérification.
-- [Contrôleur dédié](../../apps/web/src/features/users/useCreateUser.ts) avec verrou
+- [Contrôleur dédié](../../apps/web/src/features/users/hooks/useCreateUser.ts) avec verrou
   synchrone, champs indisponibles pendant l'envoi, arrêt d'attente après 30 secondes
   et avertissement de départ : l'abandon client ne garantit aucun rollback.
 - Résultat incertain : vérifier via l'identifiant exact et les droits de lecture

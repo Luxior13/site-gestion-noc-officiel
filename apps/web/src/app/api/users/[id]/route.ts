@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { PERMISSIONS } from '$constants/permissions.constants';
+import { updateUserSchema } from '$features/users/schemas/user-update.schema';
 import {
   deleteUserForActor,
   updateUserForActor,
 } from '$features/users/server/user-admin.service';
 import { getUserForActor } from '$features/users/server/user-detail.service';
-import { updateUserSchema } from '$features/users/user-update.schema';
 import { requireAuth, requirePermission } from '$server/api-auth';
 import { apiErrors, apiSuccess, parseJsonBody } from '$server/api-response';
 import { serviceErrorResponse } from '$server/service-error';

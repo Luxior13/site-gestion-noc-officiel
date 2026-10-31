@@ -36,7 +36,7 @@ type RateLimitResult = {
  * Where a refused password or code check was asked. The journal labels this
  * closed list; a new caller adds its step here and in the journal labels.
  */
-type BlockedAttemptStep =
+export type BlockedAttemptStep =
   | 'contact_email'
   | 'login'
   | 'mfa_manage'
@@ -339,7 +339,7 @@ const reportBlockedAttempts = async (
       action: 'ATTEMPTS_BLOCKED',
       category: 'AUTH',
       description: report.loginName
-        ? `Tentatives bloquées: ${report.loginName}`
+        ? `Tentatives bloquées : ${report.loginName}`
         : 'Tentatives bloquées',
       metadata: {
         ...BLOCKED_ATTEMPT_AUDIT_LOCATION,

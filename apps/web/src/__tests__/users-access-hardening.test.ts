@@ -1676,7 +1676,7 @@ describe('users access hardening', () => {
     expect(response.status).toBe(400);
     expect(body.error.code).toBe(ErrorCode.VALIDATION_ERROR);
     expect(body.error.details.permissions).toEqual([
-      `Permission hors scope: ${PERMISSIONS.USERS.VIEW}`,
+      `Autorisations hors du volet choisi : ${PERMISSIONS.USERS.VIEW}`,
     ]);
     expect(mockPrisma.user.findUnique).not.toHaveBeenCalled();
   });
@@ -1700,7 +1700,7 @@ describe('users access hardening', () => {
       expect(response.status).toBe(400);
       expect(body.error.code).toBe(ErrorCode.VALIDATION_ERROR);
       expect(body.error.details.permissions).toContain(
-        `Permission inconnue: ${permissionKey}`,
+        `Autorisations inconnues : ${permissionKey}`,
       );
       expect(mockPrisma.user.findUnique).not.toHaveBeenCalled();
       expect(mockPrisma.user.update).not.toHaveBeenCalled();
@@ -1725,7 +1725,7 @@ describe('users access hardening', () => {
       expect(response.status).toBe(400);
       expect(body.error.code).toBe(ErrorCode.VALIDATION_ERROR);
       expect(body.error.details.permissions).toEqual([
-        `Permission non attribuable: ${permissionKey}`,
+        `Autorisations non attribuables : ${permissionKey}`,
       ]);
       expect(mockPrisma.user.findUnique).not.toHaveBeenCalled();
     },
@@ -2760,7 +2760,7 @@ describe('users access hardening', () => {
     expect(body.success).toBe(false);
     expect(body.error.code).toBe(ErrorCode.VALIDATION_ERROR);
     expect(body.error.details.permissions).toEqual([
-      'Permission inconnue: users:ghost',
+      'Autorisations inconnues : users:ghost',
     ]);
     expect(mockRequirePermission).not.toHaveBeenCalled();
     expect(mockPrisma.user.findUnique).not.toHaveBeenCalled();
@@ -3715,7 +3715,7 @@ describe('users access hardening', () => {
       expect.objectContaining({
         action: 'USER_DELETE',
         category: 'USER',
-        description: 'Utilisateur supprimé définitivement',
+        description: 'Compte supprimé définitivement',
         metadata: expect.objectContaining({
           deletedUserId: 'target-1',
           deletionVersion: 1,

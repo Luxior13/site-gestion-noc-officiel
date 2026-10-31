@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { apiErrors } from '$server/api-response';
+import { apiErrors, apiSuccess } from '$server/api-response';
 import { deleteCurrentMfaChallenge } from '$server/mfa';
 import type { ApiErrorResponse, ApiSuccessResponse } from '$types/api.types';
 
@@ -10,7 +10,7 @@ export async function DELETE(): Promise<
   try {
     await deleteCurrentMfaChallenge();
 
-    return NextResponse.json({ data: null, success: true });
+    return apiSuccess(null);
   } catch (error) {
     return apiErrors.internal('MFA_CHALLENGE_DELETE', error);
   }

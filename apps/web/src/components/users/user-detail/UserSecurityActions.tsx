@@ -297,6 +297,7 @@ export const UserSecurityActionDialogs: FC<{
       onConfirm={() => {
         void actions.revokeSession();
       }}
+      targetName={`${user.firstName} ${user.lastName}`.trim() || user.loginName}
       onCloseAutoFocus={(event) => {
         if (!actions.sessionsMutationFocusRef.current) return;
         actions.sessionsMutationFocusRef.current = false;

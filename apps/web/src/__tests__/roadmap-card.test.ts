@@ -3,8 +3,8 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 
 import { Disclosure } from '$components/layout/Disclosure';
+import { RoadmapCard } from '$features/roadmap/components/RoadmapCard';
 import { ROADMAP_ITEMS } from '$features/roadmap/roadmap.constants';
-import { RoadmapCard } from '$features/roadmap/RoadmapCard';
 
 describe('roadmap card disclosure semantics', () => {
   it('gives each card and details action a distinct name without claiming navigation', () => {

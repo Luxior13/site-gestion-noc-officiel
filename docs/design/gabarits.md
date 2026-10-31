@@ -97,10 +97,16 @@ Détail et preuves : [Utilisateurs](../pages/systeme/utilisateurs/README.md).
 
 ## C. Formulaire de création
 
-`PageShell` en largeur `form` (52 rem), `PageIdentityHero` compact, groupes de
-champs partagés avec la fiche, `SectionActionBar` en soumission native,
+`PageShell` en largeur `form` (52 rem), `PageIdentityHero` compact, titre
+`h2` réservé aux lecteurs d’écran, puis **une carte de rubrique par groupe,
+comme sur la fiche que la création ouvre** (`RubricCard` : Nouvelle fiche
+« Pseudo et nom » et « Statut », Nouvel utilisateur « Identité », « Connexion
+et contact » et « Rôle »), `SectionActionBar` **en ligne sous les cartes**
+(`placement="inline"`, alignée sur leur largeur) en soumission native,
 confirmation après succès (secret à copier une seule fois pour un compte),
 reprise explicite après réponse perdue, garde de départ jusqu’au chargement.
+Composition commune décidée le 31 octobre 2026 (AC-30 de l’[audit complet](../audits/2026-10-31-audit-complet.md)),
+qui remplace les rubriques en petites capitales et la barre dans la carte.
 
 - Le bandeau explique le déroulé ; la carte commence par ses champs, sans
   en-tête qui le répète, et chaque règle de saisie n’est écrite qu’une fois,

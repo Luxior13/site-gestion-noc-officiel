@@ -184,7 +184,8 @@ export const authenticateUser = async (
 ): Promise<
   | { success: true; user: AuthenticatedUser }
   | {
-      error: 'ACCOUNT_DISABLED' | 'INVALID_CREDENTIALS';
+      /** Journal reason only: the public answer never tells them apart. */
+      error: 'ACCOUNT_DISABLED' | 'PASSWORD_INVALID' | 'UNKNOWN_LOGIN';
       success: false;
       userId?: string;
     }
@@ -198,12 +199,12 @@ export const authenticateUser = async (
     user?.passwordHash ?? DUMMY_HASH,
   );
 
-  if (!user) return { error: 'INVALID_CREDENTIALS', success: false };
+  if (!user) return { error: 'UNKNOWN_LOGIN', success: false };
   if (!user.isActive) {
     return { error: 'ACCOUNT_DISABLED', success: false, userId: user.id };
   }
   if (!isValid) {
-    return { error: 'INVALID_CREDENTIALS', success: false, userId: user.id };
+    return { error: 'PASSWORD_INVALID', success: false, userId: user.id };
   }
   await upgradePasswordHash(user.id, password, user.passwordHash);
 

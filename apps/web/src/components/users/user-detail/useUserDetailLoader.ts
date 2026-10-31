@@ -86,7 +86,7 @@ export const useUserDetailLoader = ({
           // while waiting for a JSON parser that can fail.
           onUnavailable();
           setErrorStatus(response.status);
-          setErrorMessage("Impossible de charger l'utilisateur");
+          setErrorMessage('Impossible de charger l’utilisateur');
         }
         const data = await response.json();
 
@@ -110,7 +110,7 @@ export const useUserDetailLoader = ({
         ) {
           setErrorStatus(response.status);
           setErrorMessage(
-            data.error?.message || "Impossible de charger l'utilisateur",
+            data.error?.message || 'Impossible de charger l’utilisateur',
           );
         }
       } catch {
@@ -122,7 +122,7 @@ export const useUserDetailLoader = ({
 
         if (!isBackgroundFetch && !unavailable) {
           setErrorStatus(0);
-          setErrorMessage("Impossible de charger l'utilisateur");
+          setErrorMessage('Impossible de charger l’utilisateur');
         }
       } finally {
         clearTimeout(timeout);

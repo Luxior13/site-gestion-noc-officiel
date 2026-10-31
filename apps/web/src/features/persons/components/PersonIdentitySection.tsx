@@ -13,7 +13,7 @@ import { ApiClientError } from '$utils/api.utils';
 
 import { updatePerson } from '../person.api';
 import { isPersonIdentityEqual, zodErrorMap } from '../person.ui';
-import { updatePersonSchema } from '../schemas/person.schemas';
+import { updatePersonSchema } from '../schemas/person-identity.schemas';
 import type { PersonDetail } from '../types/person.types';
 import {
   PersonIdentityFields,
@@ -21,7 +21,6 @@ import {
 } from './PersonIdentityFields';
 
 type PersonIdentitySectionProps = {
-  available?: boolean;
   canUpdate: boolean;
   onChange: (person: PersonDetail) => void;
   onDirtyChange?: (dirty: boolean) => void;
@@ -42,7 +41,6 @@ const toForm = (person: PersonDetail): PersonIdentityFormValue => ({
  * d'action n'apparait que lorsqu'une valeur a change.
  */
 export const PersonIdentitySection: FC<PersonIdentitySectionProps> = ({
-  available = true,
   canUpdate,
   onChange,
   onDirtyChange,
@@ -143,7 +141,6 @@ export const PersonIdentitySection: FC<PersonIdentitySectionProps> = ({
       operationRef.current ||
       !mountedRef.current ||
       !canUpdate ||
-      !available ||
       conflict ||
       !isDirty
     )
@@ -235,7 +232,7 @@ export const PersonIdentitySection: FC<PersonIdentitySectionProps> = ({
       setSubmitError(
         caught instanceof Error
           ? caught.message
-          : "Impossible de modifier l'identité",
+          : 'Impossible de modifier l’identité',
       );
     } finally {
       window.clearTimeout(timer);
@@ -358,7 +355,7 @@ export const PersonIdentitySection: FC<PersonIdentitySectionProps> = ({
             title="Pseudo et nom"
           >
             <PersonIdentityFields
-              disabled={!canUpdate || !available || isBusy}
+              disabled={!canUpdate || isBusy}
               errors={errors}
               idPrefix="person-detail"
               onChange={(key, nextValue) =>
@@ -375,7 +372,7 @@ export const PersonIdentitySection: FC<PersonIdentitySectionProps> = ({
             title="Naissance et statut"
           >
             <PersonIdentityFields
-              disabled={!canUpdate || !available || isBusy}
+              disabled={!canUpdate || isBusy}
               errors={errors}
               idPrefix="person-detail"
               onChange={(key, nextValue) =>
@@ -403,13 +400,11 @@ export const PersonIdentitySection: FC<PersonIdentitySectionProps> = ({
               setPendingLocalDiscard(true);
             }}
             onResolveConflict={() => void refreshVersion()}
-            saveDisabled={!canUpdate || !available}
+            saveDisabled={!canUpdate}
             saveDisabledReason={
               !canUpdate
                 ? 'La modification de cette fiche n’est plus autorisée.'
-                : !available
-                  ? 'Revérifiez la disponibilité du service avant d’enregistrer.'
-                  : undefined
+                : undefined
             }
             saveForm="person-identity-form"
             saveType="submit"

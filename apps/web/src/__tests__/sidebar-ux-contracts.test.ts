@@ -21,18 +21,22 @@ const navigationSource = readSourceFile('../shared/constants/app.constants.ts');
 const globalStylesSource = readSourceFile('../app/globals.css');
 
 describe('sidebar UX contracts', () => {
-  it('keeps the shared desktop sidebar open regardless of old preferences', () => {
-    expect(authenticatedLayoutSource).toContain('<SidebarProvider open>');
-    expect(sidebarPrimitiveSource).toContain('if (isControlled) return;');
+  // Owner decision of 27 September 2026: no reduced desktop mode, and no
+  // code left for it (audit of 31 October 2026).
+  it('keeps the desktop sidebar always open, without a reduced mode', () => {
+    expect(authenticatedLayoutSource).toContain('<SidebarProvider>');
+    expect(sidebarPrimitiveSource).not.toContain('localStorage');
+    expect(sidebarPrimitiveSource).not.toMatch(
+      /collapsible|collapsed|tooltip\?:/u,
+    );
+    expect(sidebarSource).not.toMatch(/collapsible=|isCollapsed|tooltip=/u);
+    expect(poleNavigationSource).not.toMatch(/isCollapsed|useSidebar/u);
     expect(headerSource).toMatch(
       /<SidebarTrigger[\s\S]*?className="[^"]*lg:hidden/,
     );
   });
 
   it('keeps mobile controls usable without leaking the desktop state', () => {
-    expect(sidebarSource).toContain(
-      "const isCollapsed = !isMobile && sidebarState === 'collapsed'",
-    );
     expect(sidebarSource).toContain('flex h-11 w-full min-w-0 items-center');
     expect(sidebarSource).toContain('h-11 w-full min-w-0 items-center gap-2.5');
     expect(sidebarSource).not.toContain('lg:h-14');
@@ -41,15 +45,10 @@ describe('sidebar UX contracts', () => {
     expect(sidebarPrimitiveSource).toContain("'Basculer la navigation'");
   });
 
-  it('keeps nested destinations available in expanded and icon modes', () => {
+  it('keeps nested destinations available', () => {
     expect(sidebarSource).toContain('<SidebarMenuAction');
     expect(sidebarSource).toContain('<CollapsibleTrigger asChild>');
     expect(sidebarSource).toContain('children.map(renderSubNavItem)');
-    expect(poleNavigationSource).toContain('if (isCollapsed)');
-    expect(poleNavigationSource).toContain('setOpen(true)');
-    expect(poleNavigationSource).toContain(
-      'if (isActive) event.preventDefault()',
-    );
     expect(sidebarSource).toContain("? 'location'");
   });
 
@@ -69,7 +68,7 @@ describe('sidebar UX contracts', () => {
     expect(sidebarSource).toContain('Déconnexion');
     expect(sidebarSource).toContain('@{userData.loginName}');
     expect(sidebarSource).toContain('aria-label="Accès au compte"');
-    expect(sidebarSource).toContain('Profil et sécurité');
+    expect(sidebarSource).toContain('Profil, autorisations et sécurité');
     expect(navigationSource).not.toMatch(
       /href:\s*['"]\/mon-compte['"][\s\S]{0,160}label:\s*['"]Mon compte['"]/,
     );
@@ -124,9 +123,7 @@ describe('sidebar UX contracts', () => {
     expect(poleNavigationSource).toContain('aria-label="Rubriques"');
     expect(poleNavigationSource).toContain('tone.iconForeground');
     expect(poleNavigationSource).toContain('aria-label={space.label}');
-    expect(poleNavigationSource).toContain(
-      "side={isCollapsed ? 'right' : 'bottom'}",
-    );
+    expect(poleNavigationSource).toContain('side="bottom"');
     expect(sidebarSource).toContain("section: 'space-y-0.5'");
     expect(sidebarSource).toContain('hover:bg-surface-navigation-hover');
     expect(sidebarSource).toContain('text-muted-foreground');

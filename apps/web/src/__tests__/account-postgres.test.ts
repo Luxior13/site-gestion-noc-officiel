@@ -667,7 +667,20 @@ describe.skipIf(!target)(
         (await db.user.findUniqueOrThrow({ where: { id: user.id } }))
           .passwordHash,
       ).toBe(hash);
-      expect(await auditCount(user)).toBe(0);
+      // The refused proof is traced, never the password itself.
+      const audit = await db.auditLog.findMany({
+        where: { targetUserId: user.id },
+      });
+      expect(audit).toMatchObject([
+        {
+          action: 'STEP_UP_FAILED',
+          metadata: expect.objectContaining({
+            reason: 'PASSWORD_INVALID',
+            step: 'password_change',
+          }),
+        },
+      ]);
+      expect(JSON.stringify(audit)).not.toContain(maximumPassword);
     });
 
     it('changes a password, preserves only the current session and clears recent proofs without returning secrets', async () => {
@@ -1128,9 +1141,18 @@ describe.skipIf(!target)(
       });
       expect((await regenerate()).status).toBe(400);
       const audit = await db.auditLog.findMany({
+        orderBy: { createdAt: 'asc' },
         where: { targetUserId: user.id },
       });
-      expect(audit).toHaveLength(1);
+      // One rotation, then the replayed code is refused and traced
+      // (rule of 31 October 2026).
+      expect(audit).toMatchObject([
+        { action: 'MFA_RECOVERY_CODES_REGENERATED' },
+        {
+          action: 'STEP_UP_FAILED',
+          metadata: expect.objectContaining({ step: 'mfa_manage' }),
+        },
+      ]);
       expect(JSON.stringify(audit)).not.toContain(body.data.recoveryCodes[0]);
       expect(JSON.stringify(audit)).not.toContain(secret);
     });

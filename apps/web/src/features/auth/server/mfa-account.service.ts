@@ -13,6 +13,7 @@ import {
   clearRateLimit,
   reserveSensitiveActionRateLimit,
 } from '$server/rate-limiter';
+import { recordRefusedProof } from '$server/refused-proof-audit';
 import { serviceErrors } from '$server/service-error';
 import { authorizeUserAction } from '$server/user-action-authorization';
 import { mapUserToUserType } from '$server/user-projection';
@@ -98,8 +99,14 @@ export const regenerateRecoveryCodes = async (input: {
   });
   if (!passwordLimit.allowed)
     throw serviceErrors.rateLimited(passwordLimit.retryAfter);
-  if (!(await verifyPassword(input.currentPassword, storedUser.passwordHash)))
+  if (!(await verifyPassword(input.currentPassword, storedUser.passwordHash))) {
+    await recordRefusedProof({
+      actorUserId: storedUser.id,
+      reason: 'PASSWORD_INVALID',
+      step: 'mfa_manage',
+    });
     throw serviceErrors.invalidCredentials('Mot de passe actuel incorrect');
+  }
   await clearRateLimit(reauthKey);
 
   const mfaManageKey = `account-mfa-manage:${storedUser.id}`;
@@ -116,8 +123,14 @@ export const regenerateRecoveryCodes = async (input: {
     recoveryCodes: [],
     userId: storedUser.id,
   });
-  if (!proof || proof.method !== 'TOTP')
+  if (!proof || proof.method !== 'TOTP') {
+    await recordRefusedProof({
+      actorUserId: storedUser.id,
+      reason: 'TOTP_INVALID',
+      step: 'mfa_manage',
+    });
     throw serviceErrors.invalidCredentials('Code actuel incorrect ou expiré');
+  }
   await clearRateLimit(mfaManageKey);
 
   const generatedCodes = generateRecoveryCodes(storedUser.id);
@@ -160,7 +173,7 @@ export const regenerateRecoveryCodes = async (input: {
       {
         action: 'MFA_RECOVERY_CODES_REGENERATED',
         category: 'AUTH',
-        description: 'Codes de récupération MFA régénérés',
+        description: 'Codes de secours renouvelés',
         metadata: {
           ...SECURITY_AUDIT_LOCATION,
           recoveryCodesGenerated: generatedCodes.length,

@@ -52,7 +52,9 @@ type UserProfileTabProps = {
   onSave: () => void;
   /** Saved login, to warn about the sessions only once it is changed. */
   savedLoginName: string;
+  /** Account named in the removal confirmation. */
   setForm: (form: ProfileForm) => void;
+  targetName: string;
 };
 
 const FieldError: FC<{ children: React.ReactNode; id: string }> = ({
@@ -81,6 +83,7 @@ export const UserProfileTab: FC<UserProfileTabProps> = ({
   onSave,
   savedLoginName,
   setForm,
+  targetName,
 }) => {
   const formRef = useRef<HTMLFormElement>(null);
   const [contactRemovalIntent, setContactRemovalIntent] = useState<
@@ -109,11 +112,11 @@ export const UserProfileTab: FC<UserProfileTabProps> = ({
   const loginHint = !canEditLogin
     ? loginReadOnlyHint
     : loginChanged
-      ? "L'utilisateur devra utiliser ce nouvel identifiant à sa prochaine connexion."
-      : "Sert à la connexion de l'utilisateur.";
+      ? 'L’utilisateur devra utiliser ce nouvel identifiant à sa prochaine connexion.'
+      : 'Sert à la connexion de l’utilisateur.';
   const contactHint = canEditContact
-    ? "Adresse facultative, distincte de l'identifiant de connexion."
-    : "L'email de contact est en lecture seule depuis cette fiche.";
+    ? 'Facultatif, distinct de l’identifiant de connexion.'
+    : 'L’email de contact est en lecture seule depuis cette fiche.';
 
   const submitProfile = (): void => {
     if (isSaving || !canSave) return;
@@ -376,7 +379,7 @@ export const UserProfileTab: FC<UserProfileTabProps> = ({
                     id="user-contact-email"
                     maxLength={254}
                     {...passwordManagerIgnoreAttributes}
-                    placeholder="Non renseigné"
+                    placeholder="nom@exemple.fr"
                     inputMode="email"
                     type="text"
                     value={form.contactEmail}
@@ -406,7 +409,7 @@ export const UserProfileTab: FC<UserProfileTabProps> = ({
                     type="button"
                     variant="link"
                   >
-                    Supprimer l&apos;adresse de contact
+                    Supprimer l’email de contact
                   </Button>
                 )}
               </div>
@@ -441,20 +444,20 @@ export const UserProfileTab: FC<UserProfileTabProps> = ({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              Supprimer l&apos;adresse de contact ?
+              Supprimer l’email de contact de {targetName} ?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Ce compte n&apos;aura plus d&apos;adresse de contact enregistrée.
-              L&apos;identifiant de connexion ne sera pas modifié.
+              Ce compte n’aura plus d’email de contact enregistré. L’identifiant
+              de connexion ne sera pas modifié.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Conserver l&apos;adresse</AlertDialogCancel>
+            <AlertDialogCancel>Conserver l’email</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               onClick={handleConfirmContactRemoval}
             >
-              Supprimer l&apos;adresse
+              Supprimer l’email
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

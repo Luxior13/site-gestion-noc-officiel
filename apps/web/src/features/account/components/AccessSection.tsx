@@ -3,6 +3,7 @@
 import { Check, Shield } from 'lucide-react';
 import React, { type FC } from 'react';
 
+import { RUBRIC_HEADER_CLASS } from '$components/layout/RubricCard';
 import {
   DELEGABLE_PERMISSION_CATEGORIES,
   hasPermission,
@@ -36,9 +37,16 @@ export const AccessSection: FC<{ userData: UserType }> = ({ userData }) => {
         : 'Autorisations d’administration qui vous sont accordées :';
 
   return (
-    <section aria-labelledby="account-access-heading" className="space-y-3">
+    <section
+      aria-labelledby="account-authorizations-heading"
+      className="space-y-3"
+    >
+      {/* The tab names the section: a title for screen readers only. */}
+      <h2 className="sr-only" id="account-authorizations-heading">
+        Autorisations
+      </h2>
       <Card aria-labelledby="account-access-heading" className="min-w-0">
-        <CardHeader className="p-4 sm:p-5">
+        <CardHeader className={RUBRIC_HEADER_CLASS}>
           <SecurityCardTitle
             icon={<Shield className="size-3.5" />}
             id="account-access-heading"
@@ -74,10 +82,11 @@ export const AccessSection: FC<{ userData: UserType }> = ({ userData }) => {
             </div>
           )}
         </CardContent>
-        {!userData.isProtected && (
+        {/* An Administrator already holds every delegable right. */}
+        {!userData.isProtected && userData.role !== 'ADMIN' && (
           <CardFooter className="p-4 sm:p-5">
             <p className="text-muted-foreground text-xs">
-              Pour obtenir un accès supplémentaire, adressez-vous à un
+              Pour obtenir une autorisation supplémentaire, adressez-vous à un
               administrateur.
             </p>
           </CardFooter>

@@ -4,7 +4,7 @@ import { PERMISSIONS } from '$constants/permissions.constants';
 import type { SystemSettingKey } from '$constants/system-setting-catalog.constants';
 import { SYSTEM_SETTING_DEFINITIONS } from '$constants/system-settings.constants';
 import { requireAuth, requirePermission } from '$server/api-auth';
-import { apiErrors } from '$server/api-response';
+import { apiErrors, apiSuccess } from '$server/api-response';
 import { prisma } from '$server/prisma';
 import type { ApiErrorResponse, ApiSuccessResponse } from '$types/api.types';
 import type { SystemSettingItem } from '$types/platform.types';
@@ -57,7 +57,7 @@ export async function GET(
       } satisfies SystemSettingItem;
     });
 
-    return NextResponse.json({ data: settings, success: true });
+    return apiSuccess(settings);
   } catch (error) {
     return apiErrors.internal('SYSTEM_SETTINGS_LIST', error, request);
   }

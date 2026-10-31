@@ -1,17 +1,13 @@
 import type { NextRequest, NextResponse } from 'next/server';
 
 import { PERMISSIONS } from '$constants/permissions.constants';
-import { readJournalQuery } from '$features/audit/audit-journal.types';
 import {
   listJournalEvents,
   traceJournalView,
 } from '$features/audit/server/audit-journal.service';
+import { readJournalQuery } from '$features/audit/types/audit-journal.types';
 import { requireAuth, requirePermission } from '$server/api-auth';
-import {
-  apiErrors,
-  apiSuccess,
-  withPrivateNoStore,
-} from '$server/api-response';
+import { apiErrors, apiSuccess } from '$server/api-response';
 
 /**
  * Activity journal, read only (rebuilt on 30 October 2026). Unknown or
@@ -29,13 +25,11 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     // No journal is shown without its own trace being written first.
     await traceJournalView(auth.user);
 
-    return withPrivateNoStore(
-      apiSuccess(
-        await listJournalEvents(
-          auth.user,
-          readJournalQuery(searchParams),
-          searchParams.get('asOf'),
-        ),
+    return apiSuccess(
+      await listJournalEvents(
+        auth.user,
+        readJournalQuery(searchParams),
+        searchParams.get('asOf'),
       ),
     );
   } catch (error) {

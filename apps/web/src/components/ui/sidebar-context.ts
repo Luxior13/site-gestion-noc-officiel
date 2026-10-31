@@ -3,14 +3,10 @@
 import * as React from 'react';
 
 export type SidebarContextProps = {
-  desktopStateReady: boolean;
   isMobile: boolean;
   isMobileResolved: boolean;
-  open: boolean;
   openMobile: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setOpenMobile: React.Dispatch<React.SetStateAction<boolean>>;
-  state: 'collapsed' | 'expanded';
   toggleSidebar: () => void;
 };
 

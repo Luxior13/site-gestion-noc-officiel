@@ -11,6 +11,7 @@ import React, {
 import { toast } from 'sonner';
 
 import { ChangePasswordDialog } from '$components/ChangePasswordDialog';
+import { RUBRIC_HEADER_CLASS } from '$components/layout/RubricCard';
 import { MfaActionDialog } from '$features/auth/components/MfaActionDialog';
 import { MfaSetupDialog } from '$features/auth/components/MfaSetupDialog';
 import { RoutesApi } from '$types/api.types';
@@ -172,9 +173,13 @@ export const SecuritySection: FC<SecuritySectionProps> = ({
     setShowRecoveryCodesDialog(false);
   };
 
+  // No known change: the password is the one set at creation, or a
+  // temporary one from an administrator (audit of 31 October 2026).
   const passwordChangedLabel = userData.passwordChangedAt
-    ? formatRelativeAccountTime(userData.passwordChangedAt)
-    : 'Jamais';
+    ? `Dernier changement : ${formatRelativeAccountTime(userData.passwordChangedAt)}`
+    : userData.mustChangePassword
+      ? 'Mot de passe temporaire, à changer'
+      : 'Défini à la création du compte';
   const canViewPasswordSecurity = canViewSecurity || canChangePassword;
   const canViewMfaSecurity = canViewSecurity || canManageMfa;
   const mfaEnabledAt = mfaStatus
@@ -193,7 +198,7 @@ export const SecuritySection: FC<SecuritySectionProps> = ({
         </h2>
         {canViewPasswordSecurity && (
           <Card aria-labelledby="account-password-heading" className="min-w-0">
-            <CardHeader className="flex-row flex-wrap items-center justify-between gap-2 p-3.5 sm:p-4">
+            <CardHeader className={RUBRIC_HEADER_CLASS}>
               <SecurityCardTitle
                 icon={<KeyRound className="size-3.5" />}
                 id="account-password-heading"
@@ -208,7 +213,7 @@ export const SecuritySection: FC<SecuritySectionProps> = ({
             </CardHeader>
             <CardContent className="flex flex-col items-stretch gap-3 p-3 sm:flex-row sm:items-center sm:justify-between sm:p-4">
               <p className="text-foreground min-w-0 flex-1 text-sm">
-                Dernier changement : {passwordChangedLabel}
+                {passwordChangedLabel}
               </p>
               {canChangePassword && (
                 <Button
@@ -231,7 +236,7 @@ export const SecuritySection: FC<SecuritySectionProps> = ({
             aria-labelledby="account-mfa-heading"
             className="min-w-0"
           >
-            <CardHeader className="flex-row flex-wrap items-center justify-between gap-2 p-3.5 sm:p-4">
+            <CardHeader className={RUBRIC_HEADER_CLASS}>
               <SecurityCardTitle
                 icon={<QrCode className="size-3.5" />}
                 id="account-mfa-heading"

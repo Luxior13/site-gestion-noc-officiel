@@ -4,7 +4,7 @@ import {
   createUserSchema,
   EMPTY_USER_FORM,
   getCreationFieldErrors,
-} from '$features/users/create-user.schema';
+} from '$features/users/schemas/create-user.schema';
 
 const validForm = {
   ...EMPTY_USER_FORM,

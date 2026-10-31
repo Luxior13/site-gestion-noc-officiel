@@ -1,6 +1,6 @@
 import React, { type FC } from 'react';
 
-import { UserStatusBadge } from '$features/users/user-badges';
+import { UserStatusBadge } from '$features/users/components/user-badges';
 import type { UserType } from '$types/auth.types';
 import { StatusBadge } from '$ui/status-badge';
 

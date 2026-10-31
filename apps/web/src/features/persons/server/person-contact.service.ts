@@ -158,7 +158,7 @@ export const updatePersonEmail = async (
     const isPrimary = person.emails.length === 1 ? true : input.isPrimary;
     if (current.isPrimary && !isPrimary) {
       throw personErrors.primaryConflict(
-        "Choisissez d'abord un autre email principal",
+        'Choisissez d’abord un autre email principal',
       );
     }
     if (
@@ -452,7 +452,7 @@ export const updatePersonPhone = async (
     const isPrimary = person.phones.length === 1 ? true : input.isPrimary;
     if (current.isPrimary && !isPrimary) {
       throw personErrors.primaryConflict(
-        "Choisissez d'abord un autre téléphone principal",
+        'Choisissez d’abord un autre téléphone principal',
       );
     }
     if (

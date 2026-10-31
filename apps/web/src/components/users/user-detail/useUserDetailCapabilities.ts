@@ -301,13 +301,13 @@ export function useUserDetailCapabilities(
     ],
   );
   const loginReadOnlyHint = isSelf
-    ? "Votre propre identifiant ne se modifie pas depuis l'administration."
+    ? 'Votre propre identifiant ne se modifie pas depuis l’administration.'
     : user?.isProtected
-      ? "L'identifiant du superadmin est protégé."
+      ? 'L’identifiant du superadmin est protégé.'
       : isTargetAdminAccessRestricted
-        ? "Seul le superadmin peut modifier l'identifiant d'un administrateur."
+        ? 'Seul le superadmin peut modifier l’identifiant d’un administrateur.'
         : !canUpdateUserLogin
-          ? "La permission Modifier l'identifiant de connexion est requise."
+          ? 'L’autorisation « Modifier l’identifiant de connexion » est requise.'
           : 'Cet identifiant est en lecture seule depuis cette fiche.';
   const canViewTargetSecurity =
     !!user &&

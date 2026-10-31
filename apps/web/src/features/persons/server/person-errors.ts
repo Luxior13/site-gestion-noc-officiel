@@ -21,7 +21,7 @@ export const personErrors = {
   featureNotConfigured: (): PersonDomainError =>
     new PersonDomainError(
       'PERSON_FEATURE_NOT_CONFIGURED',
-      "La protection des données du répertoire n'est pas configurée",
+      'La protection des données du répertoire n’est pas configurée',
     ),
   notFound: (): PersonDomainError =>
     new PersonDomainError('PERSON_NOT_FOUND', 'Fiche introuvable'),

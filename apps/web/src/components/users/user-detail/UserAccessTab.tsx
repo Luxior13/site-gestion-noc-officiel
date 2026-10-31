@@ -13,7 +13,7 @@ import {
 import { PERMISSION_EDITOR_CATEGORIES } from '$components/users/permission-editor-view';
 import { PermissionsEditor } from '$components/users/PermissionsEditor';
 import { type PermissionsData } from '$constants/permissions.constants';
-import { UserAccessBadge } from '$features/users/user-badges';
+import { UserAccessBadge } from '$features/users/components/user-badges';
 import type { UserType } from '$types/auth.types';
 import { Badge } from '$ui/badge';
 import { Card, CardContent } from '$ui/card';

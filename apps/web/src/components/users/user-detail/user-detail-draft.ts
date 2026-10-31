@@ -2,7 +2,7 @@ import type { PermissionsData } from '$constants/permissions.constants';
 import {
   createUserSchema,
   getCreationFieldErrors,
-} from '$features/users/create-user.schema';
+} from '$features/users/schemas/create-user.schema';
 import type { UserType } from '$types/auth.types';
 
 import {

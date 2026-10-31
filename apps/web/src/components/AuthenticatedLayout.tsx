@@ -183,7 +183,7 @@ export const PersistentAuthenticatedShell: FC<AuthenticatedShellProps> = ({
           className="text-primary-emphasis h-8 w-8 animate-spin"
           aria-hidden
         />
-        <span className="sr-only">Chargement en cours...</span>
+        <span className="sr-only">Chargement en cours…</span>
       </div>
     );
   }
@@ -221,7 +221,7 @@ export const PersistentAuthenticatedShell: FC<AuthenticatedShellProps> = ({
   return (
     <AuthenticatedShellContext.Provider value={shellContextValue}>
       <BreadcrumbIdentityProvider>
-        <SidebarProvider open>
+        <SidebarProvider>
           {/* Skip to main content link for accessibility */}
           <a
             href="#main-content"

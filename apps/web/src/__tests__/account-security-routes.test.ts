@@ -484,6 +484,18 @@ describe('account security routes', () => {
       );
       expect(mockClearRateLimit).not.toHaveBeenCalled();
       expect(mockUpdateUserPassword).not.toHaveBeenCalled();
+      // Audit of 31 October 2026: the refusal itself reaches the journal.
+      expect(mockCreateAuditLogWithHeaders).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: 'STEP_UP_FAILED',
+          metadata: expect.objectContaining({
+            reason: 'PASSWORD_INVALID',
+            step: 'password_change',
+          }),
+          targetUserId: 'user-1',
+          userId: 'user-1',
+        }),
+      );
     });
 
     it('rate limits repeated current password checks', async () => {
@@ -544,7 +556,7 @@ describe('account security routes', () => {
       expect(response.status).toBe(400);
       expect(body.success).toBe(false);
       expect(body.error.message).toBe(
-        "Le nouveau mot de passe doit être différent de l'actuel",
+        'Le nouveau mot de passe doit être différent de l’actuel',
       );
       expect(mockClearRateLimit).toHaveBeenCalledWith('account-reauth:user-1');
       expect(mockUpdateUserPassword).not.toHaveBeenCalled();

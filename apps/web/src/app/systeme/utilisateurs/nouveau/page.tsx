@@ -9,7 +9,7 @@ import { FEATURES } from '$constants/feature-registry.constants';
 import { hasPermission, PERMISSIONS } from '$constants/permissions.constants';
 import { PAGE_PATHS } from '$constants/routes.constants';
 import { useUser } from '$context/UserContext';
-import { NewUserForm } from '$features/users/NewUserForm';
+import { NewUserForm } from '$features/users/components/NewUserForm';
 import { PageCanvas, PageShell } from '$ui/page-shell';
 import { getSafeCollectionReturnHref } from '$utils/navigation.utils';
 

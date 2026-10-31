@@ -8,7 +8,6 @@ import AuthenticatedLayout from '$components/AuthenticatedLayout';
 import { PageIdentityHero } from '$components/layout/PageIdentityHero';
 import { AccessDeniedState } from '$components/layout/PageState';
 import { FEATURES } from '$constants/feature-registry.constants';
-import { useFeatureAvailability } from '$context/FeatureAvailabilityContext';
 import { useUser } from '$context/UserContext';
 import { PersonCreateForm } from '$features/persons/components/PersonCreateForm';
 import { getPersonCapabilities } from '$features/persons/person.permissions';
@@ -28,26 +27,16 @@ const NewPersonPageSkeleton: FC = () => (
 );
 
 const NewPersonContent: FC<{ returnHref: string }> = ({ returnHref }) => {
-  const {
-    featureAvailabilityLoaded,
-    operationalFeatureIds,
-    refreshFeatureAvailability,
-  } = useFeatureAvailability();
   const { userData } = useUser();
   const { canCreate } = getPersonCapabilities(userData);
 
   if (!canCreate) {
     return (
       <AccessDeniedState
-        actionHref={returnHref}
-        actionLabel="Retour au répertoire"
-        description="Vous n'avez pas la permission de créer une fiche."
+        action="créer une fiche"
+        back={{ href: returnHref, label: 'Retour au répertoire' }}
       />
     );
-  }
-
-  if (!featureAvailabilityLoaded) {
-    return <NewPersonPageSkeleton />;
   }
 
   return (
@@ -55,16 +44,11 @@ const NewPersonContent: FC<{ returnHref: string }> = ({ returnHref }) => {
       <PageCanvas contentClassName="relative space-y-5">
         <PageIdentityHero
           compact
-          description="Créez l'identité essentielle, puis complétez la fiche si nécessaire."
+          description="Créez l’identité essentielle, puis complétez la fiche si nécessaire."
           icon={<UserPlus className="size-5" />}
           title="Nouvelle fiche"
         />
-        <PersonCreateForm
-          available={operationalFeatureIds.has(FEATURES.persons.id)}
-          key={userData?.id}
-          onRetryAvailability={refreshFeatureAvailability}
-          returnHref={returnHref}
-        />
+        <PersonCreateForm key={userData?.id} returnHref={returnHref} />
       </PageCanvas>
     </PageShell>
   );

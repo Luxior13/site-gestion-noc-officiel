@@ -65,14 +65,26 @@ Relevé du code (routes `app/api` et services `features/*/server`) :
 | Connexion et déconnexion | `LOGIN_SUCCESS`, `LOGIN_FAILED` (motif), `LOGOUT`, `MFA_RECOVERY_CODE_USED` |
 | Tout mot de passe ou code refusé par le limiteur | `ATTEMPTS_BLOCKED` « Tentatives bloquées » (étape, preuve, durée), une fois par blocage |
 | Confirmation d’identité avant une action sensible | `STEP_UP_SUCCESS`, `STEP_UP_FAILED` |
+| Tout mot de passe ou code refusé par un compte connecté (email de contact, mot de passe, gestion, activation ou réinitialisation de la double authentification) | `STEP_UP_FAILED` « Confirmation d’identité échouée » avec étape et motif (`recordRefusedProof`, 31 octobre 2026) ; un code faux pendant l’activation obligatoire à la première connexion écrit `LOGIN_FAILED` (motif `MFA_SETUP_INVALID`) |
 | Mon compte | `USER_UPDATE` (profil, email de contact), `PASSWORD_CHANGE`, `MFA_ENABLED`, `MFA_RECOVERY_CODES_REGENERATED`, `SESSION_INVALIDATE` |
 | Utilisateurs et fiche utilisateur | `USER_CREATE`, `USER_UPDATE`, `USER_ACTIVATE` / `USER_DEACTIVATE`, `PERMISSION_UPDATE`, `PASSWORD_RESET`, `MFA_RESET`, `SESSION_INVALIDATE`, `USER_DELETE` |
 | Répertoire et fiche personne | `PERSON_CREATE`, `PERSON_UPDATE` (identité, rattachement, emails, téléphones, réseaux), `PERSON_DELETE` |
 | Paramètres | `SYSTEM_SETTING_UPDATE` |
-| Journal d’activité | `AUDIT_VIEW` |
+| Journal d’activité | `AUDIT_VIEW` ; `AUDIT_PURGE` « Journal purgé » écrit par la purge de conservation (`bun run maintenance`) quand elle supprime des événements, dans sa transaction, avec le nombre d’événements et de sessions expirées supprimés (migration `20261031130000_audit_purge_action`) |
 | Accueil, feuille de route | Lecture seule, rien à tracer |
 
-Toutes les mutations livrées écrivent leur trace. Points relevés :
+Toutes les mutations livrées écrivent leur trace. Faits utiles projetés par le
+journal (point 6), complétés le 31 octobre 2026 par l’[audit complet](../audits/2026-10-31-audit-complet.md) :
+autorisations accordées et retirées, motif d’une connexion refusée (identifiants,
+compte désactivé, code de double authentification, état incohérent), motif d’une
+confirmation d’identité refusée, étape, preuve et durée d’un blocage, nombre de
+sessions fermées, remplacement de l’application d’authentification. Le même
+jour (« ok go » du propriétaire sur les propositions de l’audit) : étape et motif
+de toute preuve refusée, motif précis d’une connexion refusée (« Identifiant
+inconnu » ou « Mot de passe incorrect », réservé aux lecteurs du journal),
+événements et sessions supprimés par une purge, sujet d’une ligne construit
+depuis l’identifiant tapé ou le paramètre au lieu de la phrase stockée.
+Points relevés :
 
 - **Tentatives refusées par la limitation de débit** : **corrigé le 31 octobre
   2026** (« ok go » du propriétaire). Elles ne laissaient aucune trace ; chaque

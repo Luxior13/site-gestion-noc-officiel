@@ -8,6 +8,7 @@ import { EntityDangerZone } from '$components/layout/EntityDangerZone';
 import { useUser } from '$context/UserContext';
 
 import { deletePerson } from '../person.api';
+import { getPersonDisplayName } from '../person.ui';
 import type { PersonDetail } from '../types/person.types';
 
 const AdminStepUpDialog = dynamic(() =>
@@ -17,14 +18,12 @@ const AdminStepUpDialog = dynamic(() =>
 );
 
 type PersonDangerZoneProps = {
-  available?: boolean;
   onReload: () => Promise<PersonDetail>;
   person: PersonDetail;
   returnHref: string;
 };
 
 export const PersonDangerZone: FC<PersonDangerZoneProps> = ({
-  available = true,
   onReload,
   person,
   returnHref,
@@ -40,11 +39,11 @@ export const PersonDangerZone: FC<PersonDangerZoneProps> = ({
   return (
     <>
       <EntityDangerZone
-        available={available}
         key={person.id}
         description="L’identité, les coordonnées et les profils sociaux seront supprimés sans possibilité de restauration."
         dialogDescription="Cette action est irréversible. Vérifiez la fiche avant de confirmer sa suppression."
         dialogNotice="La fiche et ses données personnelles seront effacées immédiatement et définitivement."
+        dialogTitle={`Supprimer définitivement la fiche de ${getPersonDisplayName(person)} ?`}
         onDelete={(version, idempotencyKey, signal) =>
           deletePerson({
             idempotencyKey,

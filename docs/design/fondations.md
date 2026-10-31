@@ -259,6 +259,22 @@ décoratif ; « Page introuvable » est le `h1`.
 Voir [AUDIT_TYPOGRAPHIE.md](../audits/2026-09-22-typographie.md) pour les constats
 historiques ; cette ancienne échelle ne remplace pas les règles courantes.
 
+### Rédaction des textes visibles
+
+Règles du 31 octobre 2026 (« ok go » sur l’[audit complet](../audits/2026-10-31-audit-complet.md)),
+gardées par le test `visible-wording-contracts` :
+
+- apostrophe typographique « ’ » et points de suspension « … », jamais leur
+  forme ASCII ni l’entité `&apos;` ;
+- « autorisation » pour un droit, jamais « permission » ; « superadmin » pour
+  le compte protégé ;
+- les mots du site : « double authentification » (ni « vérification en deux
+  étapes » ni « MFA »), « email de contact » (un seul nom pour ce champ),
+  « rôle » (Utilisateur, Administrateur), « tiret bas » ; aucun mot anglais
+  (« scope », « payload ») dans un message ;
+- deux-points précédés d’une espace (« Motif : … »), y compris dans les
+  descriptions enregistrées par l’audit.
+
 ## Espacements et arrondis
 
 - Espacement : échelle Tailwind par défaut, ancrée sur 0.25rem.

@@ -123,7 +123,7 @@ export const updateSystemSettingForActor = async (
         {
           action: AuditAction.SYSTEM_SETTING_UPDATE,
           category: AuditCategory.SYSTEM,
-          description: `Paramètre système mis à jour : ${definition.label}`,
+          description: `Paramètre modifié : ${definition.label}`,
           metadata: {
             after: { value: updated.value, version: updated.version },
             before: previous

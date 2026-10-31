@@ -1,12 +1,12 @@
+import { CORE_ROADMAP_ITEMS } from './roadmap-core.data';
+import { OPERATIONS_ROADMAP_ITEMS } from './roadmap-operations.data';
 import type {
   RoadmapArea,
   RoadmapItem,
   RoadmapKind,
   RoadmapPhase,
   RoadmapStatus,
-} from './roadmap.types';
-import { CORE_ROADMAP_ITEMS } from './roadmap-core.data';
-import { OPERATIONS_ROADMAP_ITEMS } from './roadmap-operations.data';
+} from './types/roadmap.types';
 
 export const ROADMAP_AREAS: readonly RoadmapArea[] = [
   {

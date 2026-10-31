@@ -46,6 +46,15 @@ revue répond à un changement, un défaut constaté ou une règle nouvelle.
 
 ## Décisions courantes — complétées le 12 octobre 2026
 
+- 31 octobre 2026 : l’aide « Mot de passe oublié » oriente vers un
+  administrateur de Noctambule (elle renvoyait à tort au seul superadmin) ;
+  points de suspension typographiques ; titre d’onglet inchangé
+  ([audit complet](../audits/2026-10-31-audit-complet.md), AC-03, AC-14). Appliqué
+  le même jour sur « go » du propriétaire : titre « Double authentification » à
+  l’étape du code, aide « Reste connecté jusqu’à 30 jours… » reliée à la case par
+  `aria-describedby` sans la déplacer, description « Accédez à votre espace privé
+  Noctambule. » (AC-37) ; plus de toast « Connexion réussie », l’arrivée sur
+  l’accueil suffit (AC-35) ; motifs précis dans le journal (AC-32).
 - 30 octobre 2026 : les hauteurs viennent des composants partagés (champs
   `Input`, bouton `Button`, 44 px sous 640 px) ; sur ordinateur, le bouton
   « Se connecter » prend la hauteur des champs (40 px) au lieu de 36 px
@@ -116,9 +125,9 @@ Selon la [règle Q15](../references/audit-historique.md) (31 octobre 2026) :
 | Action | Événement |
 | --- | --- |
 | Connexion réussie (mot de passe puis code ou code de secours) | `LOGIN_SUCCESS`, plus `MFA_RECOVERY_CODE_USED` pour un code de secours |
-| Mot de passe ou code refusé | `LOGIN_FAILED` avec son motif ; auteur « Aucun compte reconnu » |
+| Mot de passe ou code refusé | `LOGIN_FAILED` avec son motif (« Identifiant inconnu », « Mot de passe incorrect », « Compte désactivé », code refusé) ; auteur « Personne non connectée » |
 | Trop d’essais : la limitation de débit refuse | `ATTEMPTS_BLOCKED` « Tentatives bloquées », une fois par blocage, compte visé retrouvé depuis l’identifiant saisi |
-| Activation obligatoire de la double authentification | `MFA_ENABLED` ; un blocage du code donne `ATTEMPTS_BLOCKED` |
+| Activation obligatoire de la double authentification | `MFA_ENABLED` ; un code faux écrit `LOGIN_FAILED` (motif « Code incorrect ou expiré à l’activation », 31 octobre 2026) ; un blocage du code donne `ATTEMPTS_BLOCKED` |
 | Déconnexion | `LOGOUT` |
 
 ## Questions pour une modification

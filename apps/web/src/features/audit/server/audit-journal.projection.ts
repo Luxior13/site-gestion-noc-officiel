@@ -31,7 +31,7 @@ import type {
   JournalEvent,
   JournalFact,
   JournalTone,
-} from '../audit-journal.types';
+} from '../types/audit-journal.types';
 import {
   BLOCKED_ATTEMPT_PROOFS,
   BLOCKED_ATTEMPT_STEPS,
@@ -39,6 +39,7 @@ import {
   LOGIN_FAILURE_REASONS,
   PERSON_FIELD_LABELS,
   PERSON_SECTION_LABELS,
+  STEP_UP_FAILURE_REASONS,
   USER_FIELD_LABELS,
 } from './audit-journal.labels';
 
@@ -77,6 +78,13 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/u;
+
+const formatCount = (value: number): string => value.toLocaleString('fr-FR');
+
+/** The catalogue label reads « Journal d’activité », the journal names the setting. */
+const SETTING_JOURNAL_LABELS: Readonly<Record<string, string>> = {
+  'audit.retentionDays': 'Conservation du journal d’activité',
+};
 
 const formatValue = (fieldKey: string, value: unknown): string => {
   if (value === null || value === undefined || value === '') return EMPTY;
@@ -160,7 +168,14 @@ const projectPersonChange = (
   };
 };
 
+/** The label already says it: « Compte désactivé » needs no « Compte actif ». */
+const ACTIVE_STATE_ACTIONS: ReadonlySet<string> = new Set([
+  'USER_ACTIVATE',
+  'USER_DEACTIVATE',
+]);
+
 const projectUserChanges = (
+  row: JournalRow,
   metadata: Record<string, unknown>,
   rights: ReaderRights,
 ): JournalChange[] => {
@@ -169,6 +184,7 @@ const projectUserChanges = (
 
   return USER_FIELD_LABELS.flatMap(([key, label]) => {
     if (!Object.hasOwn(before, key) && !Object.hasOwn(after, key)) return [];
+    if (key === 'isActive' && ACTIVE_STATE_ACTIONS.has(row.action)) return [];
     if (key === 'contactEmail' && !rights.canViewUserContacts)
       return [{ after: MASKED, before: MASKED, label }];
 
@@ -208,6 +224,47 @@ const projectFacts = (row: JournalRow): JournalFact[] => {
       label: 'Motif',
       value: LOGIN_FAILURE_REASONS[metadata.reason] ?? 'Autre motif',
     });
+  if (row.action === 'STEP_UP_FAILED') {
+    // Every refused proof names where it was asked (31 October 2026).
+    if (typeof metadata.step === 'string')
+      facts.push({
+        label: 'Étape',
+        value: BLOCKED_ATTEMPT_STEPS[metadata.step] ?? 'Autre étape',
+      });
+    if (typeof metadata.reason === 'string')
+      facts.push({
+        label: 'Motif',
+        value: STEP_UP_FAILURE_REASONS[metadata.reason] ?? 'Autre motif',
+      });
+  }
+  if (row.action === 'AUDIT_PURGE') {
+    if (typeof metadata.deletedEvents === 'number')
+      facts.push({
+        label: 'Événements supprimés',
+        value: formatCount(metadata.deletedEvents),
+      });
+    if (typeof metadata.retentionDays === 'number')
+      facts.push({
+        label: 'Conservation',
+        value: `${formatCount(metadata.retentionDays)} jours (${formatDaysAsYears(metadata.retentionDays)})`,
+      });
+    if (
+      typeof metadata.expiredSessions === 'number' &&
+      metadata.expiredSessions > 0
+    )
+      facts.push({
+        label: 'Sessions expirées supprimées',
+        value: formatCount(metadata.expiredSessions),
+      });
+  }
+  if (
+    row.action === 'SESSION_INVALIDATE' &&
+    typeof metadata.revokedSessions === 'number'
+  )
+    facts.push({
+      label: 'Sessions fermées',
+      value: formatCount(metadata.revokedSessions),
+    });
   if (row.action === 'ATTEMPTS_BLOCKED') {
     if (typeof metadata.step === 'string')
       facts.push({
@@ -233,19 +290,21 @@ const projectSettingChanges = (
   metadata: Record<string, unknown>,
 ): JournalChange[] => {
   if (metadata.settingKey !== 'audit.retentionDays') return [];
+  const { defaultValue } = getSystemSettingDefinition('audit.retentionDays');
+  // No stored row means the default: say which value that was.
   const days = (side: unknown): string => {
     const value = isRecord(side) ? side.value : null;
 
     return typeof value === 'number'
-      ? `${value.toLocaleString('fr-FR')} jours (${formatDaysAsYears(value)})`
-      : 'Valeur par défaut';
+      ? `${formatCount(value)} jours (${formatDaysAsYears(value)})`
+      : `${formatCount(defaultValue)} jours (${formatDaysAsYears(defaultValue)}, défaut)`;
   };
 
   return [
     {
       after: days(metadata.after),
       before: days(metadata.before),
-      label: getSystemSettingDefinition('audit.retentionDays').label,
+      label: SETTING_JOURNAL_LABELS['audit.retentionDays'] ?? 'Paramètre',
     },
   ];
 };
@@ -267,6 +326,33 @@ const typeLabelOf = (row: AuditLog): string => {
   if (row.action === 'SYSTEM_SETTING_UPDATE') return 'Paramètres';
 
   return 'Autres';
+};
+
+/**
+ * What a line without a record or account concerns, built from closed
+ * metadata instead of the stored sentence, which only repeated the label
+ * (« Connexion échouée · Connexion échouée: alex »; audit of 31 October 2026).
+ */
+const subjectOf = (
+  row: JournalRow,
+  metadata: Record<string, unknown>,
+): string | null => {
+  if (typeof metadata.loginName === 'string' && metadata.loginName.trim())
+    return `Identifiant : ${metadata.loginName.trim()}`;
+  if (
+    row.action === 'SYSTEM_SETTING_UPDATE' &&
+    typeof metadata.settingKey === 'string'
+  )
+    return SETTING_JOURNAL_LABELS[metadata.settingKey] ?? 'Paramètre';
+  if (
+    row.action === 'AUDIT_PURGE' &&
+    typeof metadata.deletedEvents === 'number'
+  )
+    return metadata.deletedEvents === 1
+      ? '1 événement supprimé'
+      : `${formatCount(metadata.deletedEvents)} événements supprimés`;
+
+  return null;
 };
 
 export const projectJournalEvent = (
@@ -309,7 +395,7 @@ export const projectJournalEvent = (
     ? row.fieldChanges.map((change) => projectPersonChange(row, change, rights))
     : row.action === 'SYSTEM_SETTING_UPDATE'
       ? projectSettingChanges(metadata)
-      : projectUserChanges(metadata, rights);
+      : projectUserChanges(row, metadata, rights);
 
   return {
     actor:
@@ -327,7 +413,7 @@ export const projectJournalEvent = (
             loginName: null,
             name:
               row.eventKind === 'CONNECTION'
-                ? 'Aucun compte reconnu'
+                ? 'Personne non connectée'
                 : 'Système',
           },
     at: row.createdAt.toISOString(),
@@ -340,10 +426,12 @@ export const projectJournalEvent = (
         ? formatIpAddress(row.ipAddress)
         : null,
     ipMasked: !rights.isProtected && row.ipAddress !== null,
-    label: JOURNAL_ACTION_LABELS[row.action],
-    // The stored sentence names the object when no record is linked
-    // (« Connexion échouée: alex », « Paramètre système mis à jour : … »).
-    subject: target ? null : row.description,
+    // A replaced authenticator is written as MFA_ENABLED with `replacing`.
+    label:
+      row.action === 'MFA_ENABLED' && metadata.replacing === true
+        ? 'Application d’authentification remplacée'
+        : JOURNAL_ACTION_LABELS[row.action],
+    subject: target ? null : subjectOf(row, metadata),
     target,
     tone: toneOf(row),
     typeLabel: typeLabelOf(row),

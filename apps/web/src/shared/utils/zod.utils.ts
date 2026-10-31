@@ -17,7 +17,7 @@ export const loginNameSchema = z
       .max(32, 'Identifiant trop long')
       .regex(
         /^[a-z0-9][\w.-]*[a-z0-9]$/i,
-        "L'identifiant doit commencer et finir par une lettre ou un chiffre et ne contenir que des lettres, chiffres, points, tirets ou underscores",
+        'L’identifiant doit commencer et finir par une lettre ou un chiffre et ne contenir que des lettres, chiffres, points, tirets ou tirets bas',
       ),
   )
   .transform((val) => val.toLowerCase());

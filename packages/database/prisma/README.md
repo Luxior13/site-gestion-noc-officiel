@@ -39,8 +39,9 @@ pas de clé étrangère entre eux, ni de rapprochement automatique par email.
 coordonnées appartiennent à une personne et sont supprimées en cascade avec
 elle ; leurs doublons sont interdits dans cette fiche, pas entre deux personnes.
 
-Le contrat complet comprend le schéma Prisma, les migrations SQL et le
-[contrôle de disponibilité du Répertoire](../../../apps/web/src/features/persons/server/person-schema-readiness.ts).
+Le contrat complet comprend le schéma Prisma et les migrations SQL, que les
+suites `*-postgres` exercent sur une vraie base (le contrôle de catalogue du
+Répertoire a été retiré le 31 octobre 2026, [SYS-11](../../../docs/systeme/constats.md)).
 Les `CHECK`, fonctions, triggers et index uniques partiels ne sont pas tous
 représentés par le langage de schéma de Prisma 6. Ne pas les supprimer parce
 qu'ils n'apparaissent pas dans `schema.prisma` ; consulter la

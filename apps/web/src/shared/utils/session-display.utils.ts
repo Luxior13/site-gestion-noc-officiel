@@ -1,3 +1,5 @@
+import { unmapIpv4Address } from './ip-address.utils';
+
 /**
  * Display helpers shared by the session lists of a user record and of
  * Mon compte (owner decision of 27 October 2026: one session row).
@@ -46,11 +48,12 @@ const IPV6_GROUP = /^[0-9a-f]{1,4}$/;
 
 /**
  * Short form of an IPv6 address (RFC 5952: lower case, leading zeros dropped,
- * longest run of zero groups as « :: »), for display only. IPv4, embedded
- * IPv4 and zoned addresses are shown as received.
+ * longest run of zero groups as « :: »), for display only. An IPv4-mapped
+ * address reads as its IPv4 (older rows); other embedded IPv4 and zoned
+ * addresses are shown as received.
  */
 export const formatIpAddress = (ip: string): string => {
-  const value = ip.trim();
+  const value = unmapIpv4Address(ip.trim());
   if (!value.includes(':') || value.includes('.') || value.includes('%'))
     return value;
   const halves = value.toLowerCase().split('::');

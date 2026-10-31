@@ -22,7 +22,7 @@ export type BreadcrumbEntry = {
 type BreadcrumbProps = React.ComponentProps<'nav'>;
 
 function Breadcrumb({
-  'aria-label': ariaLabel = "Fil d'Ariane",
+  'aria-label': ariaLabel = 'Fil d’Ariane',
   className,
   ...props
 }: BreadcrumbProps): React.ReactNode {

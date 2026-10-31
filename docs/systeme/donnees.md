@@ -71,8 +71,8 @@ L’actualité interne redéfinira son stockage à sa reconstruction.
 
 ## Migrations
 
-**60 migrations** dans `packages/database/prisma/migrations`, de
-`20250723121213_init` à `20261031120000_audit_attempts_blocked` (valeur `ATTEMPTS_BLOCKED` de `AuditAction`, tentatives bloquées par la limitation de débit). Repères :
+**61 migrations** dans `packages/database/prisma/migrations`, de
+`20250723121213_init` à `20261031130000_audit_purge_action` (valeur `AUDIT_PURGE` de `AuditAction` : la purge de conservation laisse « Journal purgé » ; la précédente, `20261031120000_audit_attempts_blocked`, ajoute `ATTEMPTS_BLOCKED` pour les tentatives bloquées par la limitation de débit). Repères :
 
 | Période | Migrations notables |
 | --- | --- |

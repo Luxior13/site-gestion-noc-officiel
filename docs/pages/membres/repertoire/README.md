@@ -18,6 +18,24 @@ personne n’est ni un compte utilisateur, ni une adhésion, ni un rôle.
 Alias historiques `/personnes` et `/vie-interne/repertoire` : redirections
 vers la liste (voir les [routes](../../../systeme/routes.md)).
 
+## Disponibilité — audit complet du 31 octobre 2026
+
+**Défaut P1 corrigé et vérifié** ([AC-01](../../../audits/2026-10-31-audit-complet.md)) :
+un contrôle de disponibilité refusé par la limitation de débit (12 par minute et
+par adresse, sondé toutes les 30 s par onglet) faisait afficher « Répertoire
+temporairement indisponible » et bloquait création, fiche et coordonnées. Seul un
+« non prêt » explicite rend désormais le Répertoire indisponible.
+
+**Propositions appliquées le même jour** (« go » du propriétaire) : plus aucun
+contrôle de disponibilité côté navigateur ([SYS-11](../../../systeme/constats.md)) —
+les pages chargent directement et une base pas encore migrée répond un 503
+explicite affiché par l’état « Chargement impossible » ; confirmation « Supprimer
+définitivement la fiche de … ? » (AC-20) ; tri « Nom affiché (A–Z) » (AC-36) ;
+« 33 fiches » sans critère, « trouvées » avec (AC-33) ; création en cartes
+« Pseudo et nom » et « Statut », validée par le schéma d’identité seul, sans la
+bibliothèque des numéros de téléphone (AC-30, AC-49) ; « Statut dans la
+structure » dans le journal (AC-32).
+
 ## Règles communes du module
 
 - **Accès** : lecture `persons:view`, création `persons:create`, identité

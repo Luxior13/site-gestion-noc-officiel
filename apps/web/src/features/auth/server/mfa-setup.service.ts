@@ -28,6 +28,7 @@ import {
   reserveMfaRateLimits,
   reserveSensitiveActionRateLimit,
 } from '$server/rate-limiter';
+import { recordRefusedProof } from '$server/refused-proof-audit';
 import { serviceErrors } from '$server/service-error';
 import {
   createSession,
@@ -51,6 +52,15 @@ const SECURITY_AUDIT_LOCATION = {
   poleLabel: 'Espace personnel',
   tabKey: 'security',
   tabLabel: 'Sécurité',
+} as const;
+
+const AUTH_CONNECTION_AUDIT_LOCATION = {
+  pageKey: 'authentication',
+  pageLabel: 'Authentification',
+  poleKey: 'system',
+  poleLabel: 'Système',
+  tabKey: 'connections',
+  tabLabel: 'Connexions',
 } as const;
 
 export type MfaSetupStart = {
@@ -165,8 +175,16 @@ const proveAuthenticatedSetup = async (
       'La configuration de double authentification est incohérente',
     );
   }
-  if (!(await verifyPassword(proofs.currentPassword, storedUser.passwordHash)))
+  if (
+    !(await verifyPassword(proofs.currentPassword, storedUser.passwordHash))
+  ) {
+    await recordRefusedProof({
+      actorUserId: storedUser.id,
+      reason: 'PASSWORD_INVALID',
+      step: 'mfa_manage',
+    });
     throw serviceErrors.invalidCredentials('Mot de passe actuel incorrect');
+  }
   await clearRateLimit(reauthKey);
 
   let proof: AuthenticatedSetup['proof'] = null;
@@ -188,8 +206,14 @@ const proveAuthenticatedSetup = async (
       recoveryCodes: storedUser.mfaRecoveryCodes,
       userId: storedUser.id,
     });
-    if (!proof)
+    if (!proof) {
+      await recordRefusedProof({
+        actorUserId: storedUser.id,
+        reason: 'TOTP_INVALID',
+        step: 'mfa_manage',
+      });
       throw serviceErrors.invalidCredentials('Code actuel incorrect ou expiré');
+    }
     await clearRateLimit(mfaManageKey);
   }
 
@@ -335,7 +359,7 @@ export const startMfaSetup = async (
           {
             action: 'MFA_RECOVERY_CODE_USED',
             category: 'AUTH',
-            description: 'Code de récupération MFA utilisé',
+            description: 'Code de secours utilisé',
             metadata: SECURITY_AUDIT_LOCATION,
             targetUserId: userId,
             userId,
@@ -427,15 +451,49 @@ export const loadSetupChallenge = async (): Promise<SetupChallenge | null> => {
 };
 
 /**
+ * A wrong first code leaves a trace (audit of 31 October 2026): a failed
+ * login during the mandatory enrollment, a refused proof for a signed-in
+ * account replacing its application.
+ */
+const recordRefusedSetupCode = async ({
+  challenge,
+  isMandatoryBootstrap,
+}: SetupChallenge): Promise<void> => {
+  if (!isMandatoryBootstrap) {
+    await recordRefusedProof({
+      actorUserId: challenge.userId,
+      reason: 'NEW_TOTP_INVALID',
+      step: 'mfa_setup',
+    });
+
+    return;
+  }
+  await createAuditLogWithHeaders({
+    action: 'LOGIN_FAILED',
+    category: 'AUTH',
+    description: `Connexion échouée : ${challenge.user.loginName}`,
+    metadata: {
+      ...AUTH_CONNECTION_AUDIT_LOCATION,
+      loginName: challenge.user.loginName,
+      reason: 'MFA_SETUP_INVALID',
+    },
+    targetUserId: challenge.userId,
+    // Nobody is signed in yet during the mandatory enrollment.
+    userId: null,
+  });
+};
+
+/**
  * Confirms an enrollment with a first code: the credential replaces any
  * previous one, recovery codes are regenerated, every session is revoked and
  * a new one is issued, all in the session transaction.
  */
 export const confirmMfaSetup = async (
-  { challenge, isMandatoryBootstrap, tokenHash }: SetupChallenge,
+  setupChallenge: SetupChallenge,
   code: string,
   context: { clientIp: string | null; sourceSessionToken?: string },
 ): Promise<MfaSetupConfirmation> => {
+  const { challenge, isMandatoryBootstrap, tokenHash } = setupChallenge;
   const rateLimitKeys = createMfaRateLimitKeys(
     context.clientIp,
     challenge.userId,
@@ -456,8 +514,10 @@ export const confirmMfaSetup = async (
     decryptTotpSecret(enrollment, challenge.userId),
     code,
   );
-  if (timeStep === null)
+  if (timeStep === null) {
+    await recordRefusedSetupCode(setupChallenge);
     throw serviceErrors.invalidCredentials('Code incorrect ou expiré');
+  }
 
   const replacing = challenge.user.totpCredential !== null;
   const recoveryCodes = generateRecoveryCodes(challenge.userId);
@@ -465,15 +525,10 @@ export const confirmMfaSetup = async (
     ? {
         action: 'LOGIN_SUCCESS' as const,
         category: 'AUTH' as const,
-        description: `Connexion réussie: ${challenge.user.loginName}`,
+        description: `Connexion réussie : ${challenge.user.loginName}`,
         metadata: {
+          ...AUTH_CONNECTION_AUDIT_LOCATION,
           authenticationMethod: 'password_totp_setup',
-          pageKey: 'authentication',
-          pageLabel: 'Authentification',
-          poleKey: 'system',
-          poleLabel: 'Système',
-          tabKey: 'connections',
-          tabLabel: 'Connexions',
         },
         targetUserId: challenge.userId,
         userId: challenge.userId,

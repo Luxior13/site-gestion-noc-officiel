@@ -7,7 +7,7 @@ import { AccessDeniedState } from '$components/layout/PageState';
 import { FEATURES } from '$constants/feature-registry.constants';
 import { hasPermission, PERMISSIONS } from '$constants/permissions.constants';
 import { useUser } from '$context/UserContext';
-import { ActivityJournalPage } from '$features/audit/ActivityJournalPage';
+import { ActivityJournalPage } from '$features/audit/components/ActivityJournalPage';
 import directoryStyles from '$ui/directory.module.css';
 import { PageCanvas, PageShell } from '$ui/page-shell';
 import { cn } from '$utils/css.utils';
@@ -21,13 +21,7 @@ const ActivityJournalContent: FC = () => {
     : false;
 
   if (!userData || !canView) {
-    return (
-      <AccessDeniedState
-        actionHref="/"
-        actionLabel="Retour à l'accueil"
-        description="Vous n'avez pas la permission de consulter le journal d'activité."
-      />
-    );
+    return <AccessDeniedState action="consulter le journal d’activité" />;
   }
 
   return (

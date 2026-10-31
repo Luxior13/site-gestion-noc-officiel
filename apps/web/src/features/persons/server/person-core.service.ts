@@ -9,10 +9,8 @@ import { prisma } from '$server/prisma';
 import { PERSON_AUDIT_KEYS } from '../person.constants';
 import { getPersonCapabilities } from '../person.permissions';
 import { calculateCivilAge, serializeCivilDate } from '../person.utils';
-import type {
-  CreatePersonInput,
-  UpdatePersonInput,
-} from '../schemas/person.schemas';
+import type { CreatePersonInput } from '../schemas/person.schemas';
+import type { UpdatePersonInput } from '../schemas/person-identity.schemas';
 import type {
   PersonDetail,
   PersonDuplicateWarning,

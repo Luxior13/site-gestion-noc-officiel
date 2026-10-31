@@ -11,9 +11,9 @@ ces fichiers servent à savoir **ce qui existe** avant de créer, modifier ou re
 | Fichier | Contenu | Source de vérité |
 | --- | --- | --- |
 | [Architecture](architecture.md) | Applications, paquets, flux d’une requête, registre des fonctionnalités, scripts d’exploitation, dépendances principales | Manifests, `middleware.ts`, `feature-registry.constants.ts` |
-| [Routes](routes.md) | Les 11 fichiers `page.tsx`, leurs fiches, layouts, états de route, redirections et alias | `apps/web/src/app/**/page.tsx`, `routes.constants.ts` |
-| [API](api.md) | Les 33 gestionnaires HTTP, méthodes et protections | `apps/web/src/app/api/**/route.ts` |
-| [Données](donnees.md) | Les 19 modèles et 12 énumérations Prisma par domaine, migrations | `packages/database/prisma/schema.prisma` |
+| [Routes](routes.md) | Les 13 fichiers `page.tsx`, leurs fiches, layouts, états de route, redirections et alias | `apps/web/src/app/**/page.tsx`, `routes.constants.ts` |
+| [API](api.md) | Les 32 fichiers de routes HTTP, méthodes et protections | `apps/web/src/app/api/**/route.ts` |
+| [Données](donnees.md) | Les 17 modèles et 12 énumérations Prisma par domaine, migrations | `packages/database/prisma/schema.prisma` |
 | [Tests et contrôles](tests.md) | Commandes du dépôt, familles de tests, bases isolées, CI, couverture documentaire | Manifests, `turbo.json`, `.github/workflows/ci.yml` |
 | [Constats](constats.md) | Écarts et anomalies relevés, avec identifiants `SYS-xx` | Ces fichiers |
 

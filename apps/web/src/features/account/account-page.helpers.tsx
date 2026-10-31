@@ -13,7 +13,7 @@ import {
   formatUserIdentityLine,
   UserIdentityStatus,
 } from '$components/users/UserIdentityStatus';
-import { UserAccessBadge } from '$features/users/user-badges';
+import { UserAccessBadge } from '$features/users/components/user-badges';
 import type { UserType } from '$types/auth.types';
 import { Button } from '$ui/button';
 

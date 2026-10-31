@@ -1,10 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
 import { PERMISSIONS } from '$constants/permissions.constants';
-import {
-  deletePersonSchema,
-  updatePersonSchema,
-} from '$features/persons/schemas/person.schemas';
+import { deletePersonSchema } from '$features/persons/schemas/person.schemas';
+import { updatePersonSchema } from '$features/persons/schemas/person-identity.schemas';
 import {
   getPerson,
   updatePerson,
@@ -38,11 +36,9 @@ export async function GET(
   try {
     await assertPersonFeatureReady();
 
-    return withPrivateNoStore(apiSuccess(await getPerson(id, auth.user)));
+    return apiSuccess(await getPerson(id, auth.user));
   } catch (error) {
-    return withPrivateNoStore(
-      await handlePersonApiError('PERSON_GET', error, request),
-    );
+    return handlePersonApiError('PERSON_GET', error, request);
   }
 }
 
@@ -68,14 +64,12 @@ export async function PATCH(
   try {
     await assertPersonFeatureReady();
 
-    return withPrivateNoStore(
-      apiSuccess({
-        person: await updatePerson(id, parsed.data, {
-          ...auth.user,
-          session: auth.session,
-        }),
+    return apiSuccess({
+      person: await updatePerson(id, parsed.data, {
+        ...auth.user,
+        session: auth.session,
       }),
-    );
+    });
   } catch (error) {
     return handlePersonApiError('PERSON_UPDATE', error, request);
   }
@@ -95,7 +89,7 @@ export async function DELETE(
     idempotencyKey.length > 191 ||
     !/^[\w.:-]+$/.test(idempotencyKey)
   ) {
-    return apiErrors.validation("Clé d'idempotence invalide");
+    return apiErrors.validation('Clé d’idempotence invalide');
   }
   const body = await parseJsonBody(request);
   if (!body.success) return body.response;

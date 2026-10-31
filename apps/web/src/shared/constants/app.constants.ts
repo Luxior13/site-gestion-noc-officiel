@@ -5,7 +5,6 @@ import {
   isKnownPermissionKey,
   type PermissionsData,
 } from '$constants/permissions.constants';
-import { RESERVED_PLANNED_HREFS } from '$constants/reserved-planned-hrefs.constants';
 import { PAGE_PATHS } from '$constants/routes.constants';
 import type { UserType } from '$types/auth.types';
 import type {
@@ -15,7 +14,6 @@ import type {
   NavItem,
   NavSection,
 } from '$types/navigation.types';
-import { getSafeInternalPathname } from '$utils/internal-href.utils';
 export const SITE_CONFIG = {
   description: 'Espace de gestion de Noctambule.',
   logo: '/assets/noc.png',
@@ -52,13 +50,12 @@ const featureNavigation = (
 
 export const NAV_SPACES: NavigationSpace[] = [
   {
-    description: "Ce qui m'attend et ce que je dois traiter.",
+    description: 'Ce qui m’attend et ce que je dois traiter.',
     href: '/',
     icon: 'LayoutDashboard',
     id: 'dashboard',
     label: 'Aujourd’hui',
     matchHrefs: ['/tableau-de-bord'],
-    routeBaseHref: '/tableau-de-bord',
     sections: [
       {
         id: 'today',
@@ -95,7 +92,6 @@ export const NAV_SPACES: NavigationSpace[] = [
     id: 'system',
     label: 'Système',
     matchHrefs: ['/administration', '/systeme', PAGE_PATHS.roadmap],
-    routeBaseHref: '/systeme',
     sections: [
       {
         id: 'system',
@@ -120,10 +116,6 @@ export const NAV_SPACES: NavigationSpace[] = [
     tone: 'system',
   },
 ];
-
-export const NAV_SECTIONS: NavSection[] = NAV_SPACES.flatMap(
-  (space) => space.sections,
-);
 
 export function getNavigationAvailability(
   item: NavItem,
@@ -164,32 +156,15 @@ export function canAccessNavigationItem(
     : permissionChecks.every(Boolean);
 }
 
-export function canShowNavigationItem(
-  user: NavigationUser,
-  item: NavItem,
-): boolean {
-  return (
-    canAccessNavigationItem(user, item) ||
-    (item.children?.some((child) => canShowNavigationItem(user, child)) ??
-      false)
-  );
-}
-
 function filterNavItems(
   items: readonly NavItem[],
   user: NavigationUser,
   availability: NavigationAvailabilityFilter,
-  operationalFeatureIds?: ReadonlySet<string>,
 ): NavItem[] {
   return items
     .map((item) => {
       const visibleChildren = item.children
-        ? filterNavItems(
-            item.children,
-            user,
-            availability,
-            operationalFeatureIds,
-          )
+        ? filterNavItems(item.children, user, availability)
         : undefined;
 
       return {
@@ -202,16 +177,10 @@ function filterNavItems(
       const hasExpectedAvailability =
         availability === 'all' ||
         getNavigationAvailability(item) === availability;
-      const isOperational =
-        !item.featureId ||
-        !operationalFeatureIds ||
-        operationalFeatureIds.has(item.featureId);
 
       return (
         hasVisibleChildren ||
-        (hasExpectedAvailability &&
-          isOperational &&
-          canAccessNavigationItem(user, item))
+        (hasExpectedAvailability && canAccessNavigationItem(user, item))
       );
     });
 }
@@ -220,17 +189,11 @@ function filterNavSections(
   sections: readonly NavSection[],
   user: NavigationUser,
   availability: NavigationAvailabilityFilter,
-  operationalFeatureIds?: ReadonlySet<string>,
 ): NavSection[] {
   return sections
     .map((section) => ({
       ...section,
-      items: filterNavItems(
-        section.items,
-        user,
-        availability,
-        operationalFeatureIds,
-      ),
+      items: filterNavItems(section.items, user, availability),
     }))
     .filter((section) => section.items.length > 0);
 }
@@ -247,14 +210,8 @@ function filterNavigationSpace(
   space: NavigationSpace,
   user: NavigationUser,
   availability: NavigationAvailabilityFilter = 'live',
-  operationalFeatureIds?: ReadonlySet<string>,
 ): NavigationSpace {
-  const sections = filterNavSections(
-    space.sections,
-    user,
-    availability,
-    operationalFeatureIds,
-  );
+  const sections = filterNavSections(space.sections, user, availability);
   const visibleItems = flattenNavItems(
     sections.flatMap((section) => section.items),
   );
@@ -280,39 +237,12 @@ export function getNavigationSpaceItems(space: NavigationSpace): NavItem[] {
   return flattenNavItems(space.sections.flatMap((section) => section.items));
 }
 
-export function getNavigationItemByHref(href: string): NavItem | null {
-  for (const space of NAV_SPACES) {
-    const item = getNavigationSpaceItems(space).find(
-      (navigationItem) => navigationItem.href === href,
-    );
-
-    if (item) return item;
-  }
-
-  return null;
-}
-
-export function canOpenNavigationHref(
-  user: NavigationUser,
-  href: string,
-): boolean {
-  const pathname = getSafeInternalPathname(href);
-  if (!pathname) return false;
-  const item = getNavigationItemByHref(pathname);
-  if (!item) return !RESERVED_PLANNED_HREFS.has(pathname);
-
-  return getVisibleNavigationSpaces(user).some((space) =>
-    getNavigationSpaceItems(space).some((nav) => nav.href === pathname),
-  );
-}
-
 export function getVisibleNavigationSpaces(
   user: NavigationUser,
   availability: NavigationAvailabilityFilter = 'live',
-  operationalFeatureIds?: ReadonlySet<string>,
 ): NavigationSpace[] {
   return NAV_SPACES.map((space) =>
-    filterNavigationSpace(space, user, availability, operationalFeatureIds),
+    filterNavigationSpace(space, user, availability),
   ).filter((space) => space.sections.length > 0);
 }
 
@@ -335,42 +265,11 @@ export function getActiveNavigationSpace(
   return activeSpace ?? spaces[0] ?? getDefaultNavigationSpace();
 }
 
-export function getNavigationPageBySlug(
-  spaceId: string,
-  slug: readonly string[] = [],
-): { item: NavItem; space: NavigationSpace } | null {
-  const space = NAV_SPACES.find((item) => item.id === spaceId);
-
-  if (!space) return null;
-
-  const routeBaseHref = space.routeBaseHref ?? space.href;
-  const targetHref =
-    slug.length > 0 ? `${routeBaseHref}/${slug.join('/')}` : routeBaseHref;
-  const item =
-    getNavigationSpaceItems(space).find(
-      (navigationItem) => navigationItem.href === targetHref,
-    ) ?? null;
-
-  return item ? { item, space } : null;
-}
-
-export function getVisibleNavSections(
-  user: NavigationUser,
-  availability: NavigationAvailabilityFilter = 'live',
-): NavSection[] {
-  return filterNavSections(NAV_SECTIONS, user, availability);
-}
-
 export function getDesktopSidebarSections(
   user: NavigationUser,
   pathname = '/tableau-de-bord',
-  operationalFeatureIds?: ReadonlySet<string>,
 ): NavSection[] {
-  const visibleSpaces = getVisibleNavigationSpaces(
-    user,
-    'live',
-    operationalFeatureIds,
-  );
+  const visibleSpaces = getVisibleNavigationSpaces(user, 'live');
 
   // Never reveal the unfiltered dashboard when every space is denied.
   if (visibleSpaces.length === 0) return [];

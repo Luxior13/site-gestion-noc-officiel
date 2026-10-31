@@ -10,7 +10,7 @@
 | Espace | Système |
 | Gabarit visé | [C. Formulaire de création](../../../design/gabarits.md#c-formulaire-de-création) |
 | État d’harmonisation | Aligné : bandeau compact, champs adoucis du 17 octobre 2026, barre commune — voir [Harmonisation](../../../design/harmonisation.md#état-par-page) |
-| Point d’entrée | [page.tsx](../../../../apps/web/src/app/systeme/utilisateurs/nouveau/page.tsx) → [NewUserForm](../../../../apps/web/src/features/users/NewUserForm.tsx) |
+| Point d’entrée | [page.tsx](../../../../apps/web/src/app/systeme/utilisateurs/nouveau/page.tsx) → [NewUserForm](../../../../apps/web/src/features/users/components/NewUserForm.tsx) |
 | Contrôle d’accès | `users:create` (page et `POST /api/users`), preuve récente selon le rôle créé |
 | Chargement / erreur dédiés | `PageDetailSkeleton` pendant la session / commune à l’application |
 

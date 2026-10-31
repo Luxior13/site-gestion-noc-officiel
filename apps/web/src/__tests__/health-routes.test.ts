@@ -5,7 +5,6 @@ vi.mock('server-only', () => ({}));
 const mocks = vi.hoisted(() => ({
   auditEncryptionKeyVersion: { findMany: vi.fn() },
   isPersonEnvironmentConfigured: vi.fn(),
-  isPersonSchemaCatalogReady: vi.fn(),
   queryRaw: vi.fn(),
 }));
 
@@ -16,9 +15,6 @@ vi.mock('$server/prisma', () => ({
     auditEncryptionKeyVersion: mocks.auditEncryptionKeyVersion,
   },
 }));
-vi.mock('$features/persons/server/person-schema-readiness', () => ({
-  isPersonSchemaCatalogReady: mocks.isPersonSchemaCatalogReady,
-}));
 vi.mock('$features/persons/server/person-readiness', () => ({
   isPersonEnvironmentConfigured: mocks.isPersonEnvironmentConfigured,
   isPersonReady: (status: string): boolean => status === 'ready',
@@ -27,6 +23,7 @@ import { createReadinessResponse } from '$server/health';
 
 const MFA_KEY = Buffer.alloc(32, 3).toString('base64');
 let storedMfaKeyVersions: number[] = [];
+let personsTablesPresent = true;
 
 describe('readiness without a background worker', () => {
   beforeEach(() => {
@@ -34,12 +31,16 @@ describe('readiness without a background worker', () => {
     vi.unstubAllEnvs();
     vi.stubEnv('MFA_ENCRYPTION_KEY_V1', MFA_KEY);
     storedMfaKeyVersions = [1];
-    mocks.queryRaw.mockImplementation(async (query: TemplateStringsArray) =>
-      query.join('').includes('secretKeyVersion')
-        ? storedMfaKeyVersions.map((version) => ({ version }))
-        : [{ ready: true }],
-    );
-    mocks.isPersonSchemaCatalogReady.mockResolvedValue(true);
+    personsTablesPresent = true;
+    mocks.queryRaw.mockImplementation(async (query: TemplateStringsArray) => {
+      const sql = query.join('');
+      if (sql.includes('secretKeyVersion'))
+        return storedMfaKeyVersions.map((version) => ({ version }));
+      // The Répertoire probe lists its own tables (SYS-11).
+      if (sql.includes("('Person')")) return [{ ready: personsTablesPresent }];
+
+      return [{ ready: true }];
+    });
     mocks.auditEncryptionKeyVersion.findMany.mockResolvedValue([
       { version: 1 },
     ]);
@@ -66,7 +67,7 @@ describe('readiness without a background worker', () => {
   });
 
   it('keeps the site healthy while the Persons schema is not ready', async () => {
-    mocks.isPersonSchemaCatalogReady.mockResolvedValue(false);
+    personsTablesPresent = false;
 
     const response = await createReadinessResponse();
 

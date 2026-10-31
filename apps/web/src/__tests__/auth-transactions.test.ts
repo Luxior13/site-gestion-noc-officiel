@@ -1334,7 +1334,7 @@ describe('auth security transactions', () => {
       }),
     );
     expect(result).toEqual({
-      error: 'INVALID_CREDENTIALS',
+      error: 'PASSWORD_INVALID',
       success: false,
       userId: 'user-1',
     });
@@ -1367,7 +1367,7 @@ describe('auth security transactions', () => {
     const result = await authenticateUser('superadmin', 'Wrong1!');
 
     expect(result).toEqual({
-      error: 'INVALID_CREDENTIALS',
+      error: 'PASSWORD_INVALID',
       success: false,
       userId: 'root-user',
     });

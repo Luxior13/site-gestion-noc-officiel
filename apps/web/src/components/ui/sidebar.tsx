@@ -10,7 +10,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '$ui/tooltip';
 import { cn } from '$utils/css.utils';
 
 import {
-  MOBILE_MEDIA_QUERY,
   SidebarContext,
   type SidebarContextProps,
   useMobileViewport,
@@ -20,172 +19,41 @@ import { useSidebarResponsiveFocus } from './sidebar-focus';
 
 const SIDEBAR_ID = 'app-sidebar';
 const SIDEBAR_WIDTH = '16.5rem';
-const SIDEBAR_WIDTH_ICON = '3.5rem';
 const SIDEBAR_WIDTH_MOBILE = '18rem';
-const SIDEBAR_DESKTOP_OPEN_STORAGE_KEY = 'team-control:sidebar:desktop-open';
 const SIDEBAR_SCROLL_STORAGE_PREFIX = 'sidebar_scroll:';
 const SIDEBAR_SCROLL_SAVE_DELAY_MS = 120;
 
-let cachedDesktopOpen: boolean | null = null;
-
-type SidebarProviderProps = React.ComponentProps<'div'> & {
-  defaultOpen?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  open?: boolean;
-};
-
+/**
+ * The desktop sidebar is always open at 264 px, without a reduced mode
+ * (owner decision of 27 September 2026): only the mobile sheet opens and
+ * closes. Former desktop preferences in storage are simply ignored.
+ */
 function SidebarProvider({
   children,
   className,
-  defaultOpen = true,
-  onOpenChange,
-  open: controlledOpen,
   style,
   ...props
-}: SidebarProviderProps): React.ReactNode {
+}: React.ComponentProps<'div'>): React.ReactNode {
   const { isMobile, isResolved: isMobileResolved } = useMobileViewport();
   const [openMobile, setOpenMobile] = React.useState(false);
-  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(
-    () => cachedDesktopOpen ?? defaultOpen,
-  );
-  const [desktopStateReady, setDesktopStateReady] = React.useState(
-    () => controlledOpen !== undefined || cachedDesktopOpen !== null,
-  );
-  const open = controlledOpen ?? uncontrolledOpen;
-  const openRef = React.useRef(open);
-  const isControlled = controlledOpen !== undefined;
-
-  React.useEffect(() => {
-    openRef.current = open;
-  }, [open]);
-
-  React.useLayoutEffect(() => {
-    if (isControlled) return;
-
-    let nextOpen = cachedDesktopOpen;
-
-    try {
-      if (nextOpen === null) {
-        const storedOpen = window.localStorage.getItem(
-          SIDEBAR_DESKTOP_OPEN_STORAGE_KEY,
-        );
-
-        if (storedOpen === 'true' || storedOpen === 'false') {
-          nextOpen = storedOpen === 'true';
-        }
-      }
-    } catch {
-      // Keep the provided default when storage is unavailable.
-    }
-
-    nextOpen ??= defaultOpen;
-    cachedDesktopOpen = nextOpen;
-    openRef.current = nextOpen;
-    setUncontrolledOpen(nextOpen);
-  }, [defaultOpen, isControlled]);
-
-  React.useEffect((): (() => void) => {
-    if (desktopStateReady) return () => undefined;
-
-    const frameId = window.requestAnimationFrame(() => {
-      setDesktopStateReady(true);
-    });
-
-    return () => window.cancelAnimationFrame(frameId);
-  }, [desktopStateReady]);
-
-  React.useEffect((): (() => void) | undefined => {
-    if (isControlled) return undefined;
-
-    const handleStorage = (event: StorageEvent): void => {
-      if (
-        event.key !== SIDEBAR_DESKTOP_OPEN_STORAGE_KEY ||
-        (event.newValue !== 'true' && event.newValue !== 'false')
-      ) {
-        return;
-      }
-
-      const nextOpen = event.newValue === 'true';
-
-      cachedDesktopOpen = nextOpen;
-      openRef.current = nextOpen;
-      setUncontrolledOpen(nextOpen);
-    };
-
-    window.addEventListener('storage', handleStorage);
-
-    return () => window.removeEventListener('storage', handleStorage);
-  }, [isControlled]);
 
   React.useEffect(() => {
     if (!isMobile) setOpenMobile(false);
   }, [isMobile]);
 
-  const setOpen = React.useCallback<
-    React.Dispatch<React.SetStateAction<boolean>>
-  >(
-    (value) => {
-      const nextOpen =
-        typeof value === 'function' ? value(openRef.current) : value;
-
-      openRef.current = nextOpen;
-      cachedDesktopOpen = nextOpen;
-
-      if (!isControlled) setUncontrolledOpen(nextOpen);
-
-      onOpenChange?.(nextOpen);
-
-      try {
-        window.localStorage.setItem(
-          SIDEBAR_DESKTOP_OPEN_STORAGE_KEY,
-          String(nextOpen),
-        );
-      } catch {
-        // The interaction still works when storage is unavailable.
-      }
-    },
-    [isControlled, onOpenChange],
-  );
-
   const toggleSidebar = React.useCallback((): void => {
-    const useMobileSidebar =
-      typeof window === 'undefined'
-        ? isMobile
-        : window.matchMedia(MOBILE_MEDIA_QUERY).matches;
-
-    if (useMobileSidebar) {
-      setOpenMobile((value) => !value);
-
-      return;
-    }
-
-    setOpen((value) => !value);
-  }, [isMobile, setOpen]);
-
-  const state = open ? 'expanded' : 'collapsed';
+    setOpenMobile((value) => !value);
+  }, []);
 
   const contextValue = React.useMemo<SidebarContextProps>(
     (): SidebarContextProps => ({
-      desktopStateReady,
       isMobile,
       isMobileResolved,
-      open,
       openMobile,
-      setOpen,
       setOpenMobile,
-      state,
       toggleSidebar,
     }),
-    [
-      desktopStateReady,
-      isMobile,
-      isMobileResolved,
-      open,
-      openMobile,
-      setOpen,
-      state,
-      toggleSidebar,
-    ],
+    [isMobile, isMobileResolved, openMobile, toggleSidebar],
   );
 
   return (
@@ -195,7 +63,6 @@ function SidebarProvider({
         style={
           {
             '--sidebar-width': SIDEBAR_WIDTH,
-            '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
             '--sidebar-width-mobile': SIDEBAR_WIDTH_MOBILE,
             ...style,
           } as React.CSSProperties
@@ -212,44 +79,17 @@ function SidebarProvider({
   );
 }
 
-type SidebarProps = React.ComponentProps<'div'> & {
-  collapsible?: 'icon' | 'none' | 'offcanvas';
-  side?: 'left' | 'right';
-  variant?: 'floating' | 'inset' | 'sidebar';
-};
-
 function Sidebar({
   children,
   className,
-  collapsible = 'offcanvas',
   id,
-  side = 'left',
-  variant = 'sidebar',
   ...props
-}: SidebarProps): React.ReactNode {
-  const { desktopStateReady, isMobile, openMobile, setOpenMobile, state } =
-    useSidebar();
+}: React.ComponentProps<'div'>): React.ReactNode {
+  const { isMobile, openMobile, setOpenMobile } = useSidebar();
   const returnFocusRef = React.useRef<HTMLElement | null>(null);
   const openedAtHrefRef = React.useRef<string | null>(null);
 
-  useSidebarResponsiveFocus(id ?? SIDEBAR_ID, collapsible !== 'none');
-
-  if (collapsible === 'none') {
-    return (
-      <div
-        data-slot="sidebar"
-        data-sidebar="sidebar"
-        id={id ?? SIDEBAR_ID}
-        className={cn(
-          'bg-sidebar text-sidebar-foreground relative flex h-full w-[var(--sidebar-width)] flex-col overflow-hidden',
-          className,
-        )}
-        {...props}
-      >
-        {children}
-      </div>
-    );
-  }
+  useSidebarResponsiveFocus(id ?? SIDEBAR_ID);
 
   if (isMobile) {
     return (
@@ -281,7 +121,7 @@ function Sidebar({
           data-sidebar="sidebar"
           data-slot="sidebar"
           id={id ?? SIDEBAR_ID}
-          side={side}
+          side="left"
           style={
             {
               '--sidebar-width-mobile': SIDEBAR_WIDTH_MOBILE,
@@ -302,54 +142,35 @@ function Sidebar({
   }
 
   return (
-    <div
-      data-collapsible={state === 'collapsed' ? collapsible : ''}
-      data-side={side}
+    <aside
+      aria-label="Barre latérale"
       data-slot="sidebar"
-      data-state={state}
-      data-variant={variant}
       id={id ?? SIDEBAR_ID}
       className={cn(
-        'group/sidebar bg-sidebar text-sidebar-foreground relative hidden h-full shrink-0 flex-col overflow-hidden border-r lg:flex',
-        desktopStateReady &&
-          'transition-[width] duration-200 ease-linear motion-reduce:transition-none',
-        'border-sidebar-border',
-        state === 'collapsed' && collapsible === 'icon'
-          ? 'w-[var(--sidebar-width-icon)]'
-          : 'w-[var(--sidebar-width)]',
-        side === 'right' && 'border-r-0 border-l',
-        variant === 'floating' && 'rounded-lg border',
+        'group/sidebar bg-sidebar text-sidebar-foreground border-sidebar-border relative hidden h-full w-[var(--sidebar-width)] shrink-0 flex-col overflow-hidden border-r lg:flex',
         className,
       )}
       {...props}
     >
       {children}
-    </div>
+    </aside>
   );
 }
 
+/** Opens and closes the navigation sheet under 1 024 px. */
 function SidebarTrigger({
   className,
   onClick,
   ...props
 }: React.ComponentProps<typeof Button>): React.ReactNode {
-  const { isMobile, isMobileResolved, open, openMobile, toggleSidebar } =
-    useSidebar();
-  const isExpanded = isMobileResolved
-    ? isMobile
-      ? openMobile
-      : open
-    : undefined;
+  const { isMobileResolved, openMobile, toggleSidebar } = useSidebar();
+  const isExpanded = isMobileResolved ? openMobile : undefined;
   const actionLabel = !isMobileResolved
     ? 'Basculer la navigation'
-    : isMobile
-      ? isExpanded
-        ? 'Fermer la navigation'
-        : 'Ouvrir la navigation'
-      : isExpanded
-        ? 'Replier la barre latérale'
-        : 'Déployer la barre latérale';
-  const TriggerIcon = isExpanded ? PanelLeftClose : PanelLeftOpen;
+    : openMobile
+      ? 'Fermer la navigation'
+      : 'Ouvrir la navigation';
+  const TriggerIcon = openMobile ? PanelLeftClose : PanelLeftOpen;
 
   return (
     <Tooltip delayDuration={300}>
@@ -573,7 +394,7 @@ function SidebarContent({
       data-sidebar="content"
       data-slot="sidebar-content"
       className={cn(
-        'sidebar-scrollbar min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-2.5 group-data-[collapsible=icon]/sidebar:px-0',
+        'sidebar-scrollbar min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-2.5',
         className,
       )}
       onScroll={handleViewportScroll}
@@ -611,7 +432,7 @@ function SidebarGroupLabel({
       data-sidebar="group-label"
       data-slot="sidebar-group-label"
       className={cn(
-        'text-muted-foreground text-caption flex h-6 shrink-0 items-center overflow-hidden px-2 font-medium transition-opacity duration-150 group-data-[collapsible=icon]/sidebar:h-0 group-data-[collapsible=icon]/sidebar:px-0 group-data-[collapsible=icon]/sidebar:opacity-0 group-data-[collapsible=icon]/sidebar:delay-0 group-data-[state=expanded]/sidebar:delay-150',
+        'text-muted-foreground text-caption flex h-6 shrink-0 items-center overflow-hidden px-2 font-medium transition-opacity duration-150',
         className,
       )}
       {...props}
@@ -656,7 +477,7 @@ function SidebarMenuItem({
       data-sidebar="menu-item"
       data-slot="sidebar-menu-item"
       className={cn(
-        'group/menu-item relative w-full max-w-full min-w-0 group-data-[collapsible=icon]/sidebar:flex group-data-[collapsible=icon]/sidebar:justify-start group-data-[collapsible=icon]/sidebar:pl-2.5',
+        'group/menu-item relative w-full max-w-full min-w-0',
         className,
       )}
       {...props}
@@ -668,7 +489,6 @@ type SidebarMenuButtonProps = React.ComponentProps<'button'> & {
   asChild?: boolean;
   isActive?: boolean;
   size?: 'default' | 'lg' | 'sm';
-  tooltip?: React.ReactNode;
 };
 
 function SidebarMenuButton({
@@ -676,13 +496,11 @@ function SidebarMenuButton({
   className,
   isActive = false,
   size = 'default',
-  tooltip,
   ...props
 }: SidebarMenuButtonProps): React.ReactNode {
-  const { isMobile, state } = useSidebar();
   const Comp = asChild ? Slot : 'button';
 
-  const button = (
+  return (
     <Comp
       data-active={isActive}
       data-sidebar="menu-button"
@@ -694,24 +512,10 @@ function SidebarMenuButton({
         size === 'sm' && 'h-11 text-xs lg:h-9',
         size === 'default' && 'h-11 lg:h-10',
         size === 'lg' && 'h-12',
-        'group-data-[collapsible=icon]/sidebar:h-10 group-data-[collapsible=icon]/sidebar:w-10 group-data-[collapsible=icon]/sidebar:justify-center group-data-[collapsible=icon]/sidebar:gap-0 group-data-[collapsible=icon]/sidebar:border-transparent group-data-[collapsible=icon]/sidebar:p-0 lg:group-data-[collapsible=icon]/sidebar:h-9 lg:group-data-[collapsible=icon]/sidebar:w-9 group-data-[collapsible=icon]/sidebar:[&>span]:max-w-0 group-data-[collapsible=icon]/sidebar:[&>span]:opacity-0 group-data-[collapsible=icon]/sidebar:[&>span]:delay-0 group-data-[state=expanded]/sidebar:[&>span]:delay-150',
         className,
       )}
       {...props}
     />
-  );
-
-  if (!tooltip || isMobile || state !== 'collapsed') {
-    return button;
-  }
-
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>{button}</TooltipTrigger>
-      <TooltipContent side="right" sideOffset={8}>
-        {tooltip}
-      </TooltipContent>
-    </Tooltip>
   );
 }
 
@@ -725,7 +529,7 @@ function SidebarMenuAction({
       data-slot="sidebar-menu-action"
       type="button"
       className={cn(
-        'text-sidebar-foreground/65 hover:bg-sidebar-accent/45 hover:text-sidebar-accent-foreground focus-visible:ring-sidebar-ring absolute top-0 right-0 flex size-11 items-center justify-center rounded-lg border border-transparent transition-colors outline-none group-data-[collapsible=icon]/sidebar:hidden focus-visible:ring-2 lg:top-1.5 lg:right-1 lg:size-6',
+        'text-sidebar-foreground/65 hover:bg-sidebar-accent/45 hover:text-sidebar-accent-foreground focus-visible:ring-sidebar-ring absolute top-0 right-0 flex size-11 items-center justify-center rounded-lg border border-transparent transition-colors outline-none focus-visible:ring-2 lg:top-1.5 lg:right-1 lg:size-6',
         className,
       )}
       {...props}
@@ -742,7 +546,7 @@ function SidebarMenuSub({
       data-sidebar="menu-sub"
       data-slot="sidebar-menu-sub"
       className={cn(
-        'border-sidebar-border/60 ml-3 flex min-w-0 translate-x-px flex-col gap-1 border-l py-1 pr-1 pl-2 group-data-[collapsible=icon]/sidebar:hidden',
+        'border-sidebar-border/60 ml-3 flex min-w-0 translate-x-px flex-col gap-1 border-l py-1 pr-1 pl-2',
         className,
       )}
       {...props}

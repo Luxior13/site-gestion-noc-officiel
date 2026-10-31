@@ -79,6 +79,10 @@ Références : [liste du Répertoire](../pages/membres/repertoire/liste.md) et
 - Pagination à 25 lignes (`PAGINATION.DEFAULT_LIMIT`, partagé client et
   serveur) ; une exception de densité se justifie dans la fiche. Le nombre de
   lignes n’est pas un paramètre système.
+- Le pied dit toujours « Page X sur Y » quand le total est connu, même
+  « Page 1 sur 1 » ; le compteur dit « 33 fiches » sans critère et « 12 fiches
+  trouvées » avec une recherche ou un filtre ; une liste plafonnée (journal,
+  200 pages) explique comment atteindre le reste (31 octobre 2026).
 - Une réponse obtenue pour d’autres critères n’est jamais affichée sous les
   nouveaux ; attente et erreur ne font pas avancer le numéro de page ; après une
   pagination réussie, défilement et focus reviennent au début des résultats.
@@ -97,6 +101,10 @@ Références : [liste du Répertoire](../pages/membres/repertoire/liste.md) et
   localement et reprend les nouvelles valeurs des autres ; écrire demande ensuite
   une nouvelle confirmation.
 - Les réponses d’une ancienne cible ou tardives sont ignorées.
+- Une règle de saisie enfreinte s’affiche comme telle (croix et texte rouges,
+  « non respectée » pour les lecteurs d’écran), jamais comme une règle neutre
+  en attente : un bouton désactivé a toujours sa raison visible (31 octobre
+  2026, changement de mot de passe).
 - Les réglages globaux sont en saisie directe dans une carte qui regroupe
   portée, champ et aide unique ; la barre n’apparaît qu’avec un brouillon, une
   réparation, une attente, une erreur ou un conflit (refonte des Paramètres du
@@ -203,6 +211,10 @@ du 25 octobre 2026).
 - Une confirmation se verrouille pendant sa mutation bornée ; une issue
   incertaine peut fermer la fenêtre seulement si la section porte l’explication
   et la relecture.
+- Une confirmation nomme sa cible dans son titre : fiche, compte, session,
+  email ou paramètre (« Supprimer définitivement la fiche de Kami · Camille
+  Durand ? », « Réinitialiser le mot de passe de Camille Exemple ? ») ;
+  décision du 31 octobre 2026 qui tranche AUD-Q1.
 - Une fenêtre ouverte au-dessus d’une autre laisse une seule zone active.
 - Décisions et preuves : [suivi des modales](../pages/transverse/modales.md).
 

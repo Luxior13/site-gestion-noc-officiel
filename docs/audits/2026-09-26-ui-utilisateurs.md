@@ -600,7 +600,7 @@ statistiques — ne doivent pas être imposées à une page de lecture ou à un 
 Fichiers principaux de la page :
 
 - [`page.tsx`](../../apps/web/src/app/systeme/utilisateurs/page.tsx) : en-tête compact, palette locale et largeur.
-- [`UsersListPage.tsx`](../../apps/web/src/features/users/UsersListPage.tsx) : recherche, filtres, tableau, cartes et pagination.
+- [`UsersListPage.tsx`](../../apps/web/src/features/users/components/UsersListPage.tsx) : recherche, filtres, tableau, cartes et pagination.
 - `UsersOverview.tsx` (fichier retiré le 20 octobre 2026) : statistiques et résumé mobile.
 - `UsersListLayout.module.css` — chemin historique : `apps/web/src/features/users/UsersListLayout.module.css` : grille locale, largeur de confort de 64 rem dans les limites de la zone utile, plafond de 80 rem, centrage écran et placement indépendant du rail. Calcul CSS à partir du viewport privé, de la zone utile et de l'écran, tenant compte des marges et gouttières de scrollbar ; aucun déplacement de la sidebar ni mesure JavaScript.
 - [`page-shell.tsx`](../../apps/web/src/components/ui/page-shell.tsx) et [`globals.css`](../../apps/web/src/app/globals.css) : géométrie et jetons.
@@ -616,7 +616,7 @@ Depuis `apps/web`, les commandes de validation du dépôt sont :
 
 ```powershell
 bunx tsc --noEmit
-bunx eslint src/app/systeme/utilisateurs/page.tsx src/components/ui/button.tsx src/components/ui/input.tsx src/components/ui/select.tsx src/features/users/UsersListPage.tsx src/features/users/UsersOverview.tsx src/__tests__/admin-users-list-a11y-contracts.test.ts
+bunx eslint src/app/systeme/utilisateurs/page.tsx src/components/ui/button.tsx src/components/ui/input.tsx src/components/ui/select.tsx src/features/users/components/UsersListPage.tsx src/features/users/UsersOverview.tsx src/__tests__/admin-users-list-a11y-contracts.test.ts
 bunx vitest run src/__tests__/admin-users-list-a11y-contracts.test.ts src/__tests__/design-system-contracts.test.ts src/__tests__/authenticated-shell-ux-contracts.test.ts src/__tests__/users-access-hardening.test.ts
 ```
 

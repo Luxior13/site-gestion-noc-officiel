@@ -29,7 +29,8 @@ import type {
 export type StatusFilter = 'ALL' | PersonStructureStatus;
 const SORT_LABELS = {
   created: 'Ajoutées récemment',
-  name: 'Nom (A–Z)',
+  // Pseudo, else first name: the name each record shows (audit AC-36).
+  name: 'Nom affiché (A–Z)',
   updated: 'Modifiées récemment',
 } as const satisfies Record<PersonListSort, string>;
 
@@ -80,6 +81,10 @@ export const PersonsListToolbar: FC<Props> = ({
       ?.querySelector<HTMLInputElement>('input[type="search"]')
       ?.focus({ preventScroll: true });
   };
+  // « trouvées » only answers a search or a filter (audit AC-33).
+  const hasCriteria = Boolean(
+    draftQuery.trim() || status !== 'ALL' || missingContacts,
+  );
   const hasActiveToolbarFilters = Boolean(
     draftQuery || status !== 'ALL' || sort !== 'name' || missingContacts,
   );
@@ -212,7 +217,7 @@ export const PersonsListToolbar: FC<Props> = ({
               ? 'Actualisation…'
               : error
                 ? 'Résultats non actualisés'
-                : `${total.toLocaleString('fr-FR')} fiche${total !== 1 ? 's' : ''} trouvée${total !== 1 ? 's' : ''}`}
+                : `${total.toLocaleString('fr-FR')} fiche${total !== 1 ? 's' : ''}${hasCriteria ? ` trouvée${total !== 1 ? 's' : ''}` : ''}`}
           </p>
         </div>
       </div>

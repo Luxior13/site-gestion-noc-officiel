@@ -1,4 +1,4 @@
-import type { RoadmapItem } from './roadmap.types';
+import type { RoadmapItem } from './types/roadmap.types';
 
 export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
   {
@@ -320,7 +320,7 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     area: 'system',
     audience: 'Administrateurs habilités et responsables métier',
     baseline:
-      'L’authentification, les permissions et les comptes existent ; les périmètres métier restent à définir.',
+      'L’authentification, les autorisations et les comptes existent ; les périmètres métier restent à définir.',
     dependsOn: [],
     description:
       'Adapter les droits aux personnes, équipes et dossiers concernés.',

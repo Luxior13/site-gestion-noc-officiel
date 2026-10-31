@@ -17,13 +17,6 @@ vi.mock('$server/audit-log', () => ({
   createAuditLogWithHeaders: mocks.createAuditLogWithHeaders,
 }));
 
-import {
-  buildJournalParams,
-  DEFAULT_JOURNAL_QUERY,
-  isJournalSearchApplicable,
-  readJournalQuery,
-  summarizeJournalChanges,
-} from '$features/audit/audit-journal.types';
 import { JOURNAL_ACTION_LABELS } from '$features/audit/server/audit-journal.labels';
 import {
   getReaderRights,
@@ -34,6 +27,14 @@ import {
   listJournalEvents,
   traceJournalView,
 } from '$features/audit/server/audit-journal.service';
+import {
+  buildJournalParams,
+  DEFAULT_JOURNAL_QUERY,
+  isJournalSearchApplicable,
+  type JournalEvent,
+  readJournalQuery,
+  summarizeJournalChanges,
+} from '$features/audit/types/audit-journal.types';
 
 const superadmin = {
   id: 'root',
@@ -62,7 +63,7 @@ const row = (overrides: Partial<JournalRow> = {}): JournalRow => ({
   actorRoleSnapshot: 'ADMIN',
   category: 'USER',
   createdAt: new Date('2026-10-30T12:00:00Z'),
-  description: 'Utilisateur modifié: alex.exemple',
+  description: 'Compte modifié : alex.exemple',
   entityId: null,
   entityType: null,
   eventKind: 'ACTIVITY',
@@ -246,7 +247,7 @@ describe('activity journal projection', () => {
         actorLoginNameSnapshot: null,
         category: 'AUTH',
         eventKind: 'CONNECTION',
-        metadata: { reason: 'INVALID_CREDENTIALS' },
+        metadata: { loginName: 'alex.exemple', reason: 'INVALID_CREDENTIALS' },
         outcome: 'FAILURE',
         stream: 'AUTHENTICATION',
         targetUserId: null,
@@ -261,14 +262,201 @@ describe('activity journal projection', () => {
       { label: 'Retirées', value: 'Consulter les utilisateurs' },
     ]);
     expect(login).toMatchObject({
-      actor: { id: null, name: 'Aucun compte reconnu' },
+      actor: { id: null, name: 'Personne non connectée' },
       facts: [
         { label: 'Motif', value: 'Identifiant ou mot de passe incorrect' },
       ],
-      subject: 'Utilisateur modifié: alex.exemple',
+      // Built from the typed identifier, not from the stored sentence.
+      subject: 'Identifiant : alex.exemple',
       tone: 'failure',
       typeLabel: 'Sécurité',
     });
+  });
+
+  // Audit of 31 October 2026: a refused code read « Autre motif », a failed
+  // confirmation had no reason and a replaced authenticator read « activée ».
+  it('names every login and confirmation failure reason the services write', () => {
+    const failedLogin = (reason: string): JournalEvent['facts'] =>
+      projectJournalEvent(
+        row({
+          action: 'LOGIN_FAILED',
+          category: 'AUTH',
+          eventKind: 'CONNECTION',
+          metadata: { reason },
+          outcome: 'FAILURE',
+          stream: 'AUTHENTICATION',
+          userId: null,
+        }),
+        getReaderRights(admin),
+        new Map(),
+      ).facts;
+
+    expect(failedLogin('MFA_INVALID')).toEqual([
+      {
+        label: 'Motif',
+        value: 'Code de double authentification incorrect ou expiré',
+      },
+    ]);
+    expect(failedLogin('MFA_STATE_INCONSISTENT')).toEqual([
+      {
+        label: 'Motif',
+        value: 'Double authentification du compte incohérente',
+      },
+    ]);
+    // The journal is for administrators: it may tell both cases apart.
+    expect(failedLogin('UNKNOWN_LOGIN')).toEqual([
+      { label: 'Motif', value: 'Identifiant inconnu' },
+    ]);
+    expect(failedLogin('PASSWORD_INVALID')).toEqual([
+      { label: 'Motif', value: 'Mot de passe incorrect' },
+    ]);
+    expect(failedLogin('MFA_SETUP_INVALID')).toEqual([
+      {
+        label: 'Motif',
+        value:
+          'Code incorrect ou expiré à l’activation de la double authentification',
+      },
+    ]);
+    expect(
+      projectJournalEvent(
+        row({
+          action: 'STEP_UP_FAILED',
+          metadata: { proofKind: 'full', reason: 'PROOF_REPLAYED' },
+          outcome: 'FAILURE',
+          stream: 'SECURITY',
+        }),
+        getReaderRights(admin),
+        new Map(),
+      ).facts,
+    ).toEqual([{ label: 'Motif', value: 'Code déjà utilisé' }]);
+    expect(
+      projectJournalEvent(
+        row({
+          action: 'STEP_UP_FAILED',
+          metadata: { reason: 'NEW_TOTP_INVALID', step: 'mfa_setup' },
+          outcome: 'FAILURE',
+          stream: 'SECURITY',
+        }),
+        getReaderRights(admin),
+        new Map(),
+      ).facts,
+    ).toEqual([
+      { label: 'Étape', value: 'Activation de la double authentification' },
+      {
+        label: 'Motif',
+        value: 'Code de la nouvelle application incorrect ou expiré',
+      },
+    ]);
+  });
+
+  // Audit of 31 October 2026 (AC-32, AC-43): lines read without contradiction.
+  it('reads a deactivation, a setting at its default and a purge plainly', () => {
+    const deactivation = projectJournalEvent(
+      row({
+        action: 'USER_DEACTIVATE',
+        metadata: { after: { isActive: false }, before: { isActive: true } },
+        severity: 'WARNING',
+      }),
+      getReaderRights(admin),
+      new Map(),
+    );
+    const setting = projectJournalEvent(
+      row({
+        action: 'SYSTEM_SETTING_UPDATE',
+        category: 'SYSTEM',
+        metadata: {
+          after: { value: 730 },
+          before: null,
+          settingKey: 'audit.retentionDays',
+        },
+        stream: 'SYSTEM',
+        targetDisplayNameSnapshot: null,
+        targetLoginNameSnapshot: null,
+        targetRoleSnapshot: null,
+        targetUserId: null,
+      }),
+      getReaderRights(admin),
+      new Map(),
+    );
+    const purge = projectJournalEvent(
+      row({
+        action: 'AUDIT_PURGE',
+        actorDisplayNameSnapshot: null,
+        actorLoginNameSnapshot: null,
+        actorRoleSnapshot: null,
+        category: 'SYSTEM',
+        metadata: {
+          deletedEvents: 1234,
+          expiredSessions: 2,
+          retentionDays: 365,
+        },
+        stream: 'SECURITY',
+        targetDisplayNameSnapshot: null,
+        targetLoginNameSnapshot: null,
+        targetRoleSnapshot: null,
+        targetUserId: null,
+        userId: null,
+      }),
+      getReaderRights(admin),
+      new Map(),
+    );
+
+    expect(deactivation).toMatchObject({
+      changes: [],
+      label: 'Compte désactivé',
+    });
+    expect(setting).toMatchObject({
+      changes: [
+        {
+          after: '730 jours (2 ans)',
+          before: '365 jours (1 an, défaut)',
+          label: 'Conservation du journal d’activité',
+        },
+      ],
+      subject: 'Conservation du journal d’activité',
+      typeLabel: 'Paramètres',
+    });
+    expect(purge).toMatchObject({
+      actor: { id: null, name: 'Système' },
+      facts: [
+        // French grouping: a narrow no-break space.
+        {
+          label: 'Événements supprimés',
+          value: (1234).toLocaleString('fr-FR'),
+        },
+        { label: 'Conservation', value: '365 jours (1 an)' },
+        { label: 'Sessions expirées supprimées', value: '2' },
+      ],
+      label: 'Journal purgé',
+      subject: `${(1234).toLocaleString('fr-FR')} événements supprimés`,
+      typeLabel: 'Sécurité',
+    });
+  });
+
+  it('counts closed sessions and tells a replaced authenticator apart', () => {
+    const sessions = projectJournalEvent(
+      row({
+        action: 'SESSION_INVALIDATE',
+        metadata: { revokedSessions: 3 },
+        stream: 'SECURITY',
+      }),
+      getReaderRights(admin),
+      new Map(),
+    );
+    const enabled = (replacing: boolean): string =>
+      projectJournalEvent(
+        row({
+          action: 'MFA_ENABLED',
+          metadata: { replacing },
+          stream: 'SECURITY',
+        }),
+        getReaderRights(admin),
+        new Map(),
+      ).label;
+
+    expect(sessions.facts).toEqual([{ label: 'Sessions fermées', value: '3' }]);
+    expect(enabled(false)).toBe('Double authentification activée');
+    expect(enabled(true)).toBe('Application d’authentification remplacée');
   });
 
   it('explains a block of refused attempts with its step, proof and duration', () => {
@@ -295,7 +483,7 @@ describe('activity journal projection', () => {
     );
 
     expect(blocked).toMatchObject({
-      actor: { id: null, name: 'Aucun compte reconnu' },
+      actor: { id: null, name: 'Personne non connectée' },
       facts: [
         { label: 'Étape', value: 'Connexion' },
         { label: 'Preuve refusée', value: 'Mot de passe' },
@@ -380,8 +568,8 @@ describe('activity journal projection', () => {
       {
         after: 'Hors structure',
         before: 'Dans la structure',
-        field: 'Rattachement',
-        label: 'Structure · Rattachement',
+        field: 'Statut dans la structure',
+        label: 'Structure · Statut dans la structure',
       },
       {
         after: 'Valeur effacée',

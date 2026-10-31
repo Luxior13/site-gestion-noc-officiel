@@ -62,7 +62,6 @@ type DeleteState = {
 } | null;
 
 type PersonCollectionsSectionProps = {
-  available?: boolean;
   canUpdate: boolean;
   onChange: (person: PersonDetail) => void;
   onReload: () => Promise<PersonDetail>;
@@ -278,7 +277,6 @@ const SocialRow: FC<{
 };
 
 const PersonCollectionsContent: FC<PersonCollectionsSectionProps> = ({
-  available = true,
   canUpdate,
   onChange,
   onReload,
@@ -333,13 +331,7 @@ const PersonCollectionsContent: FC<PersonCollectionsSectionProps> = ({
   };
 
   const handleDelete = async (): Promise<void> => {
-    if (
-      !available ||
-      !canUpdate ||
-      operationRef.current ||
-      !mountedRef.current ||
-      conflict
-    )
+    if (!canUpdate || operationRef.current || !mountedRef.current || conflict)
       return;
     if (!deleteState || (requiresReplacement && !replacementId)) return;
     operationRef.current = true;
@@ -463,9 +455,7 @@ const PersonCollectionsContent: FC<PersonCollectionsSectionProps> = ({
               <Button
                 ref={addEmailRef}
                 aria-label="Ajouter un email"
-                disabled={
-                  !available || person.emails.length >= PERSON_LIMITS.emails
-                }
+                disabled={person.emails.length >= PERSON_LIMITS.emails}
                 onClick={() => setEditor({ item: null, kind: 'email' })}
                 size="sm"
                 type="button"
@@ -502,9 +492,7 @@ const PersonCollectionsContent: FC<PersonCollectionsSectionProps> = ({
               <Button
                 ref={addPhoneRef}
                 aria-label="Ajouter un téléphone"
-                disabled={
-                  !available || person.phones.length >= PERSON_LIMITS.phones
-                }
+                disabled={person.phones.length >= PERSON_LIMITS.phones}
                 onClick={() => setEditor({ item: null, kind: 'phone' })}
                 size="sm"
                 type="button"
@@ -542,7 +530,6 @@ const PersonCollectionsContent: FC<PersonCollectionsSectionProps> = ({
                 ref={addSocialRef}
                 aria-label="Ajouter un profil social"
                 disabled={
-                  !available ||
                   person.socialProfiles.length >= PERSON_LIMITS.socialProfiles
                 }
                 onClick={() => setEditor({ item: null, kind: 'social' })}
@@ -578,7 +565,6 @@ const PersonCollectionsContent: FC<PersonCollectionsSectionProps> = ({
 
       {editor && (
         <PersonChildDialog
-          available={available}
           canEdit={canUpdate}
           defaultPrimary={
             editor.kind === 'email'
@@ -632,7 +618,7 @@ const PersonCollectionsContent: FC<PersonCollectionsSectionProps> = ({
             </AlertDialogTitle>
             <AlertDialogDescription>
               Cette suppression est immédiate et sera enregistrée dans le
-              journal d&apos;activité.
+              journal d’activité.
             </AlertDialogDescription>
           </AlertDialogHeader>
           {deleteError && (
@@ -689,7 +675,6 @@ const PersonCollectionsContent: FC<PersonCollectionsSectionProps> = ({
             <AlertDialogCancel disabled={isDeleting}>Annuler</AlertDialogCancel>
             <Button
               disabled={
-                !available ||
                 isDeleting ||
                 conflict ||
                 (requiresReplacement && !replacementId)

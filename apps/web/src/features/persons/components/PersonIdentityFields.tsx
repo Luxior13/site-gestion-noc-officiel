@@ -185,7 +185,7 @@ export const PersonIdentityFields: FC<PersonIdentityFieldsProps> = ({
               className="text-muted-foreground text-xs"
               id={`${birthDate.id}-hint`}
             >
-              Facultative, utile pour l&apos;âge légal et les anniversaires.
+              Facultative, utile pour l’âge légal et les anniversaires.
             </p>
           )}
         </div>

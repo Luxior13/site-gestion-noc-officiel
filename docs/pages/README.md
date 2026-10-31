@@ -39,7 +39,7 @@ mention « Suivi à compléter ».
 
 | Fiche | État au 19 octobre 2026 |
 | --- | --- |
-| [Utilisateurs](systeme/utilisateurs/README.md) | 18 octobre : Autorisations en cartes, détails en popover, Administrateur complet ; 17 octobre : champs harmonisés et présentation allégée ; catalogue 27/7 et corrections serveur du 15 octobre conservés |
+| [Utilisateurs](systeme/utilisateurs/README.md) | 18 octobre : Autorisations en cartes, détails en popover, Administrateur complet ; 17 octobre : champs harmonisés et présentation allégée ; catalogue 27/7 et corrections serveur du 15 octobre conservés (28/7 depuis l’ajout du journal d’activité le 30 octobre) |
 | [Répertoire](membres/repertoire/README.md) | **Référence visuelle et UX** ; 15 octobre : confidentialité de provenance et minimisation corrigées, lecture et écriture des coordonnées séparées ; 82 tests SQL et parcours réels ciblés |
 | [Mon compte](mon-compte/README.md) | 15 octobre : capacité d’activité sans écran retirée ; sept capacités personnelles dont une configurable ; garanties maintenues |
 | [Paramètres système](systeme/parametres.md) | 15 octobre : droits fixes ADMIN documentés ; refonte de l’interface du 14 octobre |

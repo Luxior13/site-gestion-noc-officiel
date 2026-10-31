@@ -306,7 +306,7 @@ function LoginPage(): React.ReactNode {
 
   const title =
     step === 'mfa'
-      ? 'Vérification en deux étapes'
+      ? 'Double authentification'
       : step === 'setup'
         ? 'Protéger votre compte'
         : 'Connexion';
@@ -315,7 +315,7 @@ function LoginPage(): React.ReactNode {
       ? 'Ouvrez votre application d’authentification pour terminer la connexion.'
       : step === 'setup'
         ? 'Cette configuration est obligatoire pour accéder au site et ne sera demandée qu’une seule fois.'
-        : 'Accédez à l’espace privé, aux comptes et à l’administration.';
+        : 'Accédez à votre espace privé Noctambule.';
 
   return (
     <main className="relative isolate flex min-h-svh items-center justify-center overflow-hidden p-4">
@@ -331,7 +331,7 @@ function LoginPage(): React.ReactNode {
             role="status"
           >
             <Loader2 className="text-primary-emphasis size-7 animate-spin" />
-            <p className="text-sm font-medium">Ouverture de votre espace...</p>
+            <p className="text-sm font-medium">Ouverture de votre espace…</p>
           </div>
         )}
         <CardHeader className="bg-surface-panel-header border-border-divider space-y-4 border-b pb-5">
@@ -450,6 +450,7 @@ function LoginPage(): React.ReactNode {
               </div>
               <div className="flex items-center gap-2">
                 <Checkbox
+                  aria-describedby="rememberMe-hint"
                   checked={rememberMe}
                   disabled={isSubmitting || !!userData}
                   id="rememberMe"
@@ -472,20 +473,24 @@ function LoginPage(): React.ReactNode {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="size-4 animate-spin" />
-                    Connexion...
+                    Connexion…
                   </>
                 ) : (
                   'Se connecter'
                 )}
               </Button>
-              <p className="text-muted-foreground text-xs leading-5">
+              <p
+                className="text-muted-foreground text-xs leading-5"
+                id="rememberMe-hint"
+              >
                 Reste connecté jusqu’à 30 jours ; le code est demandé à chaque
                 nouvelle connexion. À cocher uniquement sur un appareil
                 personnel. Sans effet pour le compte superadmin.
               </p>
               <p className="text-muted-foreground text-xs leading-5">
-                Mot de passe oublié ou accès bloqué&nbsp;? La récupération est
-                gérée par le propriétaire superadmin.
+                Mot de passe oublié ou application d’authentification
+                perdue&nbsp;? Un administrateur de Noctambule peut réinitialiser
+                votre accès.
               </p>
             </form>
           )}
@@ -596,7 +601,7 @@ function LoginPage(): React.ReactNode {
                     {isSubmitting ? (
                       <>
                         <Loader2 className="size-4 animate-spin" />
-                        Vérification...
+                        Vérification…
                       </>
                     ) : (
                       'Vérifier et se connecter'

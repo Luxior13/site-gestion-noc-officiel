@@ -98,8 +98,11 @@ export const MfaRecoveryCodesPanel: FC<MfaRecoveryCodesPanelProps> = ({
         className="border-border/70 bg-background grid gap-2 rounded-md border p-3 sm:grid-cols-2"
       >
         {codes.map((code) => (
+          // Lines break after a dash only, never inside a group: a code cut
+          // in the middle of « MYOW » was easy to copy wrongly by hand
+          // (audit of 31 October 2026).
           <li
-            className="bg-surface-inset min-w-0 rounded border px-3 py-2 text-center font-mono text-sm tracking-wider break-all"
+            className="bg-surface-inset min-w-0 rounded border px-3 py-2 text-center font-mono text-sm tracking-wider"
             key={code}
           >
             {code}

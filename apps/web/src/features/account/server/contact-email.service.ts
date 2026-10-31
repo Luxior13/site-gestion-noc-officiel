@@ -8,6 +8,7 @@ import {
   clearRateLimit,
   reserveSensitiveActionRateLimit,
 } from '$server/rate-limiter';
+import { recordRefusedProof } from '$server/refused-proof-audit';
 import { serviceErrors } from '$server/service-error';
 import { authorizeUserAction } from '$server/user-action-authorization';
 import { mapUserToUserType } from '$server/user-projection';
@@ -58,8 +59,14 @@ export const updateOwnContactEmail = async (
   if (storedUser.updatedAt.getTime() !== input.expectedUpdatedAt.getTime())
     throw accountChanged();
 
-  if (!(await verifyPassword(input.currentPassword, storedUser.passwordHash)))
+  if (!(await verifyPassword(input.currentPassword, storedUser.passwordHash))) {
+    await recordRefusedProof({
+      actorUserId: userId,
+      reason: 'PASSWORD_INVALID',
+      step: 'contact_email',
+    });
     throw serviceErrors.validation('Le mot de passe actuel est incorrect');
+  }
   // A valid proof releases the sensitive-action quota. Invalid attempts stay
   // reserved and therefore cannot race past the hash verification.
   await clearRateLimit(rateLimitKey);
@@ -94,7 +101,7 @@ export const updateOwnContactEmail = async (
         {
           action: 'USER_UPDATE',
           category: 'USER',
-          description: 'Adresse de contact mise à jour',
+          description: 'Email de contact modifié',
           metadata: {
             after: { contactEmail: nextContactEmail },
             before: { contactEmail: storedUser.contactEmail },

@@ -2,19 +2,15 @@ import { describe, expect, it } from 'vitest';
 
 import {
   canAccessNavigationItem,
-  canOpenNavigationHref,
   getActiveNavigationSpace,
   getDesktopSidebarSections,
   getNavigationAvailability,
-  getNavigationItemByHref,
-  getNavigationPageBySlug,
+  getNavigationSpaceItems,
   getVisibleNavigationSpaces,
-  getVisibleNavSections,
-  NAV_SECTIONS,
+  NAV_SPACES,
   type NavigationAvailabilityFilter,
   type NavItem,
 } from '$constants/app.constants';
-import { FEATURES } from '$constants/feature-registry.constants';
 import {
   PERMISSIONS,
   ROADMAP_PERMISSIONS,
@@ -58,10 +54,12 @@ function getVisibleHrefs(
   isProtected = false,
   availability: NavigationAvailabilityFilter = 'live',
 ): string[] {
-  return getVisibleNavSections(
+  return getVisibleNavigationSpaces(
     buildUser(permissions, isProtected),
     availability,
-  ).flatMap((section) => flattenHrefs(section.items));
+  )
+    .flatMap((space) => space.sections)
+    .flatMap((section) => flattenHrefs(section.items));
 }
 
 function getRoadmapHrefs(): string[] {
@@ -100,7 +98,11 @@ describe('navigation availability', () => {
       label: 'Mes tâches',
       requiredPermissions: [ROADMAP_PERMISSIONS.TASKS.VIEW],
     };
-    expect(getNavigationItemByHref(tasks.href)).toBeNull();
+    expect(
+      NAV_SPACES.flatMap(getNavigationSpaceItems).some(
+        (item) => item.href === tasks.href,
+      ),
+    ).toBe(false);
     expect(getNavigationAvailability(tasks)).toBe('planned');
     expect(
       canAccessNavigationItem(
@@ -130,34 +132,6 @@ describe('navigation availability', () => {
     );
     expect(canAccessNavigationItem(buildUser({}, true), plannedItem)).toBe(
       true,
-    );
-  });
-
-  it('blocks planned destinations while allowing live and dynamic routes', () => {
-    const user = buildUser();
-
-    expect(canOpenNavigationHref(user, '/')).toBe(true);
-    expect(canOpenNavigationHref(user, '/mon-compte')).toBe(true);
-    expect(canOpenNavigationHref(user, '/mes-notifications')).toBe(true);
-    expect(canOpenNavigationHref(user, '/mon-compte?section=security')).toBe(
-      true,
-    );
-    expect(
-      canOpenNavigationHref(user, '/systeme/parametres?section=retention'),
-    ).toBe(false);
-    expect(
-      canOpenNavigationHref(
-        buildAdmin(),
-        '/systeme/parametres?section=retention',
-      ),
-    ).toBe(true);
-    expect(canOpenNavigationHref(user, '/tableau-de-bord/mes-taches')).toBe(
-      false,
-    );
-    expect(canOpenNavigationHref(user, '/resource/dynamic-id')).toBe(true);
-    expect(canOpenNavigationHref(user, '/\\evil.example/path')).toBe(false);
-    expect(canOpenNavigationHref(user, 'https://evil.example/path')).toBe(
-      false,
     );
   });
 
@@ -237,30 +211,6 @@ describe('navigation availability', () => {
     ).toBe('system');
   });
 
-  it('hides a live feature whose operational readiness is unavailable', () => {
-    const user = buildUser({ [PERMISSIONS.PERSONS.VIEW]: true });
-    const operationalFeatures = new Set(
-      Object.values(FEATURES)
-        .filter((feature) => feature.id !== FEATURES.persons.id)
-        .map((feature) => feature.id),
-    );
-    const hrefs = getVisibleNavigationSpaces(
-      user,
-      'live',
-      operationalFeatures,
-    ).flatMap((space) =>
-      space.sections.flatMap((section) => flattenHrefs(section.items)),
-    );
-
-    expect(hrefs).not.toContain('/membres/repertoire');
-    expect(hrefs).toContain('/');
-  });
-
-  it('does not resolve unimplemented dashboard routes as operational pages', () => {
-    expect(getNavigationPageBySlug('dashboard', ['mes-taches'])).toBeNull();
-    expect(getNavigationPageBySlug('dashboard', [])).toBeNull();
-  });
-
   it('returns only planned destinations from the roadmap helper', () => {
     const hrefs = getRoadmapHrefs();
 
@@ -274,8 +224,8 @@ describe('navigation availability', () => {
   it('shows only live destinations to protected users by default', () => {
     const liveHrefs = getVisibleHrefs({}, true);
     const allHrefs = getVisibleHrefs({}, true, 'all');
-    const rawHrefs = NAV_SECTIONS.flatMap((section) =>
-      flattenHrefs(section.items),
+    const rawHrefs = NAV_SPACES.flatMap((space) => space.sections).flatMap(
+      (section) => flattenHrefs(section.items),
     );
 
     expect(liveHrefs).toEqual([

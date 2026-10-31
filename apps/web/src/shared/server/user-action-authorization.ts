@@ -126,7 +126,7 @@ export async function authorizeUserAction(
   ) {
     throw new UserActionAuthorizationError(
       ErrorCode.FORBIDDEN,
-      "Vous n'avez pas la permission d'effectuer cette action",
+      'Vous n’avez pas l’autorisation d’effectuer cette action',
       403,
     );
   }

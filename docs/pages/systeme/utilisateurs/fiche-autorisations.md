@@ -183,7 +183,8 @@ dépliable « Voir les modifications avant enregistrement » depuis le
   utilisateur » au lieu de « ce membre ».
 - 18 octobre 2026 : une carte par ligne, détails en popover, retour au rôle par
   ligne retiré, haut de l’onglet allégé ; un Administrateur possède toujours les
-  25 autorisations délégables, un Utilisateur seulement celles accordées.
+  25 autorisations délégables (26 depuis l’ajout du journal d’activité le
+  30 octobre 2026), un Utilisateur seulement celles accordées.
 - 17 octobre 2026 : rendu moins carré, lignes moins hautes, couleurs de la liste
   Utilisateurs ([préférences](../../../design/preferences.md)).
 - 15 octobre 2026 : catalogue de 27 droits administratifs (7 Répertoire,
@@ -291,7 +292,7 @@ une exception ramène la ligne à « Hérité du rôle », sans débordement ni 
 
 **Administrateur complet, utilisateur sur attribution** (décision utilisateur
 « oui pour moi », même jour). Règle : un Administrateur possède toujours les
-25 autorisations administratives délégables, aucune exception ne peut les
+25 autorisations administratives délégables (26 depuis le 30 octobre 2026), aucune exception ne peut les
 restreindre ; un Utilisateur n'a que celles qu'on lui accorde. Le compte racine
 reste à part. Règle canonique : [Permissions](../../../domaines/permissions.md).
 

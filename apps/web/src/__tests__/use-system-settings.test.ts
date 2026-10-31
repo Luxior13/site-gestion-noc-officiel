@@ -1,7 +1,7 @@
 import type { DependencyList, EffectCallback, SetStateAction } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { useSystemSettings as createController } from '$features/settings/useSystemSettings';
+import { useSystemSettings as createController } from '$features/settings/hooks/useSystemSettings';
 import type { SystemSettingItem } from '$types/platform.types';
 
 import { HookRuntime } from './helpers/hook-runtime';

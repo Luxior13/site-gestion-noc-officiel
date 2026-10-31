@@ -404,7 +404,7 @@ export const MfaSetupFlow: FC<MfaSetupFlowProps> = ({
             {isSubmitting ? (
               <>
                 <Loader2 className="size-4 animate-spin" />
-                Vérification...
+                Vérification…
               </>
             ) : (
               'Activer la double authentification'
@@ -521,7 +521,7 @@ export const MfaSetupFlow: FC<MfaSetupFlowProps> = ({
           {isSubmitting ? (
             <>
               <Loader2 className="size-4 animate-spin" />
-              Préparation...
+              Préparation…
             </>
           ) : isBootstrap ? (
             'Configurer maintenant'

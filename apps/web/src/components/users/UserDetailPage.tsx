@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, {
@@ -73,8 +73,8 @@ import {
 import { FEATURES } from '$constants/feature-registry.constants';
 import { PAGE_PATHS, userDetailPath } from '$constants/routes.constants';
 import { useUser } from '$context/UserContext';
-import { JournalHistoryLink } from '$features/audit/JournalHistoryLink';
-import { UserAccessBadge } from '$features/users/user-badges';
+import { JournalHistoryLink } from '$features/audit/components/JournalHistoryLink';
+import { UserAccessBadge } from '$features/users/components/user-badges';
 import { getUserDetailScope } from '$features/users/user-detail-scope';
 import { useUnsavedNavigationGuard } from '$hooks/useUnsavedNavigationGuard';
 import type { UserType } from '$types/auth.types';
@@ -534,6 +534,7 @@ const UserDetailPageContent: FC<UserDetailPageProps> = ({
             canEditLogin={canEditTargetLogin}
             loginReadOnlyHint={loginReadOnlyHint}
             savedLoginName={user.loginName ?? ''}
+            targetName={getUserDisplayName(user) || user.loginName}
             canViewContact={canViewTargetContact}
             isSelf={isSelf}
             isSaving={isMutationPending || mutation.isRefreshing}
@@ -552,7 +553,10 @@ const UserDetailPageContent: FC<UserDetailPageProps> = ({
       case 'security':
         if (!canViewTargetSecurity) {
           return (
-            <AccessDeniedState description="Vous n'avez pas la permission de consulter la sécurité de cet utilisateur." />
+            <AccessDeniedState
+              action="consulter la sécurité de cet utilisateur"
+              back={null}
+            />
           );
         }
 
@@ -743,6 +747,7 @@ const UserDetailPageContent: FC<UserDetailPageProps> = ({
         onConfirm={() => {
           void handleSaveProfile(true);
         }}
+        targetName={getUserDisplayName(user) || user.loginName}
       />
       <AdminMfaResetDialog
         actorLoginName={currentUser?.loginName ?? ''}
@@ -777,6 +782,7 @@ const UserDetailPageContent: FC<UserDetailPageProps> = ({
         onOpenChange={setShowResetConfirm}
         isResetting={isResetting}
         onConfirm={handleResetPassword}
+        targetName={getUserDisplayName(user) || user.loginName}
       />
       <UserSecurityActionDialogs actions={securityActions} user={user} />
     </AuthenticatedLayout>

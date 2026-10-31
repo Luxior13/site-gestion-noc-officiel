@@ -10,6 +10,21 @@
 | Points d’entrée | [Sidebar](../../../apps/web/src/components/Sidebar.tsx), [Header](../../../apps/web/src/components/layout/Header.tsx), [PoleNavigation](../../../apps/web/src/components/layout/PoleNavigation.tsx), [GlobalSearch](../../../apps/web/src/components/layout/GlobalSearch.tsx), [PageSectionNavigation](../../../apps/web/src/components/layout/PageSectionNavigation.tsx) |
 | Règles | [Navigation](../../domaines/navigation.md), [composants](../../design/composants.md) |
 
+## Audit complet — 31 octobre 2026
+
+[Rapport](../../audits/2026-10-31-audit-complet.md). **Corrigé et vérifié** : le
+code du mode réduit de la barre latérale, retiré du site le 27 septembre 2026
+(préférence stockée, mode icône, infobulles), est supprimé : `ui/sidebar.tsx`
+passe de 812 à 616 lignes et perd son exception au budget d’architecture
+(AC-11) ; la barre d’ordinateur devient un repère `aside` « Barre latérale »
+(AC-10) ; les aides de navigation appelées par les seuls tests et la liste des
+46 adresses réservées sont retirées (AC-12) ; chaque page a son titre d’onglet
+(AC-07). Volet mobile, retour du focus et menu du compte revérifiés sur le build
+de production. Le même jour, sur « go » du propriétaire : « Profil,
+autorisations et sécurité » dans le menu du compte (AC-38) ; la navigation ne
+dépend plus d’un contrôle de disponibilité sondé par le navigateur : une entrée
+s’affiche selon les seuls droits ([SYS-11](../../systeme/constats.md)).
+
 ## Pôle Système — 25 octobre 2026
 
 Le pôle Système compte deux sections : « Administration » (Utilisateurs,

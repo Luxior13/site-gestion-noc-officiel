@@ -60,7 +60,9 @@ const getManagedTarget = async (
   if (user.id === actor.id) throw serviceErrors.forbidden(selfMessage);
   if (user.isProtected) throw serviceErrors.forbidden(PROTECTED_TARGET_MESSAGE);
   if (user.role === 'ADMIN' && !actor.isProtected)
-    throw serviceErrors.forbidden('Ce compte protégé ne peut pas être géré');
+    throw serviceErrors.forbidden(
+      'Seul le superadmin peut gérer les sessions d’un administrateur',
+    );
 
   return { ...user, lastName: user.lastName ?? '' };
 };
@@ -193,7 +195,7 @@ export const revokeManagedSessions = async (
         {
           action: 'SESSION_INVALIDATE',
           category: 'AUTH',
-          description: `Session révoquée pour: ${target.loginName}`,
+          description: `Session fermée : ${target.loginName}`,
           metadata: {
             revocationScope: 'single',
             revokedSessions: 1,
@@ -232,7 +234,7 @@ export const revokeManagedSessions = async (
       {
         action: 'SESSION_INVALIDATE',
         category: 'AUTH',
-        description: `Sessions révoquées pour: ${target.loginName}`,
+        description: `Sessions fermées : ${target.loginName}`,
         metadata: {
           revocationScope: 'all',
           revokedSessions: deleteResult.count,

@@ -23,11 +23,13 @@ const readSourceFile = (relativePath: string): string => {
 };
 
 const pageSource = readSourceFile(
-  '../features/settings/SystemSettingsPage.tsx',
+  '../features/settings/components/SystemSettingsPage.tsx',
 );
-const rowSource = readSourceFile('../features/settings/SystemSettingRow.tsx');
+const rowSource = readSourceFile(
+  '../features/settings/components/SystemSettingRow.tsx',
+);
 const controllerSource = readSourceFile(
-  '../features/settings/useSystemSettings.ts',
+  '../features/settings/hooks/useSystemSettings.ts',
 );
 const navigationGuardSource = readSourceFile(
   '../shared/hooks/useUnsavedNavigationGuard.ts',
@@ -112,7 +114,9 @@ describe('system settings page contracts', () => {
   });
 
   it('keeps destructive reductions explicit and password-only', () => {
-    expect(pageSource).toContain('Réduire la durée de conservation ?');
+    expect(pageSource).toContain(
+      'Réduire la conservation du journal d’activité ?',
+    );
     expect(pageSource).toContain('proofKind="password"');
     expect(controllerSource).toContain(
       'ErrorCode.PASSWORD_REAUTHENTICATION_REQUIRED',

@@ -406,35 +406,37 @@ export const ProfileSection: FC<ProfileSectionProps> = ({
                 </dd>
                 <dd className="text-muted-foreground mt-1 text-xs">
                   {userData.isProtected
-                    ? 'Identifiant racine permanent, modifiable uniquement par une procédure de récupération hors ligne.'
-                    : 'Distinct de votre adresse email. Seul un administrateur habilité peut le modifier.'}
+                    ? 'Identifiant du superadmin, permanent : seule la procédure de récupération hors ligne peut le modifier.'
+                    : 'Distinct de votre email de contact. Seul un administrateur habilité peut le modifier.'}
                 </dd>
               </div>
-              <div className="flex min-w-0 flex-wrap items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <dt className="text-muted-foreground text-xs">
-                    Email de contact
-                  </dt>
-                  <dd className="text-foreground mt-1 text-sm break-all">
-                    {userData.contactEmail ?? 'Non renseigné'}
-                  </dd>
-                  <dd className="text-muted-foreground mt-1 text-xs">
-                    Facultatif, distinct de l&apos;identifiant et jamais utilisé
-                    pour vous connecter.
-                  </dd>
-                </div>
+              {/* A <dl> group holds only <dt>/<dd> (audit of 31 October
+                  2026): the action sits in its own <dd>, kept on the right. */}
+              <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3">
+                <dt className="text-muted-foreground col-start-1 text-xs">
+                  Email de contact
+                </dt>
+                <dd className="text-foreground col-start-1 mt-1 text-sm break-all">
+                  {userData.contactEmail ?? 'Non renseigné'}
+                </dd>
+                <dd className="text-muted-foreground col-start-1 mt-1 text-xs">
+                  Facultatif, distinct de l’identifiant et jamais utilisé pour
+                  vous connecter.
+                </dd>
                 {canEditContact && (
-                  <Button
-                    ref={contactTriggerRef}
-                    disabled={isSaving || isRefreshing}
-                    onClick={() => setShowContactEmailDialog(true)}
-                    size="sm"
-                    type="button"
-                    variant="outline"
-                  >
-                    <Mail className="size-4" />
-                    {userData.contactEmail ? 'Gérer' : 'Ajouter'}
-                  </Button>
+                  <dd className="col-start-2 row-span-3 row-start-1">
+                    <Button
+                      ref={contactTriggerRef}
+                      disabled={isSaving || isRefreshing}
+                      onClick={() => setShowContactEmailDialog(true)}
+                      size="sm"
+                      type="button"
+                      variant="outline"
+                    >
+                      <Mail className="size-4" />
+                      {userData.contactEmail ? 'Gérer' : 'Ajouter'}
+                    </Button>
+                  </dd>
                 )}
               </div>
             </dl>

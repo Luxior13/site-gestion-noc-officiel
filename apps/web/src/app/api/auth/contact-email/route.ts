@@ -16,11 +16,11 @@ const contactEmailSchema = z.union([
   z
     .string()
     .trim()
-    .max(254, 'Adresse de contact trop longue')
+    .max(254, 'Email de contact trop long')
     .refine(
       (value) =>
         value.length === 0 || validContactEmailSchema.safeParse(value).success,
-      'Adresse de contact invalide',
+      'Email de contact invalide',
     ),
 ]);
 

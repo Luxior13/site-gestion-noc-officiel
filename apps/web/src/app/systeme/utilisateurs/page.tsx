@@ -7,9 +7,9 @@ import { AccessDeniedState } from '$components/layout/PageState';
 import { FEATURES } from '$constants/feature-registry.constants';
 import { hasPermission, PERMISSIONS } from '$constants/permissions.constants';
 import { useUser } from '$context/UserContext';
+import { UsersDirectorySkeleton } from '$features/users/components/UsersDirectorySkeleton';
+import { UsersListPage } from '$features/users/components/UsersListPage';
 import { getUsersListVisibilityKey } from '$features/users/users-list.utils';
-import { UsersDirectorySkeleton } from '$features/users/UsersDirectorySkeleton';
-import { UsersListPage } from '$features/users/UsersListPage';
 import directoryStyles from '$ui/directory.module.css';
 import { PageCanvas, PageShell } from '$ui/page-shell';
 import { cn } from '$utils/css.utils';
@@ -24,13 +24,7 @@ const UsersAdministrationContent: FC = () => {
     : false;
 
   if (!userData || !canViewUsers) {
-    return (
-      <AccessDeniedState
-        actionHref="/"
-        actionLabel="Retour à l'accueil"
-        description="Vous n'avez pas la permission de consulter les utilisateurs."
-      />
-    );
+    return <AccessDeniedState action="consulter les utilisateurs" />;
   }
 
   return (

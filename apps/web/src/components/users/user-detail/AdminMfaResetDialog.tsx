@@ -194,10 +194,10 @@ const AdminMfaResetDialogContent: FC<AdminMfaResetDialogProps> = ({
               <ServiceIcon className="bg-warning/10 text-warning">
                 <ShieldAlert className="size-4" />
               </ServiceIcon>
-              Réinitialiser la double authentification
+              Réinitialiser la double authentification de {targetLabel} ?
             </DialogTitle>
             <DialogDescription>
-              L&apos;ancien authentificateur et les codes de secours de{' '}
+              L’ancien authentificateur et les codes de secours de{' '}
               <strong>{targetLabel}</strong> seront supprimés. Toutes ses
               sessions seront déconnectées.
             </DialogDescription>

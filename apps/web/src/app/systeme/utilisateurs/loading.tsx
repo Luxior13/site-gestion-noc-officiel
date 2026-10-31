@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { UsersDirectorySkeleton } from '$features/users/UsersDirectorySkeleton';
+import { UsersDirectorySkeleton } from '$features/users/components/UsersDirectorySkeleton';
 import { PageCanvas, PageShell } from '$ui/page-shell';
 
 export default function UsersLoading(): React.ReactNode {

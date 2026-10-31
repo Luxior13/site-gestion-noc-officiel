@@ -12,7 +12,7 @@ export async function expectActivityJournal(
 ): Promise<void> {
   await page.goto('/systeme/journal-activite');
   await expect(
-    page.getByRole('heading', { level: 1, name: "Journal d'activité" }),
+    page.getByRole('heading', { level: 1, name: 'Journal d’activité' }),
   ).toBeVisible();
   const events = page.getByRole('list', { name: 'Événements' });
   const items = events.getByRole('listitem');

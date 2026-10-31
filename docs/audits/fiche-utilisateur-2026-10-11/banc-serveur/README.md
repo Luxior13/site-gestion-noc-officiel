@@ -27,7 +27,7 @@ permission n'intervient dans cette passe.
 
 ## Responsabilités et garanties conservées
 
-- [user-update.schema.ts](../../../../apps/web/src/features/users/user-update.schema.ts)
+- [user-update.schema.ts](../../../../apps/web/src/features/users/schemas/user-update.schema.ts)
   porte la validation stricte et les helpers de scopes. La syntaxe du message
   de champ requis a été vérifiée dans la
   [documentation Zod 4](https://github.com/colinhacks/zod/blob/v4.3.6/packages/docs/content/error-customization.mdx)

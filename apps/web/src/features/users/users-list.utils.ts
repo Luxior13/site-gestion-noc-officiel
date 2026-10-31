@@ -44,7 +44,7 @@ export const formatUserLastLogin = (
   if (Number.isNaN(then.getTime())) return 'Indisponible';
 
   const elapsed = now.getTime() - then.getTime();
-  if (elapsed < 60_000) return "À l'instant";
+  if (elapsed < 60_000) return 'À l’instant';
   if (elapsed < 3_600_000) return `Il y a ${Math.floor(elapsed / 60_000)} min`;
   if (elapsed < 86_400_000)
     return `Il y a ${Math.floor(elapsed / 3_600_000)} h`;

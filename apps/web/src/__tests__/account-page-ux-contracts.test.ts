@@ -73,11 +73,9 @@ describe('/mon-compte UX contracts', () => {
     expect(contactEmailDialogSource).toMatch(
       /contactEmailToSave\s*=\s*isConfirmingRemoval\s*\?\s*null/,
     );
+    expect(contactEmailDialogSource).toContain('Supprimer l’email de contact');
     expect(contactEmailDialogSource).toContain(
-      "Supprimer l'adresse de contact",
-    );
-    expect(contactEmailDialogSource).toContain(
-      'Confirmer la suppression de cette adresse ?',
+      'Confirmer la suppression de cet email ?',
     );
     expect(contactEmailDialogSource).toContain('hasDraftChanges');
     expect(contactEmailDialogSource).toContain(

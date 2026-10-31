@@ -24,7 +24,12 @@ describe('session display (27 October 2026)', () => {
 
   it('keeps IPv4 and unusual forms as received', () => {
     expect(formatIpAddress('203.0.113.7')).toBe('203.0.113.7');
-    expect(formatIpAddress('::ffff:203.0.113.7')).toBe('::ffff:203.0.113.7');
+    // An IPv4-mapped address reads as its IPv4 (audit of 31 October 2026).
+    expect(formatIpAddress('::ffff:203.0.113.7')).toBe('203.0.113.7');
+    expect(formatIpAddress('0:0:0:0:0:FFFF:203.0.113.7')).toBe('203.0.113.7');
+    expect(formatIpAddress('64:ff9b::203.0.113.7')).toBe(
+      '64:ff9b::203.0.113.7',
+    );
     expect(formatIpAddress('fe80::1%eth0')).toBe('fe80::1%eth0');
     expect(formatIpAddress('not-an-ip')).toBe('not-an-ip');
   });

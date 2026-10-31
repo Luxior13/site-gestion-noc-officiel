@@ -12,6 +12,7 @@ import React, {
 } from 'react';
 import { toast } from 'sonner';
 
+import { RUBRIC_HEADER_CLASS } from '$components/layout/RubricCard';
 import { SessionRow } from '$components/users/SessionRow';
 import {
   AlertDialog,
@@ -211,7 +212,7 @@ export const AccountSessionsCard: FC<AccountSessionsCardProps> = ({
         aria-labelledby="account-sessions-heading"
         className="min-w-0"
       >
-        <CardHeader className="p-4 sm:p-5">
+        <CardHeader className={RUBRIC_HEADER_CLASS}>
           <SecurityCardTitle
             icon={<Monitor className="size-3.5" />}
             id="account-sessions-heading"
@@ -254,18 +255,12 @@ export const AccountSessionsCard: FC<AccountSessionsCardProps> = ({
             </div>
           ) : sessions.length === 0 ? (
             <p className="text-muted-foreground text-sm">
-              Aucune session active n&apos;a été trouvée.
+              Aucune session active n’a été trouvée.
             </p>
           ) : (
             <>
-              {currentSession && (
-                <div className="space-y-2">
-                  <p className="text-muted-foreground text-xs font-medium uppercase">
-                    Session actuelle
-                  </p>
-                  <SessionRow session={currentSession} />
-                </div>
-              )}
+              {/* Its row already reads « Session actuelle » (audit AC-27). */}
+              {currentSession && <SessionRow session={currentSession} />}
               {otherSessions.length > 0 ? (
                 <div className="space-y-2">
                   <p className="text-muted-foreground text-xs font-medium uppercase">
@@ -338,7 +333,9 @@ export const AccountSessionsCard: FC<AccountSessionsCardProps> = ({
                 <div className="bg-destructive/10 flex h-8 w-8 items-center justify-center rounded-lg">
                   <AlertTriangle size={16} className="text-destructive" />
                 </div>
-                Déconnecter cet appareil ?
+                {sessionToRevoke
+                  ? `Déconnecter ${getSessionTitle(sessionToRevoke)} ?`
+                  : 'Déconnecter cet appareil ?'}
               </AlertDialogTitle>
               <AlertDialogDescription>
                 {sessionToRevoke

@@ -4,13 +4,13 @@ Référence actualisée pendant la revue du 12 octobre 2026. Le catalogue des pr
 
 ## Navigation actuelle
 
-Cinq entrées sont déclarées dans trois pôles. Leur visibilité dépend des accès de l’utilisateur. Les noms et routes actifs proviennent du registre des fonctionnalités.
+Six entrées sont déclarées dans trois pôles. Leur visibilité dépend des accès de l’utilisateur. Les noms et routes actifs proviennent du registre des fonctionnalités.
 
 | Pôle actuel | Entrées actives | Placement |
 | --- | --- | --- |
 | Aujourd’hui | Mon travail `/` | Travail personnel |
 | Membres | Répertoire `/membres/repertoire` | Membres et contacts de la structure |
-| Système | Utilisateurs `/systeme/utilisateurs`, paramètres `/systeme/parametres`, feuille de route `/systeme/feuille-de-route` | Comptes, technique et plan produit |
+| Système | Section Administration : Utilisateurs `/systeme/utilisateurs`, Journal d’activité `/systeme/journal-activite`, Paramètres système `/systeme/parametres` ; section Projet : Feuille de route `/systeme/feuille-de-route` | Comptes, traçabilité, technique et plan produit |
 
 `/mon-compte` est accessible par les outils globaux. La navigation rapide de l’en-tête parcourt les pages autorisées sans page dédiée ; l’ancienne adresse `/recherche` redirige vers l’accueil. `/login` appartient au parcours de connexion. Les formulaires de création et fiches de personnes ou utilisateurs restent sous leur liste principale.
 
@@ -18,7 +18,7 @@ Le pôle « Membres » regroupe le Répertoire actuel et les futurs espaces Adh�
 
 `/administration` et `/tableau-de-bord` sont des accès de compatibilité. `/mes-notifications` et `/tableau-de-bord/mes-notifications` redirigent vers la feuille de route, où ces modules sont replanifiés ; `/systeme/journal-activite` est de nouveau servie depuis le 30 octobre 2026 (section Administration, entre Utilisateurs et Paramètres). `/systeme` sert d’entrée au pôle. Les routes non livrées ne sont pas des écrans vides utilisables.
 
-Les 46 anciennes destinations planifiées ont été retirées du catalogue de navigation. Elles restent référencées dans le catalogue de projets et dans une liste de destinations réservées pour conserver le refus d’ouverture par les helpers de navigation. Cette liste ne remplace aucune politique serveur.
+Les 46 anciennes destinations planifiées ont été retirées du catalogue de navigation ; elles restent référencées dans le catalogue de projets (`legacyHrefs` de la feuille de route). Leur liste réservée côté client et son contrôle d’ouverture, que plus aucun écran n’appelait, sont retirés le 31 octobre 2026 ([audit complet](../audits/2026-10-31-audit-complet.md)) : ces adresses aboutissent à la page introuvable.
 
 ## Huit pôles cibles
 
@@ -51,9 +51,12 @@ Ce tableau décrit les lieux logiques, pas un engagement à créer autant d’en
 
 Depuis le 27 septembre 2026, le nom affiché est **Noctambule**, défini dans
 `SITE_CONFIG`. La connexion présente « Espace de gestion » sous le nom.
-Les titres spécifiques existants suivent « Utilisateurs · Noctambule » et
-« Mon compte · Noctambule » ; la connexion dispose de « Connexion · Noctambule ».
-Les autres pages héritent du nom global, avec le repère Dev en développement.
+Chaque page porte son propre titre d’onglet, « Page · Noctambule » (WCAG 2.4.2,
+depuis le 31 octobre 2026) : « Connexion », « Mon compte », « Répertoire »,
+« Nouvelle fiche · Répertoire », « Fiche · Répertoire », « Utilisateurs »,
+« Nouvel utilisateur · Utilisateurs », « Fiche utilisateur · Utilisateurs »,
+« Journal d’activité », « Paramètres système », « Feuille de route ». L’accueil
+et la page introuvable gardent le nom global, avec le repère Dev en développement.
 
 L’identité Noctambule occupe une zone fixe de 56 px, alignée sur le header
 et séparée des rubriques par la même bordure fine. Logo de 36 px centré dans
@@ -71,7 +74,8 @@ qu'il souhaite conserver le menu « Rubriques » actuel. Cette décision remplac
 la grille encore décrite ici avant la revue ; les anciennes décisions et leurs
 preuves restent datées dans l'historique du suivi.
 La sidebar reste ouverte à 264 px sur ordinateur (à partir de 1024 px). Le mode réduit
-et son bouton sont retirés du site depuis le 27 septembre 2026. Les libellés
+et son bouton sont retirés du site depuis le 27 septembre 2026, et leur code
+(préférence stockée, mode icône, infobulles) depuis le 31 octobre 2026. Les libellés
 restent à 14 px. Sur les écrans bas ou avec davantage de pôles, le menu adapte
 sa hauteur à l'espace disponible et défile ; les pages ont leur propre
 défilement pour préserver l'accès aux liens.
@@ -138,7 +142,7 @@ sur les tailles intermédiaires, la zone utile peut devenir prioritaire. Consign
 ce choix dans le [suivi de la page](../pages/README.md), sans imposer le même
 centrage à une liste et à une page de lecture.
 
-Le header conserve le fil d’Ariane et les outils globaux. Les fiches Personne, Utilisateur et Mon compte placent leur navigation horizontale sous le titre, à toutes les largeurs : liens soulignés, libellés complets, défilement horizontal sur petit écran et barre collante dans le contenu. Le retour vers la liste reste avant le titre. La navigation locale n’occupe plus de rail dans la marge. Les filtres de listes utilisent des contrôles distincts de cette navigation.
+Le header conserve le fil d’Ariane et les outils globaux. Les fiches Personne, Utilisateur et Mon compte placent leurs onglets dans leur en-tête (`EntityHeader`, 27 octobre 2026) : section active soulignée, barre réduite aux seuls onglets au défilement, menu « Plus ▾ » quand ils débordent sur ordinateur et sélecteur de section sous 480 px. Le retour vers la liste reste avant le titre. La navigation locale n’occupe plus de rail dans la marge. Les filtres de listes utilisent des contrôles distincts de cette navigation.
 
 Le header garde une hauteur de 56 px et un fond bleu ardoise `surface-panel` : fil d’Ariane à gauche,
 recherche à droite. La zone centrale reste souple pour les
@@ -183,7 +187,7 @@ Le panneau de notifications et la boîte « Mes notifications » ont été retir
 dans le header ; les anciennes adresses redirigent vers la feuille de route, où
 le module est replanifié avec ses futurs canaux.
 
-Les gabarits partagés limitent la largeur extérieure à 76rem par défaut, 52rem pour les créations et 56rem pour la lecture (actualité, recherche). Une variante de 92rem reste disponible pour les données denses. Les listes basculent entre tableau et présentation mobile selon la largeur de leur conteneur. Voir la [proposition UX/UI et son suivi](../propositions/interface-proposition-ux-ui.md).
+Les gabarits partagés limitent la largeur extérieure à 76rem par défaut, une largeur de formulaire pour les créations et une largeur de lecture (`PageShell`, valeurs dans [les fondations](../design/fondations.md)). Une variante de 92rem reste disponible pour les données denses. Les listes basculent entre tableau et présentation mobile selon la largeur de leur conteneur. Voir la [proposition UX/UI et son suivi](../propositions/interface-proposition-ux-ui.md).
 
 Chaque module traite les états de chargement, absence de données, erreur réessayable, accès refusé et conflit de modification lorsqu’il s’applique. L’interface explique une action indisponible sans révéler l’existence d’un dossier confidentiel.
 

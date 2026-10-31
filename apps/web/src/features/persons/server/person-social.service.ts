@@ -205,7 +205,7 @@ export const updatePersonSocialProfile = async (
       targetNetworkProfiles.length === 0 ? true : input.isPrimary;
     if (!changingNetwork && current.isPrimary && !isPrimary) {
       throw personErrors.primaryConflict(
-        "Choisissez d'abord un autre profil principal pour ce réseau",
+        'Choisissez d’abord un autre profil principal pour ce réseau',
       );
     }
 

@@ -16,7 +16,6 @@ import {
   apiErrors,
   apiSuccess,
   parseJsonBody,
-  withPrivateNoStore,
   zodErrorDetails,
 } from '$server/api-response';
 
@@ -45,9 +44,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     await assertPersonFeatureReady();
 
-    return withPrivateNoStore(
-      apiSuccess(await listPersons(parsed.data, auth.user)),
-    );
+    return apiSuccess(await listPersons(parsed.data, auth.user));
   } catch (error) {
     return handlePersonApiError('PERSON_LIST', error, request);
   }
@@ -71,14 +68,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     await assertPersonFeatureReady();
 
-    return withPrivateNoStore(
-      apiSuccess(
-        await createPerson(parsed.data, {
-          ...auth.user,
-          session: auth.session,
-        }),
-        201,
-      ),
+    return apiSuccess(
+      await createPerson(parsed.data, {
+        ...auth.user,
+        session: auth.session,
+      }),
+      201,
     );
   } catch (error) {
     return handlePersonApiError('PERSON_CREATE', error, request);

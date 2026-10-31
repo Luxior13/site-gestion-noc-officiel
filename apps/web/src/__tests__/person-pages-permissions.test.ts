@@ -2,7 +2,6 @@ import { createElement, type ReactElement, type ReactNode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { FEATURES } from '$constants/feature-registry.constants';
 import {
   PERMISSIONS,
   ROADMAP_PERMISSIONS,
@@ -11,7 +10,6 @@ import { getPersonCapabilities } from '$features/persons/person.permissions';
 
 const mocks = vi.hoisted(() => ({
   createForm: vi.fn(() => null),
-  featureAvailability: vi.fn(),
   getPageAuthSession: vi.fn(),
   personsList: vi.fn(() => null),
   useUser: vi.fn(),
@@ -26,10 +24,6 @@ vi.mock('$components/AuthenticatedLayout', () => ({
 }));
 
 vi.mock('$context/UserContext', () => ({ useUser: mocks.useUser }));
-
-vi.mock('$context/FeatureAvailabilityContext', () => ({
-  useFeatureAvailability: mocks.featureAvailability,
-}));
 
 vi.mock('$features/persons/components/PersonsList', () => ({
   PersonsList: mocks.personsList,
@@ -77,11 +71,6 @@ describe('direct Person page permission boundaries', () => {
       session: null,
       user: user({}),
     });
-    mocks.featureAvailability.mockReturnValue({
-      featureAvailabilityLoaded: true,
-      operationalFeatureIds: new Set([FEATURES.persons.id]),
-      refreshFeatureAvailability: vi.fn(),
-    });
   });
 
   it('resolves every page action independently and ignores the retired field history key', () => {
@@ -111,7 +100,7 @@ describe('direct Person page permission boundaries', () => {
 
     const html = renderToStaticMarkup(createElement(PersonsPage));
 
-    expect(html).toContain('permission de consulter le répertoire');
+    expect(html).toContain('autorisation de consulter le répertoire');
     expect(mocks.personsList).not.toHaveBeenCalled();
   });
 
@@ -147,7 +136,7 @@ describe('direct Person page permission boundaries', () => {
 
     const html = renderToStaticMarkup(createElement(NewPersonPage));
 
-    expect(html).toContain('permission de créer une fiche');
+    expect(html).toContain('autorisation de créer une fiche');
     expect(mocks.createForm).not.toHaveBeenCalled();
   });
 
@@ -163,11 +152,7 @@ describe('direct Person page permission boundaries', () => {
 
     expect(mocks.createForm).toHaveBeenCalledOnce();
     expect(mocks.createForm).toHaveBeenCalledWith(
-      {
-        available: true,
-        onRetryAvailability: expect.any(Function),
-        returnHref: '/membres/repertoire',
-      },
+      { returnHref: '/membres/repertoire' },
       undefined,
     );
   });
@@ -197,6 +182,6 @@ describe('direct Person page permission boundaries', () => {
 
     const html = renderToStaticMarkup(element);
 
-    expect(html).toContain('permission de consulter cette fiche');
+    expect(html).toContain('autorisation de consulter cette fiche');
   });
 });

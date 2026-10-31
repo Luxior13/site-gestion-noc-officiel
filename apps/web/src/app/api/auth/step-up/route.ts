@@ -28,7 +28,7 @@ const currentPasswordSchema = z
 const currentTotpCodeSchema = z
   .string()
   .trim()
-  .regex(MFA_TOTP_CODE_PATTERN, "Code d'authentification invalide");
+  .regex(MFA_TOTP_CODE_PATTERN, 'Code d’authentification invalide');
 
 const stepUpSchema = z.union([
   z

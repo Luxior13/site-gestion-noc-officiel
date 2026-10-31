@@ -65,7 +65,7 @@ export const resetPasswordForActor = async (
       {
         action: 'PASSWORD_RESET',
         category: 'AUTH',
-        description: `Mot de passe réinitialisé pour: ${existingUser.loginName}`,
+        description: `Mot de passe réinitialisé : ${existingUser.loginName}`,
         metadata: {
           passwordReset: true,
           ...USERS_SECURITY_AUDIT_LOCATION,

@@ -89,7 +89,7 @@ describe('administrative user detail subcomponent UX contracts', () => {
 
   it('makes contact removal explicit and keeps the self profile compact', () => {
     expect(profileSource).toContain("'save' | 'stage' | null");
-    expect(profileSource).toContain('Supprimer l&apos;adresse de contact');
+    expect(profileSource).toContain('Supprimer l’email de contact');
     expect(profileSource).toContain('isSelf = false');
     expect(profileSource).not.toContain('Profil administratif');
     expect(profileSource).toContain('<dl className=');
@@ -201,9 +201,8 @@ describe('administrative user detail subcomponent UX contracts', () => {
     expect(userDetailSource).toContain(
       'deleteConfirmation.trim() !== user.loginName',
     );
-    expect(dialogsSource).toContain(
-      'Supprimer définitivement cet utilisateur ?',
-    );
+    // The title names the account (audit of 31 October 2026).
+    expect(dialogsSource).toContain('Supprimer définitivement le compte de');
     expect(
       `${securitySource}\n${deletionCardSource}\n${userDetailSource}`,
     ).not.toMatch(/archiv/iu);

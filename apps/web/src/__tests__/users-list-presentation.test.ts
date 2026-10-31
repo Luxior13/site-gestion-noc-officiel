@@ -31,7 +31,7 @@ describe('users list presentation boundaries', () => {
   });
 
   it.each([
-    ['2026-09-26T11:59:45Z', "À l'instant"],
+    ['2026-09-26T11:59:45Z', 'À l’instant'],
     ['2026-09-26T11:58:00Z', 'Il y a 2 min'],
     ['2026-09-26T10:00:00Z', 'Il y a 2 h'],
     ['2026-09-22T12:00:00Z', 'Il y a 4 j'],

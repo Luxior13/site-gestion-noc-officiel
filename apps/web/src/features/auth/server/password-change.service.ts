@@ -8,6 +8,7 @@ import {
   clearRateLimit,
   reserveSensitiveActionRateLimit,
 } from '$server/rate-limiter';
+import { recordRefusedProof } from '$server/refused-proof-audit';
 import { ServiceError, serviceErrors } from '$server/service-error';
 import { ErrorCode } from '$types/api.types';
 import type { SessionType, UserType } from '$types/auth.types';
@@ -40,7 +41,7 @@ export const changeOwnPassword = async (
     )
   ) {
     throw serviceErrors.forbidden(
-      "Vous n'avez pas la permission de changer ce mot de passe",
+      'Vous n’avez pas l’autorisation de changer ce mot de passe',
     );
   }
 
@@ -73,8 +74,14 @@ export const changeOwnPassword = async (
     });
     if (!rateLimit.allowed)
       throw serviceErrors.rateLimited(rateLimit.retryAfter);
-    if (!(await verifyPassword(currentPassword, storedUser.passwordHash)))
+    if (!(await verifyPassword(currentPassword, storedUser.passwordHash))) {
+      await recordRefusedProof({
+        actorUserId: user.id,
+        reason: 'PASSWORD_INVALID',
+        step: 'password_change',
+      });
       throw serviceErrors.validation('Le mot de passe actuel est incorrect');
+    }
     // A correct proof releases the shared account reauthentication quota.
     // The transactional cleanup in updateUserPassword remains an idempotent
     // safety net if this request proceeds to the password mutation.
@@ -83,7 +90,7 @@ export const changeOwnPassword = async (
 
   if (await verifyPassword(newPassword, storedUser.passwordHash)) {
     throw serviceErrors.validation(
-      "Le nouveau mot de passe doit être différent de l'actuel",
+      'Le nouveau mot de passe doit être différent de l’actuel',
     );
   }
 
@@ -91,7 +98,7 @@ export const changeOwnPassword = async (
     audit: {
       action: 'PASSWORD_CHANGE',
       category: 'AUTH',
-      description: 'Mot de passe modifié',
+      description: 'Mot de passe changé',
       metadata: {
         pageKey: 'account',
         pageLabel: 'Mon compte',

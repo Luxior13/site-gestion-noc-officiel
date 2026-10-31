@@ -3,8 +3,9 @@
 [Cartographie](README.md) · [Fiches des pages](../pages/README.md) · [API](api.md) ·
 [Navigation](../domaines/navigation.md)
 
-Relevé du 20 octobre 2026 : **11 fichiers `page.tsx`** dans `apps/web/src/app`,
-dont la route générique `/systeme/[[...slug]]`. Les pages de redirection
+Relevé du 31 octobre 2026 : **13 fichiers `page.tsx`** dans `apps/web/src/app` (journal d’activité reconstruit le 30 octobre 2026).
+La route générique `/systeme/[[...slug]]` est remplacée le 31 octobre 2026 par
+`systeme/page.tsx` (redirection) et `systeme/parametres/page.tsx` ([SYS-14](constats.md)). Les pages de redirection
 `/administration` et `/tableau-de-bord` ont été retirées le 20 octobre 2026 :
 les alias permanents ci-dessous les couvrent ([SYS-04](constats.md)). Chaque page servie a au moins
 une fiche dans [docs/pages](../pages/README.md) ; le contrôle documentaire
@@ -18,6 +19,7 @@ vérifie que chaque route y est citée.
 | [login/layout.tsx](../../apps/web/src/app/login/layout.tsx) | Métadonnées de la connexion |
 | [mon-compte/layout.tsx](../../apps/web/src/app/mon-compte/layout.tsx) | Métadonnées de Mon compte |
 | [systeme/utilisateurs/layout.tsx](../../apps/web/src/app/systeme/utilisateurs/layout.tsx) | Métadonnées du module Utilisateurs |
+| [membres/repertoire/nouveau/layout.tsx](../../apps/web/src/app/membres/repertoire/nouveau/layout.tsx), [membres/repertoire/[id]/layout.tsx](../../apps/web/src/app/membres/repertoire/%5Bid%5D/layout.tsx), [systeme/utilisateurs/nouveau/layout.tsx](../../apps/web/src/app/systeme/utilisateurs/nouveau/layout.tsx), [systeme/utilisateurs/[id]/layout.tsx](../../apps/web/src/app/systeme/utilisateurs/%5Bid%5D/layout.tsx), [systeme/journal-activite/layout.tsx](../../apps/web/src/app/systeme/journal-activite/layout.tsx), [systeme/feuille-de-route/layout.tsx](../../apps/web/src/app/systeme/feuille-de-route/layout.tsx) | Titre d’onglet de la page (31 octobre 2026, WCAG 2.4.2) ; Paramètres système le déclare dans sa propre `page.tsx` |
 | [error.tsx](../../apps/web/src/app/error.tsx), [global-error.tsx](../../apps/web/src/app/global-error.tsx) | Erreurs de rendu, dont l’état racine autonome |
 | [not-found.tsx](../../apps/web/src/app/not-found.tsx) | Page introuvable |
 | [loading.tsx](../../apps/web/src/app/loading.tsx) et `loading.tsx` des listes et fiches | Squelettes de chargement |
@@ -44,7 +46,8 @@ Ce relevé ne remplace pas la [référence des permissions](../domaines/permissi
 | `/systeme/utilisateurs/[id]` | Page | `getPageAuthSession`, `users:view`, sections selon les capacités | oui | [Profil](../pages/systeme/utilisateurs/fiche-profil.md), [Autorisations](../pages/systeme/utilisateurs/fiche-autorisations.md), [Sécurité](../pages/systeme/utilisateurs/fiche-securite.md) |
 | `/systeme/journal-activite` | Page | Session, `audit:view` ; l’API refait le contrôle et trace la lecture | intégré | [Journal d’activité](../pages/systeme/journal-activite.md) |
 | `/systeme/feuille-de-route` | Page | Session | commun | [Feuille de route](../pages/systeme/feuille-de-route.md) |
-| `/systeme/[[...slug]]` | Routage du pôle | Sans segment : redirection vers la première page visible du pôle ; `/systeme/parametres` rend la page si la fonctionnalité est `live` ; sinon 404 | — | [Paramètres système](../pages/systeme/parametres.md), [espace Système](../pages/systeme/README.md) |
+| `/systeme` | Redirection | Première page visible du pôle pour le compte, sinon l’accueil ; sans session, la connexion | — | [Espace Système](../pages/systeme/README.md) |
+| `/systeme/parametres` | Page | Session, `settings:view` (`settings:update` pour modifier) | commun | [Paramètres système](../pages/systeme/parametres.md) |
 
 ## Alias et redirections permanentes
 

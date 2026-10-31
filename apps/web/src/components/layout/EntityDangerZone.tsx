@@ -27,10 +27,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '$ui/card';
 import { ApiClientError } from '$utils/api.utils';
 
 type EntityDangerZoneProps = {
-  available?: boolean;
   description: ReactNode;
   dialogDescription: ReactNode;
   dialogNotice: ReactNode;
+  /** Names what is deleted (« Supprimer définitivement la fiche de … ? »). */
+  dialogTitle: string;
   onDelete: (
     version: number,
     idempotencyKey: string,
@@ -49,10 +50,10 @@ type EntityDangerZoneProps = {
 };
 
 export const EntityDangerZone: FC<EntityDangerZoneProps> = ({
-  available = true,
   description,
   dialogDescription,
   dialogNotice,
+  dialogTitle,
   onDelete,
   onDeleted,
   onDeletedLabel = 'Continuer',
@@ -87,13 +88,7 @@ export const EntityDangerZone: FC<EntityDangerZoneProps> = ({
   const idempotencyKeyRef = useRef(crypto.randomUUID());
 
   const handleDelete = async (): Promise<void> => {
-    if (
-      !available ||
-      deleted ||
-      operationRef.current ||
-      !mountedRef.current ||
-      conflict
-    )
+    if (deleted || operationRef.current || !mountedRef.current || conflict)
       return;
     operationRef.current = true;
     setError(null);
@@ -217,11 +212,7 @@ export const EntityDangerZone: FC<EntityDangerZoneProps> = ({
           open={open}
         >
           <AlertDialogTrigger asChild>
-            <Button
-              className="shrink-0"
-              disabled={!available}
-              variant="destructive"
-            >
+            <Button className="shrink-0" variant="destructive">
               <Trash2 className="size-4" />
               {triggerLabel}
             </Button>
@@ -231,9 +222,7 @@ export const EntityDangerZone: FC<EntityDangerZoneProps> = ({
             className="sm:max-w-lg"
           >
             <AlertDialogHeader>
-              <AlertDialogTitle>
-                Supprimer définitivement cette fiche ?
-              </AlertDialogTitle>
+              <AlertDialogTitle>{dialogTitle}</AlertDialogTitle>
               <AlertDialogDescription>
                 {dialogDescription}
               </AlertDialogDescription>
@@ -275,7 +264,7 @@ export const EntityDangerZone: FC<EntityDangerZoneProps> = ({
             <AlertDialogFooter>
               <AlertDialogCancel disabled={isBusy}>Annuler</AlertDialogCancel>
               <Button
-                disabled={!available || isBusy || conflict}
+                disabled={isBusy || conflict}
                 onClick={() => void handleDelete()}
                 type="button"
                 variant="destructive"

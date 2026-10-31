@@ -49,6 +49,14 @@ Aucun point ouvert propre au profil.
 
 - 19 octobre 2026 : fiche propre à la section, créée par découpage du suivi.
 - 20 octobre 2026 : en-tête et sous-cartes retirés ([reprise](README.md#reprise--20-octobre-2026)).
+- 31 octobre 2026 : liste de descriptions « Connexion et contact » rendue valide
+  (le bouton « Ajouter / Gérer » dans son propre `dd`, rendu inchangé) et texte
+  du superadmin sans « racine » ([audit complet](../../audits/2026-10-31-audit-complet.md), AC-04, AC-05).
+  Le même jour, sur « go » du propriétaire : le champ s’appelle partout « Email de
+  contact » (fenêtre, messages, toasts, exemple « nom@exemple.fr ») et l’onglet
+  Autorisations reçoit un titre `h2` pour les lecteurs d’écran, un en-tête de
+  carte aligné et, pour un Administrateur, plus de pied « adressez-vous à un
+  administrateur » (AC-26, AC-29, AC-39, AC-40).
 
 ## Revues datées
 

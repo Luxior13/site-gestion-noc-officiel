@@ -11,17 +11,14 @@ import React, {
 } from 'react';
 
 import AuthenticatedLayout from '$components/AuthenticatedLayout';
-import { ContentState } from '$components/layout/ContentState';
 import { EntityDetailLayout } from '$components/layout/EntityDetailLayout';
 import { PageDetailSkeleton } from '$components/layout/PageDetailSkeleton';
 import type { PageSection } from '$components/layout/PageSectionNavigation';
 import { AccessDeniedState, PageState } from '$components/layout/PageState';
 import { FEATURES } from '$constants/feature-registry.constants';
 import { personDetailPath } from '$constants/routes.constants';
-import { useFeatureAvailability } from '$context/FeatureAvailabilityContext';
 import { useUser } from '$context/UserContext';
-import { JournalHistoryLink } from '$features/audit/JournalHistoryLink';
-import { Button } from '$ui/button';
+import { JournalHistoryLink } from '$features/audit/components/JournalHistoryLink';
 import { PageCanvas, PageShell } from '$ui/page-shell';
 import { ApiClientError } from '$utils/api.utils';
 
@@ -106,11 +103,6 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
   personId,
   returnHref,
 }) => {
-  const {
-    featureAvailabilityLoaded,
-    operationalFeatureIds,
-    refreshFeatureAvailability,
-  } = useFeatureAvailability();
   const { userData } = useUser();
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(!initialPerson);
@@ -121,8 +113,6 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
   const { canDelete, canUpdate, canUpdateContact, canView, canViewContact } =
     getPersonCapabilities(userData);
   const activeSection = canViewContact ? requestedSection : 'identite';
-  const featureOperational = operationalFeatureIds.has(FEATURES.persons.id);
-  const available = !featureAvailabilityLoaded || featureOperational;
   const mountedRef = useRef(false);
   const personRef = useRef(person);
   const requestRef = useRef<AbortController | null>(null);
@@ -210,16 +200,10 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
   }, [acceptPerson, initialPerson, personId]);
 
   useEffect(() => {
-    // Un changement de disponibilité ne remonte pas les formulaires déjà ouverts.
-    if (
-      personRef.current ||
-      !canView ||
-      !featureAvailabilityLoaded ||
-      !featureOperational
-    )
-      return;
+    // A record already shown is never reloaded under an open form.
+    if (personRef.current || !canView) return;
     void retry();
-  }, [canView, featureAvailabilityLoaded, featureOperational, retry]);
+  }, [canView, retry]);
 
   const renderContent = (): React.ReactNode => {
     if (
@@ -228,23 +212,8 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
     ) {
       return (
         <AccessDeniedState
-          actionHref={returnHref}
-          actionLabel="Retour au répertoire"
-          description="Vous n'avez pas la permission de consulter cette fiche."
-        />
-      );
-    }
-
-    if (!featureAvailabilityLoaded && !person && !error)
-      return <DetailSkeleton />;
-
-    if (featureAvailabilityLoaded && !person && !error && !featureOperational) {
-      return (
-        <PageState
-          actionLabel="Revérifier"
-          description="Ce service ne peut pas être confirmé comme disponible pour le moment. Réessayez dans quelques instants."
-          onAction={() => void refreshFeatureAvailability()}
-          title="Répertoire temporairement indisponible"
+          action="consulter cette fiche"
+          back={{ href: returnHref, label: 'Retour au répertoire' }}
         />
       );
     }
@@ -256,7 +225,7 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
         <PageState
           actionHref={returnHref}
           actionLabel="Retour au répertoire"
-          description="Cette fiche est masquée pendant sa suppression définitive. Aucune autre action n'est possible."
+          description="Cette fiche est masquée pendant sa suppression définitive. Aucune autre action n’est possible."
           icon={<Clock3 className="size-5" />}
           title="Suppression en cours"
         />
@@ -268,7 +237,7 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
         <PageState
           actionHref={returnHref}
           actionLabel="Retour au répertoire"
-          description="Cette fiche n'existe pas ou a été supprimée."
+          description="Cette fiche n’existe pas ou a été supprimée."
           title="Fiche introuvable"
         />
       );
@@ -296,24 +265,6 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
     return (
       <EntityDetailLayout
         activeSection={activeSection}
-        afterHero={
-          featureAvailabilityLoaded && !featureOperational ? (
-            <ContentState
-              action={
-                <Button
-                  onClick={() => void refreshFeatureAvailability()}
-                  size="sm"
-                  variant="outline"
-                >
-                  Revérifier
-                </Button>
-              }
-              description="La disponibilité du service ne peut pas être confirmée. Votre saisie est conservée."
-              kind="warning"
-              title="Service temporairement indisponible"
-            />
-          ) : undefined
-        }
         condensedAside={<PersonStatusBadge status={person.structureStatus} />}
         dirtySections={identityDirty ? ['identite'] : []}
         ariaLiveLabel={`Section ${activeSection === 'identite' ? 'Identité' : 'Coordonnées'} affichée`}
@@ -345,7 +296,6 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
           <section aria-label="Identité" className="space-y-5">
             <PersonIdentitySection
               key={person.id}
-              available={available}
               canUpdate={canUpdate}
               onChange={acceptPerson}
               onDirtyChange={setIdentityDirty}
@@ -354,7 +304,6 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
             />
             {canDelete && (
               <PersonDangerZone
-                available={available}
                 onReload={load}
                 person={person}
                 returnHref={returnHref}
@@ -364,7 +313,6 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
         ) : (
           <section aria-label="Coordonnées" className="space-y-5">
             <PersonCollectionsSection
-              available={available}
               canUpdate={canUpdateContact}
               onChange={acceptPerson}
               onReload={load}

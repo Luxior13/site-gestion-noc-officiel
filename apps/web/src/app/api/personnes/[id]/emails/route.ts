@@ -10,7 +10,6 @@ import {
   apiErrors,
   apiSuccess,
   parseJsonBody,
-  withPrivateNoStore,
   zodErrorDetails,
 } from '$server/api-response';
 
@@ -41,14 +40,12 @@ export async function POST(
   try {
     await assertPersonFeatureReady();
 
-    return withPrivateNoStore(
-      apiSuccess(
-        await addPersonEmail(id, parsed.data, {
-          ...auth.user,
-          session: auth.session,
-        }),
-        201,
-      ),
+    return apiSuccess(
+      await addPersonEmail(id, parsed.data, {
+        ...auth.user,
+        session: auth.session,
+      }),
+      201,
     );
   } catch (error) {
     return handlePersonApiError('PERSON_EMAIL_CREATE', error, request);

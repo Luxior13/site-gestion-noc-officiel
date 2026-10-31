@@ -38,7 +38,6 @@ export type NavigationSpace = {
   id: string;
   label: string;
   matchHrefs?: readonly string[];
-  routeBaseHref?: string;
   sections: NavSection[];
   summary: string;
   tone: NavigationSpaceTone;

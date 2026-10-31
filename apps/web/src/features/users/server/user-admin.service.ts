@@ -11,14 +11,14 @@ import {
   omitAccessPermissionOverrides,
   PERMISSIONS,
 } from '$constants/permissions.constants';
-import type { CreateUserInput } from '$features/users/create-user.schema';
+import type { CreateUserInput } from '$features/users/schemas/create-user.schema';
 import {
   getChangedPermissionKeys,
   getPermissionScopeKeySet,
   mergePermissionOverridesForScope,
   toPermissionMap,
   type UserUpdateInput,
-} from '$features/users/user-update.schema';
+} from '$features/users/schemas/user-update.schema';
 import { assertPermission } from '$server/api-auth';
 import { isPrismaUniqueConstraintError } from '$server/api-response';
 import { prisma } from '$server/prisma';
@@ -95,7 +95,7 @@ export const createUserForActor = async (
   if (contactEmail) assertPermission(actor, PERMISSIONS.USERS.UPDATE_CONTACT);
   if (role === 'ADMIN' && !actor.isProtected) {
     throw serviceErrors.forbidden(
-      "Vous n'êtes pas autorisé à créer des comptes administrateurs",
+      'Vous n’êtes pas autorisé à créer des comptes administrateurs',
     );
   }
   const existingUser = await prisma.user.findUnique({
@@ -120,7 +120,7 @@ export const createUserForActor = async (
       (createdUser) => ({
         action: 'USER_CREATE',
         category: 'USER',
-        description: `Utilisateur créé: ${createdUser.loginName}`,
+        description: `Compte créé : ${createdUser.loginName}`,
         metadata: {
           createdUserId: createdUser.id,
           loginName: createdUser.loginName,
@@ -221,7 +221,7 @@ export const updateUserForActor = async (
       isStatusUpdate)
   ) {
     throw serviceErrors.forbidden(
-      "Les paramètres sensibles du superadmin ne sont pas modifiables depuis l'application",
+      'Les paramètres sensibles du superadmin ne sont pas modifiables depuis l’application',
     );
   }
 
@@ -234,7 +234,7 @@ export const updateUserForActor = async (
     (isProfileUpdate || isLoginUpdate || isContactUpdate)
   ) {
     throw serviceErrors.forbidden(
-      "Votre profil personnel ne peut pas être modifié depuis l'administration. Utilisez Mon compte.",
+      'Votre profil personnel ne peut pas être modifié depuis l’administration. Utilisez Mon compte.',
     );
   }
 
@@ -334,7 +334,7 @@ export const updateUserForActor = async (
     !hasCompleteMfa
   ) {
     throw serviceErrors.conflict(
-      "L'utilisateur doit activer complètement sa double authentification avant de recevoir des accès critiques",
+      'L’utilisateur doit activer complètement sa double authentification avant de recevoir des accès critiques',
     );
   }
 
@@ -349,7 +349,7 @@ export const updateUserForActor = async (
     !actor.isProtected
   ) {
     throw serviceErrors.forbidden(
-      'Vous ne pouvez pas modifier vos propres permissions',
+      'Vous ne pouvez pas modifier vos propres autorisations',
     );
   }
 
@@ -367,7 +367,7 @@ export const updateUserForActor = async (
       ) || effectivelyGrantedPermissionKeys.some(lacksPermission);
     if (grantsUnheldPermission) {
       throw serviceErrors.forbidden(
-        'Vous ne pouvez pas accorder une permission que vous ne possédez pas',
+        'Vous ne pouvez pas accorder une autorisation que vous ne possédez pas',
       );
     }
   }

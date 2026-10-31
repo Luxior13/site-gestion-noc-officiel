@@ -8,11 +8,12 @@ import { prisma } from '$server/prisma';
 
 import {
   isJournalSearchApplicable,
+  JOURNAL_MAX_PAGES,
   JOURNAL_PAGE_SIZE,
   type JournalPeriod,
   type JournalQuery,
   type JournalResponse,
-} from '../audit-journal.types';
+} from '../types/audit-journal.types';
 import {
   getReaderRights,
   JOURNAL_AUDIT_LOCATION,
@@ -30,7 +31,6 @@ const PERIOD_MS: Record<JournalPeriod, number> = {
 /** At most one « Journal consulté » per reader in this window. */
 const VIEW_TRACE_WINDOW_MS = 15 * 60_000;
 /** Deep pages are refused: past this, narrow the filters instead. */
-const MAX_PAGE = 200;
 
 const TYPE_FILTERS: Record<
   Exclude<JournalQuery['type'], 'all'>,
@@ -153,7 +153,7 @@ export const listJournalEvents = async (
     ? []
     : await getProtectedAccountIds();
   const where = buildWhere(query, asOf, hiddenAccountIds);
-  const page = Math.min(query.page, MAX_PAGE);
+  const page = Math.min(query.page, JOURNAL_MAX_PAGES);
   const [total, rows, focusLabel] = await Promise.all([
     prisma.auditLog.count({ where }),
     prisma.auditLog.findMany({
@@ -200,7 +200,7 @@ export const listJournalEvents = async (
       page,
       total,
       totalPages: Math.min(
-        MAX_PAGE,
+        JOURNAL_MAX_PAGES,
         Math.max(1, Math.ceil(total / JOURNAL_PAGE_SIZE)),
       ),
     },

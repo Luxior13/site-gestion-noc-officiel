@@ -382,7 +382,7 @@ describe('login rate limiter', () => {
     expect(mocks.auditLog).toHaveBeenCalledWith({
       action: 'ATTEMPTS_BLOCKED',
       category: 'AUTH',
-      description: 'Tentatives bloquées: Member.One',
+      description: 'Tentatives bloquées : Member.One',
       metadata: expect.objectContaining({
         blockedForSeconds: 600,
         loginName: 'Member.One',

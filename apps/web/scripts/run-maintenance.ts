@@ -1,5 +1,7 @@
 import { Prisma } from '@prisma/client';
 
+import { FEATURES } from '../src/shared/constants/feature-registry.constants';
+import { createAuditLog } from '../src/shared/server/audit-log';
 import { prisma } from '../src/shared/server/prisma';
 import { getSystemSettingValue } from '../src/shared/server/system-settings';
 
@@ -38,6 +40,26 @@ try {
           ],
         },
       });
+
+      // Deleting journal events is journaled too (audit of 31 October
+      // 2026): one « Journal purgé » event per run that deletes some, in the
+      // same transaction. A run that deletes nothing writes nothing.
+      const deletedEvents = Number(auditRows[0]?.deletedCount ?? 0n);
+      if (deletedEvents > 0)
+        await createAuditLog(
+          {
+            action: 'AUDIT_PURGE',
+            category: 'SYSTEM',
+            description: `Journal purgé : ${deletedEvents} événements de plus de ${auditRetentionDays} jours`,
+            metadata: {
+              ...FEATURES.systemActivity.audit,
+              deletedEvents,
+              expiredSessions: sessions.count,
+              retentionDays: auditRetentionDays,
+            },
+          },
+          transaction,
+        );
 
       return {
         auditRows,

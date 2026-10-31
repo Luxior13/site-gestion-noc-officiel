@@ -224,8 +224,8 @@ export const UserProvider: FC<UserProviderProps> = ({
       setSessionRememberMe(data.session.rememberMe);
       lastActivityRef.current = activityAt;
       lastServerActivitySyncRef.current = activityAt;
+      // Arriving on the home page says it already: no toast (audit AC-35).
       publishSessionActivity(activityAt);
-      toast.success('Connexion réussie');
     },
     [acceptUserSnapshot],
   );

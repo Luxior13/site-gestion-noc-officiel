@@ -20,6 +20,15 @@ describe('client address behind trusted proxies', () => {
     expect(getClientIp(forwarded, 2)).toBe('203.0.113.9');
   });
 
+  it('stores an IPv4-mapped client under its IPv4 spelling', () => {
+    expect(
+      getClientIp(headers({ 'x-forwarded-for': '::ffff:203.0.113.9' }), 1),
+    ).toBe('203.0.113.9');
+    expect(getClientIp(headers({ 'x-real-ip': '::FFFF:192.0.2.4' }), 1)).toBe(
+      '192.0.2.4',
+    );
+  });
+
   it('falls back to x-real-ip when fewer hops are present than configured', () => {
     expect(
       getClientIp(

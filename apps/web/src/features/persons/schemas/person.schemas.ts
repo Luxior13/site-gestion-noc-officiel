@@ -15,27 +15,15 @@ import {
   PERSON_STRUCTURE_STATUSES,
 } from '../person.constants';
 import {
-  getApplicationCivilDateParts,
   normalizePersonEmail,
-  normalizePersonSearchValue,
   normalizePersonSocialIdentifier,
   normalizePersonSocialUrl,
 } from '../person.utils';
-
-// These builders intentionally retain their precise inferred Zod pipeline
-// types so `z.input` and `z.output` stay distinct after transforms.
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const optionalTrimmed = (max: number, message: string) =>
-  z
-    .string()
-    .max(max, message)
-    .nullable()
-    .optional()
-    .transform((value) => {
-      const trimmed = value?.trim() ?? '';
-
-      return trimmed.length > 0 ? trimmed : null;
-    });
+import {
+  identityShape,
+  optionalTrimmed,
+  withMinimumIdentity,
+} from './person-identity.schemas';
 
 const requiredLabel = z
   .string()
@@ -43,119 +31,12 @@ const requiredLabel = z
   .min(1, 'Libellé requis')
   .max(40, 'Le libellé ne peut pas dépasser 40 caractères');
 
-const birthDateSchema = z
-  .string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date de naissance invalide')
-  .nullable()
-  .optional()
-  .transform((value) => value || null)
-  .superRefine((value, context) => {
-    if (!value) return;
-    const [year, month, day] = value.split('-').map(Number);
-    const parsed = new Date(Date.UTC(year ?? 0, (month ?? 1) - 1, day ?? 1));
-    if (
-      parsed.getUTCFullYear() !== year ||
-      parsed.getUTCMonth() !== (month ?? 1) - 1 ||
-      parsed.getUTCDate() !== day
-    ) {
-      context.addIssue({
-        code: 'custom',
-        message: 'Date de naissance invalide',
-      });
-
-      return;
-    }
-
-    const current = getApplicationCivilDateParts();
-    if (!current) {
-      context.addIssue({
-        code: 'custom',
-        message: 'Date de naissance invalide',
-      });
-
-      return;
-    }
-    const today = new Date(
-      Date.UTC(current.year, current.month - 1, current.day),
-    );
-    const oldest = new Date(today);
-    oldest.setUTCFullYear(oldest.getUTCFullYear() - 120);
-    if (parsed > today) {
-      context.addIssue({
-        code: 'custom',
-        message: 'La date ne peut pas être future',
-      });
-    } else if (parsed < oldest) {
-      context.addIssue({
-        code: 'custom',
-        message: 'La date ne peut pas remonter à plus de 120 ans',
-      });
-    }
-  });
-
-const identityShape = {
-  birthDate: birthDateSchema,
-  firstName: optionalTrimmed(
-    100,
-    'Le prénom ne peut pas dépasser 100 caractères',
-  ),
-  lastName: optionalTrimmed(100, 'Le nom ne peut pas dépasser 100 caractères'),
-  nickname: optionalTrimmed(80, 'Le pseudo ne peut pas dépasser 80 caractères'),
-  structureStatus: z
-    .enum(PERSON_STRUCTURE_STATUSES)
-    .default('OUTSIDE_STRUCTURE'),
-};
-
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Preserve the generic Zod object shape.
-const withMinimumIdentity = <T extends z.ZodRawShape>(shape: T) =>
-  z
-    .object(shape)
-    .strict()
-    .superRefine((value, context) => {
-      const identity = value as {
-        firstName?: string | null;
-        lastName?: string | null;
-        nickname?: string | null;
-      };
-      if (!identity.nickname && !(identity.firstName && identity.lastName)) {
-        context.addIssue({
-          code: 'custom',
-          message: 'Renseignez un pseudo, ou le prénom et le nom',
-          path: ['nickname'],
-        });
-      }
-      const normalizedLimits = [
-        ['nickname', identity.nickname, 160],
-        ['firstName', identity.firstName, 200],
-        ['lastName', identity.lastName, 200],
-      ] as const;
-      for (const [field, fieldValue, max] of normalizedLimits) {
-        const normalized = fieldValue
-          ? normalizePersonSearchValue(fieldValue)
-          : null;
-        if (normalized === '') {
-          context.addIssue({
-            code: 'custom',
-            message:
-              'Renseignez au moins un caractère autre qu’un accent isolé',
-            path: [field],
-          });
-        } else if (normalized && normalized.length > max) {
-          context.addIssue({
-            code: 'custom',
-            message: 'Cette valeur contient trop de caractères normalisés',
-            path: [field],
-          });
-        }
-      }
-    });
-
 const personEmailInputSchema = z
   .object({
     email: z
       .string()
       .trim()
-      .max(320, "L'email ne peut pas dépasser 320 caractères")
+      .max(320, 'L’email ne peut pas dépasser 320 caractères')
       .email('Email invalide'),
     isPrimary: z.boolean().optional().default(false),
     label: requiredLabel,
@@ -211,7 +92,7 @@ const personPhoneInputSchema = buildPersonPhoneSchema({});
 
 const optionalUrl = z
   .string()
-  .max(2_048, "L'URL ne peut pas dépasser 2 048 caractères")
+  .max(2_048, 'L’URL ne peut pas dépasser 2 048 caractères')
   .nullable()
   .optional()
   .transform((value) => value?.trim() || null)
@@ -234,7 +115,7 @@ const optionalUrl = z
 const personSocialProfileShape = {
   identifier: optionalTrimmed(
     100,
-    "L'identifiant ne peut pas dépasser 100 caractères",
+    'L’identifiant ne peut pas dépasser 100 caractères',
   ),
   isPrimary: z.boolean().optional().default(false),
   label: requiredLabel,
@@ -273,7 +154,7 @@ const buildPersonSocialProfileSchema = <T extends z.ZodRawShape>(
       ) {
         context.addIssue({
           code: 'custom',
-          message: "L'identifiant normalisé est trop long",
+          message: 'L’identifiant normalisé est trop long',
           path: ['identifier'],
         });
       }
@@ -284,7 +165,7 @@ const buildPersonSocialProfileSchema = <T extends z.ZodRawShape>(
           ) {
             context.addIssue({
               code: 'custom',
-              message: "L'URL normalisée dépasse 2 048 caractères",
+              message: 'L’URL normalisée dépasse 2 048 caractères',
               path: ['profileUrl'],
             });
           }
@@ -301,7 +182,7 @@ export const personSocialProfileInputSchema = buildPersonSocialProfileSchema(
   if (isSelectablePersonSocialNetwork(value.networkKey)) return;
   context.addIssue({
     code: 'custom',
-    message: "Ce réseau n'accepte plus de nouveaux profils",
+    message: 'Ce réseau n’accepte plus de nouveaux profils',
     path: ['networkKey'],
   });
 });
@@ -408,11 +289,6 @@ export const createPersonSchema = withMinimumIdentity({
   });
 });
 
-export const updatePersonSchema = withMinimumIdentity({
-  ...identityShape,
-  version: z.number().int().positive(),
-});
-
 export const createPersonEmailSchema = personEmailInputSchema.extend({
   personVersion: z.number().int().positive(),
 });
@@ -437,7 +313,7 @@ export const createPersonSocialProfileSchema = buildPersonSocialProfileSchema({
   if (isSelectablePersonSocialNetwork(value.networkKey)) return;
   context.addIssue({
     code: 'custom',
-    message: "Ce réseau n'accepte plus de nouveaux profils",
+    message: 'Ce réseau n’accepte plus de nouveaux profils',
     path: ['networkKey'],
   });
 });
@@ -475,16 +351,7 @@ export const personsListQuerySchema = z
   })
   .strict();
 
-export const personFieldHistoryQuerySchema = z
-  .object({
-    fieldKey: z.string().trim().min(1).max(100),
-    recordId: z.string().cuid().nullable().optional(),
-    sectionKey: z.string().trim().min(1).max(64),
-  })
-  .strict();
-
 export type CreatePersonInput = z.infer<typeof createPersonSchema>;
-export type UpdatePersonInput = z.infer<typeof updatePersonSchema>;
 export type CreatePersonEmailInput = z.infer<typeof createPersonEmailSchema>;
 export type UpdatePersonEmailInput = z.infer<typeof updatePersonEmailSchema>;
 export type CreatePersonPhoneInput = z.infer<typeof createPersonPhoneSchema>;

@@ -14,7 +14,7 @@ aucune correction du code produit dans cette passe.**
 - Branche `main`, commit `2f8db36` ; arbre de travail propre au début de cette
   passe. Les corrections documentaires précédentes sont déjà dans ce commit.
 - Sources : [page](../../apps/web/src/app/systeme/utilisateurs/page.tsx),
-  [liste](../../apps/web/src/features/users/UsersListPage.tsx),
+  [liste](../../apps/web/src/features/users/components/UsersListPage.tsx),
   synthèse `UsersOverview.tsx` (fichier retiré le 20 octobre 2026),
   [GET](../../apps/web/src/app/api/users/route.ts),
   [projection de visibilité](../../apps/web/src/shared/server/user-visibility.ts),
@@ -185,7 +185,7 @@ Depuis `apps/web` :
 ```powershell
 bun run test src/__tests__/users-list-presentation.test.ts src/__tests__/admin-users-list-a11y-contracts.test.ts src/__tests__/users-access-hardening.test.ts src/__tests__/api-auth.test.ts src/__tests__/permissions.test.ts src/__tests__/default-page-size-ux-contracts.test.ts src/__tests__/design-system-contracts.test.ts src/__tests__/server-page-auth.test.ts
 bun run typecheck
-bunx eslint src/features/users/UsersListPage.tsx src/features/users/UsersOverview.tsx src/features/users/users-list.utils.ts src/app/systeme/utilisateurs/page.tsx src/app/api/users/route.ts
+bunx eslint src/features/users/components/UsersListPage.tsx src/features/users/UsersOverview.tsx src/features/users/users-list.utils.ts src/app/systeme/utilisateurs/page.tsx src/app/api/users/route.ts
 bun run check:architecture
 ```
 

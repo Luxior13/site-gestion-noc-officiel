@@ -7,7 +7,6 @@ import {
   isPersonEnvironmentConfigured,
   isPersonReady,
 } from '$features/persons/server/person-readiness';
-import { isPersonSchemaCatalogReady } from '$features/persons/server/person-schema-readiness';
 import { getRequestId } from '$utils/request-context.utils';
 
 import { logger } from './logger';
@@ -84,6 +83,29 @@ const checkCoreSchema = async (): Promise<boolean> => {
   return rows[0]?.ready === true;
 };
 
+/**
+ * The deployment applies every migration before the server starts (safe
+ * wrapper, docs/exploitation/operations.md): the probe only checks that the
+ * Répertoire tables exist. A deeper catalogue contract and a client polling it
+ * every 30 seconds were retired on 31 October 2026 (SYS-11); the persons API
+ * answers an explicit 503 if its schema is still missing.
+ */
+const checkPersonsSchema = async (): Promise<boolean> => {
+  const rows = await prisma.$queryRaw<CoreSchemaRow[]>`
+    SELECT bool_and(
+      to_regclass(format('%I.%I', current_schema(), required_table.name))
+      IS NOT NULL
+    ) AS "ready"
+    FROM (VALUES
+      ('Person'), ('PersonEmail'), ('PersonPhone'), ('PersonSocialProfile'),
+      ('PersonDeletionTombstone'), ('AuditFieldChange'),
+      ('AuditEncryptionKeyVersion')
+    ) AS required_table(name)
+  `;
+
+  return rows[0]?.ready === true;
+};
+
 const performReadinessCheck = async (): Promise<ReadinessResponse> => {
   const coreSchemaReady = await checkCoreSchema();
   if (!coreSchemaReady) {
@@ -112,7 +134,7 @@ const performReadinessCheck = async (): Promise<ReadinessResponse> => {
     ? 'ready'
     : 'not_configured';
 
-  const personSchemaReady = await isPersonSchemaCatalogReady(prisma);
+  const personSchemaReady = await checkPersonsSchema();
   let personsStatus: ReadinessResponse['checks']['persons'] =
     'schema_not_ready';
   if (personSchemaReady) {

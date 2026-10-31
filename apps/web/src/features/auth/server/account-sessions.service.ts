@@ -148,7 +148,7 @@ export const revokeAccountSessions = async (
         {
           action: 'SESSION_INVALIDATE',
           category: 'AUTH',
-          description: 'Session révoquée',
+          description: 'Session fermée',
           metadata: { ...ACCOUNT_SECURITY_AUDIT_LOCATION, revokedSessions: 1 },
           targetUserId: userId,
           userId,
@@ -166,7 +166,7 @@ export const revokeAccountSessions = async (
       {
         action: 'SESSION_INVALIDATE',
         category: 'AUTH',
-        description: 'Toutes les autres sessions révoquées',
+        description: 'Toutes les autres sessions fermées',
         metadata: {
           ...ACCOUNT_SECURITY_AUDIT_LOCATION,
           revokedSessions: deleteResult.count,

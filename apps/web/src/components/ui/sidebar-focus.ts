@@ -4,12 +4,8 @@ import * as React from 'react';
 
 import { MOBILE_MEDIA_QUERY } from './sidebar-context';
 
-export function useSidebarResponsiveFocus(
-  sidebarId: string,
-  enabled: boolean,
-): void {
+export function useSidebarResponsiveFocus(sidebarId: string): void {
   React.useEffect(() => {
-    if (!enabled) return;
     const media = window.matchMedia(MOBILE_MEDIA_QUERY);
     let frame = 0;
     let lastFocus: {
@@ -101,5 +97,5 @@ export function useSidebarResponsiveFocus(
       document.removeEventListener('pointerdown', clearRememberedFocus, true);
       window.cancelAnimationFrame(frame);
     };
-  }, [enabled, sidebarId]);
+  }, [sidebarId]);
 }

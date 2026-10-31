@@ -57,9 +57,8 @@ export const UserDetailUnavailable: FC<{
     <AuthenticatedLayout breadcrumbs={recordBreadcrumbs(returnHref)}>
       {errorStatus === 403 ? (
         <AccessDeniedState
-          actionHref={returnHref}
-          actionLabel="Retour aux utilisateurs"
-          description="Vous n'avez pas la permission de consulter cet utilisateur."
+          action="consulter cet utilisateur"
+          back={{ href: returnHref, label: 'Retour aux utilisateurs' }}
         />
       ) : (
         <PageState
@@ -67,8 +66,8 @@ export const UserDetailUnavailable: FC<{
           actionLabel={isNotFound ? 'Retour aux utilisateurs' : 'Réessayer'}
           description={
             isNotFound
-              ? "Ce compte n'existe pas ou a été supprimé."
-              : errorMessage || "Impossible de charger l'utilisateur."
+              ? 'Ce compte n’existe pas ou a été supprimé.'
+              : errorMessage || 'Impossible de charger l’utilisateur.'
           }
           onAction={isNotFound ? undefined : onRetry}
           secondaryActionHref={isNotFound ? undefined : returnHref}

@@ -50,7 +50,6 @@ export const PERSON_SOCIAL_LABEL_SUGGESTIONS = [
 
 export const PERSON_LIMITS = {
   emails: 10,
-  fieldHistory: 2,
   phones: 10,
   socialProfiles: 20,
 } as const;

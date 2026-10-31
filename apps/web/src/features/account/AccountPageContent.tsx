@@ -185,7 +185,7 @@ const AccountContent: FC<{ userData: UserType }> = ({ userData }) => {
         </div>
       </div>
       <UnsavedNavigationDialog
-        description="Les saisies du profil et de l’adresse de contact seront perdues. Une opération déjà envoyée peut avoir été enregistrée. Vous pouvez rester sur la page pour vérifier son résultat."
+        description="Les saisies du profil et de l’email de contact seront perdues. Une opération déjà envoyée peut avoir été enregistrée. Vous pouvez rester sur la page pour vérifier son résultat."
         open={pendingNavigationHref !== null}
         onCancel={cancelPendingNavigation}
         onConfirm={confirmPendingNavigation}

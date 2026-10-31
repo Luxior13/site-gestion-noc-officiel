@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
 import { getNavigationSpaceItems, NAV_SPACES } from '$constants/app.constants';
-import { RESERVED_PLANNED_HREFS } from '$constants/reserved-planned-hrefs.constants';
 import {
   ROADMAP_AREAS,
   ROADMAP_ITEMS,
@@ -13,13 +12,9 @@ describe('roadmap planning contracts', () => {
     const covered = new Set(
       ROADMAP_ITEMS.flatMap((item) => item.legacyHrefs ?? []),
     );
-    for (const href of RESERVED_PLANNED_HREFS)
-      expect(covered.has(href), href).toBe(true);
     const live = NAV_SPACES.flatMap(getNavigationSpaceItems);
     expect(live.every((item) => item.availability === 'live')).toBe(true);
-    expect(live.every((item) => !RESERVED_PLANNED_HREFS.has(item.href))).toBe(
-      true,
-    );
+    expect(live.every((item) => !covered.has(item.href))).toBe(true);
   });
 
   it('has unique identities and valid area and phase references', () => {

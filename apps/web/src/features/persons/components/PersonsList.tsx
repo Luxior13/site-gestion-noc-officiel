@@ -364,9 +364,10 @@ export const PersonsList: FC<PersonsListProps> = ({
                       <PersonAvatarFrame person={person} />
                       <div className="min-w-0 flex-1 space-y-2">
                         <div className="min-w-0">
-                          <h3 className="text-foreground group-hover:text-primary-emphasis min-w-0 text-sm font-semibold [overflow-wrap:anywhere] group-hover:underline group-hover:underline-offset-[3px]">
+                          {/* h2: the list sits right under the page title. */}
+                          <h2 className="text-foreground group-hover:text-primary-emphasis min-w-0 text-sm font-semibold [overflow-wrap:anywhere] group-hover:underline group-hover:underline-offset-[3px]">
                             {getPersonDisplayName(person)}
-                          </h3>
+                          </h2>
                           {person.matchedByContact && (
                             <PersonContactMatchHint />
                           )}

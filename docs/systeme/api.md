@@ -4,12 +4,15 @@
 [Fiche API et concurrence](../references/api-concurrence.md) ·
 [Permissions](../domaines/permissions.md)
 
-Relevé du 19 octobre 2026 : **33 fichiers `route.ts`** sous
+Relevé du 31 octobre 2026 : **32 fichiers `route.ts`** (`/api/users/[id]/audit` retirée le 25 octobre, `/api/audit` ajoutée le 30 octobre 2026) sous
 `apps/web/src/app/api`. Contrat commun : `requireAuth()` →
 `requirePermission(user, PERMISSIONS.X.Y)` → `parseJsonBody` et
 `schema.safeParse` → service de `features/<module>/server` → `apiSuccess` /
-`apiErrors` dans `withPrivateNoStore`. Le middleware impose le jeton CSRF sur
-toute mutation et limite le débit.
+`apiErrors`. Une seule règle de cache depuis le 31 octobre 2026 ([SYS-12](constats.md)) :
+`apiSuccess` et `apiError` marquent chaque réponse `private, no-store`, une route
+n’emploie `withPrivateNoStore` que pour une réponse brute (204, réponse sans
+enveloppe) et le middleware répète l’en-tête sur toute l’API. Le middleware
+impose aussi le jeton CSRF sur toute mutation et limite le débit.
 
 **Protections relevées** : gardes et permissions citées dans le fichier de la
 route. Une route qui délègue son contrôle à un service le fait dans le service ;
@@ -45,7 +48,9 @@ ce relevé n’est pas une revue de sécurité.
 | `/api/personnes/[id]/reseaux-sociaux` | POST | `persons:update_contact` |
 | `/api/personnes/[id]/reseaux-sociaux/[profileId]` | PATCH, DELETE | `persons:update_contact` |
 
-Toutes ces routes répondent avec `withPrivateNoStore`.
+Comme toute l’API, ces routes répondent `private, no-store`. Une base pas
+encore migrée répond un 503 explicite (« Le Répertoire attend une mise à jour de
+la base de données ») au lieu d’une erreur générique ([SYS-11](constats.md)).
 
 ## Utilisateurs
 
@@ -65,7 +70,7 @@ Toutes ces routes répondent avec `withPrivateNoStore`.
 | `/api/systeme/parametres` | GET | `settings:view` |
 | `/api/systeme/parametres/[key]` | PUT | `settings:update`, preuve récente de mot de passe |
 | `/api/observability/web-vitals` | POST | `requireAuth` |
-| `/api/health`, `/api/health/live`, `/api/health/ready` | GET | Publiques ; aucune donnée personnelle |
+| `/api/health`, `/api/health/live`, `/api/health/ready` | GET | Publiques ; aucune donnée personnelle. `ready` sert au déploiement : base, schéma central, clés MFA et présence des tables du Répertoire ; plus aucune page ne l’interroge depuis le 31 octobre 2026 |
 
 ## Relevé
 

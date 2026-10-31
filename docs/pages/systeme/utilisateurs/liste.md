@@ -10,7 +10,7 @@
 | Espace | Système |
 | Gabarit visé | [A. Liste de gestion](../../../design/gabarits.md#a-liste-de-gestion) |
 | État d’harmonisation | Page de référence, complément du Répertoire (validée le 17 octobre 2026), alignée le 20 octobre 2026 sur les filtres rapides — voir [Harmonisation](../../../design/harmonisation.md#état-par-page) |
-| Point d’entrée | [page.tsx](../../../../apps/web/src/app/systeme/utilisateurs/page.tsx) → [UsersListPage](../../../../apps/web/src/features/users/UsersListPage.tsx) |
+| Point d’entrée | [page.tsx](../../../../apps/web/src/app/systeme/utilisateurs/page.tsx) → [UsersListPage](../../../../apps/web/src/features/users/components/UsersListPage.tsx) |
 | Contrôle d’accès | `users:view` (page et `GET /api/users`) ; colonnes contact `users:view_contact`, sécurité `users:view_security` ; création `users:create` |
 | Chargement / erreur dédiés | oui, `UsersDirectorySkeleton` / commune à l’application |
 
@@ -336,7 +336,7 @@ Dans `apps/web`, le 26 septembre 2026 :
 ```text
 bunx vitest run src/__tests__/users-list-presentation.test.ts src/__tests__/users-access-hardening.test.ts src/__tests__/admin-users-list-a11y-contracts.test.ts src/__tests__/api-auth.test.ts src/__tests__/api-response.test.ts src/__tests__/design-system-contracts.test.ts src/__tests__/authenticated-shell-ux-contracts.test.ts
 bunx tsc --noEmit
-bunx eslint src/features/users/users-list.utils.ts src/features/users/UsersListPage.tsx src/app/systeme/utilisateurs/page.tsx src/app/api/users/route.ts src/__tests__/users-list-presentation.test.ts src/__tests__/users-access-hardening.test.ts src/__tests__/admin-users-list-a11y-contracts.test.ts
+bunx eslint src/features/users/users-list.utils.ts src/features/users/components/UsersListPage.tsx src/app/systeme/utilisateurs/page.tsx src/app/api/users/route.ts src/__tests__/users-list-presentation.test.ts src/__tests__/users-access-hardening.test.ts src/__tests__/admin-users-list-a11y-contracts.test.ts
 bun run check:architecture
 ```
 

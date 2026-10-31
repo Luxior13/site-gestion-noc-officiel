@@ -63,7 +63,6 @@ describe('person API error mapping', () => {
 
   it.each([
     ['INVALID_CURSOR', 'Curseur'],
-    ['INVALID_PERSON_HISTORY_FIELD', 'historique'],
     ['PERSON_EMAIL_LIMIT', '10'],
     ['PERSON_PHONE_LIMIT', '10'],
     ['PERSON_SOCIAL_PROFILE_LIMIT', '20'],
@@ -94,6 +93,37 @@ describe('person API error mapping', () => {
 
     expect(response.status).toBe(409);
     expect((await responseBody(response)).error.code).toBe(ErrorCode.CONFLICT);
+  });
+
+  // SYS-11 (31 October 2026): no client probe anymore, so a database not
+  // yet migrated must answer an explicit 503 instead of a generic 500.
+  it('answers an explicit 503 when the Répertoire schema is missing', async () => {
+    const missing = (code: string, sqlState?: string): Error =>
+      new Prisma.PrismaClientKnownRequestError('missing', {
+        clientVersion: '6.19.3',
+        code,
+        ...(sqlState ? { meta: { code: sqlState } } : {}),
+      });
+
+    for (const error of [
+      missing('P2021'),
+      missing('P2022'),
+      missing('P2010', '42P01'),
+      missing('P2010', '42703'),
+    ]) {
+      const response = await handlePersonApiError('PERSON_LIST', error);
+      const body = await responseBody(response);
+
+      expect(response.status).toBe(503);
+      expect(body.error.code).toBe(ErrorCode.PERSON_FEATURE_NOT_CONFIGURED);
+      expect(body.error.message).toContain('mise à jour de la base de données');
+    }
+    expect(
+      (await handlePersonApiError('PERSON_LIST', missing('P2010', '23505')))
+        .status,
+    ).toBe(500);
+    // That generic 500 was logged; the next test counts its own log.
+    mocks.loggerError.mockClear();
   });
 
   it('returns a generic 500 and correlates logs without leaking the thrown message', async () => {

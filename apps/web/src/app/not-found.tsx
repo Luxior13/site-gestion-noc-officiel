@@ -27,12 +27,12 @@ const NotFoundPage: FC = () => {
             </h1>
           </div>
           <p className="text-muted-foreground">
-            La page que vous recherchez n&apos;existe pas ou a été déplacée.
+            La page que vous recherchez n’existe pas ou a été déplacée.
           </p>
           <Button asChild>
             <Link href="/">
               <ArrowLeft aria-hidden="true" className="size-4" />
-              Retour à l&apos;accueil
+              Retour à l’accueil
             </Link>
           </Button>
         </CardContent>

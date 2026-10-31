@@ -105,7 +105,7 @@ export const startPasswordLogin = async (input: {
   if (!result.success) {
     await recordLoginAudit({
       action: 'LOGIN_FAILED',
-      description: `Connexion échouée: ${input.loginName}`,
+      description: `Connexion échouée : ${input.loginName}`,
       loginName: input.loginName,
       reason: result.error,
       userId: result.userId,
@@ -119,7 +119,7 @@ export const startPasswordLogin = async (input: {
   if (hasEnabledMfa !== (result.user.totpCredential !== null)) {
     await recordLoginAudit({
       action: 'LOGIN_FAILED',
-      description: `Connexion interrompue: ${result.user.loginName}`,
+      description: `Connexion interrompue : ${result.user.loginName}`,
       loginName: result.user.loginName,
       reason: 'MFA_STATE_INCONSISTENT',
       userId: result.user.id,
@@ -217,7 +217,7 @@ export const completeMfaLogin = async (input: {
     await createAuditLogWithHeaders({
       action: 'LOGIN_FAILED',
       category: 'AUTH',
-      description: 'Vérification à deux facteurs échouée',
+      description: 'Code de double authentification refusé',
       metadata: { ...AUTH_CONNECTION_AUDIT_LOCATION, reason: 'MFA_INVALID' },
       targetUserId: challenge.userId,
       userId: null,
@@ -233,7 +233,7 @@ export const completeMfaLogin = async (input: {
     {
       action: 'LOGIN_SUCCESS',
       category: 'AUTH',
-      description: `Connexion réussie: ${challenge.user.loginName}`,
+      description: `Connexion réussie : ${challenge.user.loginName}`,
       metadata: {
         ...AUTH_CONNECTION_AUDIT_LOCATION,
         authenticationMethod:
@@ -250,7 +250,7 @@ export const completeMfaLogin = async (input: {
               {
                 action: 'MFA_RECOVERY_CODE_USED',
                 category: 'AUTH',
-                description: 'Code de récupération MFA utilisé',
+                description: 'Code de secours utilisé',
                 metadata: AUTH_CONNECTION_AUDIT_LOCATION,
                 targetUserId: challenge.userId,
                 userId: challenge.userId,

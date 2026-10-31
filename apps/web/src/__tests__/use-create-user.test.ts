@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   type CreateUserController,
   useCreateUser as createUserController,
-} from '$features/users/useCreateUser';
+} from '$features/users/hooks/useCreateUser';
 
 import { HookRuntime } from './helpers/hook-runtime';
 

@@ -1,4 +1,4 @@
-import type { RoadmapItem } from './roadmap.types';
+import type { RoadmapItem } from './types/roadmap.types';
 
 export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
   {
@@ -378,7 +378,7 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     description:
       'Expliquer qui a fait quoi, quand et sur quel dossier, sans exposer les données sensibles.',
     doneWhen:
-      'Chaque événement conserve sa source, sa portée et ses preuves ; les détails sensibles restent filtrés par permission.',
+      'Chaque événement conserve sa source, sa portée et ses preuves ; les détails sensibles restent filtrés par autorisation.',
     firstRelease:
       'Vue globale filtrable, recherche par acteur et par catégorie, export autorisé et suivi des accès.',
     id: 'activity-journal',

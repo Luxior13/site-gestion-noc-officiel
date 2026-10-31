@@ -11,7 +11,7 @@ import {
 import {
   getChangedPermissionKeys,
   type UserUpdateInput,
-} from '$features/users/user-update.schema';
+} from '$features/users/schemas/user-update.schema';
 import {
   type AuditLogInput,
   createAuditLogWithHeaders,
@@ -208,7 +208,7 @@ export const updateUserWithAudit = async ({
     auditEntries.push({
       action: 'USER_DEACTIVATE',
       category: 'USER',
-      description: `Utilisateur désactivé: ${updatedLoginName}`,
+      description: `Compte désactivé : ${updatedLoginName}`,
       metadata: {
         after: afterValues,
         before: beforeValues,
@@ -224,7 +224,7 @@ export const updateUserWithAudit = async ({
     auditEntries.push({
       action: 'USER_ACTIVATE',
       category: 'USER',
-      description: `Utilisateur réactivé: ${updatedLoginName}`,
+      description: `Compte réactivé : ${updatedLoginName}`,
       metadata: {
         after: afterValues,
         before: beforeValues,
@@ -262,7 +262,7 @@ export const updateUserWithAudit = async ({
     auditEntries.push({
       action: 'USER_UPDATE',
       category: 'USER',
-      description: `Utilisateur modifié: ${updatedLoginName}`,
+      description: `Compte modifié : ${updatedLoginName}`,
       metadata: {
         after: afterValues,
         before: beforeValues,

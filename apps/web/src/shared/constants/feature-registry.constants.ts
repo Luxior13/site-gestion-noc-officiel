@@ -96,7 +96,7 @@ export const FEATURES = {
   systemActivity: defineFeature({
     audit: {
       pageKey: 'system-activity',
-      pageLabel: "Journal d'activité",
+      pageLabel: 'Journal d’activité',
       poleKey: 'system',
       poleLabel: 'Système',
     },
@@ -105,7 +105,7 @@ export const FEATURES = {
     href: PAGE_PATHS.systemActivity,
     icon: 'History',
     id: 'system-activity',
-    label: "Journal d'activité",
+    label: 'Journal d’activité',
     permissionMode: 'all',
     requiredPermissions: [PERMISSIONS.AUDIT.VIEW],
   }),
@@ -147,9 +147,6 @@ type FeatureKey = keyof typeof FEATURES;
 export type FeatureId = (typeof FEATURES)[FeatureKey]['id'];
 
 export const FEATURE_LIST = Object.values(FEATURES);
-
-export const getFeatureByHref = (href: string): FeatureDefinition | null =>
-  FEATURE_LIST.find((feature) => feature.href === href) ?? null;
 
 export const getFeatureById = (id: string): FeatureDefinition | null =>
   FEATURE_LIST.find((feature) => feature.id === id) ?? null;

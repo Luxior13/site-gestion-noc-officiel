@@ -17,10 +17,12 @@
 | Contrôle d’accès | `audit:view` : administrateurs par la règle du rôle, utilisateur sur octroi (critique : double authentification exigée du destinataire) |
 | Code | `features/audit` (types, page, liste, hook, lien « Historique »), `features/audit/server` (service, projection, libellés), `app/api/audit/route.ts`, `app/systeme/journal-activite/page.tsx` |
 
-> Page retirée le 9 octobre 2026 et replanifiée sur `/systeme/feuille-de-route`.
-> Ce suivi est conservé comme historique ; l’audit serveur et l’historique des
-> personnes persistent. L’onglet Activité utilisateur a depuis été retiré ;
-> l’existence d’une API historique ne signifie pas qu’une vue est disponible.
+> Les sections placées après « Sélection des 36 points » (« Identité et état »,
+> « Constats et traitement », « Points ouverts et déclencheurs »…) décrivent
+> l’ancienne version, retirée le 9 octobre 2026. Leurs points (export proche de
+> 50 000 lignes, JA-15, JA-16, fichier de la barre latérale) ne s’appliquent pas
+> à la version reconstruite ; ses points ouverts sont dans la section
+> [Audit complet du 31 octobre 2026](#audit-complet-du-31-octobre-2026).
 
 ## Reconstruction — cadrage du 30 octobre 2026
 
@@ -186,7 +188,7 @@ Livrée telle que cadrée, avec ces écarts, tous vérifiés :
 | Période | 24 h, 7 jours (défaut), 30 jours, 1 an ; **pas de dates personnalisées** | « 1 an » couvre toute la conservation ; à ajouter sur besoin |
 | Filtres rapides | Sans compteur ; le total de la vue s’affiche dessous | Un compteur par filtre demanderait une requête chacun |
 | Recherche | Noms et identifiants figés de l’auteur et du compte concerné, sans repli des accents ; trois lettres ou chiffres minimum ; `%` ignoré | Index trigrammes existants |
-| Auteur absent | « Aucun compte reconnu » pour une tentative de connexion, « Système » sinon, décidé par le serveur | Ne pas le déduire du libellé |
+| Auteur absent | « Personne non connectée » pour une tentative de connexion (31 octobre 2026, au lieu de « Aucun compte reconnu »), « Système » sinon, décidé par le serveur | Ne pas le déduire du libellé |
 | Lignes | Composant `Button` (règle des primitives) ; mention d’importance (« Échec », « Important », « À surveiller ») jamais tronquée, le libellé l’est | Captures à 768 px |
 | Requêtes de conteneur | Sans nom (`@container (min-width: 44rem)`) | Un module CSS peut renommer un nom de conteneur (constaté avec esbuild) |
 | Fiches | Lien « Historique » dans l’en-tête de la fiche utilisateur et de la fiche personne : journal sur 1 an filtré sur ce compte ou cette fiche ; absent pour le compte protégé vu par un autre | Remplace la provenance retirée le 27 octobre |
@@ -218,6 +220,37 @@ client [journal-activite-2026-10-30](../../audits/journal-activite-2026-10-30/ba
 (base jetable locale, build de production : trace « Journal consulté », compte
 créé listé, IP visible pour le superadmin, filtre Sécurité, lien « Historique »
 de la fiche utilisateur ; contrôle mobile de la page et aucun refus CSP).
+Rejoué le même jour après les tentatives bloquées, la retouche du bloc déplié,
+le lien « Ouvrir le compte » et les libellés de l’audit complet : **réussi**
+une fois le titre attendu passé en apostrophe typographique (AC-22) ; suites
+PostgreSQL 227/227 après mise à jour de deux attentes de `account-postgres`
+(une preuve refusée écrit désormais « Confirmation d’identité échouée »).
+
+### Audit complet du 31 octobre 2026
+
+[Rapport](../../audits/2026-10-31-audit-complet.md) : vérifié sur un vrai serveur
+(base jetable) avec des événements réels de connexion, de comptes, de fiches et
+de paramètres.
+
+- **Corrigé et vérifié** : motifs « Code de double authentification incorrect
+  ou expiré » et « Double authentification du compte incohérente » (ils
+  s’affichaient « Autre motif ») ; motif des confirmations d’identité échouées ;
+  nombre de sessions fermées ; « Application d’authentification remplacée »
+  distinguée de l’activation ; « Compte : … » au lieu de « introuvable » pendant
+  le chargement d’un filtre ; titre d’onglet « Journal d’activité · Noctambule »
+  (AC-07 à AC-09).
+- **Propositions appliquées le même jour** (« go » du propriétaire) : sujet
+  construit pour les événements sans compte visé (« Identifiant : jdoe », nom du
+  paramètre, « N événements supprimés ») au lieu de la phrase stockée, et
+  descriptions enregistrées au vocabulaire du site (AC-23) ; activation et
+  désactivation sans résumé de champ, « Conservation du journal d’activité »
+  avec « 365 jours (1 an, défaut) », « Statut dans la structure », auteur
+  « Personne non connectée », motifs « Identifiant inconnu » et « Mot de passe
+  incorrect » (AC-32) ; phrase au-delà de 200 pages (AC-41) ; étape et motif de
+  toute preuve refusée, dont le code faux à l’activation (AC-42) ; « Journal
+  purgé » écrit par la purge de conservation (AC-43) ; adresse IPv4 lisible au
+  lieu de « ::ffff:… » (AC-25).
+- **Limites** : volumes réels non mesurés ; lecteur d’écran et Safari non exercés.
 
 ### Sélection des 36 points
 

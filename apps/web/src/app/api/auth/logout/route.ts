@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 import { SESSION_COOKIE_NAME } from '$constants/security.constants';
 import { requireAuth } from '$server/api-auth';
-import { apiErrors } from '$server/api-response';
+import { apiErrors, apiSuccess } from '$server/api-response';
 import { createAuditLogWithHeaders } from '$server/audit-log';
 import { deleteSessionCookie, invalidateSession } from '$server/session';
 import {
@@ -40,7 +40,7 @@ export async function POST(): Promise<
     await createAuditLogWithHeaders({
       action: 'LOGOUT',
       category: 'AUTH',
-      description: `Déconnexion: ${auth.user.loginName}`,
+      description: `Déconnexion : ${auth.user.loginName}`,
       metadata: AUTH_CONNECTION_AUDIT_LOCATION,
       targetUserId: auth.user.id,
       userId: auth.user.id,
@@ -48,10 +48,7 @@ export async function POST(): Promise<
 
     await deleteSessionCookie();
 
-    return NextResponse.json({
-      data: { message: 'Déconnexion réussie' },
-      success: true,
-    });
+    return apiSuccess({ message: 'Déconnexion réussie' });
   } catch (error) {
     // Still try to delete cookie even if there's an error
     await deleteSessionCookie();

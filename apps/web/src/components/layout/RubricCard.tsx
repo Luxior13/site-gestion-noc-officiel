@@ -25,6 +25,10 @@ export const RubricTitle: FC<{
   </h3>
 );
 
+/** Header band of every titled card of a record section (60 px, one height). */
+export const RUBRIC_HEADER_CLASS =
+  'flex-row flex-wrap items-center justify-between gap-2 p-3.5 sm:p-4';
+
 /**
  * One card per rubric of a record section, its name on a header band. The
  * section itself keeps a screen-reader title: rubrics never repeat the tab.
@@ -38,7 +42,7 @@ export const RubricCard: FC<{
   title: ReactNode;
 }> = ({ aside, children, contentClassName, icon, id, title }) => (
   <Card aria-labelledby={id} as="section">
-    <CardHeader className="flex-row flex-wrap items-center justify-between gap-2 p-3.5 sm:p-4">
+    <CardHeader className={RUBRIC_HEADER_CLASS}>
       <RubricTitle icon={icon} id={id}>
         {title}
       </RubricTitle>

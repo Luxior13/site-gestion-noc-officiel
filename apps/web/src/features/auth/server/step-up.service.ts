@@ -13,6 +13,11 @@ import {
   reserveSensitiveActionRateLimit,
 } from '$server/rate-limiter';
 import {
+  IDENTITY_CONFIRMATION_AUDIT_LOCATION,
+  recordRefusedProof,
+  type RefusedProofReason,
+} from '$server/refused-proof-audit';
+import {
   getPasswordReauthenticationExpiration,
   getSensitiveActionProofExpiration,
 } from '$server/sensitive-action';
@@ -32,32 +37,20 @@ export type StepUpResult = {
   kind: StepUpKind;
 };
 
-const STEP_UP_AUDIT_LOCATION = {
-  pageKey: 'authentication',
-  pageLabel: 'Authentification',
-  poleKey: 'system',
-  poleLabel: 'Système',
-  tabKey: 'step-up',
-  tabLabel: 'Confirmation renforcée',
-} as const;
-
 const sessionChanged = (): Error =>
   serviceErrors.conflict('La session a changé. Rechargez la page.');
 
-const recordStepUpFailure = async (
+const recordStepUpFailure = (
   userId: string,
-  reason: string,
+  reason: RefusedProofReason,
   proofKind: StepUpKind,
-): Promise<void> => {
-  await createAuditLogWithHeaders({
-    action: 'STEP_UP_FAILED',
-    category: 'AUTH',
-    description: 'Confirmation renforcée échouée',
-    metadata: { ...STEP_UP_AUDIT_LOCATION, proofKind, reason },
-    targetUserId: userId,
-    userId,
+): Promise<void> =>
+  recordRefusedProof({
+    actorUserId: userId,
+    metadata: { proofKind },
+    reason,
+    step: 'step_up',
   });
-};
 
 /**
  * Records a fresh password proof, and for `full` a fresh TOTP proof, on the
@@ -179,9 +172,9 @@ export const confirmStepUp = async (input: {
         {
           action: 'STEP_UP_SUCCESS',
           category: 'AUTH',
-          description: 'Confirmation renforcée réussie',
+          description: 'Identité confirmée',
           metadata: {
-            ...STEP_UP_AUDIT_LOCATION,
+            ...IDENTITY_CONFIRMATION_AUDIT_LOCATION,
             authenticationMethod:
               kind === 'password' ? 'PASSWORD' : 'PASSWORD_TOTP',
             proofKind: kind,

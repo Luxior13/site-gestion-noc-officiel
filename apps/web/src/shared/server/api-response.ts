@@ -42,7 +42,9 @@ export function isPrismaUniqueConstraintError(error: unknown): boolean {
 
 /**
  * Marks a private API response so neither the browser nor a shared cache keeps
- * it. Every protected route that may return personal data uses this.
+ * it. One rule (SYS-12, 31 October 2026): `apiSuccess` and `apiError` apply it
+ * to every response they build, a route uses it only for a raw response (204),
+ * and the middleware repeats it on the whole API.
  */
 export const withPrivateNoStore = <T extends NextResponse>(response: T): T => {
   response.headers.set('Cache-Control', 'private, no-store');
@@ -126,7 +128,9 @@ export function apiSuccess<T>(
   data: T,
   status = 200,
 ): NextResponse<ApiSuccessResponse<T>> {
-  return NextResponse.json({ data, success: true as const }, { status });
+  return withPrivateNoStore(
+    NextResponse.json({ data, success: true as const }, { status }),
+  );
 }
 
 /**
@@ -166,7 +170,7 @@ export function apiError(
     success: false,
   };
 
-  return NextResponse.json(body, { status });
+  return withPrivateNoStore(NextResponse.json(body, { status }));
 }
 
 const getInternalErrorRequestContext = async (

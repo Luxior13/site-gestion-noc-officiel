@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { PAGINATION } from '$constants/pagination.constants';
 import { hasPermission, PERMISSIONS } from '$constants/permissions.constants';
-import { createUserSchema } from '$features/users/create-user.schema';
+import { createUserSchema } from '$features/users/schemas/create-user.schema';
 import { createUserForActor } from '$features/users/server/user-admin.service';
 import { listUsers } from '$features/users/server/users-list.service';
 import { requireAuth, requirePermission } from '$server/api-auth';
@@ -100,7 +100,7 @@ export async function GET(
     if (status === 'pending' && !canViewSecurity) {
       return apiError(
         ErrorCode.FORBIDDEN,
-        'La permission de voir la sécurité des comptes est requise pour ce filtre',
+        'L’autorisation de voir la sécurité des comptes est requise pour ce filtre',
         403,
       );
     }

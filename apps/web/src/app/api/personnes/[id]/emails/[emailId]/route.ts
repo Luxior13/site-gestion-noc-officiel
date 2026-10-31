@@ -16,7 +16,6 @@ import {
   apiErrors,
   apiSuccess,
   parseJsonBody,
-  withPrivateNoStore,
   zodErrorDetails,
 } from '$server/api-response';
 
@@ -47,13 +46,11 @@ export async function PATCH(
   try {
     await assertPersonFeatureReady();
 
-    return withPrivateNoStore(
-      apiSuccess(
-        await updatePersonEmail(id, emailId, parsed.data, {
-          ...auth.user,
-          session: auth.session,
-        }),
-      ),
+    return apiSuccess(
+      await updatePersonEmail(id, emailId, parsed.data, {
+        ...auth.user,
+        session: auth.session,
+      }),
     );
   } catch (error) {
     return handlePersonApiError('PERSON_EMAIL_UPDATE', error, request);
@@ -85,14 +82,12 @@ export async function DELETE(
   try {
     await assertPersonFeatureReady();
 
-    return withPrivateNoStore(
-      apiSuccess({
-        person: await deletePersonEmail(id, emailId, parsed.data, {
-          ...auth.user,
-          session: auth.session,
-        }),
+    return apiSuccess({
+      person: await deletePersonEmail(id, emailId, parsed.data, {
+        ...auth.user,
+        session: auth.session,
       }),
-    );
+    });
   } catch (error) {
     return handlePersonApiError('PERSON_EMAIL_DELETE', error, request);
   }

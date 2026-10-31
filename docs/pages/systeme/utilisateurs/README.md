@@ -92,6 +92,23 @@ s’alignent sur elle.
 - **Non vérifié** : session, hydratation Next et PostgreSQL réels, lecteur
   d’écran réel, rendu sur le serveur de dev.
 
+## Audit complet — 31 octobre 2026
+
+[Rapport](../../../audits/2026-10-31-audit-complet.md). **Corrigé et vérifié** :
+les confirmations d’un changement d’identifiant ou d’autorisations annonçaient
+encore des déconnexions supprimées le 25 octobre 2026 (AC-02) ; le refus de gérer
+les sessions d’un administrateur parlait de « compte protégé » (AC-05) ; titres
+d’onglet propres à la liste, à la création et à la fiche (AC-07).
+**Propositions appliquées le même jour** (« go » du propriétaire) : chaque
+confirmation nomme le compte (« Réinitialiser le mot de passe de … ? »,
+« Supprimer définitivement le compte de … ? », sessions, identifiant, double
+authentification, email de contact ; AC-20) ; « À configurer » partout pour la
+double authentification (AC-28) ; « Email de contact » et l’exemple
+« nom@exemple.fr » (AC-29) ; création en cartes « Identité », « Connexion et
+contact » et « Rôle », barre sous les cartes (AC-30) ; « Rôle » dans la liste et
+la création (AC-31) ; « Page 1 sur 1 » (AC-33) ; écran de refus commun (AC-21) ;
+titres des cartes mobiles en `h2` (AC-40).
+
 ## Fiche : découpage du 23 octobre 2026
 
 Refactorisation sans changement visible ni de contrat serveur : la fiche
@@ -201,7 +218,7 @@ Les API simulées du banc ne rejouent pas l'intégration PostgreSQL des audits p
 - Type principal : liste de gestion privée ; les passes de création et de fiche
   sont consignées dans leurs sections dédiées, avec leur périmètre propre.
 - Sources : [page](../../../../apps/web/src/app/systeme/utilisateurs/page.tsx),
-  [liste](../../../../apps/web/src/features/users/UsersListPage.tsx),
+  [liste](../../../../apps/web/src/features/users/components/UsersListPage.tsx),
   [disposition](../../../../apps/web/src/components/ui/directory.module.css).
 - Ce suivi est amorcé le 26 septembre 2026 depuis les décisions et contrôles déjà
   consignés. La création du référentiel n’a pas rejoué ces contrôles.

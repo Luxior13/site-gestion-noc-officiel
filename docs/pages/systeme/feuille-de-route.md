@@ -10,7 +10,7 @@
 | Espace | Système |
 | Gabarit visé | [E. Page de lecture](../../design/gabarits.md#e-page-de-lecture) |
 | État d’harmonisation | Aligné — voir [Harmonisation](../../design/harmonisation.md#état-par-page) |
-| Point d’entrée | [page.tsx](../../../apps/web/src/app/systeme/feuille-de-route/page.tsx) → [RoadmapPage](../../../apps/web/src/features/roadmap/RoadmapPage.tsx) |
+| Point d’entrée | [page.tsx](../../../apps/web/src/app/systeme/feuille-de-route/page.tsx) → [RoadmapPage](../../../apps/web/src/features/roadmap/components/RoadmapPage.tsx) |
 | Contrôle d’accès | session ; aucune permission propre |
 | Chargement / erreur dédiés | communs à l’application |
 

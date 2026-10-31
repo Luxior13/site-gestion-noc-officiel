@@ -108,7 +108,7 @@ export async function requireAuth(
 }
 
 const PERMISSION_DENIED_MESSAGE =
-  "Vous n'avez pas la permission d'effectuer cette action";
+  'Vous n’avez pas l’autorisation d’effectuer cette action';
 
 // A protected account bypasses policy decisions, never catalogue typos.
 const isAllowed = (user: UserType, permissionKey: string): boolean =>

@@ -13,10 +13,13 @@ import {
 } from 'lucide-react';
 import React, { type FC, useEffect, useRef, useState } from 'react';
 
-import { RubricTitle } from '$components/layout/RubricCard';
+import {
+  RUBRIC_HEADER_CLASS,
+  RubricTitle,
+} from '$components/layout/RubricCard';
 import { SectionActionBar } from '$components/layout/SectionActionBar';
 import { SessionRow } from '$components/users/SessionRow';
-import { UserStatusBadge } from '$features/users/user-badges';
+import { UserStatusBadge } from '$features/users/components/user-badges';
 import type { UserSessionInfo, UserType } from '$types/auth.types';
 import {
   AlertDialog,
@@ -97,8 +100,6 @@ const formatDate = (date: Date | string | null): string => {
 };
 
 /** Rubric header with its state badge, and the row under it (27 October 2026). */
-const RUBRIC_HEADER =
-  'flex-row flex-wrap items-center justify-between gap-2 p-3.5 sm:p-4';
 const RUBRIC_ROW =
   'flex flex-col items-stretch gap-3 p-3 sm:flex-row sm:items-center sm:justify-between sm:p-4';
 
@@ -198,9 +199,13 @@ export const UserSecurityTab: FC<UserSecurityTabProps> = ({
     if (intent === focusIntentRef.current) focusSessions();
   };
   const isSelf = currentUserId === user.id;
+  // No known change: the password is the one set at creation, or a
+  // temporary one from an administrator (audit of 31 October 2026).
   const passwordChangedLabel = user.passwordChangedAt
-    ? formatDate(user.passwordChangedAt)
-    : 'Jamais';
+    ? `Dernier changement : ${formatDate(user.passwordChangedAt)}`
+    : user.mustChangePassword
+      ? 'Mot de passe temporaire, à changer à la prochaine connexion'
+      : 'Défini à la création du compte';
   const isAnySessionRevoking =
     isRevokingSessions || isRevokingSessionId !== null;
   const sessionsUnavailable =
@@ -223,7 +228,7 @@ export const UserSecurityTab: FC<UserSecurityTabProps> = ({
         Sécurité du compte
       </h2>
       <Card aria-labelledby="user-security-status-heading">
-        <CardHeader className="p-3.5 sm:p-4">
+        <CardHeader className={RUBRIC_HEADER_CLASS}>
           <RubricTitle
             id="user-security-status-heading"
             icon={<Power className="size-3.5" />}
@@ -288,7 +293,7 @@ export const UserSecurityTab: FC<UserSecurityTabProps> = ({
       ) : (
         <>
           <Card aria-labelledby="user-security-password-heading">
-            <CardHeader className={RUBRIC_HEADER}>
+            <CardHeader className={RUBRIC_HEADER_CLASS}>
               <RubricTitle
                 id="user-security-password-heading"
                 icon={<KeyRound className="size-3.5" />}
@@ -304,7 +309,7 @@ export const UserSecurityTab: FC<UserSecurityTabProps> = ({
             <CardContent className={RUBRIC_ROW}>
               <div className="min-w-0 flex-1 space-y-1">
                 <p className="text-foreground text-sm">
-                  Dernier changement : {passwordChangedLabel}
+                  {passwordChangedLabel}
                 </p>
                 {!passwordResetFeedback && canResetPassword && (
                   <p
@@ -335,7 +340,7 @@ export const UserSecurityTab: FC<UserSecurityTabProps> = ({
             {passwordResetFeedback}
           </Card>
           <Card aria-labelledby="user-security-mfa-heading">
-            <CardHeader className={RUBRIC_HEADER}>
+            <CardHeader className={RUBRIC_HEADER_CLASS}>
               <RubricTitle
                 id="user-security-mfa-heading"
                 icon={<QrCode className="size-3.5" />}
@@ -345,9 +350,7 @@ export const UserSecurityTab: FC<UserSecurityTabProps> = ({
               {isMfaEnabled ? (
                 <StatusBadge tone="success">Activée</StatusBadge>
               ) : (
-                <StatusBadge tone="warning">
-                  Configuration obligatoire
-                </StatusBadge>
+                <StatusBadge tone="warning">À configurer</StatusBadge>
               )}
             </CardHeader>
             <CardContent className={RUBRIC_ROW}>
@@ -362,9 +365,9 @@ export const UserSecurityTab: FC<UserSecurityTabProps> = ({
                     id="user-reset-mfa-description"
                     className="text-muted-foreground text-xs"
                   >
-                    À utiliser seulement si l&apos;utilisateur a perdu son
-                    application d&apos;authentification et tous ses codes de
-                    secours : il la reconfigurera à sa prochaine connexion.
+                    À utiliser seulement si l’utilisateur a perdu son
+                    application d’authentification et tous ses codes de secours
+                    : il la reconfigurera à sa prochaine connexion.
                   </p>
                 )}
               </div>
@@ -388,7 +391,7 @@ export const UserSecurityTab: FC<UserSecurityTabProps> = ({
         </>
       )}
       <Card aria-labelledby="user-security-sessions-heading">
-        <CardHeader className="p-3.5 sm:p-4">
+        <CardHeader className={RUBRIC_HEADER_CLASS}>
           <RubricTitle
             id="user-security-sessions-heading"
             icon={<Monitor className="size-3.5" />}
@@ -408,7 +411,7 @@ export const UserSecurityTab: FC<UserSecurityTabProps> = ({
           {!canViewSessions ? (
             <div className="border-border/60 bg-surface-inset rounded-md border p-3">
               <p className="text-muted-foreground text-sm">
-                Vous n&apos;avez pas la permission de consulter ou révoquer les
+                Vous n’avez pas l’autorisation de consulter ou de révoquer les
                 sessions de cet utilisateur.
               </p>
             </div>
@@ -542,12 +545,16 @@ export const UserSecurityTab: FC<UserSecurityTabProps> = ({
           }}
         >
           <AlertDialogHeader>
-            <AlertDialogTitle>Révoquer cette session ?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {pendingSessionAgent
+                ? `Révoquer la session ${pendingSessionAgent.label} ?`
+                : 'Révoquer cette session ?'}
+            </AlertDialogTitle>
             <AlertDialogDescription>
               {pendingSessionAgent
                 ? pendingSessionAgent.label
                 : 'Cette session'}{' '}
-              sera immédiatement déconnectée. L&apos;utilisateur devra saisir de
+              sera immédiatement déconnectée. L’utilisateur devra saisir de
               nouveau ses identifiants.
             </AlertDialogDescription>
           </AlertDialogHeader>

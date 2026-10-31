@@ -562,7 +562,8 @@ describe('UserContext session activity', () => {
     expect(success).toBe(true);
     expect(getContext(runtime).isLoading).toBe(false);
     expect(getContext(runtime).userData?.mfaEnabledAt).toEqual(NOW);
-    expect(mocks.toastSuccess).toHaveBeenCalledWith('Connexion réussie');
+    // Arriving on the home page says it: no toast (audit AC-35).
+    expect(mocks.toastSuccess).not.toHaveBeenCalled();
   });
 
   it('cancels a pending MFA challenge without starting a global load', async () => {

@@ -256,7 +256,7 @@ export const MfaActionDialog: FC<MfaActionDialogProps> = ({
                     {isSubmitting ? (
                       <>
                         <Loader2 className="size-4 animate-spin" />
-                        Vérification...
+                        Vérification…
                       </>
                     ) : (
                       'Générer'

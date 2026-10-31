@@ -62,7 +62,7 @@ export const createPersonsPermissionCategory = (
     permission({
       action: 'update',
       dependencies: [keys.VIEW],
-      description: "Modifier l'identité et le statut des personnes",
+      description: 'Modifier l’identité et le statut des personnes',
       grantable: true,
       key: keys.UPDATE,
       label: 'Modifier les fiches du répertoire',

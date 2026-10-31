@@ -21,6 +21,13 @@ plus ancienne. Le détail et l’origine sont dans le journal ci-dessous.
 
 | Sujet | Règle retenue | Portée | Fichier propriétaire |
 | --- | --- | --- | --- |
+| Confirmations | Le titre nomme sa cible : fiche, compte, session, email ou paramètre (« Supprimer définitivement la fiche de … ? ») ; AUD-Q1 tranchée (31 octobre 2026) | Toutes les confirmations | [Comportements](comportements.md#fenêtres-et-panneaux) |
+| Refus d’accès | Un seul écran « Accès refusé » : « Vous n’avez pas l’autorisation de … », retour à l’accueil ou à la liste parente, aucun lien pour une section refusée dans une page (31 octobre 2026) | Tout le site | [Composants](composants.md#retours-et-éléments-de-lecture) |
+| Vocabulaire et typographie | « autorisation », « email de contact », « rôle », « double authentification », « tiret bas » ; apostrophe « ’ » et « … » ; deux-points précédés d’une espace ; test de garde `visible-wording-contracts` (31 octobre 2026) | Tout le site | [Fondations](fondations.md#rédaction-des-textes-visibles) |
+| Pages de création | Cartes de rubrique de la fiche qu’elles ouvrent, barre d’actions en ligne sous les cartes, titre `h2` réservé aux lecteurs d’écran (31 octobre 2026) | Gabarit C | [Gabarit C](gabarits.md#c-formulaire-de-création) |
+| Cartes titrées | Un seul en-tête de 60 px (`RUBRIC_HEADER_CLASS`) pour toutes les cartes d’une fiche ; pas de doublon « Session actuelle » entre rubrique et pastille (31 octobre 2026) | Fiches à sections | [Composants](composants.md#cadre-et-composition-des-pages) |
+| Listes et pagination | « Page X sur Y » toujours ; « N fiches » sans critère, « trouvées » avec ; plafond expliqué ; tri du Répertoire « Nom affiché (A–Z) » (31 octobre 2026) | Listes | [Comportements](comportements.md#listes-recherche-et-pagination) |
+| Règles de saisie | Une règle enfreinte s’affiche en rouge, « non respectée » ; jamais de bouton désactivé sans raison visible (31 octobre 2026) | Formulaires | [Comportements](comportements.md#saisie-brouillon-et-enregistrement) |
 | Détail déplié à nombreux éléments | Le dépliage reste en place, même long : la ligne fermée résume ce que le détail contient (« Prénom, Nom et 9 autres », sans répéter une colonne voisine), le plus important vient en tête du détail, et au-delà de six éléments un bouton « Afficher les N autres… » qui devient « Afficher moins » (31 octobre 2026) | Listes à lignes dépliables | [Composants](composants.md#listes-et-pagination) |
 | Ligne dépliée d’une liste | La ligne ouverte et son détail forment un bloc en `surface-row-alternate`, un cran au-dessus de la liste et sous sa barre de filtres, marqué d’un filet `border-strong` à gauche ; `surface-row-hover` reste le survol, jamais le fond d’un bloc de contenu (31 octobre 2026) | Listes à lignes dépliables | [Fondations](fondations.md#hiérarchie-de-couleurs) |
 | Changements en cascade et modifiés | Un réglage qui en modifie d’autres le dit sous lui avec « Annuler » ; réglages et pages modifiés marqués d’un point ambre ; raison de blocage visible sur la ligne, une fois en haut si partagée (26 octobre 2026) | Éditeurs de réglages | [Comportements](comportements.md#retours-immédiats) |
@@ -63,6 +70,7 @@ plus ancienne. Le détail et l’origine sont dans le journal ci-dessous.
 
 | Date | Contexte | Retour du propriétaire | Décision appliquée |
 | --- | --- | --- | --- |
+| 31 octobre 2026 | Propositions AC-20 à AC-52 de l’[audit complet](../audits/2026-10-31-audit-complet.md) | « Tout est corrigé et plus rien à faire ? », puis « go tous corriger ce que tu recommandes » | Toutes les recommandations appliquées le jour même : confirmations nommées (AUD-Q1), refus d’accès unique, vocabulaire et apostrophes gardés par test, pages de création en cartes de rubrique, en-têtes de cartes alignés, pagination et compteurs, règles de mot de passe en échec, journal lisible (sujet construit, « Personne non connectée », motifs précis, plafond expliqué), traces des preuves refusées et de la purge, disponibilité du Répertoire simplifiée, route explicite des Paramètres, modules rangés ([détail](../audits/2026-10-31-audit-complet.md#suivi--propositions-appliquées-le-31-octobre-2026)) |
 | 31 octobre 2026 | Journal d’activité, événement à nombreux changements | « Ok go si tu le recommandes » sur la proposition JA-Q1 | Champs modifiés résumés sur la ligne (pas pour un paramètre, déjà nommé à côté), tableau des changements avant les faits, six changements puis « Afficher les N autres changements » |
 | 31 octobre 2026 | Journal d’activité, ligne dépliée | « C’est bien mais la hiérarchie de couleur n’est pas bonne » ; demande si un événement avec beaucoup de changements resterait dépliable | Le bloc ouvert passe de `surface-row-hover` (plus clair que la barre de filtres) à `surface-row-alternate` avec un filet à gauche ; présentation des nombreux changements proposée (question JA-Q1) |
 | 28 octobre 2026 | Vues mobiles de toutes les pages | « Un point très important à bien mettre en place maintenant avant qu’il y ait beaucoup de pages » ; « ok go » sur les corrections et le contrôle | 44 px tactiles dans les composants partagés, fil d’Ariane avec « … », filtres en rangées défilantes, actions de carte pleine largeur, contrôle mobile automatique de chaque page dans l’E2E ([règles](comportements.md#mobile-et-petites-fenêtres)) |
@@ -141,6 +149,7 @@ attendant, appliquer la colonne « Par défaut ».
 
 | ID | Question | Par défaut | Effet |
 | --- | --- | --- | --- |
+| — | Aucune question ouverte au 31 octobre 2026 | — | — |
 
 ## Questions tranchées
 
@@ -148,6 +157,7 @@ Une question tranchée garde son identifiant, la décision et sa date.
 
 | ID | Question | Décision | Date |
 | --- | --- | --- | --- |
+| AUD-Q1 | La règle du 27 octobre 2026 (élément nommé dans la confirmation de suppression d’une coordonnée) s’étend-elle à toutes les confirmations ? | Oui : chaque confirmation nomme sa cible dans son titre (fiche, compte, session, email, paramètre) | 31 octobre 2026 (« go tous corriger ce que tu recommandes ») |
 | JA-Q1 | Journal d’activité : un événement avec beaucoup de changements reste-t-il un dépliage ? | Oui : champs modifiés nommés sur la ligne fermée (« Prénom, Nom et 9 autres »), changements en tête du détail, au-delà de six un bouton « Afficher les N autres changements » | 31 octobre 2026 (« ok go ») |
 | PREF-Q1 | La carte de synthèse placée au-dessus du contenu pèse sur la hauteur : faut-il la réduire, la replier ou la déplacer ? | Supprimée partout : compteurs en filtres rapides sur les listes, états en pastilles dans le bandeau des fiches | 20 octobre 2026 (« ok go ») |
 | PREF-Q3 | Connexion : le code de double authentification revient trop souvent malgré la case « Faire confiance à cet appareil » (hors superadmin, qui reste tel quel) | Pas d’« appareil reconnu » qui sauterait le code : le gain serait faible pour un membre qui ne se déconnecte pas, au prix d’un affaiblissement pour tous. Inactivité d’une connexion maintenue portée de 7 à 30 jours (code au plus une fois par mois) et case renommée « Rester connecté sur cet appareil » ; pour les tests, un profil de navigateur par compte | 26 octobre 2026 (« ok go ») |

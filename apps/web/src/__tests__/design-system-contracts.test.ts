@@ -121,11 +121,10 @@ const compositeHexColors = (
 };
 
 describe('design system contracts', () => {
-  it('keeps feature availability above page-level authenticated shells', () => {
-    expect(rootLayoutSource).toContain('<FeatureAvailabilityProvider>');
-    expect(authenticatedLayoutSource).not.toContain(
-      '<FeatureAvailabilityProvider>',
-    );
+  // SYS-11 (31 October 2026): no client polls the readiness probe anymore.
+  it('keeps no client-side availability provider around the pages', () => {
+    expect(rootLayoutSource).not.toContain('FeatureAvailability');
+    expect(authenticatedLayoutSource).not.toContain('FeatureAvailability');
   });
 
   it('uses the accessible destructive fill for filled actions', () => {

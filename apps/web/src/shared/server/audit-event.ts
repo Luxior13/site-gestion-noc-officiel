@@ -69,6 +69,9 @@ const AUDIT_EVENT_CLASSIFICATIONS = {
   // Opening the activity journal (30 October 2026): whoever watches is
   // watched too, on the security timeline.
   [AuditAction.AUDIT_VIEW]: activity(AuditStream.SECURITY),
+  // The retention cleanup deleting journal events (31 October 2026): the
+  // deletion of a log is itself logged, next to its readings.
+  [AuditAction.AUDIT_PURGE]: activity(AuditStream.SECURITY),
   [AuditAction.BACKGROUND_JOB_UPDATE]: activity(
     AuditStream.SYSTEM,
     AuditSeverity.WARNING,

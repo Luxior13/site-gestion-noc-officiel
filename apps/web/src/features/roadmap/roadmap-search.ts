@@ -9,7 +9,7 @@ import type {
   RoadmapAreaId,
   RoadmapItem,
   RoadmapPhaseId,
-} from './roadmap.types';
+} from './types/roadmap.types';
 
 export const ROADMAP_SEARCH_MAX_LENGTH = 200;
 

@@ -32,7 +32,7 @@ const regenerateSchema = z
     currentTotpCode: z
       .string()
       .trim()
-      .regex(MFA_TOTP_CODE_PATTERN, "Code d'authentification invalide"),
+      .regex(MFA_TOTP_CODE_PATTERN, 'Code d’authentification invalide'),
   })
   .strict();
 

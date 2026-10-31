@@ -18,7 +18,6 @@ import {
 } from '$constants/app.constants';
 import { getNavigationIcon } from '$constants/navigation-icon.constants';
 import { getNavigationSpaceToneClasses } from '$constants/navigation-theme.constants';
-import { useFeatureAvailability } from '$context/FeatureAvailabilityContext';
 import { useUser } from '$context/UserContext';
 import { Button } from '$ui/button';
 import {
@@ -106,11 +105,8 @@ function getActiveGroupHref(
 
 const Sidebar: FC<SidebarProps> = ({ className }) => {
   const pathname = usePathname();
-  const { featureAvailabilityLoaded, navigableFeatureIds } =
-    useFeatureAvailability();
   const { logout, userData } = useUser();
-  const { isMobile, setOpenMobile, state: sidebarState } = useSidebar();
-  const isCollapsed = !isMobile && sidebarState === 'collapsed';
+  const { isMobile, setOpenMobile } = useSidebar();
   const pendingMobileSpaceHref = useRef<string | null>(null);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
 
@@ -131,13 +127,8 @@ const Sidebar: FC<SidebarProps> = ({ className }) => {
   };
 
   const visibleSpaces = useMemo(
-    () =>
-      getVisibleNavigationSpaces(
-        userData,
-        'live',
-        featureAvailabilityLoaded ? navigableFeatureIds : undefined,
-      ),
-    [featureAvailabilityLoaded, navigableFeatureIds, userData],
+    () => getVisibleNavigationSpaces(userData, 'live'),
+    [userData],
   );
   const activeSpace = useMemo(
     () => getActiveNavigationSpace(pathname, visibleSpaces),
@@ -148,13 +139,8 @@ const Sidebar: FC<SidebarProps> = ({ className }) => {
     [activeSpace.tone],
   );
   const sections = useMemo(
-    () =>
-      getDesktopSidebarSections(
-        userData,
-        pathname,
-        featureAvailabilityLoaded ? navigableFeatureIds : undefined,
-      ),
-    [featureAvailabilityLoaded, navigableFeatureIds, pathname, userData],
+    () => getDesktopSidebarSections(userData, pathname),
+    [pathname, userData],
   );
 
   const topSections = sections.filter(
@@ -250,9 +236,8 @@ const Sidebar: FC<SidebarProps> = ({ className }) => {
             <SidebarMenuButton
               asChild
               isActive={isActive && !hasActiveChild}
-              tooltip={item.label}
               className={cn(
-                'gap-2 pr-10 pl-2 group-data-[collapsible=icon]/sidebar:pr-0',
+                'gap-2 pr-10 pl-2',
                 activeTone.menuButton,
                 hasActiveChild && activeTone.branchButton,
               )}
@@ -292,7 +277,6 @@ const Sidebar: FC<SidebarProps> = ({ className }) => {
         <SidebarMenuButton
           asChild
           isActive={isActive}
-          tooltip={item.label}
           className={cn('gap-2 px-2', activeTone.menuButton)}
         >
           <Link
@@ -311,16 +295,15 @@ const Sidebar: FC<SidebarProps> = ({ className }) => {
   };
 
   return (
-    <SidebarRoot collapsible="icon" variant="sidebar" className={className}>
-      <SidebarHeader className="border-border-divider bg-sidebar relative h-14 shrink-0 justify-center gap-0 border-b px-3 py-0 group-data-[collapsible=icon]/sidebar:px-0">
+    <SidebarRoot className={className}>
+      <SidebarHeader className="border-border-divider bg-sidebar relative h-14 shrink-0 justify-center gap-0 border-b px-3 py-0">
         <Link
           href="/"
           aria-label={`${SITE_CONFIG.name} — Accueil`}
           onClick={closeMobileAfterNavigation}
-          title={isCollapsed ? SITE_CONFIG.name : undefined}
           className={cn(
             'hover:bg-surface-navigation-hover focus-visible:ring-sidebar-ring flex h-11 w-full min-w-0 items-center gap-3 overflow-hidden rounded-sm px-2 text-left transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset',
-            'group-data-[collapsible=icon]/sidebar:justify-center group-data-[collapsible=icon]/sidebar:gap-0 group-data-[collapsible=icon]/sidebar:bg-transparent group-data-[collapsible=icon]/sidebar:px-0',
+            '',
           )}
         >
           <span className="flex size-7 shrink-0 items-center justify-center">
@@ -333,7 +316,7 @@ const Sidebar: FC<SidebarProps> = ({ className }) => {
               priority
             />
           </span>
-          <span className="text-sidebar-accent-foreground max-w-40 min-w-0 truncate text-[0.9375rem] leading-5 font-semibold tracking-normal transition-opacity duration-100 group-data-[collapsible=icon]/sidebar:max-w-0 group-data-[collapsible=icon]/sidebar:opacity-0 group-data-[collapsible=icon]/sidebar:delay-0 group-data-[state=expanded]/sidebar:delay-150">
+          <span className="text-sidebar-accent-foreground max-w-40 min-w-0 truncate text-[0.9375rem] leading-5 font-semibold tracking-normal transition-opacity duration-100">
             {SITE_CONFIG.name}
           </span>
         </Link>
@@ -356,11 +339,11 @@ const Sidebar: FC<SidebarProps> = ({ className }) => {
         )}
         <div
           data-sidebar="space-pages"
-          className="flex min-h-0 min-w-0 flex-1 flex-col group-data-[collapsible=icon]/sidebar:hidden"
+          className="flex min-h-0 min-w-0 flex-1 flex-col"
         >
           <SidebarContent
             className="px-3 pt-2"
-            scrollRestoreKey={`${pathname}:${sidebarState}`}
+            scrollRestoreKey={pathname}
             scrollStorageKey={activeSpace.id}
           >
             <nav
@@ -413,7 +396,7 @@ const Sidebar: FC<SidebarProps> = ({ className }) => {
           </SidebarContent>
         </div>
       </div>
-      <SidebarFooter className="border-sidebar-border/60 shrink-0 border-t pb-[max(0.75rem,env(safe-area-inset-bottom))] group-data-[collapsible=icon]/sidebar:px-1">
+      <SidebarFooter className="border-sidebar-border/60 shrink-0 border-t pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         {userData && (
           <DropdownMenu
             open={accountMenuOpen}
@@ -426,16 +409,16 @@ const Sidebar: FC<SidebarProps> = ({ className }) => {
                 aria-label={`Menu utilisateur de ${userDisplayName}`}
                 className={cn(
                   'group/account-menu hover:bg-surface-navigation-hover focus-visible:ring-sidebar-ring data-[state=open]:bg-surface-navigation-active flex h-11 w-full min-w-0 items-center gap-2.5 overflow-hidden rounded-sm border-0 bg-transparent px-2 text-left shadow-none transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset lg:h-11',
-                  'group-data-[collapsible=icon]/sidebar:h-11 group-data-[collapsible=icon]/sidebar:w-11 group-data-[collapsible=icon]/sidebar:justify-center group-data-[collapsible=icon]/sidebar:gap-0 group-data-[collapsible=icon]/sidebar:self-center group-data-[collapsible=icon]/sidebar:px-0',
+                  '',
                   isAccountActive &&
                     'bg-surface-navigation-active hover:bg-surface-navigation-active',
                 )}
               >
                 <UserAvatar
                   user={userData}
-                  className="size-8 shrink-0 rounded-sm group-data-[collapsible=icon]/sidebar:size-7"
+                  className="size-8 shrink-0 rounded-sm"
                 />
-                <span className="min-w-0 flex-1 space-y-0.5 overflow-hidden transition-opacity duration-100 group-data-[collapsible=icon]/sidebar:hidden group-data-[state=expanded]/sidebar:delay-150">
+                <span className="min-w-0 flex-1 space-y-0.5 overflow-hidden transition-opacity duration-100">
                   <span className="text-sidebar-accent-foreground block truncate text-sm leading-5 font-semibold">
                     {userDisplayName}
                   </span>
@@ -450,14 +433,14 @@ const Sidebar: FC<SidebarProps> = ({ className }) => {
                 </span>
                 <ChevronUp
                   aria-hidden="true"
-                  className="text-muted-foreground group-data-[state=open]/account-menu:text-foreground size-4 shrink-0 transition-transform group-data-[collapsible=icon]/sidebar:hidden group-data-[state=open]/account-menu:rotate-180 motion-reduce:transition-none"
+                  className="text-muted-foreground group-data-[state=open]/account-menu:text-foreground size-4 shrink-0 transition-transform group-data-[state=open]/account-menu:rotate-180 motion-reduce:transition-none"
                 />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
               aria-label={`Compte de ${userDisplayName}`}
-              side={isCollapsed ? 'right' : 'top'}
-              align={isCollapsed ? 'end' : 'start'}
+              side="top"
+              align="start"
               sideOffset={8}
               collisionPadding={8}
               className={cn(
@@ -522,7 +505,7 @@ const Sidebar: FC<SidebarProps> = ({ className }) => {
                             isAccountActive && 'text-foreground',
                           )}
                         >
-                          Profil et sécurité
+                          Profil, autorisations et sécurité
                         </span>
                       </span>
                       <ChevronRight

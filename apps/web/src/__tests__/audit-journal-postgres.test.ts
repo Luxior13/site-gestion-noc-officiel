@@ -5,7 +5,7 @@ import { NextRequest } from 'next/server';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { GET } from '$app/api/audit/route';
-import type { JournalResponse } from '$features/audit/audit-journal.types';
+import type { JournalResponse } from '$features/audit/types/audit-journal.types';
 import { mapUserToUserType } from '$server/user-projection';
 
 const connection = vi.hoisted(() => ({

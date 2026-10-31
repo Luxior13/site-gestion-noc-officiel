@@ -762,6 +762,22 @@ describe.skipIf(!target)(
       expect(
         await db.auditLog.findUnique({ where: { id: fresh.id } }),
       ).not.toBeNull();
+      // Audit of 31 October 2026 (AC-43): deleting events is journaled.
+      const purge = await db.auditLog.findFirst({
+        orderBy: { createdAt: 'desc' },
+        where: { action: 'AUDIT_PURGE' },
+      });
+      expect(purge).toMatchObject({
+        category: 'SYSTEM',
+        outcome: 'SUCCESS',
+        stream: 'SECURITY',
+        userId: null,
+      });
+      expect(purge?.metadata).toMatchObject({
+        deletedEvents: expect.any(Number),
+        expiredSessions: expect.any(Number),
+        retentionDays: expect.any(Number),
+      });
       expect(
         await db.session.findUnique({ where: { id: expiredSession.id } }),
       ).toBeNull();

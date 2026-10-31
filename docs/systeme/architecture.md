@@ -45,7 +45,7 @@ Navigateur
    ├─ Page (composant serveur) : getPageAuthSession → droits → service → rendu
    └─ Route API : requireAuth → requirePermission(PERMISSIONS.X.Y)
       → parseJsonBody + schema.safeParse → service de features/<module>/server
-      → apiSuccess / apiErrors dans withPrivateNoStore
+      → apiSuccess / apiErrors (réponse private, no-store, répétée par le middleware)
          └─ Prisma (transaction ; version optimiste et audit dans la même transaction)
 ```
 

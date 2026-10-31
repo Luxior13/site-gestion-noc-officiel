@@ -20,12 +20,11 @@ import {
 import {
   createPersonPhoneSchema,
   createPersonSchema,
-  personFieldHistoryQuerySchema,
   personsListQuerySchema,
   personSocialProfileInputSchema,
-  updatePersonSchema,
   updatePersonSocialProfileSchema,
 } from '$features/persons/schemas/person.schemas';
+import { updatePersonSchema } from '$features/persons/schemas/person-identity.schemas';
 
 describe('person schemas and stable normalisation', () => {
   it('normalises identity search without losing word boundaries', () => {
@@ -384,19 +383,12 @@ describe('person schemas and stable normalisation', () => {
     ).toBe(true);
   });
 
-  it('keeps list and field-history queries closed and bounded', () => {
+  it('keeps list queries closed and bounded', () => {
     expect(personsListQuerySchema.safeParse({ limit: 101 }).success).toBe(
       false,
     );
     expect(
       personsListQuerySchema.safeParse({ limit: 25, unexpected: true }).success,
-    ).toBe(false);
-    expect(
-      personFieldHistoryQuerySchema.safeParse({
-        fieldKey: 'email',
-        recordId: 'not-a-cuid',
-        sectionKey: 'contacts',
-      }).success,
     ).toBe(false);
   });
 

@@ -9,9 +9,11 @@ L'[audit du 15 octobre 2026](../audits/2026-10-15-autorisations-site.md)
 examine uniquement les pages utilisables et les capacités encore présentées dans
 leur éditeur. Après accord de l'utilisateur, les corrections du 15 octobre sont
 appliquées : retrait des quatre droits d'activité sans écran actuel, provenance
-rattachée au Répertoire et séparation des coordonnées. L'éditeur présente
-**27 capacités administratives** (25 délégables et deux liées au rôle) et
-**sept capacités personnelles** (une configurable et six garanties de base).
+rattachée au Répertoire et séparation des coordonnées. Depuis l'activation de
+`audit:view` le 30 octobre 2026, l'éditeur présente **28 capacités
+administratives** (26 délégables : six du Répertoire, dix-neuf des
+Utilisateurs et celle du journal d'activité ; deux liées au rôle) et **sept
+capacités personnelles** (une configurable et six garanties de base).
 La migration conserve les accès effectifs aux coordonnées des comptes existants.
 
 ## Principes
@@ -87,9 +89,9 @@ La migration conserve les accès effectifs aux coordonnées des comptes existant
 L'éditeur affiche deux pôles : **Membres** (`internal`) et **Système** (`system`).
 Sa projection [permission-editor-view](../../apps/web/src/components/users/permission-editor-view.ts)
 croise le catalogue technique avec la disponibilité du registre des fonctionnalités.
-Les pôles vides ne sont pas proposés. L'Actualité interne et le journal global,
-prévus, n'ont que des noms réservés dans `ROADMAP_PERMISSIONS` (depuis le
-24 octobre 2026).
+Les pôles vides ne sont pas proposés. L'Actualité interne, prévue, n'a que des
+noms réservés dans `ROADMAP_PERMISSIONS` ; le journal d'activité est actif
+depuis le 30 octobre 2026 avec `audit:view`.
 
 ## Vocabulaire canonique de l'interface
 
@@ -97,12 +99,11 @@ La hiérarchie visible est : **Pôle → Page ou fonction → Rubrique →
 Autorisation**.
 
 - pôles `Membres` et `Système` ;
-- pages `Répertoire`, `Utilisateurs` et `Paramètres système` ;
-- provenance des informations dans la page `Répertoire`, dépendante de son
-  accès ; aucune fonction de journal global ni d'activité n'est présentée.
-  La provenance des champs (`audit:view_field_history`) est retirée le
-  27 octobre 2026 avec son écran, sa route et sa clé enregistrée ; elle
-  reviendra, sous une forme à définir, avec le journal d'activité ;
+- pages `Répertoire`, `Utilisateurs`, `Journal d'activité` et `Paramètres système` ;
+- la provenance des champs (`audit:view_field_history`) est retirée le
+  27 octobre 2026 avec son écran, sa route et sa clé enregistrée ; le bouton
+  « Historique » des fiches mène depuis le 30 octobre 2026 au journal
+  d'activité filtré, réservé aux lecteurs `audit:view` ;
 - rubriques telles que `Annuaire`, `Profil et contact`, `Sécurité` ou
   `Autorisations` ;
 - autorisations formulées avec un verbe d'action : `Consulter`, `Créer`,
@@ -151,7 +152,8 @@ mais bloqué reste affiché comme autorisé dans le choix ; l'état explique le
 prérequis manquant et le compteur l'exclut des droits utilisables. Les aperçus
 reflètent le brouillon jusqu'à l'enregistrement. Autoriser ajoute les prérequis,
 refuser retire les dépendants, sous réserve de l'autorisation atomique de tout
-le lot. Le détail des changements peut être relu avant la sauvegarde.
+le lot. Le résumé de la barre d'enregistrement suffit : la liste détaillée
+des changements a été retirée le 26 octobre 2026 (décision du propriétaire).
 
 Les colonnes USER et ADMIN ci-dessous décrivent le preset sans surcharge
 individuelle. Une permission administrative configurable peut être accordée à
@@ -204,10 +206,10 @@ attribuer : les limites d'attribution sont détaillées sous le tableau.
 | Clé canonique                 | Action couverte                                 | Dépend de                                   | Risque    | Step-up à l'usage |
 | ----------------------------- | ----------------------------------------------- | ------------------------------------------- | --------- | ----------------- |
 | `users:view`                  | liste, fiche et données de base                 | —                                           | `default` | Non               |
-| `users:create`                | créer un compte standard (adresse de contact seulement avec `users:update_contact`) | `users:view`                                | sensible  | Non               |
+| `users:create`                | créer un compte standard (email de contact seulement avec `users:update_contact`) | `users:view`                                | sensible  | Non               |
 | `users:view_contact`          | voir les adresses de contact                    | `users:view`                                | sensible  | Non               |
 | `users:update_profile`        | modifier prénom et nom                          | `users:view`                                | sensible  | Non               |
-| `users:update_contact`        | modifier une adresse de contact                 | `users:view`, `users:view_contact`          | sensible  | Non               |
+| `users:update_contact`        | modifier un email de contact                    | `users:view`, `users:view_contact`          | sensible  | Non               |
 | `users:update_login`          | modifier l'identifiant de connexion             | `users:view`                                | critique  | Oui               |
 | `users:view_security`         | voir l'état du mot de passe et de la MFA                | `users:view`                                | sensible  | Non               |
 | `users:update_status`         | désactiver ou réactiver un compte               | `users:view`, `users:view_security`         | critique  | Oui               |
@@ -245,10 +247,8 @@ est refusée. L'authentification habituelle reste soumise à la MFA.
 
 La clé neuve `users:delete_account` évite de réutiliser `users:delete`, qui a
 historiquement désigné l'ancien archivage. Aucun ancien droit positif
-d'archivage n'est transformé en droit de suppression irréversible. Les anciens
-événements `USER_DELETE` sans marqueur `irreversible` restent affichés comme des
-archives historiques ; seuls les nouveaux événements versionnés sont présentés
-comme des suppressions définitives.
+d'archivage n'est transformé en droit de suppression irréversible. Le journal
+d'activité présente tout `USER_DELETE` comme « Compte supprimé ».
 
 Les tombstones supprimés sont immuables au niveau PostgreSQL. Toute future
 migration globale de `User` doit donc exclure `deletedAt IS NOT NULL` ou gérer
@@ -271,12 +271,12 @@ restent hors de ce mécanisme : seul le compte racine peut les modifier.
 
 Chaque modification enregistre séparément les clés effectivement accordées et
 effectivement retirées, y compris les effets indirects des dépendances ou d'un
-changement de rôle. Ces métadonnées sensibles restent conservées dans l'audit ;
-aucun écran ni endpoint courant ne les expose comme journal détaillé.
+changement de rôle. Le journal d'activité les présente (« Accordées »,
+« Retirées ») aux seuls lecteurs `audit:view`.
 
 ### Page Répertoire
 
-Les sept permissions (dont la provenance) peuvent être accordées individuellement
+Les six permissions peuvent être accordées individuellement
 à un USER. Leur preset est `false` pour USER et `true` pour ADMIN, sans retrait
 possible. Le compte racine les
 possède implicitement.
@@ -292,8 +292,9 @@ possède implicitement.
 
 Sans lecture des coordonnées, la fiche et les retours de mutation contiennent
 des collections vides ; leurs compteurs sont masqués, la recherche ne porte que
-sur l'identité, et le filtre « sans coordonnées » est refusé. La provenance des
-coordonnées exige également `persons:view_contact`. Le détail conserve la date
+sur l'identité, et le filtre « sans coordonnées » est refusé. Dans le journal
+d'activité, les valeurs des coordonnées suivent aussi `persons:view_contact`.
+Le détail conserve la date
 de naissance dans l'identité ; aucun droit supplémentaire n'a été créé pour ce
 champ. Les listes n'exposent ni cette date ni les valeurs de contact.
 
@@ -318,15 +319,9 @@ de `hasPermission`, ni des presets, ni des surcharges acceptées, et la page
 correspondante n'existe plus. La spécification complète est conservée dans
 `docs/propositions/intentions/pages/bureau-juridique/sponsors-partenaires.md`.
 
-### Provenance et anciennes capacités d'activité
+### Auteur protégé et anciennes capacités d'activité
 
-La provenance du Répertoire transmet au plus **un changement**, limité à
-l'auteur autorisé, l'action, la date et l'identifiant de la trace. Les anciennes
-et nouvelles valeurs ne sont ni chargées ni déchiffrées pour cette infobulle.
-Les traces stockées restent intactes.
-
-Dans toutes les réponses Personnes (liste, fiche, provenance et retours de
-mutation), un auteur protégé est présenté comme « Superadmin », sans
+Dans toutes les réponses Personnes (liste, fiche et retours de mutation), un auteur protégé est présenté comme « Superadmin », sans
 identifiant de connexion, sauf lorsque le lecteur est ce compte protégé.
 L'identité originale demeure dans les snapshots d'audit.
 
@@ -536,60 +531,17 @@ Exemples cohérents : `persons:view_contact`, `users:grant_access`,
 `system:manage_everything`, qui mélangerait plusieurs ressources, risques et
 responsabilités.
 
-## Migration des clés legacy
+## Anciennes clés
 
-La compatibilité est prévue pour une seule version : les anciennes clés sont
-lues, mais toute nouvelle écriture doit utiliser les clés canoniques.
-
-| Clé legacy                    | Clé(s) canonique(s)                                                                                 |
-| ----------------------------- | --------------------------------------------------------------------------------------------------- |
-| `system:audit`                | `audit:view`                                                                                        |
-| `system:exports`              | retirée avec l'export du journal (historique, sans autorisation)                                     |
-| `system:settings`             | aucune surcharge conservée : `settings:view` et `settings:update` sont désormais liés au rôle ADMIN |
-| `users:update_access`         | `users:grant_access`, `users:revoke_access`, `users:delegate_access`                                |
-| `users:edit_permissions`      | `users:grant_access`, `users:revoke_access`, `users:delegate_access`                                |
-| `users:export`                | `users:export_activity`                                                                             |
-| `users:manage_account_policy` | `users:update_account_policy`                                                                       |
-| `users:manage_status`         | `users:update_status`                                                                               |
-
-Règles de résolution :
-
-- une valeur canonique explicite gagne si l'ancien et le nouveau nom sont
-  présents ;
-- si les deux anciens noms de gestion des accès coexistent,
-  `users:update_access` gagne sur `users:edit_permissions` ;
-- un alias à plusieurs cibles propose sa valeur à chaque cible absente avant le
-  filtrage des droits configurables individuellement ;
-- seules les cibles actives et configurables individuellement survivent à la
-  normalisation ;
-- les clés totalement inconnues sont remontées par
-  `getUnknownPermissionKeys`, jamais rendues effectives.
-
-Plan de retrait : inventorier les JSON existants, convertir les alias en clés
-canoniques, enregistrer uniquement des surcharges différentielles, vérifier
-qu'aucune ligne et aucun client n'émet encore l'ancien format, puis supprimer
-les alias et leurs tests de compatibilité. Les anciens droits globaux
-`users:update_access` et `users:edit_permissions` sont convertis vers les trois
-capacités afin de conserver leur valeur effective ; toutes les nouvelles
-écritures doivent employer les clés séparées. Les clés `users:archive` et
-`users:delete` sont désormais historiques uniquement : elles restent lisibles
-dans les anciens journaux, mais sont inconnues pour toute décision
-d'autorisation et ne sont jamais converties en `users:delete_account`. Lors de
-la migration, seul un refus explicite d'archivage porté par un ADMIN est
-conservé comme refus du nouveau droit, afin de ne pas élargir son preset. Les
-anciennes surcharges `system:settings` doivent être supprimées : les deux
-capacités de paramètres sont désormais exclusivement fournies par le preset
-ADMIN.
-
-Les clés `audit:view_sensitive`, `system:audit_sensitive`, `members:view` et
-`members:update` sont également historiques uniquement. Elles restent dans
-l'allowlist de rendu des événements immuables, mais sont inconnues de
-`hasPermission`, non attribuables et supprimées de toute surcharge normalisée.
-`audit:view` porte désormais l'accès détaillé au journal ; aucune ancienne clé
-ne peut le conférer. Durant le déploiement A, leurs valeurs brutes sont
-néanmoins conservées à l'écriture pour les anciennes instances en cours de
-drainage. Leur suppression physique est une phase B explicite, documentée dans
-`docs/exploitation/operations.md`, jamais une migration automatique du lot Répertoire.
+La compatibilité d'une version avec d'anciennes clés (`system:audit`,
+`users:update_access`, `users:edit_permissions`, `users:export`…) a été
+retirée le 24 octobre 2026 (REV-13 de la
+[revue complète](../audits/2026-10-23-revue-complete.md)) : il n'existe aucune
+instance déployée à ménager. Une clé ancienne restée stockée sur un compte est
+inconnue, sans effet, refusée en entrée et supprimée au prochain
+enregistrement de ses droits. Aucune ancienne clé, `users:delete` et
+`audit:view_sensitive` comprises, ne confère un droit ni ne reste dans le code ;
+la table de correspondance historique reste dans les rapports datés.
 
 ## Checklist d'ajout ou de revue
 

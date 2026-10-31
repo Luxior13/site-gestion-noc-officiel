@@ -2,7 +2,12 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { changeOwnPassword } from '$features/auth/server/password-change.service';
-import { apiError, apiErrors, parseJsonBody } from '$server/api-response';
+import {
+  apiError,
+  apiErrors,
+  parseJsonBody,
+  withPrivateNoStore,
+} from '$server/api-response';
 import { isSecurityVersionMismatchError } from '$server/auth-errors';
 import { serviceErrorResponse } from '$server/service-error';
 import { deleteSessionCookie, getAuthSession } from '$server/session';
@@ -43,7 +48,7 @@ export async function POST(
 
     await changeOwnPassword(user, session, validation.data);
 
-    return NextResponse.json({ success: true });
+    return withPrivateNoStore(NextResponse.json({ success: true as const }));
   } catch (error) {
     if (isSecurityVersionMismatchError(error)) await deleteSessionCookie();
 

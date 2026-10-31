@@ -58,7 +58,7 @@ export const deleteUserPermanently = async ({
       {
         action: 'USER_DELETE',
         category: 'USER',
-        description: 'Utilisateur supprimé définitivement',
+        description: 'Compte supprimé définitivement',
         metadata: {
           deletedUserId: userId,
           deletionVersion: 1,

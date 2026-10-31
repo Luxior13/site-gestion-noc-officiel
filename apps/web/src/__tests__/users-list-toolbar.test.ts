@@ -2,8 +2,8 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 
-import { UsersListToolbar } from '$features/users/UsersListToolbar';
-import type { UsersListController } from '$features/users/useUsersList';
+import { UsersListToolbar } from '$features/users/components/UsersListToolbar';
+import type { UsersListController } from '$features/users/hooks/useUsersList';
 
 const stats = {
   active: 7,

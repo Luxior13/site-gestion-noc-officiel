@@ -412,7 +412,7 @@ Carte retirée le 20 octobre 2026 (REP-24) ; section conservée comme historique
   `ChevronRight` (sémantiquement « aller », pas « loupe »).
 - Deux `Select` Radix via un wrapper local `DirectorySelect` : statut
   (« Tous les statuts », « Dans la structure », « Hors structure ») et tri
-  (« Nom (A–Z) », « Ajoutées récemment », « Modifiées récemment »). Trigger
+  (« Nom affiché (A–Z) » depuis le 31 octobre 2026, « Ajoutées récemment », « Modifiées récemment »). Trigger
   170 × 38 px, 11 px.
 - Bouton « Réinitialiser les filtres » (icône seule, 38 × 38 px) visible dès
   qu'une recherche, un statut ou un tri non défaut est actif — même condition
@@ -456,9 +456,10 @@ Carte retirée le 20 octobre 2026 (REP-24) ; section conservée comme historique
 #### États
 
 - Chargement initial : squelette « Chargement du répertoire ».
-- Refus : « Accès refusé » / « Vous n'avez pas la permission de consulter le
-  répertoire. » / « Retour à l'accueil ».
-- Indisponible : « Répertoire temporairement indisponible » / « Revérifier ».
+- Refus : « Accès refusé » / « Vous n’avez pas l’autorisation de consulter le
+  répertoire. » / « Retour à l’accueil » (écran commun du 31 octobre 2026).
+- Indisponible : plus d’état propre depuis le 31 octobre 2026 ([SYS-11](../../../systeme/constats.md)) ;
+  une base pas encore migrée répond un 503 explicite, affiché comme une erreur.
 - Erreur initiale : « Chargement impossible » + message brut d'erreur +
   « Réessayer ».
 - Erreur d'actualisation : « Actualisation impossible » + « Les résultats
@@ -552,7 +553,7 @@ navigation profonde du point 15 demande une voie de reprise (REP-09).
 2. **Réutiliser la brique de table partagée** : `$ui/table`,
    `$ui/data-table-section` (tableau desktop + liste mobile + pagination + état
    vide), `$ui/pagination`, `$ui/empty`, `$ui/alert`/`ContentState`, comme le
-   fait déjà `features/users/UsersListPage.tsx`. La liste du Répertoire
+   fait déjà `features/users/components/UsersListPage.tsx`. La liste du Répertoire
    réimplémente aujourd'hui tout cela dans un module CSS dédié.
 3. **Décider la liste canonique** : le tableau du Répertoire (validé) et celui
    des Utilisateurs (partagé) ont des fonds, rayons et paddings légèrement

@@ -77,6 +77,14 @@ Aucun point ouvert : COMPTE-10 à COMPTE-12 sont clos au périmètre testé.
 - 19 octobre 2026 : fiche propre à la section, créée par découpage du suivi.
 - 20 octobre 2026 : titre visible et cadres imbriqués retirés, « Double
   authentification » ([reprise](README.md#reprise--20-octobre-2026)).
+- 31 octobre 2026 : codes de secours coupés aux seuls tirets, jamais au milieu
+  d’un groupe ([audit complet](../../audits/2026-10-31-audit-complet.md), AC-06). Appliqué le même
+  jour sur « go » du propriétaire : « Défini à la création du compte » (ou « Mot
+  de passe temporaire, à changer ») au lieu de « Dernier changement : Jamais »
+  (AC-24), adresse IPv4 lisible au lieu de « ::ffff:… » (AC-25), en-tête de
+  « Sessions actives » aligné sur les autres cartes (AC-26), « Session actuelle »
+  sur la seule ligne concernée (AC-27), règle de mot de passe enfreinte en rouge
+  (AC-34), confirmation « Déconnecter Windows · Chrome ? » (AC-20).
 
 ## Revues datées
 

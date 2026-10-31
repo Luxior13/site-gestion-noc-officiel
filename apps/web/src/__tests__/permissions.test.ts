@@ -575,7 +575,7 @@ describe('permission catalogue', () => {
     expect(PERMISSION_CATEGORIES.map((category) => category.label)).toEqual([
       'Répertoire',
       'Utilisateurs',
-      "Journal d'activité",
+      'Journal d’activité',
       'Paramètres système',
     ]);
     expect(

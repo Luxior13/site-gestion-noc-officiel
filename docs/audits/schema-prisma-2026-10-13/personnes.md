@@ -58,7 +58,7 @@ utilisables si une autre partie de ce fichier déplace les déclarations.
 | L | [Liste][L], [recherche][Q] et [détection de doublons][DUP] : usages des index. |
 | D | [Suppression][D], [route de fiche][API] et [audit][A] : effacement, rejeu et trace atomique. |
 | B | [Manifeste de sauvegarde][B], [export de sauvegarde][BE] et [restauration][BR] : couverture des cinq tables et ordre de réinsertion. |
-| G | [Contrat des colonnes][GC], [objets SQL][GO] et [vérification du catalogue][G] : inventaire indépendant des contraintes que Prisma ne représente pas entièrement. |
+| G | Contrat des colonnes, objets SQL et vérification du catalogue (`person-schema-*`, retirés le 31 octobre 2026 avec le sondage de disponibilité, [SYS-11][G]) : inventaire indépendant des contraintes que Prisma ne représente pas entièrement. |
 
 Le [guide de base][DB] fixe déjà la séparation entre garanties SQL et services.
 La consultation centrale utilise Prisma **6.19.3** installé. Le résultat Context7
@@ -321,9 +321,7 @@ des coordonnées, la double version parent/enfant et les garanties SQL compléme
 [B]: ../../../packages/database/scripts/database-backup-format.ts
 [BE]: ../../../packages/database/scripts/database-backup.ts
 [BR]: ../../../packages/database/scripts/restore-database.ts
-[GC]: ../../../apps/web/src/features/persons/server/person-schema-column-contract.ts
-[GO]: ../../../apps/web/src/features/persons/server/person-schema-object-contract.ts
-[G]: ../../../apps/web/src/features/persons/server/person-schema-readiness.ts
+[G]: ../../systeme/constats.md
 [PC]: ../cloture-socle-2026-10-12/personnes/README.md
 [REST]: ../cloture-socle-2026-10-12/integration/README.md
 [CAT]: preuves/catalogue-apres.json

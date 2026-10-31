@@ -10,7 +10,7 @@
 | Espace | Système |
 | Gabarit visé | [D. Page de réglages](../../design/gabarits.md#d-page-de-réglages) |
 | État d’harmonisation | Aligné ; refonte du 14 octobre 2026 — voir [Harmonisation](../../design/harmonisation.md#état-par-page) |
-| Point d’entrée | [page.tsx](../../../apps/web/src/app/systeme/[[...slug]]/page.tsx) → [SystemSettingsPage](../../../apps/web/src/features/settings/SystemSettingsPage.tsx) |
+| Point d’entrée | [page.tsx](../../../apps/web/src/app/systeme/parametres/page.tsx) (route explicite depuis le 31 octobre 2026, [SYS-14](../../systeme/constats.md)) → [SystemSettingsPage](../../../apps/web/src/features/settings/components/SystemSettingsPage.tsx) |
 | Contrôle d’accès | `settings:view` et `settings:update`, liés au rôle ADMIN ; preuve récente pour réduire la conservation ou réparer une valeur |
 | Chargement / erreur dédiés | squelette dérivé du catalogue / commune à l’application |
 
@@ -167,9 +167,9 @@ reproduits. Les preuves de clôture et leurs limites sont indiquées plus haut.
 | PAR-UI-05 | Dette documentaire et de banc : le suivi et les scénarios historiques attendent encore Modifier et la fermeture de l'édition | Lecture du suivi et du banc client du 11 octobre face au code local courant ; les anciens 30/30 ne sont pas rejoués ni présentés comme résultat courant | Après choix de composition, réconcilier décisions, tests de parcours et rendu ; ne pas rétablir l'ancien modèle uniquement pour satisfaire un test |
 
 Sources examinées :
-[page](../../../apps/web/src/features/settings/SystemSettingsPage.tsx),
-[réglage](../../../apps/web/src/features/settings/SystemSettingRow.tsx),
-[contrôleur](../../../apps/web/src/features/settings/useSystemSettings.ts),
+[page](../../../apps/web/src/features/settings/components/SystemSettingsPage.tsx),
+[réglage](../../../apps/web/src/features/settings/components/SystemSettingRow.tsx),
+[contrôleur](../../../apps/web/src/features/settings/hooks/useSystemSettings.ts),
 [textes](../../../apps/web/src/features/settings/system-settings-page.helpers.ts),
 [barre partagée](../../../apps/web/src/components/layout/SectionActionBar.tsx),
 [fiche membre](../../../apps/web/src/features/persons/components/PersonIdentitySection.tsx)
@@ -732,7 +732,7 @@ inventée ; les seuls résultats historiques ne valent pas nouveau contrôle.
 | PAR-S-03 — Conservation | Défauts logiciels, sans qualification universelle des obligations et exceptions | Faire qualifier les durées pour les données réellement détenues et les entités concernées |
 | PAR-S-04 — Portée du journal | Une seule durée purge aussi les détails de l'historique personne ; catégories insuffisantes pour séparer les finalités | Suivre le classement et les étapes documentés ci-dessus avant d'ajouter plusieurs durées ou de réduire le défaut global |
 | PAR-S-05 — Donnée stockée invalide | **Clos au périmètre testé le 12 octobre** : blocage explicite, durée proposée, réparation protégée même à valeur identique et audit transactionnel | Reproductions avant correction puis contrôles SQL et navigateur réussis ; maintien du diagnostic dans cette page, sans écran d'incident supplémentaire |
-| PAR-S-06 — Historique | Date affichée ; auteur et lien direct vers l'audit non ajoutés | Si nécessaire, réutiliser le journal et ses droits, sans nouvelle collection d'historique |
+| PAR-S-06 — Historique | Date affichée ; **lien « Voir dans le journal » ajouté le 31 octobre 2026** (type Paramètres, 1 an, visible des seuls lecteurs du journal) ; l’auteur se lit dans le journal | Réutilise le journal et ses droits, sans nouvelle collection d'historique |
 | PAR-S-07 — Validation complète | **Réconcilié le 13 octobre au périmètre du socle** : preuves client/SQL/HTTP, mutation réelle avec CSRF/conflit/audit et restauration signée des 19 tables, dont SystemSetting. Lecteur d'écran, mobile physique, charge et recette d'exploitation restent non qualifiés | Reprendre selon le changement et l'environnement cible ; l'égalité des lignes restaurées n'est ni une remise en trafic validée, ni une mesure RPO/RTO, ni une qualification des durées |
 
 Les permissions, preuves, versions et audits sont contrôlés par les tests de

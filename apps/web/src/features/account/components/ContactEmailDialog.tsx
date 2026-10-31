@@ -106,10 +106,10 @@ export const ContactEmailDialog: FC<ContactEmailDialogProps> = ({
   const emailError = isConfirmingRemoval
     ? null
     : nextContactEmail.trim().length > CONTACT_EMAIL_MAX_LENGTH
-      ? 'Adresse email trop longue'
+      ? 'Email trop long'
       : normalizedContactEmail &&
           !contactEmailSchema.safeParse(normalizedContactEmail).success
-        ? 'Adresse email invalide'
+        ? 'Email invalide'
         : null;
   const hasChanges = normalizedContactEmail !== currentNormalizedContactEmail;
   const hasDraftChanges =
@@ -190,7 +190,7 @@ export const ContactEmailDialog: FC<ContactEmailDialogProps> = ({
       setCurrentPassword('');
       setError(null);
       setNotice(
-        `Adresse actuellement enregistrée : ${data.user.contactEmail ?? 'Non renseignée'}. Votre saisie est conservée ; vérifiez-la avant de confirmer.`,
+        `Email actuellement enregistré : ${data.user.contactEmail ?? 'non renseigné'}. Votre saisie est conservée ; vérifiez-la avant de confirmer.`,
       );
       void onSuccess(data.user).catch(() => {
         if (mountedRef.current)
@@ -246,13 +246,13 @@ export const ContactEmailDialog: FC<ContactEmailDialogProps> = ({
     }
 
     if (!isConfirmingRemoval && !normalizedContactEmail) {
-      setError('Une adresse email est requise');
+      setError('Un email est requis');
 
       return;
     }
 
     if (!isConfirmingRemoval && !hasChanges) {
-      setError("L'adresse de contact n'a pas changé");
+      setError('L’email de contact n’a pas changé');
 
       return;
     }
@@ -302,13 +302,13 @@ export const ContactEmailDialog: FC<ContactEmailDialogProps> = ({
       setCurrentPassword('');
       toast.success(
         isConfirmingRemoval
-          ? 'Adresse de contact supprimée'
-          : 'Adresse de contact mise à jour',
+          ? 'Email de contact supprimé'
+          : 'Email de contact modifié',
       );
       void onSuccess(data.user).catch(() => {
         if (mountedRef.current)
           toast.error(
-            'Adresse enregistrée. La vue du compte n’a pas pu être actualisée.',
+            'Email enregistré. La vue du compte n’a pas pu être actualisée.',
           );
       });
       onCancel();
@@ -325,7 +325,7 @@ export const ContactEmailDialog: FC<ContactEmailDialogProps> = ({
       setCurrentPassword('');
       setError(
         uncertain
-          ? 'La réponse n’a pas pu être confirmée. L’adresse a peut-être été modifiée. Actualisez la version avant de réessayer.'
+          ? 'La réponse n’a pas pu être confirmée. L’email a peut-être été modifié. Actualisez la version avant de réessayer.'
           : failure.message,
       );
       if (
@@ -367,13 +367,13 @@ export const ContactEmailDialog: FC<ContactEmailDialogProps> = ({
                   )}
                 </ServiceIcon>
                 {isConfirmingRemoval
-                  ? "Supprimer l'adresse de contact"
-                  : "Modifier l'adresse de contact"}
+                  ? 'Supprimer l’email de contact'
+                  : 'Modifier l’email de contact'}
               </DialogTitle>
               <DialogDescription>
                 {isConfirmingRemoval
-                  ? 'Cette action retire uniquement votre adresse de contact.'
-                  : 'Cette adresse est indépendante de votre identifiant de connexion et ne permet pas de vous authentifier.'}
+                  ? 'Cette action retire uniquement votre email de contact.'
+                  : 'Cet email est indépendant de votre identifiant de connexion et ne permet pas de vous authentifier.'}
               </DialogDescription>
             </DialogHeader>
 
@@ -412,7 +412,7 @@ export const ContactEmailDialog: FC<ContactEmailDialogProps> = ({
               {isConfirmingRemoval ? (
                 <div className="border-destructive/30 bg-destructive/10 rounded-md border p-3">
                   <p className="text-foreground text-sm font-medium">
-                    Confirmer la suppression de cette adresse ?
+                    Confirmer la suppression de cet email ?
                   </p>
                   <p className="text-muted-foreground mt-1 text-sm break-all">
                     {baseContactEmail}
@@ -425,7 +425,7 @@ export const ContactEmailDialog: FC<ContactEmailDialogProps> = ({
               ) : (
                 <div className="space-y-2">
                   <Label htmlFor="account-contact-email" required>
-                    Adresse de contact
+                    Email de contact
                   </Label>
                   <Input
                     aria-describedby="account-contact-email-help"
@@ -455,7 +455,7 @@ export const ContactEmailDialog: FC<ContactEmailDialogProps> = ({
                     id="account-contact-email-help"
                   >
                     {emailError ??
-                      'Utilisée uniquement comme adresse de contact, jamais pour vous connecter.'}
+                      'Utilisé uniquement pour vous contacter, jamais pour vous connecter.'}
                   </p>
                   {baseContactEmail && (
                     <Button
@@ -471,7 +471,7 @@ export const ContactEmailDialog: FC<ContactEmailDialogProps> = ({
                       variant="ghost"
                     >
                       <Trash2 className="size-4" />
-                      Supprimer l&apos;adresse de contact
+                      Supprimer l’email de contact
                     </Button>
                   )}
                 </div>
@@ -533,7 +533,7 @@ export const ContactEmailDialog: FC<ContactEmailDialogProps> = ({
                   {isSaving ? (
                     <>
                       <Loader2 className="size-4 animate-spin" />
-                      Enregistrement...
+                      Enregistrement…
                     </>
                   ) : isConfirmingRemoval ? (
                     'Confirmer la suppression'
@@ -560,7 +560,7 @@ export const ContactEmailDialog: FC<ContactEmailDialogProps> = ({
                 Abandonner les modifications ?
               </AlertDialogTitle>
               <AlertDialogDescription>
-                L&apos;adresse ou le mot de passe saisi ne sera pas conservé.
+                L’email ou le mot de passe saisi ne sera pas conservé.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter className="mt-4">

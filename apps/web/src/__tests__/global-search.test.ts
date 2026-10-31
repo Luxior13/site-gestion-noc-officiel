@@ -112,7 +112,7 @@ describe('global page search', () => {
       }),
       createFixture({
         id: 'journal',
-        label: "Journal d'activité",
+        label: 'Journal d’activité',
         space: 'Système',
       }),
     ];
@@ -136,7 +136,7 @@ describe('global page search', () => {
         id: 'description',
         label: 'Historique',
       }),
-      createFixture({ id: 'prefix', label: "Journal d'activité" }),
+      createFixture({ id: 'prefix', label: 'Journal d’activité' }),
       createFixture({ id: 'exact', label: 'Journal' }),
     ];
 

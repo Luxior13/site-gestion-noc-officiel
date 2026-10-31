@@ -47,7 +47,10 @@ describe('global MFA UX contracts', () => {
     expect(loginSource).toContain('Reste connecté jusqu’à 30 jours');
     expect(loginSource).toContain('le code est demandé à chaque');
     expect(loginSource).toContain('Sans effet pour le compte superadmin');
-    expect(loginSource).toContain('gérée par le propriétaire superadmin');
+    // An administrator resets a password or a lost authenticator (audit of
+    // 31 October 2026: the page wrongly sent everyone to the superadmin).
+    expect(loginSource).toContain('Un administrateur de Noctambule peut');
+    expect(loginSource).not.toContain('propriétaire superadmin');
   });
 
   it('forces enrollment for every account and exposes no disable action', () => {

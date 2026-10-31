@@ -115,7 +115,7 @@ describe('system settings routes', () => {
     mocks.transaction.$queryRaw.mockResolvedValue([]);
     mocks.transaction.systemSetting.updateMany.mockResolvedValue({ count: 1 });
     mocks.transaction.systemSetting.findUnique.mockResolvedValue({
-      description: "Durée de conservation du journal d'activité en jours",
+      description: 'Durée de conservation du journal d’activité en jours',
       key: 'audit.retentionDays',
       updatedAt: UPDATED_AT,
       value: 1_095,
@@ -171,7 +171,7 @@ describe('system settings routes', () => {
     expect(body.data).toHaveLength(1);
     expect(body.data).toContainEqual(
       expect.objectContaining({
-        description: "Durée de conservation du journal d'activité en jours",
+        description: 'Durée de conservation du journal d’activité en jours',
         isStoredValueInvalid: false,
         key: 'audit.retentionDays',
         value: 1_460,
@@ -395,7 +395,7 @@ describe('system settings routes', () => {
       version: 2,
     });
     mocks.transaction.systemSetting.findUnique.mockResolvedValueOnce({
-      description: "Durée de conservation du journal d'activité en jours",
+      description: 'Durée de conservation du journal d’activité en jours',
       key: 'audit.retentionDays',
       updatedAt: UPDATED_AT,
       value: 1_460,
@@ -450,7 +450,7 @@ describe('system settings routes', () => {
       version: 2,
     });
     mocks.transaction.systemSetting.findUnique.mockResolvedValueOnce({
-      description: "Durée de conservation du journal d'activité en jours",
+      description: 'Durée de conservation du journal d’activité en jours',
       key: 'audit.retentionDays',
       updatedAt: UPDATED_AT,
       value: 730,
@@ -506,7 +506,7 @@ describe('system settings routes', () => {
       version: 2,
     });
     mocks.transaction.systemSetting.findUnique.mockResolvedValueOnce({
-      description: "Durée de conservation du journal d'activité en jours",
+      description: 'Durée de conservation du journal d’activité en jours',
       key: 'audit.retentionDays',
       updatedAt: UPDATED_AT,
       value: 730,
@@ -525,7 +525,7 @@ describe('system settings routes', () => {
     expect(response.status).toBe(200);
     expect(mocks.createAuditLogWithHeaders).toHaveBeenCalledWith(
       expect.objectContaining({
-        description: "Paramètre système mis à jour : Journal d'activité",
+        description: 'Paramètre modifié : Journal d’activité',
         metadata: expect.objectContaining({
           after: { value: 730, version: 3 },
           before: { value: 1_095, version: 2 },

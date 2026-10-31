@@ -3,12 +3,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   getActiveNavigationSpace,
   getNavigationAvailability,
-  getNavigationItemByHref,
+  getNavigationSpaceItems,
+  NAV_SPACES,
 } from '$constants/app.constants';
 import {
   FEATURE_LIST,
   FEATURES,
-  getFeatureByHref,
   getFeatureById,
 } from '$constants/feature-registry.constants';
 import {
@@ -35,7 +35,10 @@ describe('feature registry', () => {
     for (const feature of FEATURE_LIST.filter(
       (entry) => entry.availability === 'live',
     )) {
-      const navigationItem = getNavigationItemByHref(feature.href);
+      const navigationItem =
+        NAV_SPACES.flatMap(getNavigationSpaceItems).find(
+          (item) => item.href === feature.href,
+        ) ?? null;
 
       expect(navigationItem, feature.href).not.toBeNull();
       expect(navigationItem?.featureId).toBe(feature.id);
@@ -78,15 +81,10 @@ describe('feature registry', () => {
   });
 
   it('resolves features without exposing mutable registry state', () => {
-    expect(getFeatureByHref('/systeme/utilisateurs')).toBe(FEATURES.users);
     expect(getFeatureById('system-activity')).toBe(FEATURES.systemActivity);
     expect(getFeatureById('system-settings')).toBe(FEATURES.systemSettings);
-    expect(getFeatureByHref('/systeme/parametres')).toBe(
-      FEATURES.systemSettings,
-    );
-    expect(getFeatureByHref('/membres/repertoire')).toBe(FEATURES.persons);
     expect(getFeatureById('persons')).toBe(FEATURES.persons);
-    expect(getFeatureByHref('/inconnu')).toBeNull();
+    expect(getFeatureById('inconnu')).toBeNull();
   });
 });
 

@@ -37,7 +37,7 @@ const AuthorizationViewSwitch: FC<{ state: AuthorizationViewState }> = ({
   state,
 }) => (
   <div
-    aria-label="Catégorie d'autorisations"
+    aria-label="Catégorie d’autorisations"
     className={styles.viewSwitch}
     role="group"
   >
