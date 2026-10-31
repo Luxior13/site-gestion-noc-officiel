@@ -7,8 +7,16 @@ import {
   type RankedSearchItem,
   rankSearchResults,
 } from '$components/layout/global-search.utils';
-import { getVisibleNavigationSpaces } from '$constants/app.constants';
-import { buildSearchCatalog } from '$features/search/search-catalog';
+import {
+  getActiveNavigationSpace,
+  getVisibleNavigationSpaces,
+} from '$constants/app.constants';
+import { PERMISSIONS } from '$constants/permissions.constants';
+import { canSeeAccountSecurity } from '$features/account/account-sections';
+import {
+  buildSearchCatalog,
+  getSuggestedSearchItems,
+} from '$features/search/search-catalog';
 
 type SearchFixture = RankedSearchItem & {
   id: string;
@@ -93,7 +101,7 @@ describe('global page search', () => {
       rankSearchResults(catalog, normalizeSearchValue('autorisations')).map(
         (item) => item.href,
       ),
-    ).toEqual(['/mon-compte']);
+    ).toEqual(['/mon-compte?section=access', '/mon-compte']);
   });
 
   // Audit RR-01 to RR-05 of 31 October 2026: the words people actually use.
@@ -116,8 +124,9 @@ describe('global page search', () => {
     ['personne', '/membres/repertoire'],
     ['logs', '/systeme/journal-activite'],
     ['historique', '/systeme/journal-activite'],
-    ['mot de passe', '/mon-compte'],
-    ['double authentification', '/mon-compte'],
+    ['mot de passe', '/mon-compte?section=security'],
+    ['double authentification', '/mon-compte?section=security'],
+    ['sécurité', '/mon-compte?section=security'],
     ['réglages', '/systeme/parametres'],
     ['tableau de bord', '/'],
     ['projet', '/systeme/feuille-de-route'],
@@ -138,7 +147,41 @@ describe('global page search', () => {
     expect(searchAs(member, 'logs')).toEqual([]);
     expect(searchAs(member, 'personnes')).toEqual([]);
     expect(searchAs(member, 'administration')).toEqual([]);
-    expect(searchAs(member, 'droits')).toEqual(['/mon-compte']);
+    expect(searchAs(member, 'droits')).toEqual(['/mon-compte?section=access']);
+  });
+
+  // Audit RR-07: the Mon compte tabs, under the rule that shows them. Every
+  // security permission of one's own account is always enabled, so even a
+  // stale deny keeps Sécurité, on the page as in the search.
+  it('opens the Mon compte tabs that the page shows', () => {
+    const staleDenies = {
+      ...member,
+      permissions: {
+        [PERMISSIONS.ACCOUNT.CHANGE_PASSWORD]: false,
+        [PERMISSIONS.ACCOUNT.MANAGE_MFA]: false,
+        [PERMISSIONS.ACCOUNT.MANAGE_SESSIONS]: false,
+        [PERMISSIONS.ACCOUNT.VIEW_SECURITY]: false,
+      },
+    };
+
+    expect(canSeeAccountSecurity(staleDenies)).toBe(true);
+    expect(searchAs(staleDenies, 'mot de passe')).toEqual([
+      '/mon-compte?section=security',
+    ]);
+    expect(searchAs(member, 'autorisations')[0]).toBe(
+      '/mon-compte?section=access',
+    );
+  });
+
+  it('suggests pages only, never a tab on its own', () => {
+    const spaces = getVisibleNavigationSpaces(superadmin, 'live');
+    const suggestions = getSuggestedSearchItems(
+      buildSearchCatalog(spaces, superadmin),
+      getActiveNavigationSpace('/', spaces),
+    ).map((item) => item.href);
+
+    expect(suggestions).toHaveLength(7);
+    expect(suggestions.some((href) => href.includes('?'))).toBe(false);
   });
 
   it('normalizes accents, ligatures, punctuation and repeated spaces', () => {

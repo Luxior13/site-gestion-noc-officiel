@@ -167,7 +167,10 @@ Les combinaisons Vim de cette palette restent désactivées. Les gardes de formu
 restent appliquées aux destinations.
 
 La recherche rapide conserve une fenêtre centrale de 672 px maximum et le plein
-écran sous 640 px. Fond bleu ardoise, rayons de 8 px sur ordinateur, aucune ombre
+écran sous 640 px. Sa liste montre huit lignes sans défilement sur un ordinateur
+(fenêtre de 40rem au plus, liste de 34rem) et ne défile que sur un écran bas.
+Les onglets Sécurité et Autorisations de Mon compte sont aussi des résultats,
+ouverts directement, trouvés par leurs seuls mots et jamais suggérés seuls. Fond bleu ardoise, rayons de 8 px sur ordinateur, aucune ombre
 ni animation ; focus intérieur et sélection explicite, également en couleurs
 forcées. Les noms peuvent revenir à la ligne. Le contexte distingue « Page
 actuelle » et « Section actuelle » sans pastille de fond. Effacement et fermeture

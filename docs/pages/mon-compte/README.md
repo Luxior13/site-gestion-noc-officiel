@@ -13,7 +13,10 @@ gabarit que la fiche utilisateur, sans les actions d’administration.
 | `/mon-compte` | `?section=access` | [Mon compte — Autorisations](acces.md) | [B. Fiche à sections](../../design/gabarits.md#b-fiche-à-sections) | Aligné |
 | `/mon-compte` | `?section=security` | [Mon compte — Sécurité](securite.md) | [B. Fiche à sections](../../design/gabarits.md#b-fiche-à-sections) | Aligné |
 
-Les anciens paramètres `activity` et `history` affichent Profil.
+Les anciens paramètres `activity` et `history` affichent Profil. La recherche
+rapide de l’en-tête ouvre directement Sécurité (« mot de passe », « sécurité »)
+et Autorisations (« droits »), sous la même règle d’affichage
+(`canSeeAccountSecurity`, audit RR-07 du 31 octobre 2026).
 
 ## Règles communes du module
 

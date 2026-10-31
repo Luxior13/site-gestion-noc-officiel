@@ -26,6 +26,7 @@ import {
   buildAccountSectionHref,
   normalizeAccountSection,
 } from '$features/account/account-page.helpers';
+import { canSeeAccountSecurity } from '$features/account/account-sections';
 import { useUnsavedNavigationGuard } from '$hooks/useUnsavedNavigationGuard';
 import type { UserType } from '$types/auth.types';
 import { getSafeCollectionReturnHref } from '$utils/navigation.utils';
@@ -71,8 +72,7 @@ const AccountContent: FC<{ userData: UserType }> = ({ userData }) => {
     userData.mustChangePassword || allowed(PERMISSIONS.ACCOUNT.CHANGE_PASSWORD);
   const canManageMfa = allowed(PERMISSIONS.ACCOUNT.MANAGE_MFA);
   const canManageSessions = allowed(PERMISSIONS.ACCOUNT.MANAGE_SESSIONS);
-  const showSecurity =
-    canViewSecurity || canChangePassword || canManageMfa || canManageSessions;
+  const showSecurity = canSeeAccountSecurity(userData);
   // Autorisations is a read-only summary, always available (audit DRT-07).
   const sections = ACCOUNT_SECTIONS.filter((section) =>
     section.id === 'profile'

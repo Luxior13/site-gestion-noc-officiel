@@ -166,7 +166,7 @@ export const QuickNavigation: FC = () => {
         fullscreenOnMobile
         hideCloseButton
         overlayClassName="animate-none!"
-        className="border-border-default bg-popover h-dvh max-w-2xl animate-none! overflow-hidden p-0 shadow-none sm:h-auto sm:max-h-[min(38rem,85dvh)] sm:rounded-sm"
+        className="border-border-default bg-popover h-dvh max-w-2xl animate-none! overflow-hidden p-0 shadow-none sm:h-auto sm:max-h-[min(40rem,85dvh)] sm:rounded-sm"
       >
         <DialogHeader className="sr-only">
           <DialogTitle>Navigation rapide</DialogTitle>
@@ -239,9 +239,11 @@ export const QuickNavigation: FC = () => {
             {results.length} résultat{results.length > 1 ? 's' : ''} affiché
             {results.length > 1 ? 's' : ''}
           </span>
+          {/* Eight rows fit on a laptop; the list scrolls only on short
+              screens (audit RR-09, 31 October 2026). */}
           <CommandList
             label="Pages disponibles"
-            className="max-h-none min-h-0 flex-1 p-2 sm:max-h-96"
+            className="max-h-none min-h-0 flex-1 p-2 sm:max-h-[min(34rem,calc(85dvh-6rem))]"
           >
             <CommandEmpty className="px-4 py-8 text-center text-sm">
               <p className="font-medium">Aucune page trouvée</p>

@@ -41,8 +41,12 @@ ses trois pages) ; Mon compte décrit « Profil, autorisations et sécurité »
 (RR-02) ; « 0 résultat affiché » (RR-08) ; chaque vue nomme son onglet, accueil
 « Mon travail » et page introuvable compris, « · Dev » partout en développement
 (RR-10, `pageTitle`, accueil passé en route serveur) ; champs et chemins morts
-retirés (RR-11). Restent à décider : pages de création (RR-06), onglets de
-Mon compte (RR-07), hauteur de liste (RR-09).
+retirés (RR-11). Ensuite, sur « si tu recommandes, fais » : « mot de passe »
+ou « sécurité » ouvrent l’onglet Sécurité de Mon compte, « droits » l’onglet
+Autorisations, sous la règle d’affichage de la page (`canSeeAccountSecurity`),
+jamais suggérés seuls et introuvables par « compte » (RR-07) ; la liste montre
+huit lignes sans défilement sur ordinateur (RR-09). Reste à décider : pages de
+création (RR-06, non recommandé : « Ajouter une fiche » est sur la liste).
 
 ## Pôle Système — 25 octobre 2026
 
