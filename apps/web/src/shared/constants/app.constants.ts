@@ -43,6 +43,7 @@ const featureNavigation = (
   featureId: feature.id,
   href: feature.href,
   icon: feature.icon,
+  keywords: feature.keywords,
   label: feature.label,
   permissionMode: feature.permissionMode,
   requiredPermissions: feature.requiredPermissions,
@@ -55,7 +56,6 @@ export const NAV_SPACES: NavigationSpace[] = [
     icon: 'LayoutDashboard',
     id: 'dashboard',
     label: 'Aujourd’hui',
-    matchHrefs: ['/tableau-de-bord'],
     sections: [
       {
         id: 'today',
@@ -91,7 +91,9 @@ export const NAV_SPACES: NavigationSpace[] = [
     icon: 'Settings',
     id: 'system',
     label: 'Système',
-    matchHrefs: ['/administration', '/systeme', PAGE_PATHS.roadmap],
+    // Former addresses are redirected before the application: only the
+    // pole prefix is needed once the space href follows the visible pages.
+    matchHrefs: [PAGE_PATHS.system],
     sections: [
       {
         id: 'system',
@@ -233,8 +235,12 @@ function flattenNavItems(items: readonly NavItem[]): NavItem[] {
   ]);
 }
 
+export function getNavigationSectionItems(section: NavSection): NavItem[] {
+  return flattenNavItems(section.items);
+}
+
 export function getNavigationSpaceItems(space: NavigationSpace): NavItem[] {
-  return flattenNavItems(space.sections.flatMap((section) => section.items));
+  return space.sections.flatMap(getNavigationSectionItems);
 }
 
 export function getVisibleNavigationSpaces(
@@ -267,7 +273,7 @@ export function getActiveNavigationSpace(
 
 export function getDesktopSidebarSections(
   user: NavigationUser,
-  pathname = '/tableau-de-bord',
+  pathname: string,
 ): NavSection[] {
   const visibleSpaces = getVisibleNavigationSpaces(user, 'live');
 

@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
-import { SITE_CONFIG } from '$constants/app.constants';
 import { FEATURES } from '$constants/feature-registry.constants';
+import { pageTitle } from '$utils/page-title.utils';
 
 export const metadata: Metadata = {
   description: 'Gérez les comptes, rôles et autorisations administratives.',
-  title: `${FEATURES.users.label} · ${SITE_CONFIG.name}`,
+  title: pageTitle(FEATURES.users.label),
 };
 
 export default function AdministrationUsersLayout({

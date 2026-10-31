@@ -235,8 +235,9 @@ export const QuickNavigation: FC = () => {
             }
           />
           <span aria-live="polite" className="sr-only" role="status">
-            {results.length} résultat{results.length !== 1 ? 's' : ''} affiché
-            {results.length !== 1 ? 's' : ''}
+            {/* French keeps zero singular, as every counter of the site. */}
+            {results.length} résultat{results.length > 1 ? 's' : ''} affiché
+            {results.length > 1 ? 's' : ''}
           </span>
           <CommandList
             label="Pages disponibles"

@@ -17,7 +17,10 @@ des fonctionnalités ; il ne demande pas d'ajouter une capacité inutile à chaq
 
 Déclarer la fonctionnalité dans `feature-registry.constants.ts`, puis relier
 son entrée de navigation avec `featureId`. Le manifeste possède une clé stable,
-la route, les permissions requises et la localisation d'audit. Une page ne
+la route, les permissions requises, la localisation d'audit et les mots-clés
+de la recherche rapide (`keywords` : mots que les membres emploient pour cette
+page, jamais affichés ; [navigation](../domaines/navigation.md)). Chaque vue
+nomme son onglet avec `pageTitle`. Une page ne
 devient `live` qu'une fois sa route, ses permissions et ses tests prêts.
 
 Une fonctionnalité `planned` utilise uniquement les identifiants réservés de

@@ -18,6 +18,11 @@ export type FeatureDefinition = Readonly<{
   href: string;
   icon: string;
   id: string;
+  /**
+   * Other words people use for this page: searched by the header quick
+   * navigation, never displayed (audit RR-04, 31 October 2026).
+   */
+  keywords: readonly string[];
   label: string;
   permissionMode: 'all' | 'any';
   requiredPermissions: readonly string[];
@@ -40,6 +45,7 @@ export const FEATURES = {
     href: PAGE_PATHS.home,
     icon: 'LayoutDashboard',
     id: 'dashboard',
+    keywords: ['tableau de bord', 'dashboard'],
     label: 'Mon travail',
     permissionMode: 'all',
     requiredPermissions: [PERMISSIONS.DASHBOARD.VIEW],
@@ -57,6 +63,7 @@ export const FEATURES = {
     href: PAGE_PATHS.internalNews,
     icon: 'Newspaper',
     id: 'internal-news',
+    keywords: [],
     label: 'Actualité interne',
     permissionMode: 'all',
     requiredPermissions: [ROADMAP_PERMISSIONS.INTERNAL_NEWS.VIEW],
@@ -73,6 +80,7 @@ export const FEATURES = {
     href: PAGE_PATHS.persons,
     icon: 'Users',
     id: 'persons',
+    keywords: ['personnes', 'fiches', 'annuaire', 'profils', 'coordonnées'],
     label: 'Répertoire',
     permissionMode: 'all',
     requiredPermissions: [PERMISSIONS.PERSONS.VIEW],
@@ -89,6 +97,7 @@ export const FEATURES = {
     href: PAGE_PATHS.roadmap,
     icon: 'ClipboardList',
     id: 'roadmap',
+    keywords: ['roadmap', 'à venir', 'évolutions'],
     label: 'Feuille de route',
     permissionMode: 'all',
     requiredPermissions: [],
@@ -105,6 +114,7 @@ export const FEATURES = {
     href: PAGE_PATHS.systemActivity,
     icon: 'History',
     id: 'system-activity',
+    keywords: ['historique', 'logs', 'audit', 'traces', 'connexions'],
     label: 'Journal d’activité',
     permissionMode: 'all',
     requiredPermissions: [PERMISSIONS.AUDIT.VIEW],
@@ -121,6 +131,7 @@ export const FEATURES = {
     href: PAGE_PATHS.systemSettings,
     icon: 'Settings',
     id: 'system-settings',
+    keywords: ['réglages'],
     label: 'Paramètres système',
     permissionMode: 'all',
     requiredPermissions: [PERMISSIONS.SETTINGS.VIEW],
@@ -137,6 +148,7 @@ export const FEATURES = {
     href: PAGE_PATHS.users,
     icon: 'Users',
     id: 'users',
+    keywords: ['droits', 'permissions', 'accès'],
     label: 'Utilisateurs',
     permissionMode: 'all',
     requiredPermissions: [PERMISSIONS.USERS.VIEW],

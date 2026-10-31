@@ -66,7 +66,7 @@ une règle contraire dans un document secondaire.
 
 | Sujet | Source exécutable ou principale |
 | --- | --- |
-| Fonctionnalités actives | [Registre](../../apps/web/src/shared/constants/feature-registry.constants.ts) : statut `live`/`planned`, permissions et routes |
+| Fonctionnalités actives | [Registre](../../apps/web/src/shared/constants/feature-registry.constants.ts) : statut `live`/`planned`, permissions, routes et mots-clés de recherche |
 | Permissions | [permissions.constants.ts](../../apps/web/src/shared/constants/permissions.constants.ts), décrites dans le [domaine Permissions](../domaines/permissions.md) |
 | Routes et alias | [routes.constants.ts](../../apps/web/src/shared/constants/routes.constants.ts), inventoriés dans les [routes](../systeme/routes.md) |
 | Tokens et styles | [globals.css](../../apps/web/src/app/globals.css), décrits dans les [fondations](../design/fondations.md) |

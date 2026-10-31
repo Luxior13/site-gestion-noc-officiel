@@ -6,7 +6,7 @@ import {
   canAccessNavigationItem,
   getDefaultNavigationSpace,
   getNavigationAvailability,
-  getNavigationSpaceItems,
+  getNavigationSectionItems,
   type NavigationSpace,
   type NavItem,
 } from '$constants/app.constants';
@@ -16,41 +16,33 @@ export type SearchCatalogItem = RankedSearchItem & {
   groupLabel: string;
   href: string;
   icon: NavItem['icon'];
-  id: string;
   label: string;
-  source: 'account' | 'navigation';
-  sourceLabel: string;
   space: NavigationSpace;
 };
 
 type SearchUser = Parameters<typeof canAccessNavigationItem>[0];
 
 const createCatalogItem = (
-  item: Pick<NavItem, 'description' | 'href' | 'icon' | 'label'>,
+  item: Pick<NavItem, 'description' | 'href' | 'icon' | 'keywords' | 'label'>,
   space: NavigationSpace,
-  options: {
-    groupLabel?: string;
-    source?: SearchCatalogItem['source'];
-    sourceLabel?: string;
-  } = {},
+  place: { groupLabel: string; sectionLabel?: string },
 ): SearchCatalogItem => {
-  const groupLabel = options.groupLabel ?? space.label;
+  const keywords = item.keywords?.join(' ') ?? '';
 
   return {
     description: item.description,
-    groupLabel,
+    groupLabel: place.groupLabel,
     href: item.href,
     icon: item.icon,
-    id: `${options.source ?? 'navigation'}:${item.href}`,
+    keywordSearchText: normalizeSearchValue(keywords),
     label: item.label,
     labelSearchText: normalizeSearchValue(item.label),
     searchText: normalizeSearchValue(
-      `${groupLabel} ${item.label} ${item.description ?? ''}`,
+      `${place.groupLabel} ${place.sectionLabel ?? ''} ${item.label} ${item.description ?? ''} ${keywords}`,
     ),
-    source: options.source ?? 'navigation',
-    sourceLabel: options.sourceLabel ?? 'Pages',
+    sectionSearchText: normalizeSearchValue(place.sectionLabel ?? ''),
     space,
-    spaceSearchText: normalizeSearchValue(groupLabel),
+    spaceSearchText: normalizeSearchValue(place.groupLabel),
   };
 };
 
@@ -62,17 +54,24 @@ export const buildSearchCatalog = (
   const results: SearchCatalogItem[] = [];
 
   for (const space of spaces) {
-    for (const item of getNavigationSpaceItems(space)) {
-      if (
-        seenHrefs.has(item.href) ||
-        getNavigationAvailability(item) !== 'live' ||
-        !canAccessNavigationItem(user, item)
-      ) {
-        continue;
-      }
+    for (const section of space.sections) {
+      for (const item of getNavigationSectionItems(section)) {
+        if (
+          seenHrefs.has(item.href) ||
+          getNavigationAvailability(item) !== 'live' ||
+          !canAccessNavigationItem(user, item)
+        ) {
+          continue;
+        }
 
-      seenHrefs.add(item.href);
-      results.push(createCatalogItem(item, space));
+        seenHrefs.add(item.href);
+        results.push(
+          createCatalogItem(item, space, {
+            groupLabel: space.label,
+            sectionLabel: section.label,
+          }),
+        );
+      }
     }
   }
 
@@ -84,17 +83,23 @@ export const buildSearchCatalog = (
   results.push(
     createCatalogItem(
       {
-        description: 'Profil, sécurité et sessions de connexion.',
+        // The account menu names the same three tabs (AC-38, RR-02).
+        description: 'Profil, autorisations et sécurité.',
         href: '/mon-compte',
         icon: 'UserCheck',
+        keywords: [
+          'mot de passe',
+          'double authentification',
+          'codes de secours',
+          'sessions',
+          'email de contact',
+          'droits',
+          'permissions',
+        ],
         label: 'Mon compte',
       },
       accountSpace,
-      {
-        groupLabel: 'Compte personnel',
-        source: 'account',
-        sourceLabel: 'Compte',
-      },
+      { groupLabel: 'Compte personnel' },
     ),
   );
 

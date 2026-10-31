@@ -100,6 +100,7 @@ droit d’entrée. La double authentification est obligatoire.
 Chaque fonctionnalité est déclarée dans
 [feature-registry.constants.ts](../../apps/web/src/shared/constants/feature-registry.constants.ts).
 Les permissions d’une fonctionnalité `planned` ne sont jamais effectives.
+Ses mots-clés (`keywords`) alimentent la recherche rapide de l’en-tête.
 
 | Clé | Libellé | Pôle | Route | Statut |
 | --- | --- | --- | --- | --- |

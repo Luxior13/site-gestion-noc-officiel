@@ -16,6 +16,8 @@ export type NavItem = {
   featureId?: FeatureId;
   href: string;
   icon: NavigationIconName;
+  /** Searched by the quick navigation, never displayed. */
+  keywords?: readonly string[];
   label: string;
   permissionMode?: 'all' | 'any';
   requiredPermissions?: readonly string[];

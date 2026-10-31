@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
-import { SITE_CONFIG } from '$constants/app.constants';
+import { pageTitle } from '$utils/page-title.utils';
 
 export const metadata: Metadata = {
-  title: `Connexion · ${SITE_CONFIG.name}`,
+  title: pageTitle('Connexion'),
 };
 
 export default function LoginLayout({

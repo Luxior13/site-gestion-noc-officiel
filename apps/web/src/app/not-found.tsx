@@ -1,10 +1,16 @@
 import { ArrowLeft, SearchX } from 'lucide-react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import React, { type FC } from 'react';
 
 import { Button } from '$ui/button';
 import { Card, CardContent } from '$ui/card';
 import { ServiceIcon } from '$ui/service-icon';
+import { pageTitle } from '$utils/page-title.utils';
+
+// Checked in the production build (audit RR-10, 31 October 2026): the root
+// not-found names itself in the tab instead of the bare site name.
+export const metadata: Metadata = { title: pageTitle('Page introuvable') };
 
 const NotFoundPage: FC = () => {
   return (

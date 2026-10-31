@@ -10,12 +10,12 @@ import { WebVitalsReporter } from '$components/observability/WebVitalsReporter';
 import { SITE_CONFIG } from '$constants/app.constants';
 import { isPublicPagePath } from '$constants/security.constants';
 import { UserProvider } from '$context/UserContext';
-import { env } from '$env';
 import { getPageAuthSession } from '$server/session';
 import type { UserType } from '$types/auth.types';
 import { Toaster } from '$ui/sonner';
 import { cn } from '$utils/css.utils';
 import { getSafeReturnPath } from '$utils/navigation.utils';
+import { pageTitle } from '$utils/page-title.utils';
 import {
   REQUEST_PATH_HEADER,
   REQUEST_TARGET_HEADER,
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     follow: false,
     index: false,
   },
-  title: `${SITE_CONFIG.name}${env.NODE_ENV === 'development' ? ' · Dev' : ''}`,
+  title: pageTitle(),
 };
 
 // Every page request must be evaluated with its real middleware context. The

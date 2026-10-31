@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import { SITE_CONFIG } from '$constants/app.constants';
+import { FEATURES } from '$constants/feature-registry.constants';
 import { PersonsPageClient } from '$features/persons/components/PersonsPageClient';
 import { getPersonCapabilities } from '$features/persons/person.permissions';
 import type { PersonsListRequest } from '$features/persons/person-list-state';
@@ -8,8 +8,9 @@ import { personsListQuerySchema } from '$features/persons/schemas/person.schemas
 import { listPersons } from '$features/persons/server/person.service';
 import { assertPersonFeatureReady } from '$features/persons/server/person-deletion';
 import { getPageAuthSession } from '$server/session';
+import { pageTitle } from '$utils/page-title.utils';
 
-export const metadata: Metadata = { title: `Répertoire · ${SITE_CONFIG.name}` };
+export const metadata: Metadata = { title: pageTitle(FEATURES.persons.label) };
 
 type PersonsPageQuery = {
   contacts?: string | string[];

@@ -25,6 +25,25 @@ autorisations et sécurité » dans le menu du compte (AC-38) ; la navigation ne
 dépend plus d’un contrôle de disponibilité sondé par le navigateur : une entrée
 s’affiche selon les seuls droits ([SYS-11](../../systeme/constats.md)).
 
+## Recherche rapide — audit ciblé du 31 octobre 2026
+
+[Rapport](../../audits/2026-10-31-recherche-rapide.md) : sonde du catalogue réel
+(5 profils, 90 requêtes) et navigateur sur build de production (17 adresses,
+clavier, 1 440 à 320 px). **Conforme** : droits, clavier et focus, téléphone,
+anciennes adresses, concordance des noms entre barre latérale, résultat, titre
+de page et titre d’onglet.
+
+**Corrigé et vérifié le même jour** (« ok go » du propriétaire) : mots-clés
+fermés par fonctionnalité et nom de section cherchés, un mot-clé devant une
+correspondance fortuite (RR-01, RR-03 à RR-05 : « personne » ouvre le
+Répertoire, « logs » le journal, « mot de passe » Mon compte, « Administration »
+ses trois pages) ; Mon compte décrit « Profil, autorisations et sécurité »
+(RR-02) ; « 0 résultat affiché » (RR-08) ; chaque vue nomme son onglet, accueil
+« Mon travail » et page introuvable compris, « · Dev » partout en développement
+(RR-10, `pageTitle`, accueil passé en route serveur) ; champs et chemins morts
+retirés (RR-11). Restent à décider : pages de création (RR-06), onglets de
+Mon compte (RR-07), hauteur de liste (RR-09).
+
 ## Pôle Système — 25 octobre 2026
 
 Le pôle Système compte deux sections : « Administration » (Utilisateurs,
@@ -75,8 +94,11 @@ ci-dessous est historique ; elle ne doit plus être lue comme le rendu courant.
 - Navigation rapide locale, borne de 160 caractères, huit suggestions et dix
   résultats, sans raccourci global ni page de recherche complète. Ancêtres du
   fil d'Ariane disponibles dans le menu compact.
-- Les descriptions de Mon compte présentent le profil, la sécurité et ses
-  sessions de connexion ; elles n'annoncent plus d'activité personnelle absente.
+- Les descriptions de Mon compte présentent le profil, les autorisations et
+  la sécurité, comme le menu du compte (AC-38, RR-02) ; elles n'annoncent plus
+  d'activité personnelle absente.
+- La recherche porte sur le nom, la rubrique, la section, la description et
+  les mots-clés fermés de chaque fonctionnalité ([navigation](../../domaines/navigation.md)).
 - Les barres de sections partagent `PageSectionNavigation`. Leur style récent
   reste conservé ; un effet réel de navigation doit justifier toute retouche.
 - Déconnexion : identité masquée dès demande, attente bornée à quinze secondes,

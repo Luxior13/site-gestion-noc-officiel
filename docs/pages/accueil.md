@@ -10,7 +10,7 @@
 | Espace | Aujourd’hui |
 | Gabarit visé | [F. Accueil personnel](../design/gabarits.md#f-accueil-personnel) |
 | État d’harmonisation | Aligné — voir [Harmonisation](../design/harmonisation.md#état-par-page) |
-| Point d’entrée | [page.tsx](../../apps/web/src/app/page.tsx) |
+| Point d’entrée | [page.tsx](../../apps/web/src/app/page.tsx) (route serveur, titre d’onglet « Mon travail · Noctambule ») et [HomePage](../../apps/web/src/features/dashboard/components/HomePage.tsx) |
 | Contrôle d’accès | session (`AuthenticatedLayout`) ; `dashboard:view` |
 | Chargement / erreur dédiés | communs à l’application |
 
@@ -30,7 +30,7 @@ revue répond à un changement, un défaut constaté ou une règle nouvelle.
 ## État courant — 12 octobre 2026
 
 - Route `/`, page privée du pôle Aujourd’hui, libellé de navigation « Mon travail ».
-- [Implémentation](../../apps/web/src/app/page.tsx) : salutation du compte
+- [Implémentation](../../apps/web/src/features/dashboard/components/HomePage.tsx) : salutation du compte
   courant dans `PageIdentityHero`, identité « Mon travail », texte explicite
   d'espace en préparation et accès direct « Mon compte ». Aucun tableau de
   tâches ou synthèse métier n'est rendu actuellement.

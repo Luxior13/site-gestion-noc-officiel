@@ -88,9 +88,57 @@ describe('global page search', () => {
         (item) => item.href,
       ),
     ).toEqual(['/mon-compte']);
+    // Mon compte has its own Autorisations tab (AC-38); Utilisateurs stays out.
     expect(
-      rankSearchResults(catalog, normalizeSearchValue('autorisations')),
-    ).toEqual([]);
+      rankSearchResults(catalog, normalizeSearchValue('autorisations')).map(
+        (item) => item.href,
+      ),
+    ).toEqual(['/mon-compte']);
+  });
+
+  // Audit RR-01 to RR-05 of 31 October 2026: the words people actually use.
+  const searchAs = (
+    user: Parameters<typeof buildSearchCatalog>[1],
+    query: string,
+  ): string[] =>
+    rankSearchResults(
+      buildSearchCatalog(getVisibleNavigationSpaces(user, 'live'), user),
+      normalizeSearchValue(query),
+    ).map((item) => item.href);
+  const superadmin = {
+    isProtected: true,
+    permissions: {},
+    role: 'ADMIN' as const,
+  };
+  const member = { isProtected: false, permissions: {}, role: 'USER' as const };
+
+  it.each([
+    ['personne', '/membres/repertoire'],
+    ['logs', '/systeme/journal-activite'],
+    ['historique', '/systeme/journal-activite'],
+    ['mot de passe', '/mon-compte'],
+    ['double authentification', '/mon-compte'],
+    ['réglages', '/systeme/parametres'],
+    ['tableau de bord', '/'],
+    ['projet', '/systeme/feuille-de-route'],
+    ['droits', '/systeme/utilisateurs'],
+  ])('finds the page meant by « %s » first', (query, href) => {
+    expect(searchAs(superadmin, query)[0]).toBe(href);
+  });
+
+  it('finds the pages of a navigation section by its name', () => {
+    expect(searchAs(superadmin, 'Administration')).toEqual([
+      '/systeme/utilisateurs',
+      '/systeme/journal-activite',
+      '/systeme/parametres',
+    ]);
+  });
+
+  it('never reveals a forbidden page through its keywords or section', () => {
+    expect(searchAs(member, 'logs')).toEqual([]);
+    expect(searchAs(member, 'personnes')).toEqual([]);
+    expect(searchAs(member, 'administration')).toEqual([]);
+    expect(searchAs(member, 'droits')).toEqual(['/mon-compte']);
   });
 
   it('normalizes accents, ligatures, punctuation and repeated spaces', () => {
