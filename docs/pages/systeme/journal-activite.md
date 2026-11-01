@@ -389,6 +389,13 @@ de sécurité démontrée.
 - Exclusion des événements du compte protégé pour les autres lecteurs ; projection
   des métadonnées par liste autorisée, avec exclusion des clés de secrets.
 - Requêtes validées strictement, recherche bornée et caractères SQL jokers échappés.
+- Recherche selon la règle commune du site (31 octobre 2026, [audit RL-01](../../audits/2026-10-31-recherches-listes.md)) :
+  chaque mot, dans n’importe quel ordre, parmi les quatre noms figés de
+  l’événement, sans accents ni ponctuation (« lefevre andre » trouve
+  « André Lefèvre »). Ces noms sont lus dans `searchText`, écrit par la base à
+  l’insertion (déclencheur `AuditLog_search_text`) et indexé par trigrammes ;
+  trois lettres ou chiffres au moins. Remplace la recherche « sans repli des
+  accents » de la livraison du 30 octobre.
   Pagination de 25 par défaut, plafond de 100, tri `createdAt/id`, curseur signé
   lié aux filtres et instantané temporel conservé entre lots.
 - Annulation des requêtes précédentes, filtres persistés dans l’URL, attente de

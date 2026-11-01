@@ -76,6 +76,7 @@ const row = (overrides: Partial<JournalRow> = {}): JournalRow => ({
   pageKey: null,
   poleKey: null,
   requestId: null,
+  searchText: 'camille exemple camille exemple',
   severity: 'INFO',
   stream: 'IDENTITY',
   tabKey: null,
@@ -618,7 +619,7 @@ describe('activity journal service', () => {
       {
         ...DEFAULT_JOURNAL_QUERY,
         person: 'person-1',
-        search: 'ale',
+        search: 'Alé Martin',
         show: 'failures',
         type: 'security',
       },
@@ -629,7 +630,10 @@ describe('activity journal service', () => {
     expect(where).toContain('"stream":{"in":["AUTHENTICATION","SECURITY"]}');
     expect(where).toContain('"outcome":"FAILURE"');
     expect(where).toContain('"entityId":"person-1","entityType":"PERSON"');
-    expect(where).toContain('"contains":"ale","mode":"insensitive"');
+    // Every word, accents folded, on the stored search form (audit RL-01).
+    expect(where).toContain('{"searchText":{"contains":"ale"}}');
+    expect(where).toContain('{"searchText":{"contains":"martin"}}');
+    expect(where).not.toContain('insensitive');
   });
 
   it('keeps the reading instant of the first page and refuses a future one', async () => {

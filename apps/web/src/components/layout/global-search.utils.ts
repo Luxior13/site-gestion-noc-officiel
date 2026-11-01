@@ -10,18 +10,7 @@ export type RankedSearchItem = {
   spaceSearchText: string;
 };
 
-export function normalizeSearchValue(value: string): string {
-  return value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLocaleLowerCase('fr-FR')
-    .replace(/œ/g, 'oe')
-    .replace(/æ/g, 'ae')
-    .replace(/[\p{P}\p{S}]+/gu, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
+// Texts and queries are compared in the site-wide form (`normalizeSearchText`).
 function getSearchScore(
   item: RankedSearchItem,
   normalizedQuery: string,

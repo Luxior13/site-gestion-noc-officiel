@@ -54,6 +54,15 @@ qu'ils n'apparaissent pas dans `schema.prisma` ; consulter la
 | Une principale lorsque la collection n'est pas vide, limites de 10 emails / 10 téléphones / 20 profils, normalisation des valeurs | Services de mutation, avec comparaison de version et transaction |
 | Interdiction de déplacer une coordonnée vers une autre personne                                                                   | Triggers des trois collections                                   |
 
+La recherche commune (migration `20261031140000_shared_search_text`, audit RL du
+31 octobre 2026) ajoute la fonction `search_text`, miroir SQL de
+`normalizeSearchText`, le déclencheur `AuditLog_search_text` qui écrit
+`AuditLog.searchText` et deux index trigrammes d’expression sur `User`, ces
+derniers absents de `schema.prisma`. Modifier la règle TypeScript exige une
+migration qui redéfinit `search_text` puis recalcule ce qui en dépend (index,
+`searchText` du journal, noms normalisés des personnes) ; la suite
+`audit-journal-postgres` échoue sinon.
+
 Pour les mutations, la version annoncée doit d'abord correspondre à celle de la
 fiche lue. La mise à jour conditionnelle de cette même version protège ensuite
 contre une écriture concurrente. Conserver ces deux contrôles lorsqu'une règle

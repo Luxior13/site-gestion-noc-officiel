@@ -43,8 +43,12 @@ un retour de fiche qui conservent le contexte.
 - Page de référence visuelle et UX ; ses compositions (bandeau, liste, tableau,
   badges, infobulles, contrôles) sont décrites dans [Rôle de référence](#rôle-de-référence-décision-du-2026-10-09)
   et reprises par le [système de design](../../../design/README.md#pages-de-référence).
-- Recherche des mots d’identité dans n’importe quel ordre, accents et casse
-  normalisés ; liste sans coordonnées complètes, seulement leurs compteurs.
+- Recherche des mots d’identité dans n’importe quel ordre selon la règle
+  commune du site (31 octobre 2026, [audit RL](../../../audits/2026-10-31-recherches-listes.md)) :
+  accents, casse, « œ », « ø », apostrophes et tirets ignorés ; les noms
+  normalisés enregistrés suivent cette règle (`normalizePersonSearchValue`),
+  sauf un nom fait seulement de symboles, gardé tel quel. Liste sans
+  coordonnées complètes, seulement leurs compteurs.
 - Retour de fiche : page, historique de curseurs, position et lien d’origine
   conservés en stockage de session (30 minutes, 64 curseurs au plus).
 - Filtres rapides (20 octobre 2026) : boutons à bascule `aria-pressed` en
@@ -69,7 +73,10 @@ un retour de fiche qui conservent le contexte.
 
 ## Points ouverts
 
-Aucun point ouvert. REP-01 et REP-03 à REP-20 sont clos (voir le
+Aucun point ouvert. [RL-03](../../../audits/2026-10-31-recherches-listes.md)
+(« coeurdevey », « soren », « d'artagnan » introuvables) est clos le
+31 octobre 2026 : règle commune et noms normalisés recalculés par migration,
+vérifiés en SQL et dans le navigateur. REP-01 et REP-03 à REP-20 sont clos (voir le
 [registre du module](README.md#points-ouverts)). Points de la
 [reprise du 20 octobre 2026](#reprise-en-profondeur--20-octobre-2026), validés
 par le propriétaire (« ok go ») et clos le même jour :

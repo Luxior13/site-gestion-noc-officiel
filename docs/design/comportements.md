@@ -47,14 +47,28 @@ Références : [liste du Répertoire](../pages/membres/repertoire/liste.md) et
 [liste des Utilisateurs](../pages/systeme/utilisateurs/liste.md).
 
 - Recherche large et prioritaire (`ListSearchField`), filtres alignés sur la
-  même ligne lorsque la largeur le permet ; effacer rend le focus au champ.
-- Recherche côté serveur, bornée en longueur, accents et casse normalisés, mots
-  d’identité dans n’importe quel ordre lorsque le module le prend en charge.
-- Une recherche locale dans un éditeur (autorisations) suit le même esprit :
-  chaque mot tapé doit apparaître, dans n’importe quel ordre ; petits mots
-  (« de », « la », « les »…) ignorés ; singulier et pluriel équivalents ;
-  libellé, rubrique, description, page et pôle consultés. Jamais une phrase
-  exacte (décision du 26 octobre 2026).
+  même ligne lorsque la largeur le permet ; effacer rend le focus au champ. Un
+  champ de recherche hors liste (éditeur d’autorisations) a le même bouton
+  « Effacer la recherche », sans dépendre de celui du navigateur.
+- **Une seule règle de comparaison pour toutes les recherches du site**
+  (décision du 31 octobre 2026, [audit RL](../audits/2026-10-31-recherches-listes.md)) :
+  `normalizeSearchText` (`$utils/search-text.utils`), et en base son miroir
+  SQL `search_text`. Accents et casse ignorés, lettres « œ », « æ », « ø »,
+  « ß », « ł »… lues à la latine, apostrophes, tirets et autre ponctuation lus
+  comme des espaces : « andre » trouve « André », « d'artagnan » trouve
+  « d’Artagnan », « jean pierre » trouve « Jean-Pierre ». Chaque mot tapé doit
+  apparaître, dans n’importe quel ordre ; aucune recherche approximative. Une
+  ponctuation seule ne filtre rien (au Répertoire, un pseudo fait de symboles
+  se cherche tel quel). Ne jamais écrire une autre normalisation.
+- Recherche côté serveur, bornée en longueur, sur tous les mots d’identité
+  (Répertoire, Utilisateurs) ou les quatre noms figés de l’événement (Journal
+  d’activité, trois lettres ou chiffres au moins).
+- Une recherche locale dans un catalogue (éditeur d’autorisations, feuille de
+  route) suit la même règle, ignore en plus les petits mots (« de », « la »,
+  « les »…) et rend singulier et pluriel équivalents (`getSearchTerms`) ;
+  l’éditeur consulte libellé, rubrique, description, page et pôle. Jamais une
+  phrase exacte (décision du 26 octobre 2026, étendue à la feuille de route
+  le 31 octobre 2026).
 - Critères dans l’URL ; un changement de critère repart au début de la liste.
   Les filtres actifs restent visibles : bouton enfoncé pour un filtre rapide,
   valeur affichée pour un menu. La réinitialisation rend le focus à la

@@ -28,10 +28,18 @@ import { updatePersonSchema } from '$features/persons/schemas/person-identity.sc
 
 describe('person schemas and stable normalisation', () => {
   it('normalises identity search without losing word boundaries', () => {
+    // Site-wide search form (audit RL-03): apostrophes and dashes are spaces.
     expect(normalizePersonSearchValue('  Éléonore\tD’ARC  ')).toBe(
-      'eleonore d’arc',
+      'eleonore d arc',
     );
+    expect(normalizePersonSearchValue("d'Arc")).toBe('d arc');
     expect(normalizePersonSearchValue('Jean   DUPONT')).toBe('jean dupont');
+    expect(normalizePersonSearchValue('Søren Cœurdevey')).toBe(
+      'soren coeurdevey',
+    );
+    // A pseudo made only of symbols keeps its former, non-empty form.
+    expect(normalizePersonSearchValue(' -_- ')).toBe('-_-');
+    expect(normalizePersonSearchValue('́')).toBe('');
   });
 
   it('normalises contact identifiers deterministically', () => {

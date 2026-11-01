@@ -5,6 +5,7 @@ import type { Prisma } from '@prisma/client';
 import { getPersonDisplayName } from '$features/persons/person.ui';
 import { createAuditLogWithHeaders } from '$server/audit-log';
 import { prisma } from '$server/prisma';
+import { getSearchWords } from '$utils/search-text.utils';
 
 import {
   isJournalSearchApplicable,
@@ -73,20 +74,11 @@ const buildWhere = (
   if (query.user)
     and.push({ OR: [{ userId: query.user }, { targetUserId: query.user }] });
   if (query.person) and.push({ entityId: query.person, entityType: 'PERSON' });
-  if (isJournalSearchApplicable(query.search)) {
-    // `%` would act as a wildcard; `_` only widens the match.
-    const contains = query.search.replaceAll('%', '');
-    and.push({
-      OR: [
-        'actorDisplayNameSnapshot',
-        'actorLoginNameSnapshot',
-        'targetDisplayNameSnapshot',
-        'targetLoginNameSnapshot',
-      ].map((field) => ({
-        [field]: { contains, mode: 'insensitive' as const },
-      })),
-    });
-  }
+  if (isJournalSearchApplicable(query.search))
+    // Every word, in any order, among the four names captured with the event,
+    // all in the site-wide search form (`searchText`, audit RL-01).
+    for (const word of getSearchWords(query.search))
+      and.push({ searchText: { contains: word } });
   // The protected account's events stay hidden from every other reader.
   if (hiddenAccountIds.length > 0)
     and.push(

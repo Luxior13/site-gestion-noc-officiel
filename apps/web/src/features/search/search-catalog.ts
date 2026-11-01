@@ -1,7 +1,4 @@
-import {
-  normalizeSearchValue,
-  type RankedSearchItem,
-} from '$components/layout/global-search.utils';
+import { type RankedSearchItem } from '$components/layout/global-search.utils';
 import {
   canAccessNavigationItem,
   getDefaultNavigationSpace,
@@ -12,6 +9,7 @@ import {
 } from '$constants/app.constants';
 import { canSeeAccountSecurity } from '$features/account/account-sections';
 import type { UserType } from '$types/auth.types';
+import { normalizeSearchText } from '$utils/search-text.utils';
 
 export type SearchCatalogItem = RankedSearchItem & {
   description?: string;
@@ -48,16 +46,16 @@ const createCatalogItem = (
     groupLabel: place.groupLabel,
     href: item.href,
     icon: item.icon,
-    keywordSearchText: normalizeSearchValue(keywords),
+    keywordSearchText: normalizeSearchText(keywords),
     kind: place.kind ?? 'page',
     label: item.label,
-    labelSearchText: normalizeSearchValue(item.label),
-    searchText: normalizeSearchValue(
+    labelSearchText: normalizeSearchText(item.label),
+    searchText: normalizeSearchText(
       `${groupLabel} ${place.sectionLabel ?? ''} ${item.label} ${item.description ?? ''} ${keywords}`,
     ),
-    sectionSearchText: normalizeSearchValue(place.sectionLabel ?? ''),
+    sectionSearchText: normalizeSearchText(place.sectionLabel ?? ''),
     space,
-    spaceSearchText: normalizeSearchValue(groupLabel),
+    spaceSearchText: normalizeSearchText(groupLabel),
   };
 };
 

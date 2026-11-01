@@ -63,7 +63,19 @@ son propre schéma unique, refuse une cible non locale ou un autre nom de base,
 et n'utilise jamais `DATABASE_URL` par défaut. Le schéma minimal vérifie la
 recherche et sa visibilité ; il ne valide pas les migrations, les sessions ou
 les mutations. Exécuter directement pour une preuve nouvelle sans cache Turbo.
-La variable est déclarée dans l'environnement de la tâche de test Turbo.
+La variable est déclarée dans l'environnement de la tâche de test Turbo. La
+suite charge la fonction `search_text` depuis la migration
+`20261031140000_shared_search_text` dans son schéma.
+
+Règle de recherche commune (audit RL du 31 octobre 2026) : `search-text.test.ts`
+vérifie `normalizeSearchText` (accents, lettres « œ », « ø », « ß », apostrophes,
+autres alphabets). La suite `audit-journal-postgres`, sur base entièrement
+migrée, compare la fonction SQL `search_text` à la règle TypeScript pour chaque
+caractère des blocs latins, grecs, cyrilliques, de ponctuation et de formes de
+compatibilité, vérifie la recherche du journal par mots dans n’importe quel
+ordre et l’usage des index d’expression par la recherche des utilisateurs. Toute
+modification de la règle TypeScript exige une migration qui redéfinit la
+fonction SQL : ce test échoue sinon.
 
 ## Couverture de la documentation
 

@@ -28,6 +28,7 @@ vi.mock('$features/persons/server/person-audit', () => ({
   createPersonAudit: vi.fn(),
 }));
 
+import { normalizePersonSearchValue } from '$features/persons/person.utils';
 import { listPersons } from '$features/persons/server/person-list.service';
 
 // Optional real-PostgreSQL regression suite. It never reads DATABASE_URL and
@@ -127,21 +128,41 @@ describe.skipIf(!target)('directory pagination on PostgreSQL', () => {
   it('requires all words and treats LIKE wildcards as literal input', async () => {
     await db.$executeRaw`UPDATE "Person" SET "normalizedFirstName" = 'ada',
       "normalizedLastName" = 'lovelace' WHERE "id" = 'person-001'`;
-    for (const q of ['Ada Hopper', 'Ada %', 'Ada _', 'Ada \\']) {
-      expect(
-        (
-          await listPersons(
-            { limit: 25, q },
-            {
-              id: 'reader',
-              isProtected: false,
-              permissions: null,
-              role: 'ADMIN',
-            },
-          )
-        ).items,
-      ).toEqual([]);
-    }
+    const reader = {
+      id: 'reader',
+      isProtected: false,
+      permissions: null,
+      role: 'ADMIN' as const,
+    };
+    const find = async (q: string): Promise<string[]> =>
+      (await listPersons({ limit: 25, q }, reader)).items.map(
+        (person) => person.id,
+      );
+    // Punctuation beside a word is a word break (audit RL-03), never a
+    // wildcard; alone, it is searched as typed.
+    for (const q of ['Ada %', 'Ada _', 'Ada \\'])
+      expect(await find(q)).toEqual(['person-001']);
+    for (const q of ['Ada Hopper', '%', '_', '\\'])
+      expect(await find(q)).toEqual([]);
+  });
+
+  // Audit RL-03: letters kept whole by NFKD and both apostrophes.
+  it.each([
+    ['coeurdevey', 'Zoé', 'Cœurdevey'],
+    ['soren', 'Ludmila', 'Søren'],
+    ["jean pierre d'artagnan", 'Jean-Pierre', 'd’Artagnan'],
+    ['inaki alvarez', 'Iñaki', 'Álvarez'],
+  ])('finds « %s » in %s %s', async (q, firstName, lastName) => {
+    await db.$executeRaw`UPDATE "Person" SET "firstName" = ${firstName},
+      "normalizedFirstName" = ${normalizePersonSearchValue(firstName)},
+      "lastName" = ${lastName},
+      "normalizedLastName" = ${normalizePersonSearchValue(lastName)}
+      WHERE "id" = 'person-002'`;
+    const page = await listPersons(
+      { limit: 25, q },
+      { id: 'reader', isProtected: false, permissions: null, role: 'ADMIN' },
+    );
+    expect(page.items.map((person) => person.id)).toEqual(['person-002']);
   });
 
   it.each([

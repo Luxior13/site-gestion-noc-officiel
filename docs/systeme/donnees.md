@@ -25,7 +25,7 @@ Colonnes : nombre de champs (relations comprises), nombre d’`@@index` et
 
 | Modèle | Champs | Index | Relations | Rôle |
 | --- | ---: | ---: | --- | --- |
-| `User` | 30 | 13 | sessions, audit, MFA, réservations d’identifiant, paramètres, annonces | Compte de connexion, rôle `UserRole`, compte racine protégé |
+| `User` | 30 | 9 | sessions, audit, MFA, réservations d’identifiant, paramètres, annonces | Compte de connexion, rôle `UserRole`, compte racine protégé ; recherche par deux index trigrammes d’expression sur `search_text`, absents du schéma |
 | `LoginNameReservation` | 4 | 1 | `User` | Identifiants réservés (pas de réutilisation après suppression) |
 | `Session` | 17 | 4 | `User` | Sessions avec expiration absolue et d’inactivité, preuves récentes |
 | `TotpCredential` | 10 | 1 | `User` | Secret TOTP chiffré du compte |
@@ -38,7 +38,7 @@ Colonnes : nombre de champs (relations comprises), nombre d’`@@index` et
 
 | Modèle | Champs | Index | Relations | Rôle |
 | --- | ---: | ---: | --- | --- |
-| `AuditLog` | 30 | 21 | `User`, `AuditFieldChange` | Événements durables (actions, catégories, flux, résultat, gravité) |
+| `AuditLog` | 31 | 18 | `User`, `AuditFieldChange` | Événements durables (actions, catégories, flux, résultat, gravité) ; `searchText` (les quatre noms figés sous la forme de recherche commune) écrit par le déclencheur `AuditLog_search_text`, jamais par l’application |
 | `AuditFieldChange` | 20 | 3 | `AuditLog`, `AuditEncryptionKeyVersion` | Valeurs avant/après par champ, chiffrées selon `AuditValueStorageMode` |
 | `AuditEncryptionKeyVersion` | 4 | 0 | `AuditFieldChange` | Versions de clé de chiffrement du journal ([rotation](../exploitation/operations.md#rotation-des-clés-daudit)) |
 
@@ -71,22 +71,22 @@ L’actualité interne redéfinira son stockage à sa reconstruction.
 
 ## Migrations
 
-**61 migrations** dans `packages/database/prisma/migrations`, de
-`20250723121213_init` à `20261031130000_audit_purge_action` (valeur `AUDIT_PURGE` de `AuditAction` : la purge de conservation laisse « Journal purgé » ; la précédente, `20261031120000_audit_attempts_blocked`, ajoute `ATTEMPTS_BLOCKED` pour les tentatives bloquées par la limitation de débit). Repères :
+**62 migrations** dans `packages/database/prisma/migrations`, de
+`20250723121213_init` à `20261031140000_shared_search_text` (règle de recherche commune, audit RL du 31 octobre 2026 : fonction `public.search_text`, miroir de `normalizeSearchText`, colonne `AuditLog.searchText` remplie par déclencheur, index trigrammes d’expression des utilisateurs, noms normalisés du Répertoire recalculés ; la garde d’ajout seul du journal n’est levée que dans cette migration, le temps de remplir la colonne des événements passés). Les précédentes, `20261031130000_audit_purge_action` et `20261031120000_audit_attempts_blocked`, ajoutent `AUDIT_PURGE` (« Journal purgé ») et `ATTEMPTS_BLOCKED` (tentatives bloquées par la limitation de débit). Repères :
 
 | Période | Migrations notables |
 | --- | --- |
 | Janvier–février 2026 | Ancien périmètre financier et sportif (`add_sponsors`, `add_structure`, `float_to_decimal`, `add_fiscal_years`, `add_expense_reports`…), puis réduction aux comptes (`users_only_schema`, juin) |
 | Juin–juillet 2026 | Sessions, audit durable, MFA obligatoire, permissions canoniques, suppression irréversible d’un compte, socle Personnes, retrait du worker |
 | Juillet 2026 | Module Partenaires (retiré le 21 septembre 2026 par `remove_partner_module`), actualité interne |
-| Septembre–octobre 2026 | Retrait des notifications, nom facultatif, propriété des coordonnées, version positive des paramètres, permissions du site actuel, retrait du verrou par compte, retrait des tables sans code, retrait de l’autorisation de provenance des champs, conservation du journal à un an par défaut, types d’événement « Journal consulté » et « Tentatives bloquées » |
+| Septembre–octobre 2026 | Retrait des notifications, nom facultatif, propriété des coordonnées, version positive des paramètres, permissions du site actuel, retrait du verrou par compte, retrait des tables sans code, retrait de l’autorisation de provenance des champs, conservation du journal à un an par défaut, types d’événement « Journal consulté » et « Tentatives bloquées », règle de recherche commune |
 
 **Regroupement de l’historique — décision du 25 octobre 2026 (REV-19)** : les
 migrations seront regroupées en une migration de base **juste avant la
 première mise en production**, pas avant : chaque module encore à construire
 ajouterait des migrations et la base de travail devrait être réalignée deux
 fois. À ce moment : générer la base depuis le schéma, y reporter à la main les
-`CHECK`, triggers et index partiels absents de `schema.prisma`, comparer le
+`CHECK`, triggers, fonctions et index partiels ou d’expression absents de `schema.prisma`, comparer le
 `pg_dump --schema-only` d’une base issue de l’historique avec celui d’une base
 issue du regroupement, puis, après sauvegarde signée, marquer la base de
 travail comme alignée et retirer `baseline-existing-database` et

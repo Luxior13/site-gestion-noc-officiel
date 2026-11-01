@@ -16,6 +16,7 @@ import { POST } from '$app/api/personnes/route';
 import { PERMISSIONS } from '$constants/permissions.constants';
 import { decryptPersonAuditValues } from '$features/persons/server/person-audit';
 import { encryptTotpSecret, generateTotpSecret } from '$server/mfa';
+import { normalizeSearchText } from '$utils/search-text.utils';
 
 const connection = vi.hoisted(() => ({
   client: null as PrismaClient | null,
@@ -252,10 +253,8 @@ describe.skipIf(!target)('person creation on fully migrated PostgreSQL', () => {
       firstName: null,
       lastName: null,
       nickname,
-      normalizedNickname: nickname
-        .normalize('NFKD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase(),
+      // Site-wide search form: the identifier's dashes become spaces (RL-03).
+      normalizedNickname: normalizeSearchText(nickname),
       structureStatus: 'OUTSIDE_STRUCTURE',
       version: 1,
     });

@@ -1,4 +1,4 @@
-import { normalizeSearchValue } from '$components/layout/global-search.utils';
+import { getSearchTerms, includesSearchTerms } from '$utils/search-text.utils';
 
 import {
   ROADMAP_AREAS,
@@ -60,14 +60,17 @@ export function getVisibleRoadmapItems({
   phase,
   query,
 }: RoadmapFilters): RoadmapItem[] {
-  const terms = normalizeSearchValue(query).split(' ').filter(Boolean);
+  // Same words as the permission editor: any order, filler words ignored,
+  // singular and plural alike (audit RL-06, 31 October 2026).
+  const terms = getSearchTerms(query);
 
   return ROADMAP_ITEMS.filter((item) => {
     if (phase !== null && item.phase !== phase) return false;
     if (areaId !== 'all' && item.area !== areaId) return false;
     if (!terms.length) return true;
     const area = ROADMAP_AREAS.find((candidate) => candidate.id === item.area);
-    const text = normalizeSearchValue(
+
+    return includesSearchTerms(
       [
         item.title,
         item.description,
@@ -78,8 +81,7 @@ export function getVisibleRoadmapItems({
         item.doneWhen,
         area?.label,
       ].join(' '),
+      terms,
     );
-
-    return terms.every((term) => text.includes(term));
   });
 }

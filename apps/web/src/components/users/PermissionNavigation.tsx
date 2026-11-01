@@ -1,7 +1,7 @@
 'use client';
 
-import { ChevronRight, Search } from 'lucide-react';
-import React, { type FC, useId } from 'react';
+import { ChevronRight, Search, X } from 'lucide-react';
+import React, { type FC, useId, useRef } from 'react';
 
 import { getNavigationIcon } from '$constants/navigation-icon.constants';
 import { type PermissionItem } from '$constants/permissions.constants';
@@ -142,6 +142,8 @@ export const PermissionNavigation: FC<PermissionNavigationProps> = ({
   selectedPageKey,
 }) => {
   const poleSelectId = useId();
+  const searchInputId = useId();
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const isChanged = (category: PermissionEditorCategory): boolean =>
     !!changedPermissionKeys &&
     category.permissions.some((item) => changedPermissionKeys.has(item.key));
@@ -181,13 +183,36 @@ export const PermissionNavigation: FC<PermissionNavigationProps> = ({
         />
         <Input
           aria-label="Rechercher une autorisation"
-          className="pl-9"
+          // The explicit clear button below replaces the browser one, absent
+          // from Firefox (audit RL-07, 31 October 2026).
+          className="pr-10 pl-9 [&::-webkit-search-cancel-button]:appearance-none"
+          id={searchInputId}
           maxLength={80}
           onChange={(event) => onQueryChange(event.target.value)}
           placeholder="Rechercher"
+          ref={searchInputRef}
           type="search"
           value={query}
         />
+        {query && (
+          <Button
+            aria-controls={searchInputId}
+            aria-label="Effacer la recherche"
+            // Inside the field like the list search: 32 px, or 36 px with a
+            // 44 px touch area on a phone.
+            className="text-muted-foreground absolute top-1/2 right-1 size-8 -translate-y-1/2 max-sm:size-9 max-sm:min-h-0 max-sm:min-w-0 max-sm:after:absolute max-sm:after:-inset-1 max-sm:after:content-[''] lg:size-8"
+            onClick={() => {
+              onQueryChange('');
+              // The button disappears when cleared; keep keyboard users in the field.
+              searchInputRef.current?.focus({ preventScroll: true });
+            }}
+            size="icon"
+            type="button"
+            variant="ghost"
+          >
+            <X aria-hidden="true" />
+          </Button>
+        )}
       </div>
       {results ? (
         // Index of the results on the right: only the poles and pages that

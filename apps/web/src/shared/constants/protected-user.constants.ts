@@ -1,3 +1,5 @@
+import { getSearchWords, normalizeSearchText } from '$utils/search-text.utils';
+
 // One visible name for the protected account (audit DRT-05, 25 October 2026).
 export const PROTECTED_USER_PUBLIC_FIRST_NAME = 'Superadmin';
 export const PROTECTED_USER_PUBLIC_LAST_NAME = '';
@@ -12,22 +14,13 @@ const PROTECTED_USER_PUBLIC_SEARCH_TERMS = [
   'compte protege',
 ] as const;
 
-const normalizePublicSearchTerm = (value: string): string =>
-  value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLocaleLowerCase('fr')
-    .trim();
-
 export const matchesProtectedUserPublicIdentity = (search: string): boolean => {
-  const normalizedSearch = normalizePublicSearchTerm(search);
+  const words = getSearchWords(search);
 
-  if (!normalizedSearch) return false;
-
-  const words = normalizedSearch.split(/\s+/u);
+  if (words.length === 0) return false;
 
   return PROTECTED_USER_PUBLIC_SEARCH_TERMS.some((term) => {
-    const identity = normalizePublicSearchTerm(term);
+    const identity = normalizeSearchText(term);
 
     return words.every((word) => identity.includes(word));
   });

@@ -4,14 +4,13 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 
 import {
-  getPermissionSearchTerms,
   matchesPermissionSearch,
-  normalizePermissionSearch,
   PERMISSION_EDITOR_CATEGORIES,
   PERMISSION_EDITOR_POLES,
 } from '$components/users/permission-editor-view';
 import { PermissionsEditor } from '$components/users/PermissionsEditor';
 import { type PermissionItem } from '$constants/permissions.constants';
+import { getSearchTerms, normalizeSearchText } from '$utils/search-text.utils';
 
 const renderEditor = (
   role: UserRole,
@@ -42,7 +41,7 @@ describe('permissions editor navigation (26 October 2026)', () => {
   });
 
   it('searches without regard to accents, case or spacing', () => {
-    expect(normalizePermissionSearch('  Supprimer   DÉFINITIVEMENT ')).toBe(
+    expect(normalizeSearchText('  Supprimer   DÉFINITIVEMENT ')).toBe(
       'supprimer definitivement',
     );
     const persons = PERMISSION_EDITOR_CATEGORIES.find(
@@ -57,7 +56,7 @@ describe('permissions editor navigation (26 October 2026)', () => {
       matchesPermissionSearch(
         deletion,
         persons,
-        getPermissionSearchTerms(query),
+        getSearchTerms(query),
         'Membres',
       );
     expect(matches('supprimer')).toBe(true);
@@ -68,11 +67,11 @@ describe('permissions editor navigation (26 October 2026)', () => {
   });
 
   it('finds every word in any order, singular or plural, without filler words', () => {
-    expect(getPermissionSearchTerms('Supprimer les fiches')).toEqual([
+    expect(getSearchTerms('Supprimer les fiches')).toEqual([
       'supprimer',
       'fiche',
     ]);
-    expect(getPermissionSearchTerms(' de la ')).toEqual([]);
+    expect(getSearchTerms(' de la ')).toEqual([]);
     const persons = PERMISSION_EDITOR_CATEGORIES.find(
       (category) => category.key === 'persons',
     );
@@ -82,7 +81,7 @@ describe('permissions editor navigation (26 October 2026)', () => {
     const contact = permission('persons:view_contact');
     if (!persons || !deletion || !contact) throw new Error('catalogue');
     const matches = (item: typeof deletion, query: string): boolean =>
-      matchesPermissionSearch(item, persons, getPermissionSearchTerms(query));
+      matchesPermissionSearch(item, persons, getSearchTerms(query));
     expect(matches(deletion, 'fiche supprimer')).toBe(true);
     expect(matches(deletion, 'fiches définitivement')).toBe(true);
     expect(matches(deletion, 'supprimer facture')).toBe(false);

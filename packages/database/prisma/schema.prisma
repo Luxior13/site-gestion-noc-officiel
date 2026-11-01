@@ -83,10 +83,9 @@ model User {
   @@index([deletedAt, mustChangePassword])
   @@index([deletedAt, role])
   @@index([mfaEnabledAt])
-  @@index([loginName(ops: raw("gin_trgm_ops"))], type: Gin, map: "User_loginName_trgm_idx")
-  @@index([contactEmail(ops: raw("gin_trgm_ops"))], type: Gin, map: "User_contactEmail_trgm_idx")
-  @@index([firstName(ops: raw("gin_trgm_ops"))], type: Gin, map: "User_firstName_trgm_idx")
-  @@index([lastName(ops: raw("gin_trgm_ops"))], type: Gin, map: "User_lastName_trgm_idx")
+  // Search: trigram indexes on public.search_text(identity) and
+  // public.search_text(contactEmail), expression indexes kept in the
+  // 20261031140000_shared_search_text migration.
 }
 
 /// Permanent ownership history for authentication identifiers. A login name
@@ -314,6 +313,9 @@ model AuditLog {
   requestId                 String?
   ipAddress                 String?
   userAgent                 String?
+  /// The four names above in the shared search form, written by the
+  /// AuditLog_search_text trigger: never set by the application.
+  searchText                String?
   createdAt                 DateTime       @default(now())
 
   fieldChanges AuditFieldChange[]
@@ -335,10 +337,7 @@ model AuditLog {
   @@index([category, createdAt, id])
   @@index([entityType, entityId, createdAt, id])
   @@index([createdAt, id])
-  @@index([actorDisplayNameSnapshot(ops: raw("gin_trgm_ops"))], type: Gin, map: "AuditLog_actorDisplayNameSnapshot_trgm_idx")
-  @@index([actorLoginNameSnapshot(ops: raw("gin_trgm_ops"))], type: Gin, map: "AuditLog_actorLoginNameSnapshot_trgm_idx")
-  @@index([targetDisplayNameSnapshot(ops: raw("gin_trgm_ops"))], type: Gin, map: "AuditLog_targetDisplayNameSnapshot_trgm_idx")
-  @@index([targetLoginNameSnapshot(ops: raw("gin_trgm_ops"))], type: Gin, map: "AuditLog_targetLoginNameSnapshot_trgm_idx")
+  @@index([searchText(ops: raw("gin_trgm_ops"))], type: Gin, map: "AuditLog_searchText_trgm_idx")
 }
 
 model AuditEncryptionKeyVersion {

@@ -3,7 +3,6 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 import {
-  normalizeSearchValue,
   type RankedSearchItem,
   rankSearchResults,
 } from '$components/layout/global-search.utils';
@@ -17,6 +16,7 @@ import {
   buildSearchCatalog,
   getSuggestedSearchItems,
 } from '$features/search/search-catalog';
+import { normalizeSearchText } from '$utils/search-text.utils';
 
 type SearchFixture = RankedSearchItem & {
   id: string;
@@ -34,9 +34,9 @@ const createFixture = ({
   space?: string;
 }): SearchFixture => ({
   id,
-  labelSearchText: normalizeSearchValue(label),
-  searchText: normalizeSearchValue(`${space} ${label} ${description}`),
-  spaceSearchText: normalizeSearchValue(space),
+  labelSearchText: normalizeSearchText(label),
+  searchText: normalizeSearchText(`${space} ${label} ${description}`),
+  spaceSearchText: normalizeSearchText(space),
 });
 
 // Static, test-owned path only.
@@ -68,12 +68,12 @@ describe('global page search', () => {
     );
 
     expect(
-      rankSearchResults(catalog, normalizeSearchValue('compte')).map(
+      rankSearchResults(catalog, normalizeSearchText('compte')).map(
         (item) => item.href,
       ),
     ).toEqual(['/mon-compte', '/systeme/utilisateurs']);
     expect(
-      rankSearchResults(catalog, normalizeSearchValue('SYSTÈME')).map(
+      rankSearchResults(catalog, normalizeSearchText('SYSTÈME')).map(
         (item) => item.href,
       ),
     ).toEqual([
@@ -92,13 +92,13 @@ describe('global page search', () => {
     );
 
     expect(
-      rankSearchResults(catalog, normalizeSearchValue('compte')).map(
+      rankSearchResults(catalog, normalizeSearchText('compte')).map(
         (item) => item.href,
       ),
     ).toEqual(['/mon-compte']);
     // Mon compte has its own Autorisations tab (AC-38); Utilisateurs stays out.
     expect(
-      rankSearchResults(catalog, normalizeSearchValue('autorisations')).map(
+      rankSearchResults(catalog, normalizeSearchText('autorisations')).map(
         (item) => item.href,
       ),
     ).toEqual(['/mon-compte?section=access', '/mon-compte']);
@@ -111,7 +111,7 @@ describe('global page search', () => {
   ): string[] =>
     rankSearchResults(
       buildSearchCatalog(getVisibleNavigationSpaces(user, 'live'), user),
-      normalizeSearchValue(query),
+      normalizeSearchText(query),
     ).map((item) => item.href);
   const superadmin = {
     isProtected: true,
@@ -185,13 +185,13 @@ describe('global page search', () => {
   });
 
   it('normalizes accents, ligatures, punctuation and repeated spaces', () => {
-    expect(
-      normalizeSearchValue('  Modèles—d’activité / ÉQUIPE & œuvre  '),
-    ).toBe('modeles d activite equipe oeuvre');
-    expect(normalizeSearchValue('Membres & adhérents')).toBe(
+    expect(normalizeSearchText('  Modèles—d’activité / ÉQUIPE & œuvre  ')).toBe(
+      'modeles d activite equipe oeuvre',
+    );
+    expect(normalizeSearchText('Membres & adhérents')).toBe(
       'membres adherents',
     );
-    expect(normalizeSearchValue('… / —')).toBe('');
+    expect(normalizeSearchText('… / —')).toBe('');
   });
 
   it('matches all query words regardless of punctuation or order', () => {
@@ -209,12 +209,12 @@ describe('global page search', () => {
     ];
 
     expect(
-      rankSearchResults(fixtures, normalizeSearchValue('utilisateurs')).map(
+      rankSearchResults(fixtures, normalizeSearchText('utilisateurs')).map(
         (item) => item.id,
       ),
     ).toEqual(['users']);
     expect(
-      rankSearchResults(fixtures, normalizeSearchValue('journal activite')).map(
+      rankSearchResults(fixtures, normalizeSearchText('journal activite')).map(
         (item) => item.id,
       ),
     ).toEqual(['journal']);
@@ -232,7 +232,7 @@ describe('global page search', () => {
     ];
 
     expect(
-      rankSearchResults(fixtures, normalizeSearchValue('journal')).map(
+      rankSearchResults(fixtures, normalizeSearchText('journal')).map(
         (item) => item.id,
       ),
     ).toEqual(['exact', 'prefix', 'description']);
@@ -244,7 +244,7 @@ describe('global page search', () => {
     );
 
     expect(
-      rankSearchResults(fixtures, normalizeSearchValue('page'), 2).map(
+      rankSearchResults(fixtures, normalizeSearchText('page'), 2).map(
         (item) => item.id,
       ),
     ).toEqual(['first', 'second']);

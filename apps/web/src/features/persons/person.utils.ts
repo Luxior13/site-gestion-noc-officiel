@@ -1,4 +1,5 @@
 import { DEFAULT_APPLICATION_TIME_ZONE } from '$constants/time.constants';
+import { normalizeSearchText } from '$utils/search-text.utils';
 
 const COMBINING_MARKS_PATTERN = /[\u0300-\u036f]/g;
 const SPACE_PATTERN = /\s+/g;
@@ -26,18 +27,24 @@ export const getApplicationCivilDateParts = (
   return year && month && day ? { day, month, year } : null;
 };
 
-/**
- * Stable v1 search normalisation. Keep this function backward compatible when
- * adding new search capabilities: persisted columns and incoming queries must
- * always use the same algorithm.
- */
-export const normalizePersonSearchValue = (value: string): string =>
+// Former form, kept for names made only of symbols (« -_- »): they stay
+// non-empty and searchable as typed.
+const foldPersonSymbols = (value: string): string =>
   value
     .normalize('NFKD')
     .replace(COMBINING_MARKS_PATTERN, '')
     .toLocaleLowerCase('fr-FR')
     .trim()
     .replace(SPACE_PATTERN, ' ');
+
+/**
+ * Search form of a name, stored in the normalized columns and applied to the
+ * query: the site-wide rule (audit RL-03, 31 October 2026). Persisted columns
+ * and incoming queries must always use the same algorithm; the migration
+ * 20261031140000_shared_search_text recomputed the stored forms.
+ */
+export const normalizePersonSearchValue = (value: string): string =>
+  normalizeSearchText(value) || foldPersonSymbols(value);
 
 export const normalizePersonEmail = (value: string): string =>
   value.trim().toLocaleLowerCase('en-US');

@@ -12,6 +12,7 @@ import {
 } from '$constants/permissions.constants';
 import { Badge } from '$ui/badge';
 import { Button } from '$ui/button';
+import { getSearchTerms, normalizeSearchText } from '$utils/search-text.utils';
 
 import { AuthorizationsHeader } from './AuthorizationsHeader';
 import {
@@ -27,9 +28,7 @@ import {
   buildPermissionEditorState,
   countCategoryPermissionResults,
   countUsablePermissions,
-  getPermissionSearchTerms,
   matchesPermissionSearch,
-  normalizePermissionSearch,
   PERMISSION_EDITOR_CATEGORIES,
   PERMISSION_EDITOR_POLES,
   type PermissionCategoryResult,
@@ -159,8 +158,8 @@ export const PermissionsEditor: FC<PermissionsEditorProps> = ({
   ).length;
   const isGranted = (key: string): boolean =>
     (state.configured.get(key) || state.effective.get(key)) ?? false;
-  const normalizedQuery = normalizePermissionSearch(query);
-  const searchTerms = getPermissionSearchTerms(query);
+  const normalizedQuery = normalizeSearchText(query);
+  const searchTerms = getSearchTerms(query);
   // Only a search lists results across poles; « Accordées » narrows the
   // usual pole menu, pages and page to what is granted (owner request of
   // 26 October 2026).

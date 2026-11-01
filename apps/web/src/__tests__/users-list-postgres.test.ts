@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 
 import { Prisma, PrismaClient } from '@prisma/client';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
@@ -12,6 +13,27 @@ import { buildUserSearchQuery } from '$features/users/server/users-list-search';
 const listDb = vi.hoisted(() => ({ $queryRaw: vi.fn() }));
 vi.mock('server-only', () => ({}));
 vi.mock('$server/prisma', () => ({ prisma: listDb }));
+
+// The search form of the shared search migration, created in this suite's
+// own schema (the real list query calls it unqualified).
+const readSearchTextFunction = (schema: string): string => {
+  // Fixed, test-owned path; no external input reaches the file system.
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
+  const migration = readFileSync(
+    new URL(
+      '../../../../packages/database/prisma/migrations/20261031140000_shared_search_text/migration.sql',
+      import.meta.url,
+    ),
+    'utf8',
+  );
+  const start = migration.indexOf('CREATE FUNCTION "public"."search_text"');
+  const end = migration.indexOf('$function$;', start);
+  if (start < 0 || end < 0) throw new Error('search_text function not found');
+
+  return migration
+    .slice(start, end + '$function$'.length)
+    .replace('"public"."search_text"', `"${schema}"."search_text"`);
+};
 
 // Explicit local disposable database only. Never fall back to DATABASE_URL.
 const target = process.env.USERS_LIST_TEST_DATABASE_URL;
@@ -47,6 +69,7 @@ describe.skipIf(!target)('users identity search on PostgreSQL', () => {
       "mustChangePassword" boolean DEFAULT false, "passwordChangedAt" timestamp,
       "role" text DEFAULT 'USER'
     )`;
+    await db.$executeRawUnsafe(readSearchTextFunction(schema));
     await db.$executeRaw`INSERT INTO "User" ("id", "loginName", "firstName", "lastName", "contactEmail", "isProtected", "deletedAt") VALUES
       ('elodie', 'emartin', 'Élodie', 'Martin', 'only-contact@example.test', false, null),
       ('compound', 'jdp', 'Jean Pierre', 'Du Pont', null, false, null),
@@ -93,12 +116,34 @@ describe.skipIf(!target)('users identity search on PostgreSQL', () => {
       );
     },
   );
-  it('requires every word, excludes tombstones and treats LIKE symbols literally', async () => {
+  it('requires every word, excludes tombstones and never reads symbols as wildcards', async () => {
     expect(await find('Élodie Hopper')).toEqual([]);
-    expect(await find('%')).toEqual(['literal']);
-    expect(await find('_')).toEqual(['literal']);
-    expect(await find('\\')).toEqual([]);
+    // Punctuation is a word break (audit RL-02): alone, it filters nothing.
+    expect(await find('100%_test')).toEqual(['literal']);
+    expect(await find('100 test')).toEqual(['literal']);
+    for (const symbols of ['%', '_', '\\'])
+      expect(await find(symbols)).toEqual(['compound', 'elodie', 'literal']);
     expect(await find('old')).toEqual([]);
+  });
+
+  // Audit RL-02: letters kept whole by NFKD, other alphabets' accents and both
+  // apostrophes, through the shared search form.
+  it('finds foreign letters and apostrophes in any form', async () => {
+    await db.$executeRaw`INSERT INTO "User" ("id", "loginName", "firstName", "lastName") VALUES
+      ('inaki', 'ialvarez', 'Iñaki', 'Álvarez'),
+      ('soren', 'lsoren', 'Ludmila', 'Søren'),
+      ('artagnan', 'jpda', 'Jean-Pierre', 'd’Artagnan'),
+      ('zoe', 'zoe.c', 'Zoé', 'Cœurdevey')`;
+    try {
+      expect(await find('inaki')).toEqual(['inaki']);
+      expect(await find('ALVAREZ iñaki')).toEqual(['inaki']);
+      expect(await find('soren')).toEqual(['soren']);
+      expect(await find("d'artagnan jean pierre")).toEqual(['artagnan']);
+      expect(await find('coeurdevey')).toEqual(['zoe']);
+      expect(await find('CŒUR')).toEqual(['zoe']);
+    } finally {
+      await db.$executeRaw`DELETE FROM "User" WHERE "id" IN ('inaki', 'soren', 'artagnan', 'zoe')`;
+    }
   });
   it('only searches the complete contact query with permission', async () => {
     expect(await find('only-contact')).toEqual([]);

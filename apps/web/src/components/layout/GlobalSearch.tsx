@@ -12,7 +12,6 @@ import React, {
 } from 'react';
 
 import {
-  normalizeSearchValue,
   rankSearchResults,
   SEARCH_QUERY_MAX_LENGTH,
 } from '$components/layout/global-search.utils';
@@ -46,6 +45,7 @@ import {
 } from '$ui/dialog';
 import { Tooltip, TooltipContent, TooltipTrigger } from '$ui/tooltip';
 import { requestGuardedNavigation } from '$utils/guarded-navigation.utils';
+import { normalizeSearchText } from '$utils/search-text.utils';
 
 function isolateSearchButtonKeys(
   event: React.KeyboardEvent<HTMLButtonElement>,
@@ -75,7 +75,7 @@ export const QuickNavigation: FC = () => {
     () => buildSearchCatalog(spaces, userData),
     [spaces, userData],
   );
-  const normalizedQuery = normalizeSearchValue(query);
+  const normalizedQuery = normalizeSearchText(query);
   const results = useMemo(
     () =>
       normalizedQuery

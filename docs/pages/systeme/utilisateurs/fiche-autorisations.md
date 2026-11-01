@@ -219,6 +219,13 @@ dépliable « Voir les modifications avant enregistrement » depuis le
   par pôle et page avec compteurs, recherche et filtre « Accordées », rôle
   séparé, seul « Critique » affiché ; modèles de rôle avec REV-15.
 
+- **Recherche — audit du 31 octobre 2026 ([RL-07](../../../audits/2026-10-31-recherches-listes.md)), appliqué** :
+  bouton « Effacer la recherche » dans le champ, comme les listes (32 px, ou
+  36 px avec une zone tactile de 44 px sur téléphone), qui rend le focus au
+  champ ; le bouton du navigateur est masqué. La recherche suit la règle
+  commune du site (`getSearchTerms`), qui lit aussi « œ », « æ » et « ø ».
+  Vérifié dans le navigateur à 1 440 et 390 px.
+
 Aucun défaut ouvert consigné. Non vérifié pour la refonte du 26 octobre :
 session réelle, lecteur d’écran, appareils physiques. Limites de la passe du 18 octobre : pas de requête
 HTTP avec session réelle, de suite PostgreSQL, de lecteur d’écran ni d’appareil

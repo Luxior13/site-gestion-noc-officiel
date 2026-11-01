@@ -67,6 +67,14 @@ describe('roadmap local search and URL filters', () => {
     expect(search('equipes saisons motabsentduchantier')).toEqual([]);
   });
 
+  // Audit RL-06: the same words as the permission editor.
+  it('reads plurals as singular and ignores filler words', () => {
+    expect(search('réunions')).toEqual(search('reunion'));
+    expect(search('équipes')).toEqual(search('equipe'));
+    expect(search('les équipes')).toEqual(search('equipe'));
+    expect(search('reunion').length).toBeGreaterThan(1);
+  });
+
   it('searches the delivery criterion, even while its disclosure is collapsed', () => {
     expect(search('anciennes rencontres')).toContain('sport-teams');
     expect(search('nOuVeLLe identité')).toContain('person-relationships');

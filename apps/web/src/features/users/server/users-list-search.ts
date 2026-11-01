@@ -1,50 +1,36 @@
 import { Prisma } from '@prisma/client';
 
 import { matchesProtectedUserPublicIdentity } from '$constants/protected-user.constants';
+import { getSearchWords, normalizeSearchText } from '$utils/search-text.utils';
 
-const USER_SEARCH_ACCENT_FROM = 'àâäéèêëîïôöùûüç';
-const USER_SEARCH_ACCENT_TO = 'aaaeeeeiioouuuc';
-const USER_SEARCH_TRANSLATE_FROM = `${USER_SEARCH_ACCENT_FROM}${USER_SEARCH_ACCENT_FROM.toLocaleUpperCase('fr-FR')}`;
-const USER_SEARCH_TRANSLATE_TO = `${USER_SEARCH_ACCENT_TO}${USER_SEARCH_ACCENT_TO}`;
-
-const normalizeUserSearchValue = (value: string): string => {
-  const lowered = value.toLocaleLowerCase('fr-FR');
-  let normalized = '';
-  for (const character of lowered) {
-    const index = USER_SEARCH_ACCENT_FROM.indexOf(character);
-    // The index is bounded by the fixed accent table above.
-    // eslint-disable-next-line security/detect-object-injection
-    normalized += index >= 0 ? USER_SEARCH_ACCENT_TO[index] : character;
-  }
-
-  return normalized.trim().replace(/\s+/g, ' ');
-};
+// The site-wide search form (`public.search_text`, mirror of
+// normalizeSearchText). These exact expressions back the trigram indexes of
+// the 20261031140000_shared_search_text migration: change both together.
+const IDENTITY_SEARCH_TEXT = Prisma.sql`search_text(COALESCE("loginName", '') || ' ' || COALESCE("firstName", '') || ' ' || COALESCE("lastName", ''))`;
+const CONTACT_SEARCH_TEXT = Prisma.sql`search_text("contactEmail")`;
 
 const escapeUserSearchLikePattern = (value: string): string =>
   value.replaceAll('\\', '\\\\').replaceAll('%', '\\%').replaceAll('_', '\\_');
+
+const contains = (expression: Prisma.Sql, value: string): Prisma.Sql =>
+  Prisma.sql`${expression} LIKE ${'%' + escapeUserSearchLikePattern(value) + '%'} ESCAPE '\\'`;
 
 export const buildUserSearchPredicate = (
   search: string,
   options: { canViewContact: boolean; isProtected: boolean },
 ): Prisma.Sql => {
-  const query = normalizeUserSearchValue(search.trim().slice(0, 100));
-  const field = (column: string, value: string): Prisma.Sql =>
-    Prisma.sql`lower(translate(${Prisma.raw('"' + column + '"')}, ${USER_SEARCH_TRANSLATE_FROM}, ${USER_SEARCH_TRANSLATE_TO})) LIKE ${'%' + escapeUserSearchLikePattern(value) + '%'} ESCAPE '\\'`;
-  // Every identity word must match a visible identity field. Contact remains a
-  // whole-query match so fragments cannot be combined with a hidden address.
-  const identity = Prisma.join(
-    query.split(/\s+/u).map(
-      (word) =>
-        Prisma.sql`(${Prisma.join(
-          ['loginName', 'firstName', 'lastName'].map((column) =>
-            field(column, word),
-          ),
-          ' OR ',
-        )})`,
-    ),
-    ' AND ',
-  );
-  const fields = Prisma.sql`((${identity})${options.canViewContact ? Prisma.sql` OR ${field('contactEmail', query)}` : Prisma.empty})`;
+  const query = search.trim().slice(0, 100);
+  const words = getSearchWords(query);
+  // Every identity word, in any order, in the login name or the names. The
+  // contact address is matched on the whole query, so fragments cannot be
+  // combined with a hidden address. Punctuation alone filters nothing.
+  const fields =
+    words.length === 0
+      ? Prisma.sql`TRUE`
+      : Prisma.sql`((${Prisma.join(
+          words.map((word) => contains(IDENTITY_SEARCH_TEXT, word)),
+          ' AND ',
+        )})${options.canViewContact ? Prisma.sql` OR ${contains(CONTACT_SEARCH_TEXT, normalizeSearchText(query))}` : Prisma.empty})`;
   const includeProtected =
     !options.isProtected && matchesProtectedUserPublicIdentity(search);
   const visible = options.isProtected

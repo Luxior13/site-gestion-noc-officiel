@@ -70,6 +70,9 @@ Sources : [décisions produit](../../propositions/feuille-de-route.md),
   descriptions et prérequis n'appellent ni tableau de gestion, ni pagination,
   ni barre d'enregistrement. Le catalogue versionné en code ne nécessite
   aucun modèle Prisma ou éditeur métier.
+- Recherche selon la règle commune du site : chaque mot dans n’importe quel
+  ordre, accents et ponctuation ignorés, petits mots ignorés, singulier et
+  pluriel équivalents (31 octobre 2026, RL-06).
 - Utiliser `ListSearchField` avec son label visible associé, son effacement
   partagé et la limite de 200 caractères. Les commandes de remise à zéro
   rendent le focus à la recherche ; chaque commande de détail nomme son
@@ -119,6 +122,7 @@ comptés comme validés.
 | --- | --- | --- | --- |
 | FDR-01 | Intégration authentifiée | Huit scénarios réels réussis le 12 octobre ; rouvrir lors d'une modification du cadre privé ou de sa politique | Clos |
 | FDR-02 à FDR-04 | Focus, détails accessibles et correspondance de matrice | Corrections vérifiées ; maintenir les noms contextuels, le focus de reprise et l'alignement des références | Clos |
+| [RL-06](../../audits/2026-10-31-recherches-listes.md) | Recherche au pluriel | « réunions » trouvait 1 chantier, « reunion » 3 : même découpage des mots que l’éditeur d’autorisations (`getSearchTerms` : petits mots ignorés, singulier et pluriel équivalents), test sur le catalogue réel le 31 octobre 2026 | Clos |
 
 Aucun défaut bloquant identifié dans ce périmètre. Lecteur d'écran, zoom natif,
 appareils physiques et gestionnaires de mots de passe installés ne sont pas

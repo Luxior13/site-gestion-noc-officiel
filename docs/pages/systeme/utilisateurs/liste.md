@@ -48,6 +48,12 @@ Décisions détaillées dans [Décisions courantes](#décisions-courantes) ; en 
   fond d’avatar par accès : rouge clair, ambre, bleu clair.
 - Recherche, filtres, tri et pagination côté serveur ; seuils du tableau selon
   les colonnes autorisées (48, 52, 56 ou 64 rem).
+- Recherche selon la règle commune du site (31 octobre 2026, [audit RL](../../../audits/2026-10-31-recherches-listes.md)) :
+  chaque mot, dans n’importe quel ordre, dans l’identifiant, le prénom ou le nom
+  lus par `search_text` (« inaki » trouve « Iñaki », « d'artagnan » trouve
+  « d’Artagnan ») ; l’email autorisé sur la saisie complète. Deux index
+  trigrammes d’expression servent ces comparaisons ; une ponctuation seule ne
+  filtre rien.
 - Retour de fiche : critères, page, position et lien focalisé restaurés par un
   instantané d’onglet limité à 30 minutes et lié au compte et aux droits.
 - Filtres rapides (20 octobre 2026, standard des listes validé sur le
@@ -75,6 +81,8 @@ Registre complet : [Registre des points et déclencheurs](#registre-des-points-e
 | USR-29 | Libellés, P3 | Clos | Champ « Rechercher… » dont le périmètre n’était donné que par une infobulle `title` ; texte d’exemple et nom accessible explicites |
 | USR-30 | Accessibilité, P2 | Clos | Anneau de ligne aussi au clic souris (`focus-within`) ; désormais au seul focus clavier du lien ; tailles `text-[11px]` / `text-[13px]` normalisées |
 | USR-31 | États, P3 | Clos | Chargement des résultats en bloc unique ; lignes `UsersListRowsSkeleton` partagées avec le squelette de page |
+| [RL-02](../../../audits/2026-10-31-recherches-listes.md) | Recherche, P2 | Clos | Table d’accents limitée à 15 lettres françaises : « inaki », « alvarez », « soren », « coeurdevey », « d'artagnan » ne trouvaient pas leur compte. Règle de recherche commune (`search_text`) ; vérifié le 31 octobre 2026 en SQL (`users-list-postgres`) et dans le navigateur (« alvarez INAKI ») |
+| [RL-05](../../../audits/2026-10-31-recherches-listes.md) | Performance, P2 | Clos | Les quatre index trigrammes ne servaient pas (`lower(translate(…))`) ; remplacés par deux index d’expression sur `search_text`, dont l’usage est vérifié par plan d’exécution (`audit-journal-postgres`). Mots sans accent : coût de comparaison inchangé (2,5 µs) |
 | USR-04 | Capacité | Ouvert, conditionnel | Revoir curseur ou taille de page si 1 000 pages deviennent nécessaires |
 | USR-05 | Accessibilité | À vérifier | Lecteur d’écran, appareils réels et zoom natif |
 | USR-06 | Compatibilité | À vérifier | Graisses dans WebKit, à comparer dans Safari réel |
