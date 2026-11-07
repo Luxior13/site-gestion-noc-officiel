@@ -33,8 +33,8 @@ revue répond à un changement, un défaut constaté ou une règle nouvelle.
 ## État courant — 12 octobre 2026
 
 Route `/systeme/feuille-de-route`, catalogue informatif pour les comptes connectés.
-Le catalogue comprend 31 chantiers, six pôles cibles et cinq étapes ; ces nombres
-ne représentent ni 31 pages à créer ni six pôles actifs. La navigation actuelle
+Le catalogue comprend 38 chantiers, six pôles cibles et dix étapes ; ces nombres
+ne représentent ni 38 pages à créer ni six pôles actifs. La navigation actuelle
 compte trois pôles et six entrées principales.
 
 La [revue du 12 octobre](../../audits/2026-10-12-feuille-de-route.md)
@@ -50,7 +50,7 @@ Sources : [décisions produit](../../propositions/feuille-de-route.md),
 ## Décisions courantes et questions de revue
 
 - 7 novembre 2026 : catalogue révisé sur décision du propriétaire, de 39 à
-  31 chantiers, de huit à six pôles et de six à cinq étapes : registre historique,
+  38 chantiers, de huit à six pôles et de six à dix étapes courtes : registre historique,
   puis trésorerie ([décisions](../../propositions/feuille-de-route.md#à-quoi-sert-le-site)).
   Les identifiants conservés ne changent pas, même quand le titre change
   (`sport-teams` devient « Équipes & parcours »). La page et sa présentation sont
@@ -63,9 +63,9 @@ Sources : [décisions produit](../../propositions/feuille-de-route.md),
 - Une carte décrit public, socle éventuel, première version, prérequis et critère
   de livraison. « À compléter » ne rend pas son futur parcours disponible.
 - Les étapes donnent une priorité, sans calendrier promis ni tâche planifiée.
-- Les notifications sont replanifiées en étape 5 ; le journal d’activité est livré
-  depuis le 30 octobre 2026 et reste à compléter (export). Les actualités sont
-  retirées. Leurs anciens liens ne rouvrent pas les modules.
+- Les notifications sont replanifiées en étape 10 ; le journal d’activité est livré
+  depuis le 30 octobre 2026 et reste à compléter (export). L’actualité interne devient
+  la Chronologie de la structure. Leurs anciens liens ne rouvrent pas les modules.
 - Faire évoluer ensemble décisions, données applicatives et matrice. Vérifier
   les identifiants, doublons, prérequis et dépendances circulaires.
 - Une carte livrée doit refléter son reste à faire ; la masquer ou changer son

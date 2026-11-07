@@ -3,7 +3,7 @@ import type { NavigationSpaceTone } from '$constants/navigation-theme.constants'
 
 export type RoadmapAreaId =
   'today' | 'people' | 'relations' | 'structure' | 'finance' | 'system';
-export type RoadmapPhaseId = 1 | 2 | 3 | 4 | 5;
+export type RoadmapPhaseId = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 export type RoadmapStatus = 'planned' | 'partial';
 export type RoadmapKind = 'module' | 'extension' | 'view' | 'integration';
 

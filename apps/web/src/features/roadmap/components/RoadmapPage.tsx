@@ -154,12 +154,12 @@ export function RoadmapPage(): React.ReactNode {
               >
                 <ul className="text-muted-foreground mt-3 list-disc space-y-2 pl-5 leading-6">
                   <li>
-                    Déjà présents : comptes et sécurité, répertoire, paramètres
-                    techniques et recherche de pages.
+                    Déjà présents : comptes et sécurité, répertoire, journal
+                    d’activité, paramètres techniques et recherche de pages.
                   </li>
                   <li>
-                    Une personne garde la même identité ; ses adhésions, rôles
-                    et affectations ont leur propre historique.
+                    Une personne garde la même identité ; ses adhésions,
+                    fonctions et passages ont leur propre historique.
                   </li>
                   <li>
                     Association et société peuvent avoir des contrats et
@@ -171,8 +171,8 @@ export function RoadmapPage(): React.ReactNode {
                     parcours distincts.
                   </li>
                   <li>
-                    Le quotidien esport arrive tôt : effectifs, disponibilités,
-                    entraînements et convocations.
+                    Le registre et la trésorerie arrivent d’abord : qui est
+                    passé dans la structure, et où va l’argent.
                   </li>
                   <li>
                     Les vues partagées évitent les doublons ; un chantier ne

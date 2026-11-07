@@ -29,13 +29,13 @@ describe('planned pages and tabs', () => {
     }
   });
 
-  it('keeps tabs usable: distinct, at least two, at most six', () => {
+  it('keeps tabs usable: distinct, at least two, at most eight', () => {
     for (const page of ROADMAP_SITE_PLAN) {
       if (!page.tabs) continue;
       const labels = page.tabs.map((tab) => tab.label);
       expect(new Set(labels).size).toBe(labels.length);
       expect(labels.length).toBeGreaterThanOrEqual(2);
-      expect(labels.length).toBeLessThanOrEqual(6);
+      expect(labels.length).toBeLessThanOrEqual(8);
     }
   });
 

@@ -4,7 +4,7 @@
 [Navigation](navigation.md#règles-de-placement) · [Feuille de route](../propositions/feuille-de-route.md)
 
 Décisions du propriétaire du 7 novembre 2026. **Cible, pas encore livrée** : le
-cadrage des chantiers de l’étape 1 fixera les tables, les routes et les droits.
+cadrage des premiers chantiers fixera les tables, les routes et les droits.
 
 ## Rôle du site
 
@@ -27,10 +27,13 @@ Un seul objet central : le **passage**, une relation datée entre une fiche du
 | Rattachement | Une équipe, ou la structure elle-même pour une fonction de bureau ou de staff |
 | Fonction | Valeur d’une liste de référence (Joueur, Remplaçant, Manager, Président…). Le mot « rôle » reste réservé à Utilisateur et Administrateur |
 | Début et fin | Une fin vide signifie « en cours ». Plusieurs passages simultanés sont possibles |
+| Statut dans la structure | Calculé, jamais saisi : une fiche est dans la structure si un passage est en cours à la date du jour. Sans date de fin, il reste en cours ; une date de fin atteinte le clôt toute seule |
+| Motif de fin | Fin de contrat, départ volontaire, exclusion, transfert… : une liste de référence |
 | Dates approximatives | Année, mois ou jour : une date connue à l’année se saisit à l’année, sans inventer de jour |
 | Entité juridique | Aucune exigée : l’histoire commence en 2014, la structure en 2023 et l’association en octobre 2025 |
 | Roster à une date | Se déduit des passages ; aucune composition d’équipe n’est stockée à part |
 | Anciens pseudos | Conservés, pour retrouver une personne sous le nom qu’elle portait |
+| Anciens noms d’équipe | Conservés de la même façon : une équipe change de nom sans changer d’histoire |
 
 Une correction modifie le passage ; elle ne crée pas une nouvelle identité. Toute
 écriture est tracée dans le [journal d’activité](../references/audit-historique.md).
@@ -40,19 +43,31 @@ Une correction modifie le passage ; elle ne crée pas une nouvelle identité. To
 Un **tournoi** est un dossier de la structure : qui y a participé, ce qu’il a
 rapporté, ce qui s’y est mal passé. Rencontres et résultats restent sur le site
 public. Les gains se lisent sur la fiche tournoi ; l’argent reçu vit dans les
-[Finances](../propositions/feuille-de-route.md#2-trésorerie), et un résultat sportif
+[Finances](../propositions/feuille-de-route.md#3-socle-de-trésorerie), et un résultat sportif
 ne déclenche aucun encaissement.
 
 Le **suivi** réunit ce que le bureau sait d’une personne : notes, problèmes et bans.
 
 - Chaque entrée est datée, signée et rattachée à une fiche, et si besoin à un tournoi
   ou à un jeu. Une même entrée se lit sur la fiche personne et sur la fiche tournoi.
-- Un ban est une relation datée (période, motif, auteur, levée), jamais une case
-  « banni » sur la fiche. Lever un ban ne l’efface pas.
+- Un ban est une relation datée (type, jeu ou tournoi, période, motif, source ou
+  preuve, auteur, levée), jamais une case « banni » sur la fiche. Lever un ban ne
+  l’efface pas.
 - Le suivi est réservé aux personnes habilitées, par une autorisation dédiée. Un
   manager n’y a pas accès.
 - Une note libre peut contenir trop de choses : s’en tenir aux faits utiles, sans
   santé ni vie privée. Sa conservation suit les règles de Confidentialité & conservation.
+
+## Mémoire de la structure
+
+La **chronologie** raconte la vie de la structure depuis ses débuts : arrivées,
+départs, changements de roster, sponsors, décisions, titres. Les faits viennent des
+modules, sans copie, et le bureau en saisit d’autres à la main, notamment ceux
+antérieurs au site. Le **bilan annuel** présente une année pour l’assemblée
+générale ; une année clôturée ne change plus.
+
+Quand le bureau change, une **passation** transmet accès, comptes et dossiers en
+cours : la mémoire ne doit pas dépendre d’une personne.
 
 ## Ce qui dure, ce qui se purge
 
@@ -104,7 +119,7 @@ rejoignent le pôle Membres, à côté du Répertoire.
 
 Les utilisateurs saisissent tout à la main, pour le moment. Rien n’est récupéré du
 site public : une information présente sur les deux sites est saisie deux fois, et
-c’est accepté. Une liaison entre les deux sites reste un chantier de l’étape 5, si
+c’est accepté. Une liaison entre les deux sites reste un chantier de l’étape 10, si
 la double saisie devient trop lourde.
 
 ## À cadrer
@@ -113,4 +128,4 @@ la double saisie devient trop lourde.
   du bureau ?
 
 Modèle de données, routes, droits et ordre de construction :
-[cadrage de l’étape 1](../propositions/membres-equipes-parcours.md).
+[cadrage des étapes 1 et 2](../propositions/membres-equipes-parcours.md).

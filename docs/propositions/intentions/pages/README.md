@@ -1,11 +1,11 @@
 # Documentation des pages
 
-La référence courante est la [matrice de préparation](MATRICE_PREPARATION.md), qui distingue les pages livrées, les 31 chantiers et les anciennes destinations.
+La référence courante est la [matrice de préparation](MATRICE_PREPARATION.md), qui distingue les pages livrées, les 38 chantiers et les anciennes destinations.
 
 ## À lire avant de développer
 
 - [Référence générale](../../../REFERENCE_GENERALE.md) : questions de sélection puis fiches utiles au changement ; [suivi courant des pages](../../../pages/README.md).
-- [Feuille de route](../../feuille-de-route.md) : décisions, cinq étapes et périmètres.
+- [Feuille de route](../../feuille-de-route.md) : décisions, dix étapes et périmètres.
 - [Registre historique](../../../domaines/registre-historique.md) : rôle du site, passages, listes de référence et où modifier.
 - [Navigation](../../../domaines/navigation.md) : trois pôles actifs, six pôles cibles et règles de placement.
 - [Structure](../../../domaines/structure-juridique.md) : entités juridiques, historique et objets financiers.

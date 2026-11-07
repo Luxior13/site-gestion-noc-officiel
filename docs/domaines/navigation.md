@@ -14,7 +14,7 @@ Six entrées sont déclarées dans trois pôles. Leur visibilité dépend des ac
 
 `/mon-compte` est accessible par les outils globaux. La navigation rapide de l’en-tête parcourt les pages autorisées sans page dédiée ; l’ancienne adresse `/recherche` redirige vers l’accueil. Elle cherche le nom de la page, sa rubrique, sa section (« Administration », « Projet »), sa description et une liste fermée de mots-clés déclarée avec la fonctionnalité dans le registre (`keywords`, jamais affichés : « logs », « historique » pour le journal, « mot de passe » pour Mon compte) ; un mot-clé passe devant une correspondance fortuite, sans recherche approximative (décision du 31 octobre 2026, [RR](../audits/2026-10-31-recherche-rapide.md)). Textes et saisie sont comparés selon la règle commune de recherche du site (`normalizeSearchText`, [comportements](../design/comportements.md#listes-recherche-et-pagination)). Une nouvelle fonctionnalité déclare ses mots-clés. Chaque vue nomme son onglet « Vue · Parente · Noctambule » par `pageTitle` (`$utils/page-title.utils`), « · Dev » en développement. `/login` appartient au parcours de connexion. Les formulaires de création et fiches de personnes ou utilisateurs restent sous leur liste principale.
 
-Le pôle « Membres » regroupe le Répertoire actuel et les futurs espaces Équipes, Adhésions, Recrutement, Arrivées et départs. La page actuelle conserve le titre « Répertoire » et l’action « Ajouter une fiche » ; une fiche porte le nom ou le pseudo de la personne. Le fil d’Ariane présente « Membres → Répertoire → fiche » ; le nom du pôle ne crée pas un lien vers une page d’accueil fictive.
+Le pôle « Membres » regroupe le Répertoire actuel et les futurs espaces Équipes, Tournois, Adhésions, Recrutement, Arrivées, départs et passations. La page actuelle conserve le titre « Répertoire » et l’action « Ajouter une fiche » ; une fiche porte le nom ou le pseudo de la personne. Le fil d’Ariane présente « Membres → Répertoire → fiche » ; le nom du pôle ne crée pas un lien vers une page d’accueil fictive.
 
 `/administration` et `/tableau-de-bord` sont des accès de compatibilité. `/mes-notifications` et `/tableau-de-bord/mes-notifications` redirigent vers la feuille de route, où ces modules sont replanifiés ; `/systeme/journal-activite` est de nouveau servie depuis le 30 octobre 2026 (section Administration, entre Utilisateurs et Paramètres). `/systeme` sert d’entrée au pôle. Les routes non livrées ne sont pas des écrans vides utilisables.
 
@@ -26,11 +26,11 @@ Révision du 7 novembre 2026 : les anciens pôles Esport et Activité disparaiss
 
 | Pôle | Responsabilité | Espaces ou vues prévus |
 | --- | --- | --- |
-| Aujourd’hui | Ce qui concerne le compte connecté | Mon travail, tâches, rappels |
-| Membres | Identité, engagements et parcours des membres | Répertoire, équipes, adhésions, recrutement, arrivées et départs |
+| Aujourd’hui | Ce qui concerne le compte connecté | Mon travail, tâches, calendrier du bureau |
+| Membres | Identité, engagements et parcours des membres | Répertoire, équipes, tournois, adhésions, recrutement, arrivées, départs et passations |
 | Relations | Relations avec les organisations externes | Organisations, partenariats, communication |
-| Structure | Responsabilité juridique et dossiers sensibles | Entités, réunions et décisions, documents, contrats, confidentialité, incidents, logistique |
-| Finances | Prévisions, montants dus et mouvements d’argent | Comptes, règlements, factures, frais, budget, dotations, contrôles |
+| Structure | Responsabilité juridique, mémoire et dossiers sensibles | Entités, chronologie, réunions et décisions, documents, contrats, incidents, matériel et abonnements, événements, bilan annuel |
+| Finances | Prévisions, montants dus et mouvements d’argent | Comptes, opérations, factures, frais, subventions et dons, contrôles, budget |
 | Système | Administration technique | Comptes et accès, paramètres, listes de référence, journal, données, rappels, intégrations, feuille de route |
 
 Ce tableau décrit les lieux logiques, pas un engagement à créer autant d’entrées. Les vues rares deviennent des onglets ou actions contextuelles. Les pôles Relations, Structure et Finances s’ouvrent seulement avec leurs premiers modules utilisables.

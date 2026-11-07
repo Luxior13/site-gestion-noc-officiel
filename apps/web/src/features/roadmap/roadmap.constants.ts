@@ -58,30 +58,58 @@ export const ROADMAP_AREAS: readonly RoadmapArea[] = [
 export const ROADMAP_PHASES: readonly RoadmapPhase[] = [
   {
     description:
-      'Savoir qui est passé dans la structure et le garder dans la durée.',
+      'Savoir qui est passé dans la structure, à quelle fonction et dans quelle équipe.',
     id: 1,
-    label: 'Registre historique',
-  },
-  {
-    description: 'Suivre l’argent de la structure et ce qui le justifie.',
-    id: 2,
-    label: 'Trésorerie',
+    label: 'Listes & parcours',
   },
   {
     description:
-      'Garder la mémoire des décisions, des documents et des actions.',
+      'Ouvrir le site aux managers et garder le registre dans la durée.',
+    id: 2,
+    label: 'Accès & conservation',
+  },
+  {
+    description: 'Suivre les comptes et l’argent réellement reçu ou versé.',
     id: 3,
-    label: 'Vie de la structure',
+    label: 'Socle de trésorerie',
+  },
+  {
+    description:
+      'Couvrir factures, frais, subventions, adhésions et contrôles.',
+    id: 4,
+    label: 'Trésorerie complète',
+  },
+  {
+    description:
+      'Garder le dossier de chaque tournoi et le suivi des personnes.',
+    id: 5,
+    label: 'Tournois & suivi',
+  },
+  {
+    description: 'Suivre les tâches, les dates et les décisions.',
+    id: 6,
+    label: 'Vie du bureau',
+  },
+  {
+    description: 'Retrouver les pièces et ce que la structure a promis.',
+    id: 7,
+    label: 'Documents & engagements',
+  },
+  {
+    description:
+      'Transmettre le matériel, les accès et l’histoire de la structure.',
+    id: 8,
+    label: 'Mémoire & continuité',
   },
   {
     description: 'Exploiter des données fiables pour décider.',
-    id: 4,
+    id: 9,
     label: 'Pilotage',
   },
   {
     description:
       'Ajouter ce qui répond à un usage réel, sans le construire d’avance.',
-    id: 5,
+    id: 10,
     label: 'Selon les besoins',
   },
 ];

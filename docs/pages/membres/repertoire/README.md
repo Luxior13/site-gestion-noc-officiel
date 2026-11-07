@@ -55,7 +55,7 @@ structure » dans le journal (AC-32).
   [cadrage](../../../propositions/membres-equipes-parcours.md)). Rien de cela
   n’est encore livré.
 - **Points ouverts** : [registre REP](#points-ouverts) ; REP-02 (évolution du
-  statut de structure) est différé au cadrage métier, les autres sont clos.
+  statut de structure) est décidé, à construire ; les autres sont clos.
 
 ## Revues communes à la fiche
 
@@ -343,14 +343,14 @@ confidentialité, même sans mutation. Couverture et limites dans le rapport.
 
 État courant après l’audit du 11 octobre. REP-01 et REP-03 sont clos dans la portée
 désormais mesurée ; leurs limites et déclencheurs restent ci-dessous. REP-02 est
-différé au cadrage métier, responsable à attribuer. Les lignes closes restent
+décidé le 7 novembre 2026, à construire avec Équipes & parcours. Les lignes closes restent
 identifiables pour rouvrir leur scénario en cas de changement. Les rapports
 conservent les preuves datées, cette table porte les états courants.
 
 | Point | Nature / priorité et impact | Prochaine étape / déclencheur |
 | --- | --- | --- |
 | REP-01 — Validation visuelle réelle | Clos pour la liste après neuf parcours Next/session/MFA/PostgreSQL réels, six largeurs et captures relues ; clavier et cas limites complétés par 41 scénarios simulés | Rouvrir si cadre/navigation/composants changent ; appareils physiques, autres navigateurs et tous les dialogues restent hors de cette preuve |
-| REP-02 — Évolution du statut de structure | Cadrage différé ; modèle et parcours long terme | Lire `docs/domaines/structure-juridique.md` avant tout nouveau statut ; conserver personnes et relations datées séparées |
+| REP-02 — Évolution du statut de structure | **Décidé le 7 novembre 2026** : statut calculé depuis les passages, sans saisie ([registre](../../../domaines/registre-historique.md#le-passage)) | À construire avec Équipes & parcours ; personnes et relations datées restent séparées |
 | REP-03 — Recherche à volume | Clos à 10 000 fiches / 100 000 audits : 38 scénarios du service réel, quatre requêtes par appel, p95 maximal 22,47 ms ; migrations déployées sur la base d’intégration séparée | Rouvrir au dépassement de ce volume ou en cas de latence mesurée ; charge concurrente, budget 100k et coût de migration sur base de production non validés |
 | REP-04 — Total après curseur | Clos après vérification SQL ; total stable sur trois pages, filtres et page devenue vide | Rouvrir si comptage, recherche, ordre ou périmètre de lecture change |
 | REP-05 — Maintenabilité et tests | Clos sur le module ; liste sous 800 lignes, contrôles et reprise séparés, 112 tests du périmètre réussis | Conserver les régressions et le budget ; les échecs globaux hors module sont décrits dans le rapport |

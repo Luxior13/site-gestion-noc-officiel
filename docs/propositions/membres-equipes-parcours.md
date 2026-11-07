@@ -6,7 +6,7 @@
 
 - **Date** : 7 novembre 2026. **Demandeur** : le propriétaire.
 - **Périmètre** : chantiers Listes de référence, Équipes & parcours, Accès &
-  responsabilités métier (étape 1).
+  responsabilités métier (étapes 1 et 2).
 - **Statut** : proposée. Rien n’est construit ; les choix techniques ci-dessous
   restent à valider au moment de chaque lot.
 - **Décisions déjà données** : [registre historique](../domaines/registre-historique.md)
@@ -24,8 +24,7 @@ migration. Ils demandent des scénarios d’abus et une validation sur base isol
 | 2 | Équipes & parcours | Page Équipes, onglet Parcours, anciens pseudos |
 | 3 | Accès manager | Un manager se connecte et ne voit que son équipe |
 
-Confidentialité & conservation et Données, exports & sauvegardes suivent, dans la
-même étape. Le lot 1 introduit TanStack Query, prévu avec son premier consommateur
+Confidentialité & conservation et Données, exports & sauvegardes complètent l’étape 2. Le lot 1 introduit TanStack Query, prévu avec son premier consommateur
 ([décision REV-20](../references/architecture-fonctionnalite.md#5-états-ux-obligatoires)).
 
 ## Lot 1 — Listes de référence
@@ -57,14 +56,18 @@ lecture des valeurs suit la page qui les affiche.
 
 | Modèle | Contenu |
 | --- | --- |
-| `Team` | Nom, jeu (liste Jeux), `archivedAt`, `version` |
-| `PersonPassage` | Fiche, équipe facultative (vide pour une fonction de structure), fonction, début, fin, précision de chaque date, `version` |
+| `Team` | Nom, anciens noms, jeu (liste Jeux), `archivedAt`, `version` |
+| `PersonPassage` | Fiche, équipe facultative (vide pour une fonction de structure), fonction, début, fin, précision de chaque date, motif de fin, `version` |
 | `PersonFormerNickname` | Ancien pseudo, date du changement ; écrit par le service quand le pseudo change, et cherché par le Répertoire |
+
+**Compléments de la fiche personne** : nationalité, étiquettes, adresse postale, identifiants de jeu (par jeu), contact d’urgence et représentants légaux, ces derniers étant des fiches du Répertoire liées explicitement. Les coordonnées nouvelles suivent `persons:view_contact`.
 
 **Dates approximatives** : une date est stockée avec sa précision (année, mois,
 jour). Un début se range au premier jour de la période et une fin au dernier :
 « 2024 » couvre toute l’année, et « qui était là à telle date » reste une simple
 comparaison. L’affichage suit la précision, sans inventer de jour.
+
+**Statut dans la structure** : calculé à la lecture, jamais saisi ni stocké (décision du 7 novembre 2026). Un passage est en cours si son début est passé et s’il n’a pas de fin, ou une fin à venir. Aucune tâche planifiée : une date de fin atteinte le clôt toute seule. Le choix du statut disparaît de la création et de l’onglet Identité, et le filtre du Répertoire lit ce calcul. Une fiche sans passage en cours est « Hors structure » : le bureau saisit les passages des membres actuels à la livraison.
 
 **Règles serveur** : la fin ne précède pas le début (contrainte en base). Deux
 passages identiques (fiche, équipe, fonction) ne se chevauchent pas. Une fiche qui
@@ -117,6 +120,7 @@ réglage retiré de la fonction, compte désactivé, recherche rapide, totaux de
 
 | Élément | Effet |
 | --- | --- |
+| Statut du Répertoire | Colonne `structureStatus` remplacée par le calcul ; 19 fichiers du code la citent |
 | Suppression d’une fiche | Refus si la fiche a un passage ; [règle du Répertoire](../pages/membres/repertoire/README.md) à actualiser |
 | Sauvegarde | Nouvelles tables dans le manifeste, format v11 |
 | Journal d’activité | Nouvelles actions et nouveau filtre |
@@ -132,5 +136,4 @@ import, ni traitement différé, ni gouvernance, ni montant). Hors impact : Q18,
 
 | ID | Question | Recommandation | Bloque |
 | --- | --- | --- | --- |
-| CAD-Q1 | Le statut « Dans la structure » devient-il automatique ? | Oui : une fiche est dans la structure si elle a un passage ouvert. Deux sources pour le même fait finiraient par se contredire | Lot 2 |
 | CAD-Q3 | Quel délai avant la purge des coordonnées, et qui le valide ? | À faire valider par une personne compétente | Confidentialité & conservation |

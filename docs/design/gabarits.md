@@ -102,7 +102,8 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
 
 - **Un onglet est un lieu, un filtre est une requête** : actuels et anciens, recettes
   et dépenses sont des filtres, pas des onglets.
-- **Deux à six onglets.** Une page d’un seul contenu n’a pas d’onglet.
+- **Deux à huit onglets**, les moins utilisés dans « Plus ▾ ». Une page d’un seul
+  contenu n’a pas d’onglet.
 - **Ordre** : ce qu’est l’objet, puis ses liens, puis ses pièces.
 - **Jamais d’onglet vide** : il apparaît une fois livré et pour les comptes qui y
   ont droit, sans mention « à venir ».

@@ -28,8 +28,8 @@ Conséquences :
   pas la portée par équipe.
 - Les profils Joueur, Coach et Secrétariat du tableau ci-dessous ne décrivent plus
   des comptes. Les acceptations de ces personnes sont saisies par le bureau.
-- Les chantiers destinés à des personnes sans compte sont retirés de la
-  [feuille de route](../propositions/feuille-de-route.md#retraits-et-regroupements-du-7-novembre-2026).
+- Les chantiers destinés à des personnes sans compte sont regroupés en réserve
+  ([feuille de route](../propositions/feuille-de-route.md#retraits-et-regroupements-du-7-novembre-2026)).
 
 - La portée d’un manager se déduit de son passage : il voit une équipe tant que sa
   fiche, liée à son compte, y porte un passage ouvert d’une fonction donnant accès ;
@@ -44,7 +44,7 @@ Décision prise sur délégation du propriétaire (« fait ce que tu recommande 
 [revue complète](../audits/2026-10-23-revue-complete.md#suivi--lot-5-mots-de-passe-25-octobre-2026)).
 Le modèle actuel (deux rôles, surcharges JSON dans `User.permissions`) reste
 en place pour les pages livrées ; la cible ci-dessous est **retenue** et se
-construit avec le chantier « Accès & responsabilités métier » (étape 1 de la
+construit avec le chantier « Accès & responsabilités métier » (étape 2 de la
 [feuille de route](../propositions/feuille-de-route.md)), **au plus tard avec le
 premier module dont les droits dépendent d’une équipe ou d’une entité**. Aucune
 table n’est créée avant ce consommateur.
