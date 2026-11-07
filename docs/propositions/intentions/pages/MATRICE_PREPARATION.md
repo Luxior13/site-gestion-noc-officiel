@@ -30,7 +30,7 @@ Les anciennes routes prévues ne sont pas des « squelettes disponibles » : ell
 - Une carte livrée devra être retirée ou recentrée sur son reste à faire, avec une mise à jour de cette matrice.
 - Chaque carte de l’interface précise public, première version, prérequis, critère de livraison et suite éventuelle. Les étapes ne sont pas des échéances.
 
-## Les 30 chantiers
+## Les 31 chantiers
 
 | Identifiant stable | Chantier | Pôle cible | Étape | État | Prérequis |
 | --- | --- | --- | --- | --- | --- |
@@ -52,7 +52,9 @@ Les anciennes routes prévues ne sont pas des « squelettes disponibles » : ell
 | `documents` | Documents & acceptations | Structure | 3 | À cadrer | Identité juridique & périmètres |
 | `contracts` | Contrats & obligations | Structure | 3 | À cadrer | Documents & acceptations ; Identité juridique & périmètres |
 | `partnerships` | Partenariats & opportunités | Relations | 3 | À cadrer | Organisations & contacts ; Contrats & obligations ; Projets & tâches |
-| `incidents` | Incidents & sanctions | Structure | 3 | À cadrer | Équipes & parcours ; Confidentialité & conservation |
+| `competitions` | Tournois | Membres | 3 | À cadrer | Équipes & parcours |
+| `prizes` | Gains de compétition & primes | Finances | 3 | À cadrer | Tournois ; Contrats & obligations ; Opérations & règlements |
+| `incidents` | Suivi, incidents & sanctions | Structure | 3 | À cadrer | Équipes & parcours ; Confidentialité & conservation ; Tournois |
 | `personal-work` | Mon travail & espace personnel | Aujourd’hui | 3 | À compléter | Projets & tâches ; Documents & acceptations |
 | `activity-journal` | Journal d’activité | Système | 3 | À compléter | — |
 | `budget` | Budget & pilotage | Finances | 4 | À cadrer | Opérations & règlements ; Facturation & achats |
@@ -63,9 +65,8 @@ Les anciennes routes prévues ne sont pas des « squelettes disponibles » : ell
 | `recruitment` | Recrutement | Membres | 5 | À cadrer | Équipes & parcours |
 | `logistics` | Ressources & logistique | Structure | 5 | À cadrer | Projets & tâches |
 | `communication` | Communication & contenus | Relations | 5 | À cadrer | Projets & tâches ; Confidentialité & conservation ; Partenariats & opportunités |
-| `prizes` | Gains de compétition & primes | Finances | 5 | À cadrer | Contrats & obligations ; Opérations & règlements |
 
-Retirés ou fusionnés le 7 novembre 2026 : `sport-planning`, `calendar`, `competitions`, `debriefs`, `preparation`, `performance`, `internal-news`, `approvals`, `governance` (dans `meetings`) et `notifications` (dans `automations`). Raisons et déclencheurs : [feuille de route](../../feuille-de-route.md#retraits-et-regroupements-du-7-novembre-2026).
+Retirés ou fusionnés le 7 novembre 2026 : `sport-planning`, `calendar`, `debriefs`, `preparation`, `performance`, `internal-news`, `approvals`, `governance` (dans `meetings`) et `notifications` (dans `automations`). Raisons et déclencheurs : [feuille de route](../../feuille-de-route.md#retraits-et-regroupements-du-7-novembre-2026).
 
 ## Correspondance des anciennes destinations
 
@@ -91,7 +92,7 @@ Les références suivantes préservent le périmètre des anciennes propositions
 | `/sport-team-control/membres-esport` | Membres → Équipes & parcours | 1 |
 | `/sport-team-control/scrims` | Retiré le 7 novembre 2026 | — |
 | `/sport-team-control/calendrier-esport` | Retiré le 7 novembre 2026 | — |
-| `/sport-team-control/tournois-matchs` | Retiré le 7 novembre 2026 | — |
+| `/sport-team-control/tournois-matchs` | Membres → Tournois | 3 |
 | `/sport-team-control/performance` | Retiré le 7 novembre 2026 | — |
 | `/bureau-juridique/decisions-bureau` | Structure → Réunions & décisions | 3 |
 | `/bureau-juridique/documents` | Structure → Documents & acceptations | 3 |
@@ -99,7 +100,7 @@ Les références suivantes préservent le périmètre des anciennes propositions
 | `/bureau-juridique/acceptation-chartes` | Structure → Documents & acceptations | 3 |
 | `/systeme/modeles-documents` | Structure → Documents & acceptations | 3 |
 | `/bureau-juridique/contrats` | Structure → Contrats & obligations | 3 |
-| `/bureau-juridique/incidents-sanctions` | Structure → Incidents & sanctions | 3 |
+| `/bureau-juridique/incidents-sanctions` | Structure → Suivi, incidents & sanctions | 3 |
 | `/systeme/validations` | Finances → Contrôles & clôtures | 2 |
 | `/vie-interne/calendrier-interne` | Retiré le 7 novembre 2026 | — |
 | `/vie-interne/reunions` | Structure → Réunions & décisions | 3 |

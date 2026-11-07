@@ -108,7 +108,8 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
   ont droit, sans mention « à venir ».
 - **Un mot par idée, sur toutes les pages** : « Identité » pour une personne, une
   organisation ou une entité ; « Profil » pour un compte ; « Coordonnées » ;
-  « Effectif » pour une équipe ; « Règlements » pour l’argent lié à l’objet ;
+  « Effectif » pour une équipe ; « Suivi » pour les notes, problèmes et bans ;
+  « Règlements » pour l’argent lié à l’objet ;
   « Documents » pour les pièces, « Justificatifs » pour celles des Finances.
 - **Pas d’onglet Historique** : le bouton de l’en-tête ouvre le journal, filtré.
 - **Créer** : en fenêtre pour quelques champs, sur une page pour un long formulaire.

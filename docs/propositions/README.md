@@ -12,7 +12,7 @@ concernées.
 
 | Document | Rôle | Statut au 19 octobre 2026 |
 | --- | --- | --- |
-| [Feuille de route](feuille-de-route.md) | Priorités de construction : 30 chantiers, 6 pôles cibles, 5 étapes (révision du 7 novembre 2026) ; catalogue exécutable dans `roadmap.constants.ts` | Référence produit courante ; seule source des priorités |
+| [Feuille de route](feuille-de-route.md) | Priorités de construction : 31 chantiers, 6 pôles cibles, 5 étapes (révision du 7 novembre 2026) ; catalogue exécutable dans `roadmap.constants.ts` | Référence produit courante ; seule source des priorités |
 | [Matrice de préparation](intentions/pages/MATRICE_PREPARATION.md) | Pages livrées, chantiers et anciennes destinations | Référence de correspondance courante |
 | [Sujets futurs](sujets-futurs.md) | Fiches transversales à rédiger quand leur module existera (SEO, médias, audience, notifications, compétitions, sanctions…) | Candidats, aucune fiche à créer avant le module |
 

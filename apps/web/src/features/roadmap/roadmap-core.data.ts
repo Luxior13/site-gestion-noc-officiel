@@ -133,6 +133,24 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     title: 'Arrivées et départs',
   },
   {
+    area: 'people',
+    audience: 'Membres du bureau',
+    dependsOn: ['sport-teams'],
+    description:
+      'Garder la trace de chaque tournoi : qui y a participé, ce qu’il a rapporté et ce qui s’y est mal passé.',
+    doneWhen:
+      'Un problème ou un ban reste relié à sa personne et à son tournoi ; un résultat sportif ne déclenche aucun encaissement.',
+    firstRelease:
+      'Liste des tournois, participants, gains, problèmes et bans ; les rencontres et résultats restent sur le site public.',
+    id: 'competitions',
+    kind: 'module',
+    later: 'Inscriptions et échéances, si le bureau veut les suivre ici.',
+    legacyHrefs: ['/sport-team-control/tournois-matchs'],
+    phase: 3,
+    status: 'planned',
+    title: 'Tournois',
+  },
+  {
     area: 'structure',
     audience: 'Membres du bureau',
     dependsOn: ['sport-teams'],
@@ -193,20 +211,20 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
   {
     area: 'structure',
     audience: 'Membres du bureau expressément habilités',
-    dependsOn: ['sport-teams', 'compliance'],
+    dependsOn: ['sport-teams', 'compliance', 'competitions'],
     description:
-      'Traiter les signalements avec confidentialité et traçabilité.',
+      'Garder les notes sur une personne et traiter les signalements avec confidentialité et traçabilité.',
     doneWhen:
-      'Les signalements, sanctions internes et bans externes sont distingués.',
+      'Notes, signalements, sanctions internes et bans externes sont distingués, datés et signés.',
     firstRelease:
-      'Signalement, faits, preuves, instruction, décision, recours et durée.',
+      'Onglet Suivi de la fiche : notes, problèmes et bans, par tournoi ou par jeu. Dossiers d’incident : faits, preuves, instruction, décision, recours et durée.',
     id: 'incidents',
     kind: 'module',
     later: 'Liens restreints vers personnes et équipes.',
     legacyHrefs: ['/bureau-juridique/incidents-sanctions'],
     phase: 3,
     status: 'planned',
-    title: 'Incidents & sanctions',
+    title: 'Suivi, incidents & sanctions',
   },
   {
     area: 'structure',

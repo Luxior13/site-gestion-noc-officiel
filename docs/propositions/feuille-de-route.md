@@ -1,6 +1,6 @@
 # Feuille de route — priorités de construction
 
-Référence produit révisée le 7 novembre 2026. La page `/systeme/feuille-de-route` présente **30 chantiers, 6 pôles cibles et 5 étapes**. Un chantier peut être un module, une extension, une vue partagée ou une intégration ; ce nombre ne représente pas 30 nouvelles pages.
+Référence produit révisée le 7 novembre 2026. La page `/systeme/feuille-de-route` présente **31 chantiers, 6 pôles cibles et 5 étapes**. Un chantier peut être un module, une extension, une vue partagée ou une intégration ; ce nombre ne représente pas 31 nouvelles pages.
 
 Le catalogue exécutable se trouve dans [features/roadmap](../../apps/web/src/features/roadmap/roadmap.constants.ts). Ce document fixe les décisions ; la [matrice](intentions/pages/MATRICE_PREPARATION.md) conserve la correspondance avec les anciens projets de pages. Lors d’une modification de priorité ou de périmètre, mettre ces trois références à jour ensemble.
 
@@ -10,7 +10,7 @@ Décisions du propriétaire du 7 novembre 2026, qui remplacent le plan du 9 octo
 
 - **Le site sert d’abord à la trésorerie et à la traçabilité** de tout ce qui concerne la structure, tant qu’elle existe : savoir qui est passé, à quelle fonction, dans quelle équipe et à quelles dates ([registre historique](../domaines/registre-historique.md)).
 - **Il s’adresse au bureau et aux managers d’équipe.** Un manager ne voit que son équipe, sans les autres pôles. Joueurs, coachs et autres membres sont des fiches, sans compte ([public du site](../domaines/roles-metier.md#public-du-site--décision-du-7-novembre-2026)).
-- **Le site public [noctambule.gg](https://noctambule.gg/) garde ce qui se montre** : jeux, maps, modes, rencontres, résultats, palmarès, calendrier. Ce site-ci garde le passage dans l’équipe, pas le détail du jeu. Rien n’est récupéré de l’un vers l’autre : les utilisateurs saisissent tout à la main, et une information présente sur les deux sites est saisie deux fois, pour le moment.
+- **Le site public [noctambule.gg](https://noctambule.gg/) garde ce qui se montre** : jeux, maps, modes, rencontres, résultats, palmarès, calendrier. Ce site-ci garde le passage dans l’équipe et le dossier de chaque tournoi (gains, problèmes, bans), pas le détail du jeu. Rien n’est récupéré de l’un vers l’autre : les utilisateurs saisissent tout à la main, et une information présente sur les deux sites est saisie deux fois, pour le moment.
 
 ## État réel et lecture du plan
 
@@ -41,7 +41,7 @@ Les comptes et leur sécurité, le répertoire, les paramètres techniques et le
 | Chantier | Décision | Raison ou déclencheur de reprise |
 | --- | --- | --- |
 | Planning & disponibilités, Calendrier commun | Retirés | Joueurs sans compte, calendrier tenu sur le site public ; à rouvrir si le bureau ou les managers en ont un besoin réel |
-| Compétitions & inscriptions | Retiré | Rencontres, résultats et palmarès restent sur le site public |
+| Compétitions & inscriptions | Réduit à **Tournois** | Liste, participants, gains, problèmes et bans ; rencontres, résultats et palmarès restent sur le site public |
 | Débriefs, Préparation & analyse vidéo, Performance & objectifs | Retirés | Outils de coachs et de joueurs, sans compte |
 | Actualité interne & audiences | Retiré | Annonces destinées à des personnes sans compte |
 | À valider | Retiré | Une file globale n’aide pas quelques personnes ; la validation reste dans son module |
@@ -98,7 +98,9 @@ Garder la mémoire des décisions, des documents et des actions.
 - **Documents & acceptations** (Structure) : Bibliothèque, versions, modèles et acceptations saisies par le bureau.
 - **Contrats & obligations** (Structure) : Parties, entité signataire, période, obligations, avenants, échéances et pièces.
 - **Partenariats & opportunités** (Relations) : Opportunités, responsables, engagements, livrables et échéances liés aux contrats.
-- **Incidents & sanctions** (Structure) : Signalement, faits, preuves, instruction, décision, recours et durée.
+- **Tournois** (Membres) : Liste des tournois, participants, gains, problèmes et bans.
+- **Gains de compétition & primes** (Finances) : Montants annoncés, confirmés et reçus ; parts contractuelles et versements. Se lit dans l’onglet Gains de la fiche tournoi.
+- **Suivi, incidents & sanctions** (Structure) : Onglet Suivi de la fiche : notes, problèmes et bans, par tournoi ou par jeu. Dossiers d’incident : faits, preuves, instruction, décision, recours et durée.
 - **Mon travail & espace personnel** (Aujourd’hui, **à compléter**) : Mes tâches, mes réunions à venir, les documents en attente et les échéances proches.
 - **Journal d’activité** (Système, **à compléter**) : Livré le 30 octobre 2026 : vue filtrable, recherche par auteur ou compte, suivi des consultations ; reste l’export autorisé.
 
@@ -119,7 +121,6 @@ Ajouter ce qui répond à un usage réel, sans le construire d’avance.
 - **Recrutement** (Membres) : Poste ou équipe visée, essais, évaluations confidentielles et décision.
 - **Ressources & logistique** (Structure) : Inventaire, prêts, retours, maintenance, déplacements, LAN et bootcamps.
 - **Communication & contenus** (Relations) : Calendrier éditorial, ressources graphiques, audience et validation avant publication.
-- **Gains de compétition & primes** (Finances) : Montants annoncés, confirmés et reçus ; parts contractuelles et versements.
 
 ## Pages et onglets prévus
 
@@ -148,12 +149,17 @@ Quatre chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile :
 |  | Parcours | Passages datés : équipe ou structure, fonction, début, fin ; anciens pseudos. | Étape 1 |
 |  | Adhésions | Adhésions par campagne et état de cotisation. | Étape 2 |
 |  | Documents | Pièces liées à la personne. | Étape 3 |
-|  | Sanctions | Sanctions et bans datés, réservés aux personnes habilitées. | Étape 3 |
+| | Suivi | Notes datées, problèmes et bans, par tournoi ou par jeu, réservés aux personnes habilitées. | Étape 3 |
 | **Équipes** | — | Liste, sans onglet : les équipes par jeu, actives ou archivées. Création en fenêtre. | Étape 1 |
 | **Fiche équipe** | Effectif | Membres actuels et anciens, composition à une date. Seul onglet d’un manager. | Étape 1 |
 |  | Informations | Nom, jeu, archivage. | Étape 1 |
 | **Adhésions** | Adhérents | Adhésions de la campagne choisie et état de cotisation. | Étape 2 |
 |  | Campagnes | Périodes d’adhésion et leurs conditions. | Étape 2 |
+| **Tournois** | — | Liste, sans onglet : les tournois, par jeu et par année. Création en fenêtre. | Étape 3 |
+| **Fiche tournoi** | Informations | Nom, jeu, organisateur, dates. | Étape 3 |
+| | Participants | Équipes et membres engagés. | Étape 3 |
+| | Gains | Montants annoncés, confirmés et reçus, et leur répartition. | Étape 3 |
+| | Suivi | Problèmes et bans liés à ce tournoi, réservés aux personnes habilitées. | Étape 3 |
 | **Recrutement** | — | Onglets définis à son cadrage. | Étape 5 |
 | **Arrivées et départs** | — | Onglets définis à son cadrage. | Étape 5 |
 
@@ -229,7 +235,6 @@ Quatre chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile :
 | **Budget** | — | Liste, sans onglet : les budgets, par version. | Étape 4 |
 | **Fiche budget** | Prévisions | Enveloppes par équipe ou par projet. | Étape 4 |
 |  | Suivi | Réalisé, écarts et trésorerie prévue. | Étape 4 |
-| **Gains & primes** | — | Onglets définis à son cadrage. | Étape 5 |
 
 ### Système
 

@@ -82,9 +82,10 @@ export const ROADMAP_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         summary: 'Pièces liées à la personne.',
       },
       {
-        label: 'Sanctions',
+        label: 'Suivi',
         phase: 3,
-        summary: 'Sanctions et bans datés, réservés aux personnes habilitées.',
+        summary:
+          'Notes datées, problèmes et bans, par tournoi ou par jeu, réservés aux personnes habilitées.',
       },
     ],
   },
@@ -127,6 +128,41 @@ export const ROADMAP_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         label: 'Campagnes',
         phase: 2,
         summary: 'Périodes d’adhésion et leurs conditions.',
+      },
+    ],
+  },
+  {
+    area: 'people',
+    name: 'Tournois',
+    phase: 3,
+    summary:
+      'Liste, sans onglet : les tournois, par jeu et par année. Création en fenêtre.',
+  },
+  {
+    area: 'people',
+    name: 'Fiche tournoi',
+    phase: 3,
+    tabs: [
+      {
+        label: 'Informations',
+        phase: 3,
+        summary: 'Nom, jeu, organisateur, dates.',
+      },
+      {
+        label: 'Participants',
+        phase: 3,
+        summary: 'Équipes et membres engagés.',
+      },
+      {
+        label: 'Gains',
+        phase: 3,
+        summary: 'Montants annoncés, confirmés et reçus, et leur répartition.',
+      },
+      {
+        label: 'Suivi',
+        phase: 3,
+        summary:
+          'Problèmes et bans liés à ce tournoi, réservés aux personnes habilitées.',
       },
     ],
   },
@@ -550,12 +586,6 @@ export const ROADMAP_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         summary: 'Réalisé, écarts et trésorerie prévue.',
       },
     ],
-  },
-  {
-    area: 'finance',
-    name: 'Gains & primes',
-    phase: 5,
-    summary: 'Onglets définis à son cadrage.',
   },
   {
     area: 'system',

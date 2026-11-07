@@ -14,7 +14,7 @@ quelle équipe et à quelles dates.
 
 Le site public [noctambule.gg](https://noctambule.gg/) garde ce qui se montre :
 jeux, maps, modes, rencontres, résultats, palmarès, calendrier. Ce site-ci ne gère
-ni maps, ni modes, ni matchs, ni statistiques, ni notes, ni saisons. Un jeu y est
+ni maps, ni modes, ni matchs, ni statistiques, ni saisons. Un jeu y est
 une simple valeur de liste.
 
 ## Le passage
@@ -34,6 +34,25 @@ Un seul objet central : le **passage**, une relation datée entre une fiche du
 
 Une correction modifie le passage ; elle ne crée pas une nouvelle identité. Toute
 écriture est tracée dans le [journal d’activité](../references/audit-historique.md).
+
+## Tournois et suivi d’une personne
+
+Un **tournoi** est un dossier de la structure : qui y a participé, ce qu’il a
+rapporté, ce qui s’y est mal passé. Rencontres et résultats restent sur le site
+public. Les gains se lisent sur la fiche tournoi ; l’argent reçu vit dans les
+[Finances](../propositions/feuille-de-route.md#2-trésorerie), et un résultat sportif
+ne déclenche aucun encaissement.
+
+Le **suivi** réunit ce que le bureau sait d’une personne : notes, problèmes et bans.
+
+- Chaque entrée est datée, signée et rattachée à une fiche, et si besoin à un tournoi
+  ou à un jeu. Une même entrée se lit sur la fiche personne et sur la fiche tournoi.
+- Un ban est une relation datée (période, motif, auteur, levée), jamais une case
+  « banni » sur la fiche. Lever un ban ne l’efface pas.
+- Le suivi est réservé aux personnes habilitées, par une autorisation dédiée. Un
+  manager n’y a pas accès.
+- Une note libre peut contenir trop de choses : s’en tenir aux faits utiles, sans
+  santé ni vie privée. Sa conservation suit les règles de Confidentialité & conservation.
 
 ## Ce qui dure, ce qui se purge
 

@@ -345,7 +345,7 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
   {
     area: 'finance',
     audience: 'Trésorerie',
-    dependsOn: ['contracts', 'payments'],
+    dependsOn: ['competitions', 'contracts', 'payments'],
     description: 'Suivre les gains confirmés et leur répartition.',
     doneWhen:
       'Un résultat sportif ne déclenche pas automatiquement un encaissement.',
@@ -354,7 +354,7 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     id: 'prizes',
     kind: 'module',
     later: 'Paiements internationaux.',
-    phase: 5,
+    phase: 3,
     status: 'planned',
     title: 'Gains de compétition & primes',
   },

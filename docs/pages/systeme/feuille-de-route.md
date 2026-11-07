@@ -33,8 +33,8 @@ revue répond à un changement, un défaut constaté ou une règle nouvelle.
 ## État courant — 12 octobre 2026
 
 Route `/systeme/feuille-de-route`, catalogue informatif pour les comptes connectés.
-Le catalogue comprend 30 chantiers, six pôles cibles et cinq étapes ; ces nombres
-ne représentent ni 30 pages à créer ni six pôles actifs. La navigation actuelle
+Le catalogue comprend 31 chantiers, six pôles cibles et cinq étapes ; ces nombres
+ne représentent ni 31 pages à créer ni six pôles actifs. La navigation actuelle
 compte trois pôles et six entrées principales.
 
 La [revue du 12 octobre](../../audits/2026-10-12-feuille-de-route.md)
@@ -50,7 +50,7 @@ Sources : [décisions produit](../../propositions/feuille-de-route.md),
 ## Décisions courantes et questions de revue
 
 - 7 novembre 2026 : catalogue révisé sur décision du propriétaire, de 39 à
-  30 chantiers, de huit à six pôles et de six à cinq étapes : registre historique,
+  31 chantiers, de huit à six pôles et de six à cinq étapes : registre historique,
   puis trésorerie ([décisions](../../propositions/feuille-de-route.md#à-quoi-sert-le-site)).
   Les identifiants conservés ne changent pas, même quand le titre change
   (`sport-teams` devient « Équipes & parcours »). La page et sa présentation sont
