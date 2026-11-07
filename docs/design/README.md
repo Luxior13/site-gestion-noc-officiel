@@ -40,9 +40,9 @@ métier. Le détail de chaque référence est dans sa fiche de page.
 
 | Gabarit | Page de référence | Ce qui fait référence | Fiche |
 | --- | --- | --- | --- |
-| Liste de gestion | `/membres/repertoire` (décisions des 9 et 10 octobre 2026) | Bandeau `PageIdentityHero`, `DataTableSection` et `directory.module.css`, recherche et filtres compacts de 38 px, lignes alternées, badges à pastille, `ListPagination`, synthèse en rail de 16 rem dès 118 rem | [Liste du répertoire](../pages/membres/repertoire/liste.md) |
+| Liste de gestion | `/membres/repertoire` (décisions des 9 et 10 octobre 2026) | Bandeau `PageIdentityHero`, `DataTableSection` et `directory.module.css`, recherche et filtres compacts de 38 px, lignes alternées, badges à pastille, filtres rapides à compteurs, `ListPagination` | [Liste du répertoire](../pages/membres/repertoire/liste.md) |
 | Liste de gestion, complément | `/systeme/utilisateurs` (validée le 17 octobre 2026) | Couleurs aux bons endroits, informations claires, densité satisfaisante ; seuils de colonnes ; fond d’avatar par accès | [Liste des utilisateurs](../pages/systeme/utilisateurs/liste.md) |
-| Fiche à sections et barre d’enregistrement | `/systeme/utilisateurs/[id]` | Bandeau compact porteur des états du compte, `PageSectionNavigation`, `SectionActionBar` de référence pour toutes les pages qui enregistrent | [Utilisateurs](../pages/systeme/utilisateurs/README.md) |
+| Fiche à sections et barre d’enregistrement | `/systeme/utilisateurs/[id]` | `EntityHeader` (bandeau compact porteur des états du compte, onglets en pied), `SectionActionBar` de référence pour toutes les pages qui enregistrent | [Utilisateurs](../pages/systeme/utilisateurs/README.md) |
 | Réglages en lignes compactes | Section Autorisations de `/systeme/utilisateurs/[id]` (17 et 18 octobre 2026) | Une carte par réglage, rubriques en petites capitales, aide en popover, conséquences critiques visibles | [Utilisateur — Autorisations](../pages/systeme/utilisateurs/fiche-autorisations.md) |
 | Champs de formulaire | Rendu adouci de l’onglet Informations du site Noctambule (17 octobre 2026) | Police système, rayon 8 px, 40/44 px, contour `#435978`, survol `#5b7699`, focus `#698cdd` avec anneau de 2 px à 13 % | [Fondations](fondations.md#espacements-et-arrondis) |
 
@@ -74,8 +74,8 @@ bandeau de colonnes, l’alternance des lignes et les badges :
 - Icônes génériques et badges descriptifs : neutres. Les couleurs restent utiles
   pour les statuts, les pôles, les accès, les actions principales, l’épinglage
   et le non-lu.
-- Autocomplétion **désactivée partout, sans exception** : voir
-  [Comportements](comportements.md#autocomplétion).
+- Autocomplétion **désactivée partout, sauf sur les champs d’authentification**
+  (décision du 25 octobre 2026) : voir [Comportements](comportements.md#autocomplétion).
 
 ## Ordre de priorité
 
@@ -128,6 +128,9 @@ valide un rendu :
 3. Ajouter les pages concernées mais non encore alignées dans
    [Harmonisation](harmonisation.md), pour que les prochaines reprises les
    corrigent.
+4. Si la règle en remplace une autre, chercher l’ancienne formulation dans toute
+   la documentation courante et la corriger partout
+   ([règle du 7 novembre 2026](../methode/organisation-documentaire.md#conserver-les-décisions-sans-les-transformer)).
 
 Une préférence exprimée sur une page s’applique par défaut aux pages du même
 gabarit. Si sa portée est ambiguë, l’indiquer comme « à confirmer » dans le

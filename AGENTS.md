@@ -37,6 +37,10 @@
   applicable » ; justifier brièvement.
 - Adapter la profondeur de contrôle au risque ; une retouche de texte ne demande
   pas le même travail qu’une migration ou un changement de permissions.
+- L’exigence de niveau vaut pour ce qu’on construit ou qu’on touche : une page
+  close ne se rouvre que sur un changement, un défaut signalé ou une règle
+  nouvelle ([méthode d’audit](docs/methode/audit.md#conclure-et-maintenir),
+  décision du propriétaire du 7 novembre 2026).
 - **Toute action qui crée, modifie ou supprime une donnée, ou touche à
   l’authentification, doit être lisible dans le journal d’activité dès sa
   livraison** (décision du propriétaire du 31 octobre 2026) : trace dans la même
@@ -58,6 +62,9 @@
   de décision, règle ou connaissance durable évoqué en conversation dans le
   document concerné, sans attendre d’autorisation ; distinguer fait observé,
   décision retenue et proposition à discuter.
+- Quand une décision en remplace une autre, chercher l’ancienne formulation dans
+  toute la documentation courante et la corriger partout dans le même travail
+  ([règle du 7 novembre 2026](docs/methode/organisation-documentaire.md#conserver-les-décisions-sans-les-transformer)).
 - Chaque page existante a une fiche dans `docs/pages/`, et chaque section
   importante d’une page à sections a la sienne ; un module a un dossier avec un
   `README.md` commun. Une nouvelle page reçoit sa fiche en même temps que sa

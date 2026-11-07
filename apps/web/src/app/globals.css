@@ -33,9 +33,6 @@
   --color-warning-foreground: var(--warning-foreground);
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
-  --color-access-privileged: var(--access-privileged);
-  --color-access-admin: var(--access-admin);
-  --color-access-member: var(--access-member);
   --color-overlay: var(--overlay);
   --color-surface: var(--surface);
   --color-surface-canvas: var(--surface-canvas);
@@ -224,9 +221,6 @@
   --warning-foreground: #451a03;
   --info: #bae6fd;
   --info-foreground: #082f49;
-  --access-privileged: #c2b8e7;
-  --access-admin: #acc6e8;
-  --access-member: #a3c9d8;
   --border: color-mix(in srgb, var(--border-steel) 34%, var(--surface-panel));
   --border-control: #6f86a5;
   /* Softer form borders match the approved Noctambule information tab. */

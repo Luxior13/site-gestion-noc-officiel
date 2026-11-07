@@ -23,6 +23,12 @@ complète d’une page plutôt qu’un empilement de retouches. Une refonte repa
 donc des tâches de l’utilisateur, comme si la page était à concevoir ;
 l’organisation existante est réexaminée, pas reconduite automatiquement.
 
+Cette exigence vaut pour ce qu’on construit ou qu’on touche. Une page close ne
+se rouvre que sur un changement, un défaut signalé ou une règle nouvelle
+([méthode d’audit](../methode/audit.md#conclure-et-maintenir), décision du
+7 novembre 2026) : repolir l’existant sans déclencheur retarderait les modules
+dont la structure a besoin.
+
 1. Définir ce qui doit être compris, retrouvé ou effectué en premier.
 2. Choisir ensuite la composition, l’ordre, la densité et les interactions.
 3. Comparer ordinateur, largeur intermédiaire et mobile, puis les états vides,
@@ -57,8 +63,8 @@ pratique.
    réglage ou une tuile interne est autorisé ; une carte dans une carte dans une
    section ne l’est pas.
 2. **La couleur sert une fonction.** L’accent marque l’interaction, les badges
-   portent le sens, les couleurs de pôle et d’accès identifient un espace ou un
-   niveau de droit.
+   portent le sens, les couleurs de pôle identifient un espace et le fond d’un
+   avatar un niveau de droit.
 3. **Les effets sont rares.** Bordures et fonds suffisent ; les ombres restent
    très douces et ne s’affirment que pour les éléments flottants (menus,
    popovers, infobulles, barre collante).
@@ -105,9 +111,8 @@ Deux éléments de même rôle reçoivent la même variante, sur toutes les page
   textuels.
 - Les états ont leur ton : succès, information, attention, danger
   ([tokens](fondations.md#palette)). Un ton d’état ne décore jamais.
-- Les tons d’accès (`access-privileged`, `access-admin`, `access-member`) et les
-  couleurs de pôle (`nav-*`) identifient un niveau de droit ou un espace ; ils
-  ne peignent jamais une ligne entière ou une page.
+- Les couleurs de pôle (`nav-*`) identifient un espace et le fond d’un avatar un
+  niveau de droit ; elles ne peignent jamais une ligne entière ou une page.
 - Une surface n’a qu’un accent dominant.
 - Un statut n’est jamais porté par la couleur seule : badge, point, icône ou
   texte l’accompagnent.
@@ -131,5 +136,6 @@ Deux éléments de même rôle reçoivent la même variante, sur toutes les page
 13. Couleur hexadécimale écrite dans un composant au lieu d’un token.
 14. Bandeau, barre de sections ou barre d’enregistrement recopiés localement.
 15. Contrôle HTML natif hors de `components/ui` (vérifié par `shadcn-boundaries.test.ts`).
-16. Autocomplétion de navigateur ou de gestionnaire de mots de passe réactivée.
+16. Autocomplétion de navigateur ou de gestionnaire de mots de passe réactivée
+    hors des champs d’authentification ([règle](comportements.md#autocomplétion)).
 17. `alert()`, `confirm()` ou `prompt()` natifs.

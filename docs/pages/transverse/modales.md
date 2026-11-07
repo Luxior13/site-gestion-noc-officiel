@@ -105,6 +105,9 @@ réactivé ou déclaré validé par cette passe.
 
 ## Autocomplétion — correction du 11 octobre 2026
 
+> **Remplacée le 25 octobre 2026** pour les champs d’authentification
+> ([règle courante](../../design/comportements.md#autocomplétion)).
+
 Tous les champs des modales, y compris mots de passe et MFA, appliquent la règle sans autocomplétion. Lors d’une modification, vérifier aussi formulaires, Textarea et champs invisibles ; aucun opt-in local.
 
 [Règle propriétaire](../../design/README.md) ·

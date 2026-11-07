@@ -27,8 +27,9 @@ deuxième onglet comme sur la fiche utilisateur. Une carte « Droits
 d’administration » (le titre ne répète pas l’onglet) : une phrase de synthèse selon le compte, puis, pour un
 Utilisateur délégué, ses autorisations regroupées par catégorie (mêmes
 catégories et libellés que l’onglet Autorisations de la fiche utilisateur),
-chacune précédée d’une coche. Pied « Pour obtenir un accès supplémentaire,
-adressez-vous à un administrateur. », absent pour le superadmin.
+chacune précédée d’une coche. Pied « Pour obtenir une autorisation supplémentaire,
+adressez-vous à un administrateur. », absent pour le superadmin et les
+Administrateurs.
 
 | Compte | Synthèse |
 | --- | --- |

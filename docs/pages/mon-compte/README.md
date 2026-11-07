@@ -2,7 +2,7 @@
 
 [Index des pages](../../pages/README.md) · [Design](../../design/README.md) · [Guide général](../../REFERENCE_GENERALE.md)
 
-Espace personnel de chaque compte : profil, accès et sécurité de connexion. Même
+Espace personnel de chaque compte : profil, autorisations et sécurité de connexion. Même
 gabarit que la fiche utilisateur, sans les actions d’administration.
 
 ## Pages et sections
@@ -23,9 +23,9 @@ et Autorisations (« droits »), sous la même règle d’affichage
 - **Accès** : session authentifiée ; capacités personnelles du socle
   (profil, contact, mot de passe, double authentification, sessions) décrites
   dans [Socle et autonomie personnelle](../../domaines/permissions.md#socle-et-autonomie-personnelle).
-- **Cadre** : [AccountPageContent](../../../apps/web/src/features/account/AccountPageContent.tsx) compose le
-  bandeau compact porteur des états du compte (`UserIdentityStatus`) et
-  `PageSectionNavigation` ;
+- **Cadre** : [AccountPageContent](../../../apps/web/src/features/account/AccountPageContent.tsx) compose
+  `EntityHeader` : bandeau compact porteur des états du compte
+  (`UserIdentityStatus`) et onglets en pied ;
   les sections sont chargées à la première visite.
 
 ## Revues communes
@@ -124,7 +124,8 @@ La protection contre les véritables conflits de profil reste inchangée.
   (avatar DiceBear, identifiant et dates, états en pastilles, rôle à droite)
   et navigation de sections. La carte « Vue d’ensemble » est retirée depuis
   le 20 octobre 2026, avec celle de la fiche utilisateur.
-- Onglets conservés : « Profil » et « Sécurité », chargés à la première visite.
+- Trois onglets, comme la fiche utilisateur : « Profil », « Autorisations » et
+  « Sécurité » (27 octobre 2026), chargés à la première visite.
   Les anciens paramètres `activity` et `history` affichent Profil. Le branchement
   dormant de l’activité dans cette page a été retiré le 11 octobre ; les composants
   d’historique des autres consommateurs et les traces persistées sont conservés.
@@ -256,6 +257,9 @@ réponse, affiche son échec et permet de réessayer. Contrôles sur API simulé
 Cette passe ne clôt pas les contrôles d’intégration encore ouverts de la page.
 
 ## Autocomplétion — correction du 11 octobre 2026
+
+> **Remplacée le 25 octobre 2026** pour les champs d’authentification
+> ([règle courante](../../design/comportements.md#autocomplétion)).
 
 Profil, changement de mot de passe, adresse de contact et MFA suivent la règle commune sans exception. Les champs invisibles d’association au compte ont été retirés.
 

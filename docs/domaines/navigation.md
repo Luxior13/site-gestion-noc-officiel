@@ -55,8 +55,8 @@ Chaque page porte son propre titre d’onglet, « Page · Noctambule » (WCAG 2.
 depuis le 31 octobre 2026) : « Connexion », « Mon compte », « Répertoire »,
 « Nouvelle fiche · Répertoire », « Fiche · Répertoire », « Utilisateurs »,
 « Nouvel utilisateur · Utilisateurs », « Fiche utilisateur · Utilisateurs »,
-« Journal d’activité », « Paramètres système », « Feuille de route ». L’accueil
-et la page introuvable gardent le nom global, avec le repère Dev en développement.
+« Journal d’activité », « Paramètres système », « Feuille de route », « Mon travail »
+pour l’accueil et « Page introuvable », avec le repère Dev en développement.
 
 L’identité Noctambule occupe une zone fixe de 56 px, alignée sur le header
 et séparée des rubriques par la même bordure fine. Logo de 36 px centré dans

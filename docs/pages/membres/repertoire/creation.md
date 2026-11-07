@@ -22,11 +22,12 @@ sans doublon involontaire, avec un retour vers la liste ou la fiche.
 
 ## Composition actuelle
 
-Bandeau compact ; carte sans en-tête avec quatre champs partagés avec la fiche
+Bandeau compact ; titre `h2` réservé aux lecteurs d’écran ; cartes de rubrique
+(`RubricCard`) « Pseudo et nom » et « Statut », aux champs partagés avec la fiche
 (`PersonIdentityFields`), la règle « un pseudo, ou le prénom et le nom » écrite
-une seule fois sous le pseudo ; `SectionActionBar` avec soumission native,
-sans message sauf résultat à vérifier ; alerte de doublon ; reprise manuelle
-après réponse perdue.
+une seule fois sous le pseudo ; `SectionActionBar` en ligne sous les cartes, avec
+soumission native, sans message sauf résultat à vérifier ; alerte de doublon ;
+reprise manuelle après réponse perdue.
 
 ## Décisions retenues
 
@@ -49,6 +50,8 @@ garantie d’idempotence (limite documentée).
 - 11 et 12 octobre 2026 : contrôle, décisions et audit de la création.
 - 19 octobre 2026 : fiche propre à la création, créée par découpage du suivi du module.
 - 23 octobre 2026 : reprise, voir ci-dessous.
+- 31 octobre 2026 : cartes de rubrique et barre sous les cartes
+  ([gabarit C](../../../design/gabarits.md#c-formulaire-de-création)).
 
 ## Reprise — 23 octobre 2026
 

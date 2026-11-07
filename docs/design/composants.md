@@ -25,7 +25,7 @@ commune ; le formulaire conserve la validation, les autorisations et les requêt
 | --- | --- | --- |
 | Largeur, marges, conteneur de page | [PageShell et PageCanvas](../../apps/web/src/components/ui/page-shell.tsx) | Choisir la largeur selon la tâche ; garder le contenu réductible. Ne pas recréer un centrage propre à chaque page. |
 | Identité et titre de page | [PageIdentityHero](../../apps/web/src/components/layout/PageIdentityHero.tsx) | En-tête canonique, variante `compact` pour une fiche ou un formulaire. Texte intégral et actions longues peuvent revenir à la ligne. |
-| Contenu avec synthèse secondaire | Aucun composant depuis le 20 octobre 2026 : `PageAsideLayout` est retiré | Rail à partir de 118rem ; sinon synthèse entre le bandeau et le contenu. Vérifier l’utilité et la densité de cette synthèse avant de l’ajouter. Une liste de gestion n’en a pas : ses compteurs sont des filtres rapides (20 octobre 2026). |
+| Contenu avec synthèse secondaire | Aucun composant depuis le 20 octobre 2026 : `PageAsideLayout` est retiré | Ni rail ni carte de synthèse : une liste porte ses compteurs dans les filtres rapides, une fiche ses états dans le bandeau (20 octobre 2026). Justifier un besoin nouveau avant d’ajouter une synthèse. |
 | Fiche avec sections dans l’URL | [EntityDetailLayout](../../apps/web/src/components/layout/EntityDetailLayout.tsx) | Compose identité, navigation et contenu. Les sections, destinations et règles métier appartiennent à la fiche. |
 | Section d’une fiche | Titre `h2` réservé aux lecteurs d’écran, puis une [RubricCard](../../apps/web/src/components/layout/RubricCard.tsx) par rubrique (bandeau `surface-panel-header`, `RubricTitle` avec tuile d’icône teintée `primary`, `aside` pour un état comme « Lecture seule » ou « À jour » ; sous le bandeau, fait et aide à gauche, action à droite) | `SectionPanel` et `AccountPanel` sont retirés depuis le 20 octobre 2026 : une section ne répète pas son lien par un titre visible. Depuis le 27 octobre 2026, chaque rubrique a sa carte titrée, qu’elle porte des actions (Sécurité) ou seulement des champs (Profil) ; les rubriques sont nommées d’après leurs champs, jamais d’après l’onglet (Identité d’une personne : « Pseudo et nom », « Naissance et statut »). Un seul en-tête de carte titrée (`RUBRIC_HEADER_CLASS`, environ 60 px), y compris pour « Droits d’administration » et « Sessions actives » (31 octobre 2026). `FormSectionTitle` (petites capitales) ne sert plus qu’au récapitulatif après la création d’un compte : les formulaires de création prennent les cartes de rubrique de la fiche qu’ils ouvrent (31 octobre 2026). |
 | Surface ou carte sémantique | [Card et ses sous-composants](../../apps/web/src/components/ui/card.tsx) | `as` pour article/section, `asChild` pour une carte-lien. Les séparateurs appartiennent à CardHeader/CardFooter, sans doublon adjacent. |
@@ -371,7 +371,7 @@ et de comportement, reliée aux sources et au suivi transverse. Cet inventaire
 résume leur organisation.
 
 `components/ui` : bouton, badge, carte, champ, étiquette, case à cocher,
-sélecteur, interrupteur, onglets, table, pagination, boîte de dialogue, popover,
+sélecteur, interrupteur, table, pagination, boîte de dialogue, popover,
 tooltip, séparateur, squelette, sidebar, avatar, commande, alerte et état vide.
 
 Les primitives shadcn sont du code source local, adapté aux jetons du site.
@@ -394,9 +394,8 @@ La navigation entre sections utilise `PageSectionNavigation`. Une action de
 navigation présentée comme un bouton utilise `Button asChild` avec un lien.
 Ces liens ne sont pas transformés en onglets ARIA : chaque section possède une URL.
 
-`components/layout` : en-tête, héro, état de contenu, état de page, panneau de
-section, retour contextuel, mise en page de fiche, zone de danger, recherche
-globale.
+`components/layout` : en-tête, héro, en-tête de fiche, carte de rubrique, état de
+contenu, état de page, mise en page de fiche, zone de danger, recherche globale.
 
 `components/users` : fiche utilisateur et éditeur d'autorisations ;
 `features/users` : liste des comptes et ses composants métier.

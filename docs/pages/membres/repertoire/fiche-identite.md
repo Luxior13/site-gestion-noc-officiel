@@ -18,15 +18,14 @@
 ## Rôle et tâches principales
 
 Consulter et corriger l’identité d’une personne : pseudo principal, prénom, nom,
-date de naissance civile facultative et statut dans la structure, avec leur
-provenance et leur dernière modification.
+date de naissance civile facultative et statut dans la structure.
 
 ## Composition actuelle
 
 Titre « Identité » réservé aux lecteurs d’écran, puis deux cartes titrées
 (`RubricCard`) : « Pseudo et nom » (pseudo, prénom, nom sur une ligne en grand
 écran) et « Naissance et statut » ; champs partagés `PersonIdentityFields`
-(option `part`), sans icône d’historique de champ (retirée le 27 octobre 2026), historique d’un champ, `SectionActionBar` avec
+(option `part`), sans icône d’historique de champ (retirée le 27 octobre 2026), `SectionActionBar` avec
 soumission native et reprise de conflit ; puis « Zone dangereuse »
 (`PersonDangerZone` sur `EntityDangerZone`). Les dates de la fiche sont dans
 le bandeau, pas en pied de carte.

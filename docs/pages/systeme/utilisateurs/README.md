@@ -28,8 +28,8 @@ L’alias `/administration` redirige vers la liste ; les anciennes adresses
 - **Liste** : filtres rapides d’état et de rôle, sans carte de synthèse depuis
   le 20 octobre 2026 ([fiche de la liste](liste.md)).
 - **Cadre de la fiche** : [UserDetailPage](../../../../apps/web/src/components/users/UserDetailPage.tsx) compose
-  `PageIdentityHero` compact porteur des états du compte
-  (`UserIdentityStatus`), `PageSectionNavigation` et des sections chargées à
+  `EntityHeader` (`PageIdentityHero` compact porteur des états du compte,
+  `UserIdentityStatus`, et onglets en pied) et des sections chargées à
   la demande. Plus de carte de synthèse depuis le 20 octobre 2026. Sa `SectionActionBar` est la référence de tout le site.
 - **Section retirée** : l’activité du compte est retirée depuis le 10 octobre 2026 ;
   `?section=history` affiche Profil. Son code dormant (`UserHistoryTab`,
@@ -447,6 +447,9 @@ preuves navigateur de cette passe utilisent des comptes et API fictifs.
 Cette passe ne clôt pas les contrôles d’intégration encore ouverts de la page.
 
 ## Autocomplétion — correction du 11 octobre 2026
+
+> **Remplacée le 25 octobre 2026** pour les champs d’authentification
+> ([règle courante](../../../design/comportements.md#autocomplétion)).
 
 Création, fiche et confirmations administrateur suivent la règle sans autocomplétion, y compris mot de passe et MFA. Les champs invisibles username des confirmations ont été retirés ; les clés de remontage par acteur et cible sont conservées.
 

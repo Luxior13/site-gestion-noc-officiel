@@ -22,8 +22,10 @@ double action ou réponse perdue, et un secret remis sans être conservé.
 
 ## Composition actuelle
 
-Bandeau compact ; carte sans en-tête, groupes Identité, Connexion et Accès ;
-choix du rôle en cartes radio, aide grise sur le mot de passe temporaire ; `SectionActionBar` avec soumission native ; confirmation avec
+Bandeau compact ; titre `h2` réservé aux lecteurs d’écran ; cartes de rubrique
+(`RubricCard`) « Identité », « Connexion et contact » et « Rôle » ; choix du rôle
+en cartes radio, aide grise sur le mot de passe temporaire ; `SectionActionBar`
+en ligne sous les cartes, avec soumission native ; confirmation avec
 copie du mot de passe provisoire et repère de conservation ; reprise après
 réponse perdue par recherche exacte du compte.
 
@@ -52,6 +54,8 @@ Aucun point ouvert : USR-N01 à USR-N14 sont clos au périmètre vérifié.
 - 10 au 12 octobre 2026 : audit, corrections et reprise de l’autorisation à l’exécution.
 - 19 octobre 2026 : fiche propre à la création, créée par découpage du suivi du module.
 - 23 octobre 2026 : reprise, voir ci-dessous.
+- 31 octobre 2026 : cartes de rubrique et barre sous les cartes
+  ([gabarit C](../../../design/gabarits.md#c-formulaire-de-création)).
 
 ## Reprise — 23 octobre 2026
 
@@ -100,7 +104,8 @@ preuves ; la synthèse ci-dessus porte l’état courant.
   temporaire puis synthèse des accès, sans cartes imbriquées.
 - Aligné sur le répertoire : champs en style `Input` partagé, dernier fil
   d'Ariane sans lien vers lui-même, focus placé sur le premier champ invalide
-  après validation. Autocomplétion désactivée (règle globale du 2026-10-10) :
+  après validation. Autocomplétion désactivée (règle globale du 2026-10-10,
+  remplacée le 25 octobre 2026 pour les [champs d’authentification](../../../design/comportements.md#autocomplétion)) :
   `autoComplete="off"` sur le formulaire, champs sans `name` ni `autoComplete`
   explicite, et champ email en `type="text"` avec `inputMode="email"`.
 - Vérifié : TypeScript et lint au vert. Le parcours réel (création, mot de

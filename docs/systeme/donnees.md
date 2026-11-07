@@ -25,7 +25,7 @@ Colonnes : nombre de champs (relations comprises), nombre d’`@@index` et
 
 | Modèle | Champs | Index | Relations | Rôle |
 | --- | ---: | ---: | --- | --- |
-| `User` | 30 | 9 | sessions, audit, MFA, réservations d’identifiant, paramètres, annonces | Compte de connexion, rôle `UserRole`, compte racine protégé ; recherche par deux index trigrammes d’expression sur `search_text`, absents du schéma |
+| `User` | 30 | 9 | sessions, audit, MFA, réservations d’identifiant, paramètres | Compte de connexion, rôle `UserRole`, compte racine protégé ; recherche par deux index trigrammes d’expression sur `search_text`, absents du schéma |
 | `LoginNameReservation` | 4 | 1 | `User` | Identifiants réservés (pas de réutilisation après suppression) |
 | `Session` | 17 | 4 | `User` | Sessions avec expiration absolue et d’inactivité, preuves récentes |
 | `TotpCredential` | 10 | 1 | `User` | Secret TOTP chiffré du compte |

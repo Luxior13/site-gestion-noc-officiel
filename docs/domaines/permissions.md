@@ -301,9 +301,9 @@ champ. Les listes n'exposent ni cette date ni les valeurs de contact.
 Le formulaire de création actuel ne renseigne que l'identité et le statut.
 Une création par API contenant des coordonnées exige aussi
 `persons:update_contact`. La suppression complète reste distincte des droits
-d'édition et exige confirmation explicite et version courante, sans nouvelle
-preuve à l'usage. Son attribution reste soumise aux protections des droits
-critiques.
+d'édition et exige confirmation explicite, version courante et mot de passe
+récent (30 minutes au plus, décision du 25 octobre 2026). Son attribution reste
+soumise aux protections des droits critiques.
 
 La migration `20261015190000_current_site_permissions` reprend la lecture des
 coordonnées depuis l'ancien droit effectif de consultation, et leur écriture
@@ -373,10 +373,9 @@ pas en droits délégables individuellement.
 | `/systeme/journal-activite`                          | `audit:view` (critique, délégable ; ADMIN par la règle du rôle) ; tous les événements visibles, seuls valeurs et liens suivent les autres droits (31 octobre 2026) : IP réservée au superadmin, valeurs des fiches selon `persons:view` / `persons:view_contact`, email de compte selon `users:view_contact`, lien vers un compte selon `users:view` ; lecture tracée (`AUDIT_VIEW`) |
 | pages d'erreur et page introuvable                   | support technique, sans capacité métier accordée                                                                                                           |
 
-Les routes génériques présentes pour les pôles Vie interne, Bureau & juridique,
-Trésorerie, Système futur et Sport restent des pages planifiées. Leur existence
-dans le routeur ou dans la feuille de route ne les rend ni actives ni
-attribuables. La liste exhaustive et leur statut produit sont maintenus dans
+Les modules futurs n'ont ni route ni droit actif : une adresse inconnue aboutit à
+la page introuvable, et leur présence dans la feuille de route ne les rend ni
+actifs ni attribuables. La liste exhaustive et leur statut produit sont maintenus dans
 `docs/propositions/intentions/pages/MATRICE_PREPARATION.md`.
 
 ## Calcul des droits et dépendances
@@ -487,8 +486,8 @@ La future capacité de sauvegarde utilise déjà le nom réservé `backups:view`
 
 Une capacité passe par les étapes suivantes dans un même flux de livraison :
 
-1. **Planned** : route générique éventuelle, fiche fonctionnelle et identifiant
-   dans `ROADMAP_PERMISSIONS`. Aucun effet d'autorisation.
+1. **Planned** : fiche fonctionnelle et identifiant dans `ROADMAP_PERMISSIONS`.
+   Aucune route, aucun effet d'autorisation.
 2. **Politique conçue** : ressource, action, portée, propriétaire des données,
    dépendances, risque, preset de rôle, MFA, step-up et audit sont décidés.
 3. **Implémentation complète** : service métier, garde serveur, UI, états

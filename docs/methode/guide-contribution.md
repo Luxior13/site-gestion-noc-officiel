@@ -55,7 +55,7 @@ Détails et limites : [tests et contrôles](../systeme/tests.md).
 - Alias : `$ui`, `$components`, `$features`, `$server`, `$constants`,
   `$utils`, `$hooks`, `$context`, `$types`, `$env`.
 - Aucune couleur codée, aucun contrôle HTML natif hors `components/ui`,
-  aucune autocomplétion réactivée ([design](../design/README.md)).
+  aucune autocomplétion hors des champs d’authentification ([design](../design/README.md)).
 - Textes de l’interface et de la documentation en français, avec les accents ;
   routes en français.
 

@@ -106,7 +106,7 @@ Ses mots-clés (`keywords`) alimentent la recherche rapide de l’en-tête.
 | --- | --- | --- | --- | --- |
 | `dashboard` | Mon travail | Aujourd’hui | `/` | `live` |
 | `persons` | Répertoire | Membres | `/membres/repertoire` | `live` |
-| `internalNews` | Actualité interne | Activité | `/activite/actualites` | `planned` ; seule la table et ses permissions de feuille de route existent ([SYS-01](constats.md)) |
+| `internalNews` | Actualité interne | Activité | `/activite/actualites` | `planned` ; seules ses permissions de feuille de route existent, sa table est retirée le 25 octobre 2026 ([SYS-10](constats.md)) |
 | `users` | Utilisateurs | Système | `/systeme/utilisateurs` | `live` |
 | `systemSettings` | Paramètres système | Système | `/systeme/parametres` | `live` |
 | `roadmap` | Feuille de route | Système | `/systeme/feuille-de-route` | `live` |

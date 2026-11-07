@@ -43,7 +43,7 @@ fonctionnelle, une ligne ici et une mention dans la fiche de la page, avant le c
 | Hauteur de contrôle | Champ de formulaire 40 px, 44 px sous 640 px | 38 px pour la recherche et les filtres compacts d’une liste ; 30 px pour un filtre rapide d’une liste, 44 px sous 640 px ; 48 px minimum pour un lien de barre de sections ; recherche du header 40 px (44 px sur mobile) ; flèches de pagination 30 px sur grand écran, 44 px sous 640 px |
 | Rayon | 8 px (`rounded-control`) pour un champ, un panneau de sélecteur ou une carte de réglage ; 10 px (`rounded-lg`, ou `rounded-panel` fixe) pour un bouton, une carte, une section, un bandeau, une liste ou une fenêtre | 5 px (`rounded-badge`) pour un badge de statut et un bouton de page de la pagination ; 6 px (`rounded-compact`) pour un contrôle compact de liste et les angles supérieurs d’un lien de section ; 7 px (`rounded-tile`) pour un avatar, une infobulle, un menu ou un panneau de sélecteur compact ; 4 px (`rounded-option`) pour une option de menu ou une case à cocher ; 8 px pour `rounded-lg` dans la portée indigo ; pastille circulaire ; flèche d’infobulle 2 px |
 | Badge | Badge de statut à point coloré `StatusBadge` (`$ui/status-badge`) : bordure et fond teintés, rayon 5 px, texte 11 px (`text-xs`), graisse 500 ; tons `success`, `info`, `warning`, `danger` et `muted` pour une catégorie neutre. `PersonStatusBadge`, `UserStatusBadge` et `UserAccessBadge` le composent ; primitive `Badge` sinon | Badge neutre pour une métadonnée descriptive ; aucun badge qui répète l’état déjà exprimé par une commande |
-| Tons d’état | `success`, `info`, `warning`, `destructive` | Tons d’accès `access-privileged`, `access-admin`, `access-member` pour un niveau de droit ; couleurs `nav-*` pour les pôles |
+| Tons d’état | `success`, `info`, `warning`, `destructive` | Tons d’état en fond d’avatar pour un niveau de droit ; couleurs `nav-*` pour les pôles |
 | Taille de texte | Échelle de [Typographie](#typographie) | Champs à 16 px sous 1024 px puis 13 px ; titre de bandeau 23 px (18 px compact) ; rien sous 10 px |
 | Graisse | 400 pour le texte, 600 pour labels, titres et actions | 500 pour les badges ; 650 pour le titre du bandeau |
 | Bandeau de page | `PageIdentityHero` | Variante `compact` pour une fiche, un formulaire ou une création |
@@ -97,11 +97,10 @@ Valeurs de `:root` (portée par défaut).
 | Information | `--info` `#bae6fd` | `--info-foreground` `#082f49` |
 | Danger | `--destructive` `#fca5a5` | `--destructive-fill` `#b91c1c`, texte `--destructive-foreground` `#fff1f2` |
 
-### Accès et pôles
+### Pôles et avatars
 
 | Rôle | Tokens et valeurs |
 | --- | --- |
-| Accès (badges, fond d’avatar) | `--access-privileged` `#c2b8e7`, `--access-admin` `#acc6e8`, `--access-member` `#a3c9d8` |
 | Pôle Aujourd’hui | `--nav-dashboard` `#2dd4bf` (icône `#5eead4`) |
 | Pôle Membres | `--nav-internal` `#38bdf8` (icône `#7dd3fc`) |
 | Pôle Activité | `--nav-activity` `#a78bfa` (icône `#c4b5fd`) |
@@ -109,6 +108,10 @@ Valeurs de `:root` (portée par défaut).
 | Pôle Esport (thème `sport`) | `--nav-sport` `#f472b6` (icône `#f9a8d4`) |
 | Pôle Système | `--nav-system` `#94a3b8` (icône `#cbd5e1`) |
 | Pôle Finances (thème `treasury`) | `--nav-treasury` `#4ade80` (icône `#86efac`) |
+
+Le fond d’un avatar de compte porte le niveau de droit avec les tons d’état :
+`destructive` pour le superadmin, `warning` pour un Administrateur, `info` pour
+un Utilisateur (`UserAvatar`, décision du 10 octobre 2026).
 
 ### Portée indigo
 
@@ -245,10 +248,10 @@ sélecteurs reprennent explicitement cette police dans leur portail, en
 utilitaires Tailwind : le `className` d'un appelant garde donc la priorité.
 Les formulaires de fiche réutilisent ces primitives sans remettre des labels
 réduits et atténués ou une police monospace sur une saisie ordinaire, comme un
-identifiant de connexion. Dans une fiche, les groupes de champs (Identité,
-Connexion et contact) sont des cartes titrées (`RubricCard`) ; dans un
-formulaire de création, ils restent des repères en petites capitales
-atténuées, distincts des labels. La recherche de liste conserve Geist (`font-sans` dans
+identifiant de connexion. Dans une fiche comme dans un formulaire de création,
+les groupes de champs (Identité, Connexion et contact) sont des cartes titrées
+(`RubricCard`) ; la création reprend celles de la fiche qu’elle ouvre
+(31 octobre 2026). La recherche de liste conserve Geist (`font-sans` dans
 `ListSearchField`) et sa taille spécifique ci-dessus, comme les notifications.
 Vérifier lisibilité, zoom et confort sur les appareils visés ; ces valeurs
 ne prouvent pas à elles seules l'accessibilité. Les contrôles spécialisés

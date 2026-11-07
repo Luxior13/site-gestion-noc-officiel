@@ -346,7 +346,9 @@ Puis, dans le même travail :
    [journal](design/preferences.md) et le fichier de design propriétaire.
 3. **Harmonisation** : mettre à jour l’[état de la page](design/harmonisation.md#état-par-page)
    et les constats `HARMO-xx` touchés.
-4. **Règle commune ou métier** : mettre à jour sa fiche ou son domaine.
+4. **Règle commune ou métier** : mettre à jour sa fiche ou son domaine. Si elle
+   en remplace une autre, chercher l’ancienne formulation dans toute la
+   documentation courante ([règle](methode/organisation-documentaire.md#conserver-les-décisions-sans-les-transformer)).
 5. **Inventaire système** : route, API, modèle, script ou famille de tests ajouté
    ou retiré → fichier concerné de [systeme](systeme/README.md).
 6. **Audit** : un contrôle approfondi produit un rapport daté indexé dans

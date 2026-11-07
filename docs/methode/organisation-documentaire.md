@@ -91,7 +91,7 @@ importante d’une page à sections a la sienne. Les fiches créées le
 docs/pages/
 ├── README.md                  index général
 ├── accueil.md, connexion.md   pages simples hors espace
-├── mon-compte/                README + profil, securite
+├── mon-compte/                README + profil, acces, securite
 ├── membres/                   README + repertoire/ (README, liste, creation,
 │                              fiche-identite, fiche-coordonnees)
 ├── systeme/                   README + utilisateurs/ (README, liste, creation,
@@ -126,6 +126,13 @@ comme telle.
   Tout point de décision, règle ou connaissance durable évoqué en conversation
   est consigné au fil de l’eau dans le document propriétaire, sans attendre
   d’autorisation.
+- **Une décision qui en remplace une autre** (décision du propriétaire du
+  7 novembre 2026) : dans le même travail, chercher l’ancienne formulation dans
+  toute la documentation courante et la corriger partout, sans s’arrêter au
+  journal et au document propriétaire. Le contrôle documentaire vérifie les liens,
+  pas la justesse du texte : il ne détecte pas ces écarts. Un rapport daté garde
+  son texte ; une revue datée de fiche reçoit une mention « remplacée » si elle
+  peut tromper.
 - Une préférence visuelle du propriétaire s’applique par défaut à toutes les
   pages du même gabarit ; une portée ambiguë devient une question ouverte du
   journal, sans bloquer le travail.
@@ -242,3 +249,5 @@ valide ne prouve ni la justesse du texte ni une fonction livrée.
   dossiers par nature, référence générale en 36 points, une fiche par page et
   par section, système de design, cartographie du système, contrôleur étendu
   ([rapport](../audits/2026-10-19-organisation-complete.md)).
+- 7 novembre 2026 : relecture de la documentation courante contre le code et les
+  décisions ; passages périmés corrigés, règle de la décision remplacée ajoutée.

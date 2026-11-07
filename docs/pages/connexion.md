@@ -196,6 +196,9 @@ Revue statique de la connexion, des sessions, du MFA et du limiteur
 
 ## Autocomplétion — correction du 11 octobre 2026
 
+> **Remplacée le 25 octobre 2026** pour les champs d’authentification
+> ([règle courante](../design/comportements.md#autocomplétion)).
+
 Connexion, mots de passe et MFA suivent désormais la règle commune sans exception. Les anciens opt-ins ont été supprimés.
 
 [Règle propriétaire](../design/README.md) ·

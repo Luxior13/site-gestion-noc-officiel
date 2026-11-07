@@ -35,7 +35,7 @@ revue répond à un changement, un défaut constaté ou une règle nouvelle.
 Route `/systeme/feuille-de-route`, catalogue informatif pour les comptes connectés.
 Le catalogue comprend 39 chantiers, huit pôles cibles et six étapes ; ces nombres
 ne représentent ni 39 pages à créer ni huit pôles actifs. La navigation actuelle
-compte trois pôles et cinq entrées principales.
+compte trois pôles et six entrées principales.
 
 La [revue du 12 octobre](../../audits/2026-10-12-feuille-de-route.md)
 vérifie le catalogue, la correspondance documentaire et le parcours privé.
@@ -55,7 +55,8 @@ Sources : [décisions produit](../../propositions/feuille-de-route.md),
 - Une carte décrit public, socle éventuel, première version, prérequis et critère
   de livraison. « À compléter » ne rend pas son futur parcours disponible.
 - Les étapes donnent une priorité, sans calendrier promis ni tâche planifiée.
-- Les notifications et la vue globale du journal sont à reconstruire. Les
+- Les notifications sont à reconstruire ; le journal d’activité est livré depuis
+  le 30 octobre 2026 et reste à compléter (export, portée par équipe). Les
   actualités sont en attente. Leurs anciens liens ne rouvrent pas les modules.
 - Faire évoluer ensemble décisions, données applicatives et matrice. Vérifier
   les identifiants, doublons, prérequis et dépendances circulaires.

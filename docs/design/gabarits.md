@@ -108,9 +108,8 @@ reprise explicite après réponse perdue, garde de départ jusqu’au chargement
 Composition commune décidée le 31 octobre 2026 (AC-30 de l’[audit complet](../audits/2026-10-31-audit-complet.md)),
 qui remplace les rubriques en petites capitales et la barre dans la carte.
 
-- Le bandeau explique le déroulé ; la carte commence par ses champs, sans
-  en-tête qui le répète, et chaque règle de saisie n’est écrite qu’une fois,
-  près de son champ (décision du 23 octobre 2026).
+- Le bandeau explique le déroulé ; chaque règle de saisie n’est écrite qu’une
+  fois, près de son champ (décision du 23 octobre 2026).
 - La barre d’enregistrement n’affiche pas « Modifications non enregistrées »
   sur un formulaire de création (`status={null}`) ; elle garde un message
   seulement pour un état utile, par exemple un résultat à vérifier.

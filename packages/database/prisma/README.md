@@ -139,7 +139,7 @@ purge convertit explicitement son horloge en UTC.
 
 ## Sauvegardes
 
-Créer une sauvegarde signée v9 :
+Créer une sauvegarde signée v10 :
 
 ```bash
 bun run --filter @repo/database db:backup

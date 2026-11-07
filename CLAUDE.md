@@ -33,7 +33,9 @@ Quand le propriétaire écrit « je préfère ça », « j’aime », « je n’
    [gabarits](docs/design/gabarits.md) ou la fiche de la page.
 3. Ajouter les pages concernées non encore alignées dans
    [Harmonisation](docs/design/harmonisation.md).
-4. Le faire dans le même tour que la modification de code, sans demander
+4. Si la règle en remplace une autre, chercher l’ancienne formulation dans toute
+   la documentation courante et la corriger partout.
+5. Le faire dans le même tour que la modification de code, sans demander
    d’autorisation supplémentaire. Si la portée est ambiguë, l’écrire comme
    question ouverte dans le journal plutôt que de bloquer.
 
