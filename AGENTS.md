@@ -4,9 +4,15 @@
 
 - Outil de gestion de Noctambule : structure esport actuellement associative,
   préparée à évoluer vers une société. Séparer personnes, comptes, relations
-  datées, équipes, entités juridiques, saisons et exercices. Ne pas réécrire les
-  anciens engagements lors d’une évolution de structure
+  datées, équipes, entités juridiques et exercices. Ne pas réécrire les anciens
+  engagements lors d’une évolution de structure
   ([domaines](docs/domaines/README.md)).
+- **Le site sert d’abord à la trésorerie et à la traçabilité de la structure**,
+  tant qu’elle existe ([registre historique](docs/domaines/registre-historique.md)).
+  S’y connectent les membres du bureau et les managers, limités à leur équipe ;
+  joueurs, coachs et autres membres sont des fiches, sans compte
+  ([public du site](docs/domaines/roles-metier.md#public-du-site--décision-du-7-novembre-2026),
+  décisions du propriétaire du 7 novembre 2026).
 - Le projet est **en développement** (rappel du propriétaire du 11 octobre 2026).
   Privilégier les simplifications et refactorisations utiles au besoin actuel ;
   ne pas conserver une compatibilité hypothétique avec une production inexistante.

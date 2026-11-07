@@ -1,9 +1,7 @@
 import {
-  Activity,
   Archive,
   Bell,
   BriefcaseBusiness,
-  CalendarClock,
   CheckCircle2,
   CircleDollarSign,
   ClipboardList,
@@ -15,7 +13,6 @@ import {
   Key,
   LayoutDashboard,
   type LucideIcon,
-  Newspaper,
   Search,
   Settings,
   Shield,
@@ -27,11 +24,9 @@ import {
 } from 'lucide-react';
 
 const NAVIGATION_ICONS = {
-  Activity,
   Archive,
   Bell,
   BriefcaseBusiness,
-  CalendarClock,
   CheckCircle2,
   CircleDollarSign,
   ClipboardList,
@@ -43,7 +38,6 @@ const NAVIGATION_ICONS = {
   // Same icons as the Mon compte tabs found by the quick navigation.
   Key,
   LayoutDashboard,
-  Newspaper,
   Search,
   Settings,
   Shield,

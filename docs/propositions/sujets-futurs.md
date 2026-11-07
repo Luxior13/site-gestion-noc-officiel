@@ -91,6 +91,9 @@ Principes à reprendre :
 
 ## Compétitions et rencontres
 
+> Chantier retiré le 7 novembre 2026 : rencontres et résultats restent sur le site
+> public ([feuille de route](feuille-de-route.md#retraits-et-regroupements-du-7-novembre-2026)).
+
 Déclencheur : compétitions, matchs, formats, résultats, classements, visibilité.
 
 Principes à reprendre :

@@ -1,7 +1,4 @@
-import {
-  PERMISSIONS,
-  ROADMAP_PERMISSIONS,
-} from '$constants/permissions.constants';
+import { PERMISSIONS } from '$constants/permissions.constants';
 import { PAGE_PATHS } from '$constants/routes.constants';
 
 type FeatureAuditLocation = Readonly<{
@@ -49,24 +46,6 @@ export const FEATURES = {
     label: 'Mon travail',
     permissionMode: 'all',
     requiredPermissions: [PERMISSIONS.DASHBOARD.VIEW],
-  }),
-  internalNews: defineFeature({
-    audit: {
-      pageKey: 'internal-news',
-      pageLabel: 'Actualité interne',
-      poleKey: 'activity',
-      poleLabel: 'Activité',
-    },
-    availability: 'planned',
-    description:
-      'Annonces partagées et changements importants issus des modules autorisés.',
-    href: PAGE_PATHS.internalNews,
-    icon: 'Newspaper',
-    id: 'internal-news',
-    keywords: [],
-    label: 'Actualité interne',
-    permissionMode: 'all',
-    requiredPermissions: [ROADMAP_PERMISSIONS.INTERNAL_NEWS.VIEW],
   }),
   persons: defineFeature({
     audit: {

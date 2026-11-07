@@ -12,7 +12,7 @@ concernées.
 
 | Document | Rôle | Statut au 19 octobre 2026 |
 | --- | --- | --- |
-| [Feuille de route](feuille-de-route.md) | Priorités de construction : 39 chantiers, 8 pôles cibles, 6 étapes ; catalogue exécutable dans `roadmap.constants.ts` | Référence produit courante ; seule source des priorités |
+| [Feuille de route](feuille-de-route.md) | Priorités de construction : 31 chantiers, 6 pôles cibles, 5 étapes (révision du 7 novembre 2026) ; catalogue exécutable dans `roadmap.constants.ts` | Référence produit courante ; seule source des priorités |
 | [Matrice de préparation](intentions/pages/MATRICE_PREPARATION.md) | Pages livrées, chantiers et anciennes destinations | Référence de correspondance courante |
 | [Sujets futurs](sujets-futurs.md) | Fiches transversales à rédiger quand leur module existera (SEO, médias, audience, notifications, compétitions, sanctions…) | Candidats, aucune fiche à créer avant le module |
 
@@ -20,6 +20,7 @@ concernées.
 
 | Document | Périmètre | Statut au 19 octobre 2026 |
 | --- | --- | --- |
+| [Listes, équipes, parcours et accès manager](membres-equipes-parcours.md) | Étape 1 de la feuille de route | Proposée le 7 novembre 2026 ; rien n’est construit |
 | [Personnes et identité](membres-personnes-identite.md) | Répertoire, identité, relations | Plan d’origine ; confronter chaque reste à faire aux [fiches du Répertoire](../pages/membres/repertoire/README.md) et au modèle actuel |
 | [Réunions](vie-interne-reunions.md) | Pôle Activité | Conception future ; aucun module livré déduit de ce plan |
 | [Sponsors et partenaires](relations-sponsors-partenaires.md) | Pôle Relations | Conception historique ; module retiré le 21 septembre 2026, reconstruction à cadrer |

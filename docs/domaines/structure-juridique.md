@@ -32,14 +32,15 @@ Une personne peut cumuler des relations et changer de rôle. Un adhérent ne dev
 
 Toute future liaison Personne–Utilisateur doit être explicite, vérifiée et réversible selon une politique définie ; l’email commun ne suffit pas. Les fonctionnalités actuelles gardent leur séparation.
 
-## Saison, campagne et exercice
+## Campagne, exercice et période
 
-- **Saison sportive** : cycle des équipes, effectifs et compétitions.
-- **Campagne d’adhésion** : période et conditions d’engagement, éventuellement liées à une saison.
+- **Campagne d’adhésion** : période et conditions d’engagement.
 - **Exercice financier** : période de suivi comptable d’une entité.
 - **Période contractuelle** : dates propres à un accord.
 
-Ces périodes peuvent différer. Un budget peut suivre une équipe ou une saison tout en étant ventilé par exercice. Une vue consolidée éventuelle doit rester explicite et permettre de retrouver l’entité source.
+Le passage dans une équipe se date lui-même : le site ne gère pas de saisons (décision du 7 novembre 2026, [registre historique](registre-historique.md)).
+
+Ces périodes peuvent différer. Un budget peut suivre une équipe tout en étant ventilé par exercice. Une vue consolidée éventuelle doit rester explicite et permettre de retrouver l’entité source.
 
 ## Finance : objets distincts, liens explicites
 

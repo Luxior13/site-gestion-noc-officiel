@@ -94,10 +94,6 @@ export const ROADMAP_PERMISSIONS = {
   INTERNAL: {
     VIEW: 'internal:view',
   },
-  INTERNAL_NEWS: {
-    MANAGE: 'internal_news:manage',
-    VIEW: 'internal_news:view',
-  },
   LEGAL: {
     VIEW: 'legal:view',
   },
@@ -112,11 +108,6 @@ export const ROADMAP_PERMISSIONS = {
     DELETE: 'partners:delete',
     MANAGE: 'partners:manage',
     VIEW: 'partners:view',
-  },
-  SPORT: {
-    PUBLIC_SYNC: 'sport:public_sync',
-    UPDATE: 'sport:update',
-    VIEW: 'sport:view',
   },
   SYSTEM: {
     ARCHIVES: 'system:archives',
@@ -193,12 +184,6 @@ export const PERMISSION_POLES = [
     key: 'internal',
     label: 'Membres',
     tone: 'internal',
-  },
-  {
-    icon: 'Activity',
-    key: 'activity',
-    label: 'Activité',
-    tone: 'activity',
   },
   {
     icon: 'Handshake',

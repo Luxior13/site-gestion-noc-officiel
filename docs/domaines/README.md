@@ -11,8 +11,9 @@ Ne les ouvrir que si le travail touche le domaine ; le
 | --- | --- | --- |
 | Permissions | [permissions.md](permissions.md) | Modèle actif : vocabulaire, presets USER/ADMIN et compte racine, droits par page, dépendances, MFA et preuves récentes, cycle `planned` → actif ; source exécutable `permissions.constants.ts` |
 | Rôles métier | [roles-metier.md](roles-metier.md) | Cible : séparer fonctions métier et administration technique, décisions par ressource, ouverture progressive ; pas une protection livrée |
-| Navigation | [navigation.md](navigation.md) | Navigation actuelle, huit pôles cibles, règles de placement, admission, routes et alias |
-| Structure juridique | [structure-juridique.md](structure-juridique.md) | Association puis société : entités, relations datées, saisons, exercices, objets financiers, gouvernance |
+| Registre historique | [registre-historique.md](registre-historique.md) | Cible : rôle du site, passages datés, conservation, listes de référence, où modifier, reprise depuis le site public |
+| Navigation | [navigation.md](navigation.md) | Navigation actuelle, six pôles cibles, règles de placement, admission, routes et alias |
+| Structure juridique | [structure-juridique.md](structure-juridique.md) | Association puis société : entités, relations datées, exercices, objets financiers, gouvernance |
 
 Les règles transversales (formulaires, sécurité, données…) sont dans les
 [fiches](../REFERENCE_GENERALE.md#2-points-à-examiner) ; l’exploitation dans
@@ -22,8 +23,9 @@ Les règles transversales (formulaires, sécurité, données…) sont dans les
 ## Contexte métier
 
 Outil de gestion de Noctambule : structure esport actuellement associative,
-préparée à évoluer vers une société. Séparer personnes, comptes, relations
-datées, équipes, entités juridiques, saisons et exercices. Ne pas réécrire les
+préparée à évoluer vers une société. Le site sert d’abord à la trésorerie et à
+la traçabilité de la structure. Séparer personnes, comptes, relations datées,
+équipes, entités juridiques et exercices. Ne pas réécrire les
 anciens engagements lors d’une évolution de structure. Commencer par les
 besoins réels de l’association ; préparer la société consiste surtout à
 préserver les frontières et l’histoire.

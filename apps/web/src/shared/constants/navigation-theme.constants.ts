@@ -1,11 +1,5 @@
 export type NavigationSpaceTone =
-  | 'activity'
-  | 'dashboard'
-  | 'internal'
-  | 'legal'
-  | 'sport'
-  | 'system'
-  | 'treasury';
+  'dashboard' | 'internal' | 'legal' | 'system' | 'treasury';
 
 export type NavigationSpaceToneClasses = {
   accent: string;
@@ -32,18 +26,6 @@ const baseSubButton =
   'data-[active=true]:bg-surface-navigation-active data-[active=true]:text-sidebar-accent-foreground data-[active=true]:[&>svg]:text-sidebar-accent-foreground';
 
 export const NAVIGATION_SPACE_TONE_CLASSES = {
-  activity: {
-    accent: 'bg-nav-activity',
-    activeItem: baseActiveItem,
-    branchButton: baseBranchButton,
-    dot: 'bg-nav-activity',
-    icon: 'border-nav-activity/30 bg-nav-activity/10 text-nav-activity-icon',
-    iconForeground: 'text-nav-activity-icon',
-    menuButton: baseMenuButton,
-    row: baseRow,
-    soft: 'border-nav-activity/25 bg-nav-activity/10 text-nav-activity-foreground',
-    subButton: baseSubButton,
-  },
   dashboard: {
     accent: 'bg-nav-dashboard',
     activeItem: baseActiveItem,
@@ -80,18 +62,6 @@ export const NAVIGATION_SPACE_TONE_CLASSES = {
     soft: 'border-nav-legal/25 bg-nav-legal/10 text-nav-legal-foreground',
     subButton: baseSubButton,
   },
-  sport: {
-    accent: 'bg-nav-sport',
-    activeItem: baseActiveItem,
-    branchButton: baseBranchButton,
-    dot: 'bg-nav-sport',
-    icon: 'border-nav-sport/30 bg-nav-sport/10 text-nav-sport-icon',
-    iconForeground: 'text-nav-sport-icon',
-    menuButton: baseMenuButton,
-    row: baseRow,
-    soft: 'border-nav-sport/25 bg-nav-sport/10 text-nav-sport-foreground',
-    subButton: baseSubButton,
-  },
   system: {
     accent: 'bg-nav-system',
     activeItem: baseActiveItem,
@@ -122,30 +92,15 @@ export function getNavigationSpaceToneClasses(
   tone: NavigationSpaceTone,
 ): NavigationSpaceToneClasses {
   switch (tone) {
-    case 'activity':
-      return NAVIGATION_SPACE_TONE_CLASSES.activity;
     case 'dashboard':
       return NAVIGATION_SPACE_TONE_CLASSES.dashboard;
     case 'internal':
       return NAVIGATION_SPACE_TONE_CLASSES.internal;
     case 'legal':
       return NAVIGATION_SPACE_TONE_CLASSES.legal;
-    case 'sport':
-      return NAVIGATION_SPACE_TONE_CLASSES.sport;
     case 'system':
       return NAVIGATION_SPACE_TONE_CLASSES.system;
     case 'treasury':
       return NAVIGATION_SPACE_TONE_CLASSES.treasury;
-  }
-}
-
-export function getNavigationSpaceBadgeClasses(badge: string): string {
-  switch (badge) {
-    case 'Plus tard':
-      return 'border-nav-sport/30 bg-nav-sport/10 text-nav-sport-foreground';
-    case 'Restreint':
-      return 'border-nav-legal/30 bg-nav-legal/10 text-nav-legal-foreground';
-    default:
-      return 'border-sidebar-border/70 bg-sidebar-accent/35 text-sidebar-foreground/75';
   }
 }

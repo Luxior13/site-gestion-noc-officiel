@@ -103,9 +103,7 @@ Valeurs de `:root` (portée par défaut).
 | --- | --- |
 | Pôle Aujourd’hui | `--nav-dashboard` `#2dd4bf` (icône `#5eead4`) |
 | Pôle Membres | `--nav-internal` `#38bdf8` (icône `#7dd3fc`) |
-| Pôle Activité | `--nav-activity` `#a78bfa` (icône `#c4b5fd`) |
 | Pôle Structure (thème `legal`) | `--nav-legal` `#facc15` (icône `#fde047`) |
-| Pôle Esport (thème `sport`) | `--nav-sport` `#f472b6` (icône `#f9a8d4`) |
 | Pôle Système | `--nav-system` `#94a3b8` (icône `#cbd5e1`) |
 | Pôle Finances (thème `treasury`) | `--nav-treasury` `#4ade80` (icône `#86efac`) |
 
@@ -189,7 +187,7 @@ ont leur propre focus (`--primary` et `--ring-form`, voir [Espacements et arrond
 | Texte (variables CSS) | `--text-primary`, `--text-secondary`, `--text-muted`, `--text-disabled`                                 | hiérarchie de lecture                  |
 | Accent                | `primary`, `primary-emphasis`                                                                           | action principale et point focal       |
 | Statut                | `success`, `warning`, `info`, `destructive`                                                             | état d'un objet, jamais du décor       |
-| Pôle                  | `nav-dashboard`, `nav-internal`, `nav-activity`, `nav-legal`, `nav-sport`, `nav-system`, `nav-treasury` | identifier le pôle actif               |
+| Pôle                  | `nav-dashboard`, `nav-internal`, `nav-legal`, `nav-system`, `nav-treasury` | identifier le pôle actif               |
 
 Règles : une couleur de statut n'est jamais utilisée pour décorer ; un texte
 secondaire ne descend jamais sous le contraste minimal ; le fond et le texte ne

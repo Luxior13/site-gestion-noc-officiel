@@ -82,7 +82,7 @@ describe('navigation availability', () => {
 
     expect(hrefs).toContain('/tableau-de-bord/mes-taches');
     expect(hrefs).toContain('/vie-interne/reunions');
-    expect(hrefs).toContain('/vie-interne/calendrier-interne');
+    expect(hrefs).toContain('/bureau-juridique/decisions-bureau');
     expect(hrefs).not.toContain('/membres/repertoire');
     expect(hrefs).toContain('/bureau-juridique/documents');
     expect(hrefs).toContain('/bureau-juridique/partenaires');

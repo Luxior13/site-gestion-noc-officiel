@@ -49,6 +49,11 @@ structure » dans le journal (AC-32).
 - **Règles métier** : statut `IN_STRUCTURE` / `OUTSIDE_STRUCTURE` ; futures
   relations datées rattachées à la personne, jamais empilées sur `Person`
   ([sujets futurs](../../../propositions/sujets-futurs.md)).
+- **Évolution décidée le 7 novembre 2026** : la fiche recevra un onglet Parcours,
+  et une fiche qui a un parcours ne se supprimera plus
+  ([registre historique](../../../domaines/registre-historique.md),
+  [cadrage](../../../propositions/membres-equipes-parcours.md)). Rien de cela
+  n’est encore livré.
 - **Points ouverts** : [registre REP](#points-ouverts) ; REP-02 (évolution du
   statut de structure) est différé au cadrage métier, les autres sont clos.
 

@@ -33,8 +33,8 @@ revue répond à un changement, un défaut constaté ou une règle nouvelle.
 ## État courant — 12 octobre 2026
 
 Route `/systeme/feuille-de-route`, catalogue informatif pour les comptes connectés.
-Le catalogue comprend 39 chantiers, huit pôles cibles et six étapes ; ces nombres
-ne représentent ni 39 pages à créer ni huit pôles actifs. La navigation actuelle
+Le catalogue comprend 31 chantiers, six pôles cibles et cinq étapes ; ces nombres
+ne représentent ni 31 pages à créer ni six pôles actifs. La navigation actuelle
 compte trois pôles et six entrées principales.
 
 La [revue du 12 octobre](../../audits/2026-10-12-feuille-de-route.md)
@@ -49,15 +49,22 @@ Sources : [décisions produit](../../propositions/feuille-de-route.md),
 
 ## Décisions courantes et questions de revue
 
+- 7 novembre 2026 : catalogue révisé sur décision du propriétaire, de 39 à
+  31 chantiers, de huit à six pôles et de six à cinq étapes : registre historique,
+  puis trésorerie ([décisions](../../propositions/feuille-de-route.md#à-quoi-sert-le-site)).
+  Les identifiants conservés ne changent pas, même quand le titre change
+  (`sport-teams` devient « Équipes & parcours »). La page et sa présentation sont
+  inchangées ; le filtre `pole=esport` ou `pole=activity` d’un ancien lien revient
+  au filtre neutre.
 - 25 octobre 2026 : la page reste ouverte à tout compte connecté et figure
   dans la section « Projet » du pôle Système, plus sous « Administration »
   ([DRT-04](../../audits/2026-10-25-coherence-des-droits.md)).
 - Une carte décrit public, socle éventuel, première version, prérequis et critère
   de livraison. « À compléter » ne rend pas son futur parcours disponible.
 - Les étapes donnent une priorité, sans calendrier promis ni tâche planifiée.
-- Les notifications sont à reconstruire ; le journal d’activité est livré depuis
-  le 30 octobre 2026 et reste à compléter (export, portée par équipe). Les
-  actualités sont en attente. Leurs anciens liens ne rouvrent pas les modules.
+- Les notifications sont replanifiées en étape 5 ; le journal d’activité est livré
+  depuis le 30 octobre 2026 et reste à compléter (export). Les actualités sont
+  retirées. Leurs anciens liens ne rouvrent pas les modules.
 - Faire évoluer ensemble décisions, données applicatives et matrice. Vérifier
   les identifiants, doublons, prérequis et dépendances circulaires.
 - Une carte livrée doit refléter son reste à faire ; la masquer ou changer son
@@ -81,7 +88,7 @@ Sources : [décisions produit](../../propositions/feuille-de-route.md),
 - La recherche inclut le critère de livraison `doneWhen`, déjà visible dans les
   cartes. Les valeurs inconnues de pôle/étape reviennent aux filtres neutres ;
   l'URL est normalisée sans entrée d'historique supplémentaire, en conservant
-  les autres paramètres et l'ancre. La remise à zéro rend les 39 chantiers.
+  les autres paramètres et l'ancre. La remise à zéro rend tous les chantiers.
   Aucun module futur n’est activé par cet écran.
 
 ## Preuves et limites

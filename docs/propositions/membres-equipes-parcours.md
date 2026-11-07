@@ -1,0 +1,148 @@
+# Cadrage — Listes, équipes, parcours et accès manager
+
+[Propositions](README.md) · [Registre historique](../domaines/registre-historique.md) ·
+[Public du site](../domaines/roles-metier.md#public-du-site--décision-du-7-novembre-2026) ·
+[Feuille de route](feuille-de-route.md)
+
+- **Date** : 7 novembre 2026. **Demandeur** : le propriétaire.
+- **Périmètre** : chantiers Listes de référence, Équipes & parcours, Accès &
+  responsabilités métier et Reprise de l’historique (étape 1).
+- **Statut** : proposée. Rien n’est construit ; les choix techniques ci-dessous
+  restent à valider au moment de chaque lot.
+- **Décisions déjà données** : [registre historique](../domaines/registre-historique.md)
+  et [public du site](../domaines/roles-metier.md#public-du-site--décision-du-7-novembre-2026).
+  Ce document ne les répète pas.
+
+**Risque : sensible.** Ces lots touchent l’accès, des données personnelles et une
+migration. Ils demandent des scénarios d’abus et une validation sur base isolée.
+
+## Ordre de construction
+
+| Lot | Contenu | Résultat visible |
+| --- | --- | --- |
+| 1 | Listes de référence | Une page pour gérer jeux et fonctions ; champ « Jeux » sur la fiche |
+| 2 | Équipes & parcours | Page Équipes, onglet Parcours, anciens pseudos |
+| 3 | Accès manager | Un manager se connecte et ne voit que son équipe |
+| 4 | Reprise de l’historique | Les membres et passages existants sont dans le registre |
+
+Confidentialité & conservation et Données, exports & sauvegardes suivent, dans la
+même étape. Le lot 1 introduit TanStack Query, prévu avec son premier consommateur
+([décision REV-20](../references/architecture-fonctionnalite.md#5-états-ux-obligatoires)).
+
+## Lot 1 — Listes de référence
+
+**Données** : une table `ReferenceValue` pour toutes les listes (`list`, `label`,
+libellé normalisé, `archivedAt`, `version`), unique par liste et libellé normalisé,
+et une table de liaison `PersonGame`. Une table commune évite une page, une API et
+une migration par liste. Pour qu’une fonction ne puisse pas remplir un champ
+« jeu », la base contrôle la liste de chaque référence ; une contrainte vaut mieux
+qu’une vérification du seul formulaire.
+
+**Écran** : `/systeme/listes`, dans Système › Administration, au
+[gabarit A](../design/gabarits.md#a-liste-de-gestion), un onglet par liste
+(`PageSectionNavigation`). Ajout et renommage en fenêtre. Une colonne indique le
+nombre d’usages, pour comprendre pourquoi une valeur s’archive sans se supprimer.
+
+**Composant** : `MultiSelect` dans `components/ui`, composé de `Popover` et
+`Command` déjà présents, sans nouvelle dépendance. Il propose « Ajouter … » quand
+la valeur manque et que le compte a le droit de le faire.
+
+**Droits** : `reference_lists:update` (délégable, fourni aux Administrateurs). La
+lecture des valeurs suit la page qui les affiche.
+
+**Valeurs de départ** : celles de noctambule.gg, modifiables ensuite. Jeux :
+Overwatch, Rainbow Six Siege, Sea of Thieves. Fonctions : Joueur, Remplaçant,
+Manager, Président, Vice-Président, Trésorier, Responsable eSport, Community
+Manager, Graphiste.
+
+## Lot 2 — Équipes & parcours
+
+**Données** :
+
+| Modèle | Contenu |
+| --- | --- |
+| `Team` | Nom, jeu (liste Jeux), `archivedAt`, `version` |
+| `PersonPassage` | Fiche, équipe facultative (vide pour une fonction de structure), fonction, début, fin, précision de chaque date, `source` (saisie ou reprise), `version` |
+| `PersonFormerNickname` | Ancien pseudo, date du changement ; écrit par le service quand le pseudo change, et cherché par le Répertoire |
+
+**Dates approximatives** : une date est stockée avec sa précision (année, mois,
+jour). Un début se range au premier jour de la période et une fin au dernier :
+« 2024 » couvre toute l’année, et « qui était là à telle date » reste une simple
+comparaison. L’affichage suit la précision, sans inventer de jour.
+
+**Règles serveur** : la fin ne précède pas le début (contrainte en base). Deux
+passages identiques (fiche, équipe, fonction) ne se chevauchent pas. Une fiche qui
+a un passage ne se supprime pas : la base le refuse et l’interface l’explique.
+
+**Écrans** :
+
+- `/membres/equipes` : liste au gabarit A, filtres par jeu et par état. Une équipe
+  se crée en fenêtre, sans page dédiée, puisqu’elle a deux champs.
+- `/membres/equipes/[id]` : membres actuels et anciens, sélecteur « À une date ».
+- Onglet Parcours de la fiche personne (`?section=parcours`), sur le modèle de
+  [Coordonnées](../pages/membres/repertoire/fiche-coordonnees.md).
+- Une seule fenêtre de passage, ouverte depuis la fiche ou depuis l’équipe.
+
+**API** : `/api/equipes`, `/api/equipes/[id]`, `/api/personnes/[id]/passages` et
+`/api/personnes/[id]/passages/[passageId]`, selon le
+[contrat d’une fonctionnalité](../references/architecture-fonctionnalite.md).
+
+**Droits** : `teams:view`, `teams:update`, `persons:view_journey`,
+`persons:update_journey`, délégables, fournis aux Administrateurs.
+
+**Journal** : chaque écriture suit la
+[liste de contrôle Q15](../references/audit-historique.md#règle--toute-action-est-lisible-dans-le-journal-dactivité) :
+actions, filtre « Équipes », libellés des champs et fiches de page.
+
+## Lot 3 — Accès manager
+
+**Données** : `UserPersonLink` (compte, fiche, auteur, dates), créé par une action
+explicite et tracée depuis la fiche utilisateur, jamais par rapprochement d’email.
+
+**Une fonction ne donne pas d’accès par son nom.** Les fonctions se renomment, donc
+le code ne peut pas chercher le mot « Manager ». Une valeur porte un réglage « Donne
+accès à son équipe ». Il ouvre des données personnelles : il exige un droit critique
+réservé aux Administrateurs et laisse une trace. Renommer une fonction n’y change rien.
+
+**Politique** : `features/teams/server/policy.ts` expose `canViewTeam(acteur, équipe)`,
+vraie avec `teams:view`, ou avec une liaison active et un passage ouvert donnant
+accès. Elle est évaluée à chaque requête et dans chaque liste.
+
+**Ce que voit un manager** : ses équipes en lecture seule, chaque membre avec pseudo,
+fonction et dates. Il n’a ni `persons:view` ni accès au Répertoire : le serveur lui
+renvoie uniquement cette projection, sans coordonnées et sans lien vers la fiche. La
+navigation n’affiche que Équipes, et Mon compte reste accessible.
+
+**Scénarios à vérifier** : adresse d’une autre équipe, identifiant deviné, API
+appelée sans passer par l’écran, passage clôturé pendant la session, liaison retirée,
+réglage retiré de la fonction, compte désactivé, recherche rapide, totaux des listes.
+
+## Lot 4 — Reprise de l’historique
+
+Une commande ponctuelle lit un fichier, montre ce qu’elle va créer et demande une
+confirmation : fiches rapprochées, fiches nouvelles, passages et doublons probables.
+Elle marque chaque passage avec sa source. La relancer ne crée aucun doublon. Elle
+vise d’abord une base isolée.
+
+## Effets sur l’existant
+
+| Élément | Effet |
+| --- | --- |
+| Suppression d’une fiche | Refus si la fiche a un passage ; [règle du Répertoire](../pages/membres/repertoire/README.md) à actualiser |
+| Sauvegarde | Nouvelles tables dans le manifeste, format v11 |
+| Journal d’activité | Nouvelles actions et nouveau filtre |
+| Registre, navigation, recherche rapide | Entrées et mots-clés de Listes et d’Équipes |
+| Contrôle mobile E2E | Nouvelles pages à ajouter à `mobile-layout.checks.ts` |
+| Fiches de page, cartographie | Une fiche par page et par onglet ; routes, API et données actualisées |
+
+**Points examinés** : Q01–Q07, Q09–Q17, Q19, Q21, Q22, Q25, Q27, Q29, Q30, Q33–Q36.
+Non applicables : Q08, Q20, Q23, Q24, Q26 (ni notification, ni fichier, ni
+traitement différé, ni gouvernance, ni montant). Hors impact : Q18, Q28.
+
+## Questions au propriétaire
+
+| ID | Question | Recommandation | Bloque |
+| --- | --- | --- | --- |
+| CAD-Q1 | Le statut « Dans la structure » devient-il automatique ? | Oui : une fiche est dans la structure si elle a un passage ouvert. Deux sources pour le même fait finiraient par se contredire | Lot 2 |
+| CAD-Q2 | Peut-on obtenir un export (JSON ou CSV) des membres et parcours de noctambule.gg ? | Oui, c’est plus fiable que de relire les pages publiques | Lot 4 |
+| CAD-Q3 | Quel délai avant la purge des coordonnées, et qui le valide ? | À faire valider par une personne compétente | Confidentialité & conservation |

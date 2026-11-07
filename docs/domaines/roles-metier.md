@@ -2,6 +2,42 @@
 
 Conception cible révisée le 22 septembre 2026. Le moteur actuellement livré est décrit dans [Permissions](permissions.md). Les portées et modèles de rôles proposés ici ne sont pas encore des fonctions actives.
 
+## Public du site — décision du 7 novembre 2026
+
+Le site sert d’abord à la trésorerie et à la traçabilité de la structure
+([registre historique](registre-historique.md)). Décision du propriétaire du
+7 novembre 2026 sur les personnes qui s’y connectent :
+
+| Public | Voit | Mécanisme |
+| --- | --- | --- |
+| Membres du bureau | Ce que leurs autorisations ouvrent | Rôle et autorisations par page, déjà livrés |
+| Manager d’équipe | Seulement son équipe, sans les autres pôles | Compte Utilisateur et portée par équipe, à construire |
+
+Les joueurs, coachs et autres membres sont des fiches du
+[Répertoire](../pages/membres/repertoire/README.md), sans compte. Valable jusqu’à
+nouvelle décision ; la portée après une évolution en société reste à préciser.
+
+Conséquences :
+
+- Un manager reste un Utilisateur : aucun nouveau rôle technique. Le menu filtre
+  déjà les pôles selon les droits ; le serveur doit filtrer ses données par équipe.
+- Le modèle REV-15 ci-dessous se construit avec Équipes & parcours, réduit à ce
+  besoin : liaison explicite entre un compte et une fiche, et portée par équipe.
+  Portées par entité, modèles de rôle et délégations restent une cible.
+- Les modules du bureau utilisent les autorisations actuelles : ils n’attendent
+  pas la portée par équipe.
+- Les profils Joueur, Coach et Secrétariat du tableau ci-dessous ne décrivent plus
+  des comptes. Les acceptations de ces personnes sont saisies par le bureau.
+- Les chantiers destinés à des personnes sans compte sont retirés de la
+  [feuille de route](../propositions/feuille-de-route.md#retraits-et-regroupements-du-7-novembre-2026).
+
+- La portée d’un manager se déduit de son passage : il voit une équipe tant que sa
+  fiche, liée à son compte, y porte un passage ouvert d’une fonction donnant accès ;
+  la fin du passage retire l’accès sans autre action.
+- Il voit le parcours des membres de son équipe, **pas leurs coordonnées**.
+
+Détail et ordre de construction : [cadrage](../propositions/membres-equipes-parcours.md).
+
 ## Décision du 25 octobre 2026 — modèle d’autorisation retenu (REV-15)
 
 Décision prise sur délégation du propriétaire (« fait ce que tu recommande »,
@@ -93,6 +129,6 @@ Les sorties de structure prévoient le retrait des accès, les tâches de restit
 
 Les permissions futures restent réservées et inactives jusqu’à la livraison du module, de ses politiques, de son audit et de ses tests. Aucun rôle prédéfini ne les rend effectives à l’avance.
 
-L’espace personnel s’enrichit avec les modules livrés. Le menu reflète les accès actifs, mais sa visibilité ne remplace jamais le contrôle serveur. Les huit pôles de la cible produit ne modifient pas à eux seuls les groupes actuels de l’éditeur de permissions.
+L’espace personnel s’enrichit avec les modules livrés. Le menu reflète les accès actifs, mais sa visibilité ne remplace jamais le contrôle serveur. Les six pôles de la cible produit ne modifient pas à eux seuls les groupes actuels de l’éditeur de permissions.
 
 Cas à vérifier lors de chaque ouverture : refus hors entité/équipe, révocation, changement de période, dossiers sensibles, accès aux pièces, exports et notifications. Les besoins de MFA et les règles du compte protégé restent régis par le moteur actif.

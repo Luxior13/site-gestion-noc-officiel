@@ -89,9 +89,8 @@ La migration conserve les accès effectifs aux coordonnées des comptes existant
 L'éditeur affiche deux pôles : **Membres** (`internal`) et **Système** (`system`).
 Sa projection [permission-editor-view](../../apps/web/src/components/users/permission-editor-view.ts)
 croise le catalogue technique avec la disponibilité du registre des fonctionnalités.
-Les pôles vides ne sont pas proposés. L'Actualité interne, prévue, n'a que des
-noms réservés dans `ROADMAP_PERMISSIONS` ; le journal d'activité est actif
-depuis le 30 octobre 2026 avec `audit:view`.
+Les pôles vides ne sont pas proposés. Le journal d'activité est actif depuis le
+30 octobre 2026 avec `audit:view`.
 
 ## Vocabulaire canonique de l'interface
 
@@ -460,7 +459,6 @@ Les identifiants suivants sont réservés dans `ROADMAP_PERMISSIONS`, mais ne so
 pas des permissions effectives :
 
 - Dashboard : `dashboard:manage_widgets` ;
-- actualité interne : `internal_news:view`, `internal_news:manage` ;
 - tâches : `tasks:view`, `tasks:create`, `tasks:update`, `tasks:assign`,
   `tasks:delete` ;
 - notifications : `notifications:manage` ;
@@ -473,8 +471,7 @@ pas des permissions effectives :
 - trésorerie : `treasury:view`, `treasury:edit`, `treasury:validate`,
   `treasury:export`, `treasury:audit`, `treasury:archives` ;
 - système futur : `system:validate`, `system:archives`, `system:automation`,
-  `backups:view` ;
-- sport : `sport:view`, `sport:update`, `sport:public_sync`.
+  `backups:view`.
 
 Elles ne doivent jamais apparaître dans un JSON `User.permissions`, un preset de
 rôle, `PERMISSION_CATEGORIES` ou une politique serveur avant leur activation.

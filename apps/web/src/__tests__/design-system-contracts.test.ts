@@ -2,10 +2,7 @@ import { globSync, readFileSync } from 'node:fs';
 
 import { describe, expect, it } from 'vitest';
 
-import {
-  getNavigationSpaceBadgeClasses,
-  NAVIGATION_SPACE_TONE_CLASSES,
-} from '$constants/navigation-theme.constants';
+import { NAVIGATION_SPACE_TONE_CLASSES } from '$constants/navigation-theme.constants';
 import { badgeVariants } from '$ui/badge';
 import { buttonVariants } from '$ui/button';
 
@@ -178,9 +175,6 @@ describe('design system contracts', () => {
         `--color-nav-${tone}-foreground: var(--nav-${tone}-foreground)`,
       );
     }
-
-    expect(getNavigationSpaceBadgeClasses('Plus tard')).not.toContain('[#');
-    expect(getNavigationSpaceBadgeClasses('Restreint')).not.toContain('[#');
   });
 
   it('keeps the brand primary distinct from statuses and navigation spaces', () => {
@@ -196,7 +190,6 @@ describe('design system contracts', () => {
       '--nav-dashboard',
       '--nav-internal',
       '--nav-legal',
-      '--nav-sport',
       '--nav-system',
       '--nav-treasury',
     ]) {

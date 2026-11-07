@@ -10,33 +10,18 @@ import type {
 
 export const ROADMAP_AREAS: readonly RoadmapArea[] = [
   {
-    description: 'Mon planning, mes documents et les actions qui m’attendent.',
+    description: 'Mon travail, mes tâches et ce qui m’attend.',
     icon: 'LayoutDashboard',
     id: 'today',
     label: 'Aujourd’hui',
     tone: 'dashboard',
   },
   {
-    description:
-      'Répertoire, adhésions, rôles, recrutement et parcours des membres.',
+    description: 'Répertoire, équipes, parcours et adhésions des membres.',
     icon: 'Users',
     id: 'people',
     label: 'Membres',
     tone: 'internal',
-  },
-  {
-    description: 'Équipes, saisons, entraînements et compétitions.',
-    icon: 'Activity',
-    id: 'esport',
-    label: 'Esport',
-    tone: 'sport',
-  },
-  {
-    description: 'Travail collectif, réunions, communication et logistique.',
-    icon: 'CalendarClock',
-    id: 'activity',
-    label: 'Activité',
-    tone: 'activity',
   },
   {
     description:
@@ -48,7 +33,7 @@ export const ROADMAP_AREAS: readonly RoadmapArea[] = [
   },
   {
     description:
-      'Identité juridique, gouvernance, documents et confidentialité.',
+      'Identité juridique, réunions, décisions, documents et confidentialité.',
     icon: 'ShieldCheck',
     id: 'structure',
     label: 'Structure',
@@ -62,7 +47,8 @@ export const ROADMAP_AREAS: readonly RoadmapArea[] = [
     tone: 'treasury',
   },
   {
-    description: 'Accès, configuration, données et intégrations.',
+    description:
+      'Accès, configuration, listes de référence, données et intégrations.',
     icon: 'Settings',
     id: 'system',
     label: 'Système',
@@ -72,37 +58,31 @@ export const ROADMAP_AREAS: readonly RoadmapArea[] = [
 export const ROADMAP_PHASES: readonly RoadmapPhase[] = [
   {
     description:
-      'Clarifier la structure, les périmètres d’accès et les règles communes.',
+      'Savoir qui est passé dans la structure et le garder dans la durée.',
     id: 1,
-    label: 'Fondations métier',
+    label: 'Registre historique',
   },
   {
-    description:
-      'Organiser les équipes, les disponibilités et les convocations.',
+    description: 'Suivre l’argent de la structure et ce qui le justifie.',
     id: 2,
-    label: 'Quotidien esport',
+    label: 'Trésorerie',
   },
   {
     description:
-      'Suivre les documents, les personnes, les réunions et les actions.',
+      'Garder la mémoire des décisions, des documents et des actions.',
     id: 3,
-    label: 'Vie de structure',
+    label: 'Vie de la structure',
   },
   {
-    description: 'Relier les accords, les factures et les règlements.',
+    description: 'Exploiter des données fiables pour décider.',
     id: 4,
-    label: 'Relations & finances',
-  },
-  {
-    description: 'Exploiter des données fiables pour préparer et décider.',
-    id: 5,
-    label: 'Pilotage & préparation',
+    label: 'Pilotage',
   },
   {
     description:
-      'Automatiser et connecter les outils lorsque les usages le justifient.',
-    id: 6,
-    label: 'Extensions selon les besoins',
+      'Ajouter ce qui répond à un usage réel, sans le construire d’avance.',
+    id: 5,
+    label: 'Selon les besoins',
   },
 ];
 export const ROADMAP_ITEMS: readonly RoadmapItem[] = [

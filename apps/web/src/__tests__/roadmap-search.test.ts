@@ -53,7 +53,7 @@ describe('roadmap local search and URL filters', () => {
   it('leaves valid input untouched while a user types spaces or accented words', () => {
     const params = new URLSearchParams({
       phase: '2',
-      pole: 'esport',
+      pole: 'people',
       q: '  Équipes ',
     });
     expect(readRoadmapFilters(params).query).toBe('  Équipes ');
@@ -62,9 +62,9 @@ describe('roadmap local search and URL filters', () => {
   });
 
   it('combines every word independently of accents, case, punctuation and order', () => {
-    expect(search('SAISONS, équipes')).toEqual(search('equipes saisons'));
-    expect(search('SAISONS, équipes')).toContain('sport-teams');
-    expect(search('equipes saisons motabsentduchantier')).toEqual([]);
+    expect(search('PARCOURS, équipes')).toEqual(search('equipes parcours'));
+    expect(search('PARCOURS, équipes')).toContain('sport-teams');
+    expect(search('equipes parcours motabsentduchantier')).toEqual([]);
   });
 
   // Audit RL-06: the same words as the permission editor.
@@ -76,30 +76,30 @@ describe('roadmap local search and URL filters', () => {
   });
 
   it('searches the delivery criterion, even while its disclosure is collapsed', () => {
-    expect(search('anciennes rencontres')).toContain('sport-teams');
+    expect(search('corriger passage')).toContain('sport-teams');
     expect(search('nOuVeLLe identité')).toContain('person-relationships');
   });
 
   it('intersects the search, target area and phase rather than replacing a criterion', () => {
     expect(
       getVisibleRoadmapItems({
-        areaId: 'esport',
-        phase: 2,
-        query: 'anciennes rencontres',
+        areaId: 'people',
+        phase: 1,
+        query: 'corriger passage',
       }).map((item) => item.id),
     ).toEqual(['sport-teams']);
     expect(
       getVisibleRoadmapItems({
-        areaId: 'esport',
-        phase: 3,
-        query: 'anciennes rencontres',
+        areaId: 'people',
+        phase: 2,
+        query: 'corriger passage',
       }),
     ).toEqual([]);
     expect(
       getVisibleRoadmapItems({
-        areaId: 'people',
-        phase: 2,
-        query: 'anciennes rencontres',
+        areaId: 'structure',
+        phase: 1,
+        query: 'corriger passage',
       }),
     ).toEqual([]);
   });
