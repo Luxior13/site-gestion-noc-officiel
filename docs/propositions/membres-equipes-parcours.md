@@ -6,7 +6,7 @@
 
 - **Date** : 7 novembre 2026. **Demandeur** : le propriétaire.
 - **Périmètre** : chantiers Listes de référence, Équipes & parcours, Accès &
-  responsabilités métier et Reprise de l’historique (étape 1).
+  responsabilités métier (étape 1).
 - **Statut** : proposée. Rien n’est construit ; les choix techniques ci-dessous
   restent à valider au moment de chaque lot.
 - **Décisions déjà données** : [registre historique](../domaines/registre-historique.md)
@@ -23,7 +23,6 @@ migration. Ils demandent des scénarios d’abus et une validation sur base isol
 | 1 | Listes de référence | Une page pour gérer jeux et fonctions ; champ « Jeux » sur la fiche |
 | 2 | Équipes & parcours | Page Équipes, onglet Parcours, anciens pseudos |
 | 3 | Accès manager | Un manager se connecte et ne voit que son équipe |
-| 4 | Reprise de l’historique | Les membres et passages existants sont dans le registre |
 
 Confidentialité & conservation et Données, exports & sauvegardes suivent, dans la
 même étape. Le lot 1 introduit TanStack Query, prévu avec son premier consommateur
@@ -50,10 +49,7 @@ la valeur manque et que le compte a le droit de le faire.
 **Droits** : `reference_lists:update` (délégable, fourni aux Administrateurs). La
 lecture des valeurs suit la page qui les affiche.
 
-**Valeurs de départ** : celles de noctambule.gg, modifiables ensuite. Jeux :
-Overwatch, Rainbow Six Siege, Sea of Thieves. Fonctions : Joueur, Remplaçant,
-Manager, Président, Vice-Président, Trésorier, Responsable eSport, Community
-Manager, Graphiste.
+**Valeurs de départ** : aucune. Les listes démarrent vides et le bureau les remplit.
 
 ## Lot 2 — Équipes & parcours
 
@@ -62,7 +58,7 @@ Manager, Graphiste.
 | Modèle | Contenu |
 | --- | --- |
 | `Team` | Nom, jeu (liste Jeux), `archivedAt`, `version` |
-| `PersonPassage` | Fiche, équipe facultative (vide pour une fonction de structure), fonction, début, fin, précision de chaque date, `source` (saisie ou reprise), `version` |
+| `PersonPassage` | Fiche, équipe facultative (vide pour une fonction de structure), fonction, début, fin, précision de chaque date, `version` |
 | `PersonFormerNickname` | Ancien pseudo, date du changement ; écrit par le service quand le pseudo change, et cherché par le Répertoire |
 
 **Dates approximatives** : une date est stockée avec sa précision (année, mois,
@@ -117,13 +113,6 @@ navigation n’affiche que Équipes, et Mon compte reste accessible.
 appelée sans passer par l’écran, passage clôturé pendant la session, liaison retirée,
 réglage retiré de la fonction, compte désactivé, recherche rapide, totaux des listes.
 
-## Lot 4 — Reprise de l’historique
-
-Une commande ponctuelle lit un fichier, montre ce qu’elle va créer et demande une
-confirmation : fiches rapprochées, fiches nouvelles, passages et doublons probables.
-Elle marque chaque passage avec sa source. La relancer ne crée aucun doublon. Elle
-vise d’abord une base isolée.
-
 ## Effets sur l’existant
 
 | Élément | Effet |
@@ -135,14 +124,13 @@ vise d’abord une base isolée.
 | Contrôle mobile E2E | Nouvelles pages à ajouter à `mobile-layout.checks.ts` |
 | Fiches de page, cartographie | Une fiche par page et par onglet ; routes, API et données actualisées |
 
-**Points examinés** : Q01–Q07, Q09–Q17, Q19, Q21, Q22, Q25, Q27, Q29, Q30, Q33–Q36.
-Non applicables : Q08, Q20, Q23, Q24, Q26 (ni notification, ni fichier, ni
-traitement différé, ni gouvernance, ni montant). Hors impact : Q18, Q28.
+**Points examinés** : Q01–Q07, Q09–Q17, Q19, Q22, Q25, Q27, Q29, Q30, Q33–Q36.
+Non applicables : Q08, Q20, Q21, Q23, Q24, Q26 (ni notification, ni fichier, ni
+import, ni traitement différé, ni gouvernance, ni montant). Hors impact : Q18, Q28.
 
 ## Questions au propriétaire
 
 | ID | Question | Recommandation | Bloque |
 | --- | --- | --- | --- |
 | CAD-Q1 | Le statut « Dans la structure » devient-il automatique ? | Oui : une fiche est dans la structure si elle a un passage ouvert. Deux sources pour le même fait finiraient par se contredire | Lot 2 |
-| CAD-Q2 | Peut-on obtenir un export (JSON ou CSV) des membres et parcours de noctambule.gg ? | Oui, c’est plus fiable que de relire les pages publiques | Lot 4 |
 | CAD-Q3 | Quel délai avant la purge des coordonnées, et qui le valide ? | À faire valider par une personne compétente | Confidentialité & conservation |

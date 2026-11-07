@@ -30,14 +30,13 @@ Les anciennes routes prévues ne sont pas des « squelettes disponibles » : ell
 - Une carte livrée devra être retirée ou recentrée sur son reste à faire, avec une mise à jour de cette matrice.
 - Chaque carte de l’interface précise public, première version, prérequis, critère de livraison et suite éventuelle. Les étapes ne sont pas des échéances.
 
-## Les 31 chantiers
+## Les 30 chantiers
 
 | Identifiant stable | Chantier | Pôle cible | Étape | État | Prérequis |
 | --- | --- | --- | --- | --- | --- |
 | `reference-lists` | Listes de référence | Système | 1 | À cadrer | — |
 | `sport-teams` | Équipes & parcours | Membres | 1 | À cadrer | Listes de référence |
 | `access-scopes` | Accès & responsabilités métier | Système | 1 | À compléter | Équipes & parcours |
-| `history-import` | Reprise de l’historique | Membres | 1 | À cadrer | Équipes & parcours |
 | `compliance` | Confidentialité & conservation | Structure | 1 | À cadrer | Équipes & parcours |
 | `data` | Données, exports & sauvegardes | Système | 1 | À compléter | Équipes & parcours |
 | `legal-entities` | Identité juridique & périmètres | Structure | 2 | À cadrer | — |

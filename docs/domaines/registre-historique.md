@@ -83,17 +83,15 @@ rejoignent le pôle Membres, à côté du Répertoire.
 
 ## Source des données
 
-Ce site fait foi. L’existant de noctambule.gg se reprend **une fois**, avec
-prévisualisation et rapprochement explicite des fiches, sans fusion par email.
-Les passages anciens absents du site public se complètent à la main. Aucune
-synchronisation continue ; une publication vers le site public reste un chantier
-de l’étape 5.
+Les utilisateurs saisissent tout à la main, pour le moment. Rien n’est récupéré du
+site public : une information présente sur les deux sites est saisie deux fois, et
+c’est accepté. Une liaison entre les deux sites reste un chantier de l’étape 5, si
+la double saisie devient trop lourde.
 
 ## À cadrer
 
 - Quelle date de départ déclenche la purge : fin du dernier passage, ou décision
   du bureau ?
-- Quels champs du parcours public de noctambule.gg sont repris ?
 
 Modèle de données, routes, droits et ordre de construction :
 [cadrage de l’étape 1](../propositions/membres-equipes-parcours.md).

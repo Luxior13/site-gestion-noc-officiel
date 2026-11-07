@@ -72,24 +72,6 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
   },
   {
     area: 'people',
-    audience: 'Membres du bureau',
-    dependsOn: ['sport-teams'],
-    description:
-      'Reprendre une seule fois les membres et les parcours publiés sur noctambule.gg.',
-    doneWhen:
-      'Chaque passage repris indique sa source ; relancer la reprise ne crée aucun doublon.',
-    firstRelease:
-      'Prévisualisation, rapprochement explicite avec les fiches existantes, sans fusion par email, puis complément à la main des passages anciens.',
-    id: 'history-import',
-    kind: 'integration',
-    later:
-      'Aucune synchronisation continue : ce site fait foi après la reprise.',
-    phase: 1,
-    status: 'planned',
-    title: 'Reprise de l’historique',
-  },
-  {
-    area: 'people',
     audience: 'Secrétariat et trésorerie',
     baseline:
       'Le répertoire gère déjà les identités et les coordonnées ; fonctions et équipes relèvent d’Équipes & parcours. Les adhésions restent à construire.',

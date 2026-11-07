@@ -19,6 +19,20 @@ export type RoadmapPhase = {
   id: RoadmapPhaseId;
   label: string;
 };
+export type RoadmapPlannedTab = {
+  label: string;
+  /** Null when the tab is already delivered. */
+  phase: RoadmapPhaseId | null;
+  summary: string;
+};
+export type RoadmapPlannedPage = {
+  area: RoadmapAreaId;
+  name: string;
+  /** Null when the page is already delivered. */
+  phase: RoadmapPhaseId | null;
+  summary?: string;
+  tabs?: readonly RoadmapPlannedTab[];
+};
 export type RoadmapItem = {
   area: RoadmapAreaId;
   audience: string;

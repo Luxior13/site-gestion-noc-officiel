@@ -296,7 +296,8 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     area: 'system',
     audience: 'Membres du bureau et administrateurs',
     dependsOn: ['sport-teams', 'data'],
-    description: 'Alimenter le site public depuis ce registre, qui fait foi.',
+    description:
+      'Relier ce site au site public, si la double saisie devient trop lourde.',
     doneWhen:
       'Rejouer une publication ne duplique pas les données et ne publie rien par défaut.',
     firstRelease:

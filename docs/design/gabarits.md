@@ -95,6 +95,24 @@ PageShell · PageCanvas (EntityDetailLayout ou composition équivalente)
 
 Détail et preuves : [Utilisateurs](../pages/systeme/utilisateurs/README.md).
 
+### Onglets d’une fiche
+
+Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
+[plan des pages](../propositions/feuille-de-route.md#pages-et-onglets-prévus) :
+
+- **Un onglet est un lieu, un filtre est une requête** : actuels et anciens, recettes
+  et dépenses sont des filtres, pas des onglets.
+- **Deux à six onglets.** Une page d’un seul contenu n’a pas d’onglet.
+- **Ordre** : ce qu’est l’objet, puis ses liens, puis ses pièces.
+- **Jamais d’onglet vide** : il apparaît une fois livré et pour les comptes qui y
+  ont droit, sans mention « à venir ».
+- **Un mot par idée, sur toutes les pages** : « Identité » pour une personne, une
+  organisation ou une entité ; « Profil » pour un compte ; « Coordonnées » ;
+  « Effectif » pour une équipe ; « Règlements » pour l’argent lié à l’objet ;
+  « Documents » pour les pièces, « Justificatifs » pour celles des Finances.
+- **Pas d’onglet Historique** : le bouton de l’en-tête ouvre le journal, filtré.
+- **Créer** : en fenêtre pour quelques champs, sur une page pour un long formulaire.
+
 ## C. Formulaire de création
 
 `PageShell` en largeur `form` (52 rem), `PageIdentityHero` compact, titre

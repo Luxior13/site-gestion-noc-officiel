@@ -39,6 +39,7 @@ import {
 } from '../roadmap-search';
 import type { RoadmapPhaseId } from '../types/roadmap.types';
 import { RoadmapCard } from './RoadmapCard';
+import { RoadmapSitePlan } from './RoadmapSitePlan';
 
 export function RoadmapPage(): React.ReactNode {
   const { searchParams, updateQuery } = usePageQuery();
@@ -180,6 +181,12 @@ export function RoadmapPage(): React.ReactNode {
                 </ul>
               </Disclosure>
             </div>
+          </Disclosure>
+          <Disclosure
+            className="border-border-divider border-b pb-4"
+            label="Voir les pages et les onglets prévus"
+          >
+            <RoadmapSitePlan />
           </Disclosure>
           <div
             ref={filtersRef}
