@@ -41,6 +41,9 @@ Cadre privé (sidebar 264 px, header 56 px)
   colonnes de données autorisées, statut en badge à pastille, date.
 - Les colonnes dépendent des droits ; leurs seuils de passage en cartes sont
   propres à la liste (Utilisateurs : 48, 52, 56 ou 64 rem).
+- Quand on vient surtout pour les éléments d’une ligne, ils s’affichent en
+  dessous, chacun ouvrant sa fiche : les équipes sous chaque jeu de la page Jeux
+  (8 novembre 2026). La ligne elle-même ouvre sa propre fiche.
 - Retour de fiche avec contexte restauré ([comportements](comportements.md#listes-recherche-et-pagination)).
 
 Pages adoptant ce gabarit : voir [Harmonisation](harmonisation.md#état-par-page).
@@ -104,12 +107,14 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
   et dépenses sont des filtres, pas des onglets.
 - **Deux à huit onglets**, les moins utilisés dans « Plus ▾ ». Une page d’un seul
   contenu n’a pas d’onglet.
-- **Ordre** : ce qu’est l’objet, puis ses liens, puis ses pièces.
+- **Ordre** : ce qu’est l’objet, puis ses liens, puis ses pièces. Une fiche équipe
+  commence par son Roster : c’est ce qu’est une équipe.
 - **Jamais d’onglet vide** : il apparaît une fois livré et pour les comptes qui y
   ont droit, sans mention « à venir ».
 - **Un mot par idée, sur toutes les pages** : « Identité » pour une personne, une
   organisation ou une entité ; « Profil » pour un compte ; « Coordonnées » ;
-  « Effectif » pour une équipe ; « Suivi » pour les notes, problèmes et bans, et
+  « Roster » pour une équipe, le mot de l’esport, et « Effectif » pour Bureau & staff,
+  où « roster » sonnerait faux (8 novembre 2026) ; « Suivi » pour les notes, problèmes et bans, et
   rien d’autre (« Entraînement » pour le travail d’une équipe, « Réalisé » pour
   un budget, 8 novembre 2026) ;
   « Règlements » pour l’argent lié à l’objet ;

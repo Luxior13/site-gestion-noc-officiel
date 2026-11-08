@@ -25,7 +25,7 @@ Un seul objet central : le **passage**, une relation datée entre une fiche du
 | Élément | Règle |
 | --- | --- |
 | Rattachement | Une équipe, ou la structure elle-même pour une fonction de bureau ou de staff |
-| Fonction | Valeur d’une liste de choix selon le rattachement (8 novembre 2026) : fonctions d’équipe pour une équipe (Joueur, Remplaçant, Coach, Manager…, communes à tous les jeux), fonctions de la structure pour la structure (Président, Trésorier, Secrétaire, bénévole…). Le mot « rôle » reste réservé à Utilisateur et Administrateur |
+| Fonction | Valeur d’une liste de choix selon le rattachement (8 novembre 2026) : fonctions du jeu pour une équipe (Joueur, Coach, Manager… ou postes propres au jeu, gérées dans sa fiche), fonctions de la structure pour la structure (Président, Trésorier, Secrétaire, bénévole…). Le mot « rôle » reste réservé à Utilisateur et Administrateur |
 | Début et fin | Une fin vide signifie « en cours ». Plusieurs passages simultanés sont possibles |
 | Statut dans la structure | Calculé, jamais saisi : une fiche est dans la structure si un passage est en cours à la date du jour. Sans date de fin, il reste en cours ; une date de fin atteinte le clôt toute seule |
 | Dates approximatives | Année, mois ou jour : une date connue à l’année se saisit à l’année, sans inventer de jour |
@@ -35,7 +35,7 @@ Un seul objet central : le **passage**, une relation datée entre une fiche du
 | Anciens noms d’équipe | Conservés de la même façon : une équipe change de nom sans changer d’histoire |
 
 Un passage n’a pas de motif de fin (décision du 8 novembre 2026) : la fin se
-saisit à son endroit, dans l’Effectif de l’équipe ou de Bureau & staff. Un changement
+saisit à son endroit, dans le Roster de l’équipe ou l’Effectif de Bureau & staff. Un changement
 d’équipe ou de fonction se voit au passage suivant, une exclusion a son dossier
 d’incident, une fin de contrat se lit dans le contrat.
 
@@ -105,8 +105,8 @@ Une liste de choix qui peut évoluer (jeux, fonctions…) se gère sur le site, 
 développement. Une liste fixée par une règle (statut, rôle) reste dans le code.
 
 - Chaque liste se gère en onglet, à côté de ce qu’elle classe, au gabarit des
-  listes de gestion (décision du 8 novembre 2026) : Jeux et Fonctions d’équipe
-  dans Équipes (Esport), Fonctions de la structure dans Bureau & staff (Structure),
+  listes de gestion (décision du 8 novembre 2026) : Jeux dans la page Jeux et
+  Fonctions de chaque jeu dans sa fiche (Esport), Fonctions de la structure dans Bureau & staff (Structure),
   Catégories et Moyens de paiement dans Comptes (Finances), Types de matériel
   dans Matériel & abonnements (Structure). Aucune liste ne se gère dans Système.
 - **Renommer** corrige une faute et met à jour la valeur partout. Quand la
@@ -128,11 +128,11 @@ Une donnée se modifie là où on la lit.
 
 | Besoin | Où |
 | --- | --- |
-| Ajouter ou terminer un passage dans une équipe | Fiche de l’équipe, onglet Effectif (le roster : début et fin), en fenêtre |
+| Ajouter ou terminer un passage dans une équipe | Fiche de l’équipe (sous son jeu), onglet Roster (début et fin), en fenêtre |
 | Ajouter ou terminer un passage dans la structure (bureau, staff, bénévoles) | Page Bureau & staff, onglet Effectif, avec la même fenêtre |
 | Voir tout le parcours d’une personne | Onglet Parcours de sa fiche, en lecture ↗ : chaque ligne ouvre son équipe ou Bureau & staff |
 | Ajouter un ancien pseudo | Onglet Identité de la fiche, y compris un pseudo d’avant le site |
-| Voir les membres actuels et anciens d’une équipe | Fiche de l’équipe |
+| Voir les membres actuels et anciens d’une équipe | Fiche de l’équipe, onglet Roster |
 | Changer une liste de choix | Onglet de la liste, à côté de ce qu’elle classe, ou ajout direct depuis le champ |
 
 Pas de page « Parcours » séparée : elle dupliquerait les fiches. Les équipes

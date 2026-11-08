@@ -124,7 +124,9 @@ describe('planned pages and tabs', () => {
   it('keeps each list of choices next to what it classifies', () => {
     const tabsOf = (name: string): string[] => getTabLabels(name);
     // Team functions go with the teams, the bureau's with the structure.
-    expect(tabsOf('Équipes')).toEqual(['Équipes', 'Jeux', 'Fonctions']);
+    // Each game has its own functions, in its fiche (8 November 2026).
+    expect(tabsOf('Jeux')).toEqual([]);
+    expect(tabsOf('Fiche jeu')).toContain('Fonctions');
     expect(tabsOf('Bureau & staff')).toEqual(['Effectif', 'Fonctions']);
     expect(tabsOf('Identité juridique')).not.toContain('Fonctions');
     // Tags were dropped (8 November 2026): the directory stays a single list.
@@ -155,10 +157,14 @@ describe('planned pages and tabs', () => {
         (candidate) => candidate.name === page,
       )?.tabs?.find((candidate) => candidate.label === label);
     expect(tab('Fiche personne', 'Parcours')?.managedIn).toBeTruthy();
-    for (const page of ['Fiche équipe', 'Bureau & staff']) {
-      expect(tab(page, 'Effectif')).toBeDefined();
-      expect(tab(page, 'Effectif')?.managedIn).toBeUndefined();
-      expect(tab(page, 'Effectif')?.phase).toBe(1);
+    // « Roster » for a team, the esport word ; « Effectif » for the structure.
+    for (const [page, label] of [
+      ['Fiche équipe', 'Roster'],
+      ['Bureau & staff', 'Effectif'],
+    ] as const) {
+      expect(tab(page, label)).toBeDefined();
+      expect(tab(page, label)?.managedIn).toBeUndefined();
+      expect(tab(page, label)?.phase).toBe(1);
     }
     expect(tab('Fiche personne', 'Identité')?.upcoming).toContain(
       'anciens pseudos',
@@ -170,7 +176,8 @@ describe('planned pages and tabs', () => {
       (page) => page.area === 'esport',
     ).map((page) => page.name);
     expect(esport).toEqual([
-      'Équipes',
+      'Jeux',
+      'Fiche jeu',
       'Fiche équipe',
       'Tournois',
       'Fiche tournoi',

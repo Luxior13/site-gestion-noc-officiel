@@ -20,8 +20,8 @@ migration. Ils demandent des scénarios d’abus et une validation sur base isol
 
 | Lot | Contenu | Résultat visible |
 | --- | --- | --- |
-| 1 | Listes de choix | Champ « Jeux » sur la fiche, avec ajout direct ; les onglets Jeux et Fonctions de la page Équipes arrivent au lot 2 |
-| 2 | Équipes & parcours | Pages Équipes et Bureau & staff (Effectif, Fonctions), onglet Parcours en lecture, anciens pseudos dans Identité |
+| 1 | Listes de choix | Champ « Jeux » sur la fiche, avec ajout direct ; la page Jeux et l’onglet Fonctions de chaque fiche jeu arrivent au lot 2 |
+| 2 | Équipes & parcours | Page Jeux, fiches jeu et équipe, page Bureau & staff (Effectif, Fonctions), onglet Parcours en lecture, anciens pseudos dans Identité |
 | 3 | Accès manager | Un manager se connecte et ne voit que son équipe |
 
 Confidentialité & conservation et Données, exports & sauvegardes complètent l’étape 2. Le lot 1 introduit TanStack Query, prévu avec son premier consommateur
@@ -30,7 +30,8 @@ Confidentialité & conservation et Données, exports & sauvegardes complètent l
 ## Lot 1 — Listes de choix
 
 **Données** : une table `ReferenceValue` pour toutes les listes (`list`, `label`,
-libellé normalisé, `archivedAt`, `version`), unique par liste et libellé normalisé,
+libellé normalisé, `archivedAt`, `version`, et le jeu pour les fonctions d’un jeu),
+unique par liste (et jeu) et libellé normalisé,
 et une table de liaison `PersonGame`. Une table commune évite une page, une API et
 une migration par liste. Pour qu’une fonction ne puisse pas remplir un champ
 « jeu », la base contrôle la liste de chaque référence ; une contrainte vaut mieux
@@ -38,9 +39,9 @@ qu’une vérification du seul formulaire.
 
 **Écrans** (décision du 8 novembre 2026) : chaque liste en onglet à côté de ce
 qu’elle classe, au [gabarit A](../design/gabarits.md#a-liste-de-gestion) :
-Jeux et Fonctions d’équipe sur `/esport/equipes` (lot 2), fonctions de la structure sur Bureau & staff (lot 2). Aucune liste
+Jeux sur `/esport/jeux` et fonctions de chaque jeu dans sa fiche (lot 2), fonctions de la structure sur Bureau & staff (lot 2). Aucune liste
 dans Système. Deux listes de fonctions : un passage dans une équipe ne propose
-que les fonctions d’équipe, un passage dans la structure que celles de la
+que les fonctions de son jeu, un passage dans la structure que celles de la
 structure, et la base le contrôle. Ajout et renommage en fenêtre. Une colonne indique le
 nombre d’usages, pour comprendre pourquoi une valeur s’archive sans se supprimer.
 
@@ -78,17 +79,23 @@ a un passage ne se supprime pas : la base le refuse et l’interface l’expliqu
 
 **Écrans** :
 
-- `/esport/equipes` : liste au gabarit A, onglets Équipes, Jeux et Fonctions, filtres par jeu et par état. Une équipe
-  se crée en fenêtre, sans page dédiée, puisqu’elle a deux champs.
-- `/esport/equipes/[id]` : membres actuels et anciens, sélecteur « À une date ».
+- `/esport/jeux` : accueil d’Esport, au gabarit A, sans onglet : les sections,
+  actives ou archivées, chacune avec ses équipes en dessous ; une équipe ouvre sa
+  fiche en un clic, le nom du jeu ouvre la fiche jeu (décision du 8 novembre 2026).
+- `/esport/jeux/[id]` : fiche jeu, onglets Équipes (principale, académie…, créées
+  en fenêtre puisqu’elles ont deux champs), Finances ↗ et Fonctions (celles de ce
+  jeu, réglage « Donne accès à son équipe »).
+- `/esport/equipes/[id]` : fiche équipe, sous son jeu, onglets Roster (membres
+  actuels et anciens, sélecteur « À une date »), Tournois ↗ et Informations (nom,
+  anciens noms, archivage).
 - Page Bureau & staff (pôle Structure) : onglet Effectif, le roster de la
   structure (bureau, staff, bénévoles, depuis 2014), et onglet Fonctions.
 - Onglet Parcours de la fiche personne (`?section=parcours`), en lecture ↗ :
   chaque ligne ouvre son équipe ou Bureau & staff ([onglet en lecture](../design/gabarits.md#onglets-dune-fiche)).
-- Une seule fenêtre de passage, ouverte depuis l’Effectif d’une équipe ou de
-  Bureau & staff. Début et fin s’y saisissent, sans motif de fin.
+- Une seule fenêtre de passage, ouverte depuis le Roster d’une équipe ou
+  l’Effectif de Bureau & staff. Début et fin s’y saisissent, sans motif de fin.
 
-**API** : `/api/equipes`, `/api/equipes/[id]`, `/api/personnes/[id]/passages` et
+**API** : `/api/jeux`, `/api/jeux/[id]`, `/api/equipes`, `/api/equipes/[id]`, `/api/personnes/[id]/passages` et
 `/api/personnes/[id]/passages/[passageId]`, selon le
 [contrat d’une fonctionnalité](../references/architecture-fonctionnalite.md).
 
@@ -116,7 +123,8 @@ accès. Elle est évaluée à chaque requête et dans chaque liste.
 **Ce que voit un manager** : ses équipes en lecture seule, chaque membre avec pseudo,
 fonction et dates. Il n’a ni `persons:view` ni accès au Répertoire : le serveur lui
 renvoie uniquement cette projection, sans coordonnées et sans lien vers la fiche. La
-navigation n’affiche que Équipes, et Mon compte reste accessible.
+navigation n’affiche que son équipe : sa fiche (Roster en lecture, Tournois sans les
+gains ni le Suivi), et Mon compte reste accessible.
 
 **Scénarios à vérifier** : adresse d’une autre équipe, identifiant deviné, API
 appelée sans passer par l’écran, passage clôturé pendant la session, liaison retirée,

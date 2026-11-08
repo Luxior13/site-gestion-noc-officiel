@@ -34,7 +34,8 @@ Conséquences :
 - La portée d’un manager se déduit de son passage : il voit une équipe tant que sa
   fiche, liée à son compte, y porte un passage ouvert d’une fonction donnant accès ;
   la fin du passage retire l’accès sans autre action.
-- Il voit le parcours des membres de son équipe, **pas leurs coordonnées**.
+- Il voit le parcours des membres de son équipe, **pas leurs coordonnées**, et
+  les tournois de son équipe sans les gains ni le Suivi (décision du 8 novembre 2026).
 
 Détail et ordre de construction : [cadrage](../propositions/membres-equipes-parcours.md).
 

@@ -82,7 +82,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
       {
         chantier: 'sport-teams',
         label: 'Parcours',
-        managedIn: 'l’Effectif de chaque équipe et de Bureau & staff',
+        managedIn: 'le Roster de chaque équipe et l’Effectif de Bureau & staff',
         phase: 1,
         summary:
           'Passages datés : équipe ou structure, fonction, début et fin ; tournois joués. Chaque ligne ouvre son équipe ou Bureau & staff.',
@@ -127,27 +127,37 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   {
     area: 'esport',
     chantier: 'sport-teams',
-    name: 'Équipes',
+    name: 'Jeux',
+    phase: 1,
+    summary:
+      'Liste, sans onglet : les sections de la structure, actives ou archivées, chacune avec ses équipes en dessous ; une équipe ouvre sa fiche et son roster en un clic, le nom du jeu ouvre sa fiche. Ajouter un jeu, l’archiver quand la section ferme, le renommer seulement pour corriger une faute. C’est aussi la liste de choix des jeux.',
+  },
+  {
+    area: 'esport',
+    chantier: 'sport-teams',
+    name: 'Fiche jeu',
     phase: 1,
     tabs: [
       {
         label: 'Équipes',
         phase: 1,
         summary:
-          'Les équipes par jeu, actives ou archivées. Création en fenêtre.',
+          'Les équipes de ce jeu (principale, académie…), actives ou archivées, avec leurs joueurs actuels ; création en fenêtre ; chaque ligne ouvre sa fiche.',
       },
       {
-        chantier: 'reference-lists',
-        label: 'Jeux',
-        phase: 1,
-        summary: 'Ajouter, renommer, archiver.',
+        chantier: 'payments',
+        label: 'Finances',
+        managedIn: 'Finances',
+        phase: 3,
+        summary:
+          'Ce que la section coûte et rapporte, détaillé par équipe : inscriptions, gains, déplacements et autres opérations liées au jeu ou à ses équipes ; budget comparé au réalisé avec la fiche budget.',
       },
       {
         chantier: 'reference-lists',
         label: 'Fonctions',
         phase: 1,
         summary:
-          'Fonctions d’équipe, communes à tous les jeux : joueur, remplaçant, coach, manager… ; réglage « Donne accès à son équipe ».',
+          'Les fonctions de ce jeu : joueur, remplaçant, coach, manager, ou des postes propres au jeu ; réglage « Donne accès à son équipe » ; ajouter, renommer, archiver.',
       },
     ],
   },
@@ -158,17 +168,18 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
     phase: 1,
     tabs: [
       {
-        label: 'Effectif',
+        label: 'Roster',
         phase: 1,
         summary:
-          'Le roster : membres actuels et anciens avec début et fin, composition à une date ; on y ajoute ou termine un passage. Seul onglet d’un manager, en lecture.',
+          'Joueurs et encadrement actuels et anciens, avec début et fin ; composition à une date ; on y ajoute ou termine un passage. Seule fiche d’un manager, en lecture.',
       },
       {
         chantier: 'competitions',
         label: 'Tournois',
         managedIn: 'Tournois',
         phase: 5,
-        summary: 'Tournois joués par cette équipe.',
+        summary:
+          'Tournois joués par cette équipe. Un manager les voit sans les gains ni le Suivi.',
       },
       {
         label: 'Informations',

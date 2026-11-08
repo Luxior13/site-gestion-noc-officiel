@@ -11,7 +11,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         label: 'Effectif',
         phase: 1,
         summary:
-          'Le roster de la structure : qui occupe quelle fonction (bureau, staff, bénévoles), avec début et fin, depuis 2014 ; on y ajoute ou termine un passage, avec la même fenêtre que pour une équipe.',
+          'Le roster de la structure : qui occupe quelle fonction (bureau, staff, bénévoles), avec début et fin, depuis 2014 ; on y ajoute ou termine un passage, avec la même fenêtre que dans le Roster d’une équipe.',
       },
       {
         chantier: 'reference-lists',
@@ -215,7 +215,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
     tabs: [
       {
         label: 'Membres',
-        managedIn: 'l’Effectif des équipes et de Bureau & staff',
+        managedIn: 'les Rosters des équipes et l’Effectif de Bureau & staff',
         phase: 9,
         summary: 'Effectifs, arrivées et départs de l’année.',
       },
@@ -335,7 +335,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         label: 'Opération',
         phase: 3,
         summary:
-          'Date, montant, moyen de paiement, compte, catégorie ; lien vers une personne, une organisation, un tournoi ou une adhésion.',
+          'Date, montant, moyen de paiement, compte, catégorie ; lien vers une personne, un jeu ou une équipe, une organisation, un tournoi ou une adhésion.',
       },
       {
         label: 'Affectations',

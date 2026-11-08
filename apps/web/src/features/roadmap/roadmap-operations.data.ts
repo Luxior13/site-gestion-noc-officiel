@@ -9,7 +9,7 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     doneWhen:
       'Ajouter, renommer ou archiver une valeur ne demande aucun développement et ne réécrit pas l’historique.',
     firstRelease:
-      'Chaque liste à côté de ce qu’elle classe : jeux et fonctions d’équipe en onglets de la page Équipes, fonctions de la structure en onglet de Bureau & staff, jeux pratiqués choisis sur la fiche ; ajout direct depuis un champ et champ à choix multiples réutilisable. Renommer corrige une faute ; une chose qui change vraiment devient une nouvelle valeur.',
+      'Chaque liste à côté de ce qu’elle classe : jeux sur la page Jeux, fonctions de chaque jeu en onglet de sa fiche, fonctions de la structure en onglet de Bureau & staff, jeux pratiqués choisis sur la fiche ; ajout direct depuis un champ et champ à choix multiples réutilisable. Renommer corrige une faute ; une chose qui change vraiment devient une nouvelle valeur.',
     id: 'reference-lists',
     later:
       'Les autres listes arrivent avec leur module : catégories et moyens de paiement dans Comptes, types de matériel dans Matériel & abonnements.',
