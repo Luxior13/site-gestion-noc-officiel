@@ -197,8 +197,10 @@ plusieurs façons, chaque façon est une vue en onglet (`PageSectionNavigation`
 en barre, paramètre d’URL, changement par l’historique sans requête) ; un
 filtre n’est pas une vue ni un onglet. La vue par défaut range le plan par
 pôle, comme le site ; un ordre suggéré reste une indication de ligne et une
-vue secondaire, sans étape « prochaine » imposée. Le plan ne montre que ce qui
-reste à faire : rien de ce qui existe déjà (8 novembre 2026). Un renvoi interne
+vue secondaire, sans étape « prochaine » imposée. Les vues de travail ne
+montrent que ce qui reste à faire (8 novembre 2026) ; la vue des pages montre
+tout le plan, ce qui est déjà en place distingué par une coche et la pastille
+verte « En place » (9 novembre 2026). Un renvoi interne
 (prérequis, page liée) ouvre la vue de sa cible, la déplie et y place le focus
 (préférences du 7 novembre 2026).
 

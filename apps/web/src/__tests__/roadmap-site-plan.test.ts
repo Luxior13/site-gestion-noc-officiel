@@ -12,9 +12,11 @@ import {
 import { ROADMAP_COVERAGE } from '$features/roadmap/roadmap-coverage.data';
 import { getChantierPlaces } from '$features/roadmap/roadmap-search';
 import {
+  ROADMAP_PAGES,
   ROADMAP_PLANNED_PAGES,
   ROADMAP_SITE_PLAN,
 } from '$features/roadmap/roadmap-site-plan.data';
+import type { RoadmapPageEntry } from '$features/roadmap/types/roadmap.types';
 
 const getTabLabels = (name: string): string[] =>
   ROADMAP_SITE_PLAN.find((page) => page.name === name)?.tabs?.map(
@@ -264,7 +266,7 @@ describe('planned pages and tabs', () => {
   });
 
   it('marks read-only tabs with an arrow and says where they are modified', () => {
-    const person = ROADMAP_PLANNED_PAGES.filter(
+    const person = ROADMAP_PAGES.filter(
       (page) => page.name === 'Fiche personne',
     );
     const folded = renderToStaticMarkup(
@@ -280,21 +282,44 @@ describe('planned pages and tabs', () => {
     expect(folded).not.toContain(', se modifie dans Parcours');
   });
 
-  it('renders every remaining page and tab with its step', () => {
+  it('renders every page and tab, what is in place told apart from what remains', () => {
     const html = renderToStaticMarkup(
       createElement(RoadmapPagesView, {
         focusName: null,
         onFocusDone: () => undefined,
         onShowItem: () => undefined,
-        pages: ROADMAP_PLANNED_PAGES,
+        pages: ROADMAP_PAGES,
       }),
     );
-    for (const page of ROADMAP_PLANNED_PAGES) {
+    for (const page of ROADMAP_PAGES) {
       expect(html).toContain(page.name.replace('&', '&amp;'));
       for (const tab of page.tabs ?? []) expect(html).toContain(tab.label);
     }
-    expect(html).not.toContain('Livrée');
     expect(html).toContain('Étape 1');
+    // Owner, 9 November 2026: what exists is shown, and marked.
+    expect(html).toContain('En place');
+    expect(html).toContain('en place : </span>Profil');
+    expect(html).toContain('+ étape');
     expect(html).toContain('aria-expanded="false"');
+  });
+
+  it('marks a page entirely in place, one in place with more to come, and one to build', () => {
+    const page = (name: string): RoadmapPageEntry | undefined =>
+      ROADMAP_PAGES.find((entry) => entry.name === name);
+    expect(page('Utilisateurs')).toMatchObject({
+      delivered: true,
+      phase: null,
+    });
+    expect(page('Jeux')).toMatchObject({ delivered: true });
+    expect(page('Jeux')?.upcoming).toBeTruthy();
+    expect(
+      page('Fiche jeu')?.tabs?.find((tab) => tab.label === 'Informations'),
+    ).toMatchObject({ delivered: true, phase: null });
+    expect(page('Tournois')).toMatchObject({ delivered: false });
+    expect(
+      ROADMAP_PAGES.filter((entry) => entry.phase !== null).map(
+        (entry) => entry.name,
+      ),
+    ).toEqual(ROADMAP_PLANNED_PAGES.map((entry) => entry.name));
   });
 });

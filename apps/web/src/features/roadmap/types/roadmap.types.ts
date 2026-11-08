@@ -67,6 +67,36 @@ export type RoadmapPlanPage = {
   summary?: string;
   tabs?: readonly RoadmapPlanTab[];
 };
+/**
+ * A tab in the Pages view (owner, 9 November 2026: « les points déjà en place
+ * différenciés ») : in place, to deliver, or in place with an addition to come.
+ */
+export type RoadmapPageEntryTab = {
+  chantier?: string;
+  /** Already on the site. */
+  delivered: boolean;
+  label: string;
+  managedIn?: string;
+  /** Step of what remains on it; null when nothing does. */
+  phase: RoadmapPhaseId | null;
+  summary: string;
+  /** What a chantier still adds to a delivered tab. */
+  upcoming?: string;
+};
+/** A page of the whole plan in the Pages view, with what is in place. */
+export type RoadmapPageEntry = {
+  area: RoadmapAreaId;
+  chantier?: string;
+  /** Already on the site. */
+  delivered: boolean;
+  name: string;
+  /** Earliest step of what remains on the page; null when all is in place. */
+  phase: RoadmapPhaseId | null;
+  summary?: string;
+  tabs?: readonly RoadmapPageEntryTab[];
+  /** What a chantier still adds to a delivered page. */
+  upcoming?: string;
+};
 export type RoadmapCoverageRow = {
   chantiers: readonly string[];
   /** Where the subject lives when this site does not handle it. */

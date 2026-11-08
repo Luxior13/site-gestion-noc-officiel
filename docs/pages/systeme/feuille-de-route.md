@@ -29,9 +29,9 @@ vues. Les étapes restent un ordre suggéré : la page ne désigne aucune
 Composition, de haut en bas :
 
 1. `PageIdentityHero` : titre, phrase « ce qui reste à construire, pôle par
-   pôle » (ce qui existe n’y figure pas ; étapes suggérées, sans date promise,
-   prochain chantier à choisir) et compteurs (chantiers, pages concernées,
-   pôles).
+   pôle ; la vue Pages et onglets montre aussi ce qui est déjà en place »
+   (étapes suggérées, sans date promise, prochain chantier à choisir) et
+   compteurs (chantiers, pages à construire, pages en place, pôles).
 2. `PageSectionNavigation` en barre : **Chantiers** (par défaut, sans
    paramètre), **Pages et onglets** (`vue=pages`), **Couverture**
    (`vue=couverture`), **Ordre suggéré** (`vue=ordre`). Une vue est un filtre
@@ -46,16 +46,22 @@ Composition, de haut en bas :
      pastille « Étape N », chevron. La ligne se déplie sur place comme au
      Journal d’activité : pourquoi, première version, critère de livraison,
      suite ; prérequis et pages ou onglets en boutons.
-   - **Pages et onglets** : les pages qui ont encore quelque chose à livrer
-     (51 au 8 novembre 2026), par pôle : une ligne par page avec ses onglets
-     restants en pastilles (l’étape d’un onglet s’affiche quand elle diffère de
-     celle de la page) et sa première étape (« Étape N ») ; dépliée, chaque
-     onglet avec son contenu et les chantiers qui construisent la page. Une
-     page ou un onglet déjà livrés n’y figurent que pour ce qu’un chantier
-     doit encore leur ajouter (`upcoming`), à l’étape de ce chantier. Un
+   - **Pages et onglets** : tout le plan des pages, par pôle (54 au 9 novembre
+     2026), ce qui est déjà en place distingué de ce qui reste (« je voudrais
+     que les points déjà en place soient différenciés, pour que je sache »,
+     9 novembre 2026). Une ligne par page avec ses onglets en pastilles :
+     onglet en place coché et vert, onglet à construire avec son étape quand
+     elle diffère de celle de la page. À droite, « En place » (vert) pour une
+     page entièrement livrée, « En place + étape N » pour une page livrée
+     qu’un chantier complétera, « Étape N » pour une page à construire.
+     Dépliée : le contenu de la page et ce qui lui viendra (« À venir, étape N »),
+     chaque onglet « en place », « en place, à compléter à l’étape N » ou
+     « étape N », et les seuls chantiers qui y travaillent encore. Une légende
+     en tête explique la coche et les étapes ; l’en-tête de chaque pôle compte
+     ses pages et celles en place ; la recherche trouve « en place ». Un
      onglet en lecture (`managedIn`) porte une flèche ↗ dans sa pastille et
-     dans le détail, avec « Lu ici, se modifie dans … » ; une légende l’explique
-     en tête de la vue (règle du 8 novembre 2026).
+     dans le détail, avec « Lu ici, se modifie dans … » ; une seconde légende
+     l’explique (règle du 8 novembre 2026).
    - **Couverture** : les sujets d’une structure esport, chacun avec ses
      chantiers en boutons ou l’outil qui le traite hors de ce site.
    - **Ordre suggéré** : les mêmes lignes, sans pastille d’étape, rangées par
@@ -87,11 +93,14 @@ Adaptations du gabarit, retenues le 7 novembre 2026 :
 - Pas de « Prochaine » étape mise en avant : le propriétaire choisit le
   prochain chantier ; un chantier sans prérequis « peut commencer à tout
   moment ».
-- Rien de ce qui existe déjà (décision du 8 novembre 2026 : « tout ce qui est déjà en place peut être retiré ») :
-  ni page ou onglet livrés, ni pastille « À compléter », ni « Déjà en place »,
-  ni liste des modules présents. Le plan complet du site reste dans
-  `ROADMAP_SITE_PLAN`, qui sert aux tests de cohérence des onglets ; la page
-  lit `ROADMAP_PLANNED_PAGES`, qui en garde le reste à faire.
+- Les vues Chantiers, Couverture et Ordre suggéré ne montrent que ce qui reste
+  à faire (décision du 8 novembre 2026 : « tout ce qui est déjà en place peut
+  être retiré »). La vue Pages et onglets montre tout le plan, ce qui est en
+  place distingué (décision du 9 novembre 2026, qui remplace pour cette vue
+  celle du 8). Le plan complet reste dans `ROADMAP_SITE_PLAN` ; la vue des
+  pages lit `ROADMAP_PAGES` (chaque page et onglet avec `delivered` et l’étape
+  de ce qui reste), les chantiers lisent `ROADMAP_PLANNED_PAGES` (le seul reste
+  à faire).
 - Pas de badge « Type » ni de « Pour qui » : tout compte connecté appartient
   au bureau ou encadre une équipe ; ces champs sont retirés des données.
 

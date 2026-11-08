@@ -5,11 +5,11 @@ import { ROADMAP_COVERAGE } from '$features/roadmap/roadmap-coverage.data';
 import {
   getRoadmapQueryCorrection,
   getVisibleCoverage,
-  getVisiblePlannedPages,
+  getVisiblePages,
   getVisibleRoadmapItems,
   readRoadmapFilters,
 } from '$features/roadmap/roadmap-search';
-import { ROADMAP_PLANNED_PAGES } from '$features/roadmap/roadmap-site-plan.data';
+import { ROADMAP_PAGES } from '$features/roadmap/roadmap-site-plan.data';
 
 const search = (query: string): string[] =>
   getVisibleRoadmapItems({ areaId: 'all', query }).map((item) => item.id);
@@ -118,14 +118,27 @@ describe('roadmap local search and URL filters', () => {
 
   it('finds a page by one of its tabs or by the chantier building it', () => {
     const names = (query: string): string[] =>
-      getVisiblePlannedPages({ areaId: 'all', query }).map((page) => page.name);
+      getVisiblePages({ areaId: 'all', query }).map((page) => page.name);
     expect(names('bans')).toEqual(
       expect.arrayContaining(['Fiche personne', 'Fiche tournoi']),
     );
     expect(names('Suivi')).toContain('Fiche personne');
     expect(
-      getVisiblePlannedPages({ areaId: 'finance', query: 'recrutement' }),
+      getVisiblePages({ areaId: 'finance', query: 'recrutement' }),
     ).toEqual([]);
+  });
+
+  it('finds every page already in place by « en place »', () => {
+    const found = getVisiblePages({ areaId: 'all', query: 'en place' }).map(
+      (page) => page.name,
+    );
+    expect(found).toEqual(
+      expect.arrayContaining(
+        ROADMAP_PAGES.filter((page) => page.phase === null).map(
+          (page) => page.name,
+        ),
+      ),
+    );
   });
 
   it('places a subject in the poles of its chantiers', () => {
@@ -150,9 +163,9 @@ describe('roadmap local search and URL filters', () => {
     expect(
       getVisibleRoadmapItems(readRoadmapFilters(new URLSearchParams())),
     ).toEqual(ROADMAP_ITEMS);
-    expect(
-      getVisiblePlannedPages(readRoadmapFilters(new URLSearchParams())),
-    ).toEqual(ROADMAP_PLANNED_PAGES);
+    expect(getVisiblePages(readRoadmapFilters(new URLSearchParams()))).toEqual(
+      ROADMAP_PAGES,
+    );
     expect(ROADMAP_ITEMS.map((item) => item.id)).toEqual(before);
   });
 });

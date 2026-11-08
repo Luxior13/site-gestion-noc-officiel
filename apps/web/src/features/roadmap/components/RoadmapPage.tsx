@@ -31,7 +31,7 @@ import { ROADMAP_AREAS, ROADMAP_ITEMS } from '../roadmap.constants';
 import {
   getRoadmapQueryCorrection,
   getVisibleCoverage,
-  getVisiblePlannedPages,
+  getVisiblePages,
   getVisibleRoadmapItems,
   readRoadmapFilters,
   ROADMAP_DEFAULT_VIEW,
@@ -39,7 +39,7 @@ import {
   ROADMAP_VIEWS,
   type RoadmapView,
 } from '../roadmap-search';
-import { ROADMAP_PLANNED_PAGES } from '../roadmap-site-plan.data';
+import { ROADMAP_PAGES } from '../roadmap-site-plan.data';
 import type { RoadmapAreaId } from '../types/roadmap.types';
 import { RoadmapChantiersView } from './RoadmapChantiersView';
 import { RoadmapCoverageView } from './RoadmapCoverageView';
@@ -62,13 +62,17 @@ const countVisible = (
   query: string,
 ): number => {
   const scope = { areaId, query };
-  if (view === 'pages') return getVisiblePlannedPages(scope).length;
+  if (view === 'pages') return getVisiblePages(scope).length;
   if (view === 'couverture') return getVisibleCoverage(scope).length;
 
   return getVisibleRoadmapItems(scope).length;
 };
 
 type Focus = { id: string; kind: 'item' | 'page' };
+
+/** Pages already on the site, completed later or not, and pages to build. */
+const IN_PLACE_PAGES = ROADMAP_PAGES.filter((page) => page.delivered).length;
+const PAGES_TO_BUILD = ROADMAP_PAGES.length - IN_PLACE_PAGES;
 
 /**
  * Read-only roadmap (7 November 2026): views of one plan, chantiers by pole
@@ -130,7 +134,7 @@ export function RoadmapPage(): React.ReactNode {
           contentClassName={cn(directoryStyles.directory, 'space-y-4')}
         >
           <PageIdentityHero
-            description="Ce qui reste à construire pour la structure, pôle par pôle ; ce qui existe déjà n’y figure pas. Les étapes suggèrent un ordre, sans date promise ; le prochain chantier reste à choisir."
+            description="Ce qui reste à construire pour la structure, pôle par pôle ; la vue Pages et onglets montre aussi ce qui est déjà en place. Les étapes suggèrent un ordre, sans date promise ; le prochain chantier reste à choisir."
             icon={<ClipboardList aria-hidden="true" />}
             meta={
               <div className="flex flex-wrap gap-2">
@@ -138,8 +142,9 @@ export function RoadmapPage(): React.ReactNode {
                   {ROADMAP_ITEMS.length} chantiers
                 </Badge>
                 <Badge variant="outline">
-                  {ROADMAP_PLANNED_PAGES.length} pages
+                  {PAGES_TO_BUILD} pages à construire
                 </Badge>
+                <Badge variant="outline">{IN_PLACE_PAGES} pages en place</Badge>
                 <Badge variant="outline">{ROADMAP_AREAS.length} pôles</Badge>
               </div>
             }
@@ -235,7 +240,7 @@ export function RoadmapPage(): React.ReactNode {
                 focusName={focus?.kind === 'page' ? focus.id : null}
                 onFocusDone={clearFocus}
                 onShowItem={showItem}
-                pages={getVisiblePlannedPages(scope)}
+                pages={getVisiblePages(scope)}
               />
             ) : view === 'couverture' ? (
               <RoadmapCoverageView

@@ -6,12 +6,12 @@ import {
   ROADMAP_ITEMS,
 } from './roadmap.constants';
 import { ROADMAP_COVERAGE } from './roadmap-coverage.data';
-import { ROADMAP_PLANNED_PAGES } from './roadmap-site-plan.data';
+import { ROADMAP_PAGES, ROADMAP_PLANNED_PAGES } from './roadmap-site-plan.data';
 import type {
   RoadmapAreaId,
   RoadmapCoverageRow,
   RoadmapItem,
-  RoadmapPlanPage,
+  RoadmapPageEntry,
 } from './types/roadmap.types';
 
 export const ROADMAP_SEARCH_MAX_LENGTH = 200;
@@ -143,24 +143,25 @@ export function getVisibleRoadmapItems({
   );
 }
 
-export function getVisiblePlannedPages({
-  areaId,
-  query,
-}: Scope): RoadmapPlanPage[] {
+/** Every page of the plan, in place or to deliver (« en place » finds the first). */
+export function getVisiblePages({ areaId, query }: Scope): RoadmapPageEntry[] {
   const terms = getSearchTerms(query);
 
-  return ROADMAP_PLANNED_PAGES.filter(
+  return ROADMAP_PAGES.filter(
     (page) =>
       (areaId === 'all' || page.area === areaId) &&
       matches(
         [
           page.name,
           page.summary,
+          page.upcoming,
+          page.phase === null ? 'en place' : undefined,
           chantierTitle(page.chantier),
           areaLabel(page.area),
           ...(page.tabs ?? []).flatMap((tab) => [
             tab.label,
             tab.summary,
+            tab.upcoming,
             chantierTitle(tab.chantier),
           ]),
         ],
