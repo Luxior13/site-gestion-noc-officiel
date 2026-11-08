@@ -2,17 +2,17 @@ import type { RoadmapItem } from './types/roadmap.types';
 
 export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
   {
-    area: 'people',
+    area: 'esport',
     dependsOn: [],
     description:
       'Faire évoluer les listes de choix du site sans attendre un développement.',
     doneWhen:
       'Ajouter, renommer ou archiver une valeur ne demande aucun développement et ne réécrit pas l’historique.',
     firstRelease:
-      'Chaque liste à côté de ce qu’elle classe : jeux en onglet de la page Équipes, fonctions et étiquettes en onglets du Répertoire ; ajout direct depuis un champ et champ à choix multiples réutilisable.',
+      'Chaque liste à côté de ce qu’elle classe : jeux et fonctions d’équipe en onglets de la page Équipes, jeux pratiqués choisis sur la fiche ; ajout direct depuis un champ et champ à choix multiples réutilisable. Renommer corrige une faute ; une chose qui change vraiment devient une nouvelle valeur.',
     id: 'reference-lists',
     later:
-      'Les autres listes arrivent avec leur module : catégories et moyens de paiement dans Comptes, types de matériel dans Matériel & abonnements.',
+      'Les autres listes arrivent avec leur module : fonctions de la structure dans Identité juridique, catégories et moyens de paiement dans Comptes, types de matériel dans Matériel & abonnements.',
     phase: 1,
     title: 'Listes de choix',
   },

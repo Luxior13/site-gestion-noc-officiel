@@ -17,4 +17,4 @@ première page visible du pôle pour le compte connecté
 | `/systeme/journal-activite` | [Journal d’activité](journal-activite.md) | A | Reconstruite le 30 octobre 2026 (retirée du 9 au 30 octobre) |
 
 Les alias `/administration` et `/administration/utilisateurs/*` redirigent vers
-les Utilisateurs ([routes](../../systeme/routes.md#alias-et-redirections-permanentes)).
+les Utilisateurs ([routes](../../systeme/routes.md#alias-et-redirections)).

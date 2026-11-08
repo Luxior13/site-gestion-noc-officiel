@@ -20,7 +20,7 @@ migration. Ils demandent des scénarios d’abus et une validation sur base isol
 
 | Lot | Contenu | Résultat visible |
 | --- | --- | --- |
-| 1 | Listes de choix | Onglets Fonctions et Étiquettes du Répertoire ; champ « Jeux » sur la fiche (l’onglet Jeux de la page Équipes arrive au lot 2) |
+| 1 | Listes de choix | Champ « Jeux » sur la fiche, avec ajout direct ; les onglets Jeux et Fonctions de la page Équipes arrivent au lot 2 |
 | 2 | Équipes & parcours | Page Équipes, onglet Parcours, anciens pseudos |
 | 3 | Accès manager | Un manager se connecte et ne voit que son équipe |
 
@@ -38,8 +38,11 @@ qu’une vérification du seul formulaire.
 
 **Écrans** (décision du 8 novembre 2026) : chaque liste en onglet à côté de ce
 qu’elle classe, au [gabarit A](../design/gabarits.md#a-liste-de-gestion) :
-Fonctions et Étiquettes sur `/personnes/repertoire`, Jeux sur `/esport/equipes`
-(lot 2). Aucune liste dans Système. Ajout et renommage en fenêtre. Une colonne indique le
+Jeux et Fonctions d’équipe sur `/esport/equipes` (lot 2), fonctions de la structure sur Identité
+juridique (étape 3 ; ajoutées depuis le champ du passage jusque-là). Aucune liste
+dans Système. Deux listes de fonctions : un passage dans une équipe ne propose
+que les fonctions d’équipe, un passage dans la structure que celles de la
+structure, et la base le contrôle. Ajout et renommage en fenêtre. Une colonne indique le
 nombre d’usages, pour comprendre pourquoi une valeur s’archive sans se supprimer.
 
 **Composant** : `MultiSelect` dans `components/ui`, composé de `Popover` et
@@ -58,10 +61,10 @@ lecture des valeurs suit la page qui les affiche.
 | Modèle | Contenu |
 | --- | --- |
 | `Team` | Nom, anciens noms, jeu (liste Jeux), `archivedAt`, `version` |
-| `PersonPassage` | Fiche, équipe facultative (vide pour une fonction de structure), fonction, début, fin, précision de chaque date, motif de fin, `version` |
+| `PersonPassage` | Fiche, équipe facultative (vide pour une fonction de structure), fonction, début, fin, précision de chaque date, `version` |
 | `PersonFormerNickname` | Ancien pseudo, date du changement ; écrit par le service quand le pseudo change, et cherché par le Répertoire |
 
-**Compléments de la fiche personne** : nationalité, étiquettes, adresse postale, identifiants de jeu (par jeu), contact d’urgence et représentants légaux, ces derniers étant des fiches du Répertoire liées explicitement. Les coordonnées nouvelles suivent `persons:view_contact`.
+**Compléments de la fiche personne** : nationalité, adresse postale, identifiants de jeu (par jeu), contact d’urgence et représentants légaux, ces derniers étant des fiches du Répertoire liées explicitement. Les coordonnées nouvelles suivent `persons:view_contact`.
 
 **Dates approximatives** : une date est stockée avec sa précision (année, mois,
 jour). Un début se range au premier jour de la période et une fin au dernier :
@@ -81,7 +84,9 @@ a un passage ne se supprime pas : la base le refuse et l’interface l’expliqu
 - `/esport/equipes/[id]` : membres actuels et anciens, sélecteur « À une date ».
 - Onglet Parcours de la fiche personne (`?section=parcours`), sur le modèle de
   [Coordonnées](../pages/personnes/repertoire/fiche-coordonnees.md).
-- Une seule fenêtre de passage, ouverte depuis la fiche ou depuis l’équipe.
+- Une seule fenêtre de passage, ouverte depuis la fiche, depuis le roster de
+  l’équipe (Effectif) ou, pour le bureau, depuis les Mandats d’Identité juridique.
+  Début et fin s’y saisissent, sans motif de fin.
 
 **API** : `/api/equipes`, `/api/equipes/[id]`, `/api/personnes/[id]/passages` et
 `/api/personnes/[id]/passages/[passageId]`, selon le
@@ -100,8 +105,8 @@ actions, filtre « Équipes », libellés des champs et fiches de page.
 explicite et tracée depuis la fiche utilisateur, jamais par rapprochement d’email.
 
 **Une fonction ne donne pas d’accès par son nom.** Les fonctions se renomment, donc
-le code ne peut pas chercher le mot « Manager ». Une valeur porte un réglage « Donne
-accès à son équipe ». Il ouvre des données personnelles : il exige un droit critique
+le code ne peut pas chercher le mot « Manager ». Une fonction d’équipe porte un réglage
+« Donne accès à son équipe » ; une fonction de la structure n’en a pas. Il ouvre des données personnelles : il exige un droit critique
 réservé aux Administrateurs et laisse une trace. Renommer une fonction n’y change rien.
 
 **Politique** : `features/teams/server/policy.ts` expose `canViewTeam(acteur, équipe)`,

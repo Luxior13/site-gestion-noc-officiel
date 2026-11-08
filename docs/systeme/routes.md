@@ -7,7 +7,7 @@ Relevé du 31 octobre 2026 : **13 fichiers `page.tsx`** dans `apps/web/src/app` 
 La route générique `/systeme/[[...slug]]` est remplacée le 31 octobre 2026 par
 `systeme/page.tsx` (redirection) et `systeme/parametres/page.tsx` ([SYS-14](constats.md)). Les pages de redirection
 `/administration` et `/tableau-de-bord` ont été retirées le 20 octobre 2026 :
-les alias permanents ci-dessous les couvrent ([SYS-04](constats.md)). Chaque page servie a au moins
+les alias ci-dessous les couvrent ([SYS-04](constats.md)). Chaque page servie a au moins
 une fiche dans [docs/pages](../pages/README.md) ; le contrôle documentaire
 vérifie que chaque route y est citée.
 
@@ -49,7 +49,13 @@ Ce relevé ne remplace pas la [référence des permissions](../domaines/permissi
 | `/systeme` | Redirection | Première page visible du pôle pour le compte, sinon l’accueil ; sans session, la connexion | — | [Espace Système](../pages/systeme/README.md) |
 | `/systeme/parametres` | Page | Session, `settings:view` (`settings:update` pour modifier) | commun | [Paramètres système](../pages/systeme/parametres.md) |
 
-## Alias et redirections permanentes
+## Alias et redirections
+
+Redirections temporaires (307) depuis le 8 novembre 2026 : un navigateur garde en
+cache une redirection permanente, si bien qu’après le renommage du pôle Membres
+l’ancienne réponse de `/personnes/repertoire` (vers `/membres/repertoire/repertoire`)
+renvoyait encore sur une fiche inexistante. Le site est privé : aucun moteur de
+recherche n’a besoin de la forme permanente.
 
 Déclarés dans `LEGACY_PAGE_ALIASES`
 ([routes.constants.ts](../../apps/web/src/shared/constants/routes.constants.ts))

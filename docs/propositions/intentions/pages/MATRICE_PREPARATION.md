@@ -33,7 +33,7 @@ Les anciennes routes prévues ne sont pas des « squelettes disponibles » : ell
 | Identifiant stable | Chantier | Pôle cible | Étape | Prérequis |
 | --- | --- | --- | --- | --- |
 | `sport-teams` | Équipes & parcours | Personnes | 1 | Listes de choix |
-| `reference-lists` | Listes de choix | Personnes | 1 | — |
+| `reference-lists` | Listes de choix | Esport | 1 | — |
 | `access-scopes` | Accès & responsabilités métier | Système | 2 | Équipes & parcours |
 | `compliance` | Confidentialité & conservation | Structure | 2 | Équipes & parcours |
 | `data` | Données, exports & sauvegardes | Système | 2 | Équipes & parcours |

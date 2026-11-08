@@ -13,10 +13,9 @@ la structure. Accès par les permissions `persons:*` décrites dans la
 | --- | --- | --- |
 | Répertoire | [repertoire/](repertoire/README.md) | Liste (page de référence), création, fiche Identité et Coordonnées |
 
-Alias permanents vers le Répertoire : `/membres/repertoire/*`, `/vie-interne/repertoire/*`
-([routes](../../systeme/routes.md#alias-et-redirections-permanentes)).
+Alias vers le Répertoire : `/membres/repertoire/*`, `/vie-interne/repertoire/*`
+([routes](../../systeme/routes.md#alias-et-redirections)).
 
-Les autres vues prévues du pôle (onglets Fonctions et Étiquettes du Répertoire,
-adhésions, recrutement, arrivées et départs, salariés ; équipes et tournois
+Les autres vues prévues du pôle (adhésions, recrutement, arrivées et départs, salariés ; équipes et tournois
 relèvent du pôle Esport) sont des chantiers de la [feuille de route](../../propositions/feuille-de-route.md) ;
 elles reçoivent une fiche lors de leur création.

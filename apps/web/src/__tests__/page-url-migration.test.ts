@@ -60,9 +60,10 @@ describe('page URL migration', () => {
     },
   );
 
-  it('keeps each redirect direct, permanent and outside its own source', () => {
+  // Never cached by the browser, so a reused address is never trapped.
+  it('keeps each redirect direct, temporary and outside its own source', () => {
     for (const redirect of PAGE_REDIRECTS) {
-      expect(redirect.permanent).toBe(true);
+      expect(redirect.permanent).toBe(false);
       expect(
         LEGACY_PAGE_ALIASES.some(
           (alias) =>
@@ -137,7 +138,7 @@ describe('page URL migration', () => {
     );
     expect(PAGE_REDIRECTS).toContainEqual({
       destination: PAGE_PATHS.roadmap,
-      permanent: true,
+      permanent: false,
       source: PAGE_PATHS.internalNews,
     });
   });
@@ -149,12 +150,12 @@ describe('page URL migration', () => {
     );
     expect(PAGE_REDIRECTS).toContainEqual({
       destination: PAGE_PATHS.roadmap,
-      permanent: true,
+      permanent: false,
       source: '/mes-notifications',
     });
     expect(PAGE_REDIRECTS).toContainEqual({
       destination: PAGE_PATHS.roadmap,
-      permanent: true,
+      permanent: false,
       source: '/tableau-de-bord/mes-notifications',
     });
   });

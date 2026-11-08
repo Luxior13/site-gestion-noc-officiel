@@ -14,9 +14,15 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
       },
       {
         label: 'Mandats',
-        managedIn: 'Fiche personne, onglet Parcours',
         phase: 3,
-        summary: 'Qui occupe quelle fonction, lu depuis les parcours.',
+        summary:
+          'Qui occupe quelle fonction de la structure, avec début et fin ; on y ajoute ou termine un mandat, avec la même fenêtre que le parcours.',
+      },
+      {
+        label: 'Fonctions',
+        phase: 3,
+        summary:
+          'Fonctions de la structure : président, trésorier, secrétaire, bénévole… Avant cet onglet, elles s’ajoutent depuis le champ du passage.',
       },
       {
         label: 'Assurances',

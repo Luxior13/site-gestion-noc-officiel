@@ -51,30 +51,12 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'people',
+    chantier: 'sport-teams',
     name: 'Répertoire',
     phase: null,
-    tabs: [
-      {
-        chantier: 'sport-teams',
-        label: 'Fiches',
-        phase: null,
-        summary: 'Toutes les fiches, avec recherche et filtres.',
-        upcoming: 'Filtres par équipe, jeu, étiquette et anciens membres.',
-      },
-      {
-        chantier: 'reference-lists',
-        label: 'Fonctions',
-        phase: 1,
-        summary:
-          'Ajouter, renommer, archiver ; réglage « Donne accès à son équipe ».',
-      },
-      {
-        chantier: 'reference-lists',
-        label: 'Étiquettes',
-        phase: 1,
-        summary: 'Repères libres pour classer les fiches.',
-      },
-    ],
+    summary:
+      'Liste, sans onglet : toutes les fiches, avec recherche et filtres.',
+    upcoming: 'Filtres par équipe, jeu et anciens membres.',
   },
   {
     area: 'people',
@@ -87,7 +69,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         phase: null,
         summary: 'Pseudo, nom, naissance, zone dangereuse.',
         upcoming:
-          'Statut calculé depuis le parcours, nationalité, jeux pratiqués et étiquettes.',
+          'Statut calculé depuis le parcours, nationalité et jeux pratiqués.',
       },
       {
         chantier: 'sport-teams',
@@ -102,7 +84,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         label: 'Parcours',
         phase: 1,
         summary:
-          'Passages datés : équipe ou structure, fonction, début, fin, motif de fin ; tournois joués ; anciens pseudos.',
+          'Passages datés : équipe ou structure, fonction, début et fin ; tournois joués ; anciens pseudos.',
       },
       {
         chantier: 'person-relationships',
@@ -159,6 +141,13 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         phase: 1,
         summary: 'Ajouter, renommer, archiver.',
       },
+      {
+        chantier: 'reference-lists',
+        label: 'Fonctions',
+        phase: 1,
+        summary:
+          'Fonctions d’équipe, communes à tous les jeux : joueur, remplaçant, coach, manager… ; réglage « Donne accès à son équipe ».',
+      },
     ],
   },
   {
@@ -171,7 +160,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         label: 'Effectif',
         phase: 1,
         summary:
-          'Membres actuels et anciens, composition à une date. Seul onglet d’un manager.',
+          'Le roster : membres actuels et anciens avec début et fin, composition à une date ; on y ajoute ou termine un passage. Seul onglet d’un manager, en lecture.',
       },
       {
         chantier: 'competitions',

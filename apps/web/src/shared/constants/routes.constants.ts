@@ -82,9 +82,13 @@ export const LEGACY_PAGE_ALIASES = [
   },
 ] as const;
 
+// Temporary (307) on purpose: a browser keeps a permanent redirect in its
+// cache, so an address reused later (/personnes became a pole on 8 November
+// 2026) stayed trapped in the former destination. The site is private: no
+// search engine needs the permanent form.
 export const PAGE_REDIRECTS = LEGACY_PAGE_ALIASES.map((alias) => ({
   destination: `${alias.destination}${alias.collection ? '/:path*' : ''}`,
-  permanent: true,
+  permanent: false,
   source: `${alias.source}${alias.collection ? '/:path*' : ''}`,
 }));
 

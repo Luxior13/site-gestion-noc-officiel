@@ -45,7 +45,7 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     doneWhen:
       'Retrouver qui était dans une équipe à n’importe quelle date ; corriger un passage ne crée pas une nouvelle identité.',
     firstRelease:
-      'Équipes par jeu et leurs anciens noms, passages datés (équipe ou structure, fonction, début, fin, motif de fin, dates approximatives admises), onglet Parcours, membres actuels et anciens, anciens pseudos. Fiche complétée : nationalité, étiquettes, adresse, identifiants de jeu, contact d’urgence, représentants légaux.',
+      'Équipes par jeu et leurs anciens noms, passages datés (équipe ou structure, fonction, début, fin, dates approximatives admises) saisis dans le roster de l’équipe ou sur la fiche, onglet Parcours, membres actuels et anciens, anciens pseudos. Fiche complétée : nationalité, adresse, identifiants de jeu, contact d’urgence, représentants légaux.',
     id: 'sport-teams',
     later: 'Frises et synthèses de parcours si elles servent.',
     legacyHrefs: [

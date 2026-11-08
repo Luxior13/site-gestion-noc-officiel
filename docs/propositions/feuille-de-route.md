@@ -59,6 +59,10 @@ Sur décision du propriétaire (« on peut encore tout changer, mais il faut que
 | Pôle Membres (`/membres/…`) | Pôle **Personnes** (`/personnes/…`), l’ancienne adresse redirige | Le Répertoire contient aussi candidats, anciens et contacts ; la page s’appelle déjà Fiche personne |
 | Équipes, tournois et jeux dans Membres | Pôle **Esport** | Ce ne sont pas des personnes ; c’est le pôle d’un manager |
 | Page Listes de référence (Système) | **Listes de choix**, chaque liste en onglet à côté de ce qu’elle classe | Les jeux ne se gèrent pas dans Système |
+| Une liste unique de fonctions | **Fonctions d’équipe** (onglet de la page Équipes, Esport) et **fonctions de la structure** (onglet d’Identité juridique, Structure) | Un joueur appartient à une équipe, un trésorier à la structure ; chaque passage ne propose que les fonctions de son rattachement |
+| Motif de fin d’un passage | **Retiré** : début et fin se saisissent dans le roster (Effectif) ou les Mandats | Un changement se voit au passage suivant, une exclusion a son dossier d’incident, une fin de contrat se lit dans le contrat |
+| Mandats en lecture (↗) | **Mandats modifiables**, comme l’Effectif d’une équipe | La fin d’un mandat se saisit à son endroit |
+| Étiquettes des fiches | **Retirées** ; le Répertoire reste une liste sans onglet, et le chantier Listes de choix passe dans Esport | Tout ce qu’on y mettrait a déjà sa place : fonction, statut calculé, jeux pratiqués, adhésion, contact d’organisation, Suivi, tâche |
 | Suivi sportif | **Entraînement** (Esport) | « Suivi » garde un seul sens : notes, problèmes et bans |
 | Événements & déplacements (Structure) | **Déplacements** (Esport) | Surtout LAN et bootcamps ; un événement de l’association est une réunion |
 | Page Rappels & notifications (Système) | Rappels dans **Mon travail**, règles dans **Paramètres** | Une page seulement si elle sert |
@@ -84,8 +88,8 @@ Regroupements toujours valables :
 
 Savoir qui est passé dans la structure, à quelle fonction et dans quelle équipe.
 
-- **Listes de choix** (Personnes) : Chaque liste à côté de ce qu’elle classe : jeux en onglet de la page Équipes, fonctions et étiquettes en onglets du Répertoire ; ajout direct depuis un champ et champ à choix multiples réutilisable.
-- **Équipes & parcours** (Personnes) : Équipes par jeu et leurs anciens noms, passages datés (équipe ou structure, fonction, début, fin, motif de fin, dates approximatives admises), onglet Parcours, membres actuels et anciens, anciens pseudos. Fiche complétée : nationalité, étiquettes, adresse, identifiants de jeu, contact d’urgence, représentants légaux.
+- **Listes de choix** (Esport) : Chaque liste à côté de ce qu’elle classe : jeux et fonctions d’équipe en onglets de la page Équipes, jeux pratiqués choisis sur la fiche ; ajout direct depuis un champ et champ à choix multiples réutilisable. Renommer corrige une faute ; une chose qui change vraiment devient une nouvelle valeur.
+- **Équipes & parcours** (Personnes) : Équipes par jeu et leurs anciens noms, passages datés (équipe ou structure, fonction, début, fin, dates approximatives admises) saisis dans le roster de l’équipe ou sur la fiche, onglet Parcours, membres actuels et anciens, anciens pseudos. Fiche complétée : nationalité, adresse, identifiants de jeu, contact d’urgence, représentants légaux.
 
 ## 2. Accès & conservation
 
@@ -226,12 +230,10 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 
 | Page | Onglet | Contenu | État |
 | --- | --- | --- | --- |
-| **Répertoire** | Fiches | Toutes les fiches, avec recherche et filtres. À venir (étape 1) : filtres par équipe, jeu, étiquette et anciens membres. | Livré |
-|  | Fonctions | Ajouter, renommer, archiver ; réglage « Donne accès à son équipe ». | Étape 1 |
-|  | Étiquettes | Repères libres pour classer les fiches. | Étape 1 |
-| **Fiche personne** | Identité | Pseudo, nom, naissance, zone dangereuse. À venir (étape 1) : statut calculé depuis le parcours, nationalité, jeux pratiqués et étiquettes. | Livré |
+| **Répertoire** | — | Liste, sans onglet : toutes les fiches, avec recherche et filtres. À venir (étape 1) : filtres par équipe, jeu et anciens membres. | Livré |
+| **Fiche personne** | Identité | Pseudo, nom, naissance, zone dangereuse. À venir (étape 1) : statut calculé depuis le parcours, nationalité et jeux pratiqués. | Livré |
 |  | Coordonnées | Emails, téléphones, réseaux sociaux. À venir (étape 1) : adresse, identifiants de jeu, contact d’urgence et représentants légaux. | Livré |
-|  | Parcours | Passages datés : équipe ou structure, fonction, début, fin, motif de fin ; tournois joués ; anciens pseudos. | Étape 1 |
+|  | Parcours | Passages datés : équipe ou structure, fonction, début et fin ; tournois joués ; anciens pseudos. | Étape 1 |
 |  | Adhésions ↗ | Adhésions par campagne et état de cotisation. Lu ici, se modifie dans Adhésions. | Étape 4 |
 |  | Finances ↗ | Cotisations réglées, remboursements et gains versés. Lu ici, se modifie dans Finances. | Étape 4 |
 |  | Documents ↗ | Contrats, autorisations et chartes acceptées. Lu ici, se modifie dans Documents et Contrats. | Étape 7 |
@@ -250,7 +252,8 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 | --- | --- | --- | --- |
 | **Équipes** | Équipes | Les équipes par jeu, actives ou archivées. Création en fenêtre. | Étape 1 |
 |  | Jeux | Ajouter, renommer, archiver. | Étape 1 |
-| **Fiche équipe** | Effectif | Membres actuels et anciens, composition à une date. Seul onglet d’un manager. | Étape 1 |
+|  | Fonctions | Fonctions d’équipe, communes à tous les jeux : joueur, remplaçant, coach, manager… ; réglage « Donne accès à son équipe ». | Étape 1 |
+| **Fiche équipe** | Effectif | Le roster : membres actuels et anciens avec début et fin, composition à une date ; on y ajoute ou termine un passage. Seul onglet d’un manager, en lecture. | Étape 1 |
 |  | Tournois ↗ | Tournois joués par cette équipe. Lu ici, se modifie dans Tournois. | Étape 5 |
 |  | Informations | Nom, anciens noms, jeu, archivage. | Étape 1 |
 | **Tournois** | — | Liste, sans onglet : les tournois, par jeu et par année. Création en fenêtre. | Étape 5 |
@@ -317,7 +320,8 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 | Page | Onglet | Contenu | État |
 | --- | --- | --- | --- |
 | **Identité juridique** | Identité | Dénomination, forme, identifiants, adresse. | Étape 3 |
-|  | Mandats ↗ | Qui occupe quelle fonction, lu depuis les parcours. Lu ici, se modifie dans Fiche personne, onglet Parcours. | Étape 3 |
+|  | Mandats | Qui occupe quelle fonction de la structure, avec début et fin ; on y ajoute ou termine un mandat, avec la même fenêtre que le parcours. | Étape 3 |
+|  | Fonctions | Fonctions de la structure : président, trésorier, secrétaire, bénévole… Avant cet onglet, elles s’ajoutent depuis le champ du passage. | Étape 3 |
 |  | Assurances | Assurances, affiliations, licences, marque, et leurs échéances. | Étape 3 |
 |  | Documents | Statuts et pièces officielles. | Étape 7 |
 | **Chronologie** | — | Lecture, sans onglet : les grands faits de la structure depuis ses débuts, saisis ou tirés des modules. | Étape 8 |

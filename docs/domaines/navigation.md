@@ -27,11 +27,11 @@ Révision du 8 novembre 2026, sur décision du propriétaire (« on peut encore 
 | Pôle | Question | Espaces ou vues prévus |
 | --- | --- | --- |
 | Aujourd’hui | Qu’est-ce qui m’attend ? | Mon travail (avec mes rappels), tâches, calendrier du bureau |
-| Personnes | Qui est passé par la structure ? | Répertoire (onglets Fonctions et Étiquettes), fiche personne, adhésions, recrutement, arrivées, départs et passations, salariés |
-| Esport | Quelles équipes, quels tournois ? | Équipes (onglet Jeux), fiche équipe, tournois, entraînement, déplacements |
+| Personnes | Qui est passé par la structure ? | Répertoire, fiche personne, adhésions, recrutement, arrivées, départs et passations, salariés |
+| Esport | Quelles équipes, quels tournois ? | Équipes (onglets Jeux et Fonctions d’équipe), fiche équipe, tournois, entraînement, déplacements |
 | Finances | Où en est l’argent ? | Comptes (onglets Catégories et Moyens de paiement), opérations, factures, frais, subventions et dons, contrôles, budget |
 | Relations | Avec qui à l’extérieur ? | Organisations, partenariats, communication |
-| Structure | Qu’est-ce que l’association, qu’a-t-elle décidé et gardé ? | Identité juridique, chronologie, réunions et décisions, documents, contrats, incidents, matériel et abonnements (onglet Types de matériel), bilan annuel |
+| Structure | Qu’est-ce que l’association, qu’a-t-elle décidé et gardé ? | Identité juridique (onglets Mandats et Fonctions de la structure), chronologie, réunions et décisions, documents, contrats, incidents, matériel et abonnements (onglet Types de matériel), bilan annuel |
 | Système | Comment marche l’outil ? | Comptes et accès, journal, paramètres (dont les règles de rappel), données, intégrations, feuille de route |
 
 Ce tableau décrit les lieux logiques, pas un engagement à créer autant d’entrées. Les vues rares deviennent des onglets ou actions contextuelles. Les pôles Relations, Structure et Finances s’ouvrent seulement avec leurs premiers modules utilisables.

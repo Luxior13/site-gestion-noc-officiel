@@ -25,15 +25,19 @@ Un seul objet central : le **passage**, une relation datée entre une fiche du
 | Élément | Règle |
 | --- | --- |
 | Rattachement | Une équipe, ou la structure elle-même pour une fonction de bureau ou de staff |
-| Fonction | Valeur d’une liste de référence (Joueur, Remplaçant, Manager, Président…). Le mot « rôle » reste réservé à Utilisateur et Administrateur |
+| Fonction | Valeur d’une liste de choix selon le rattachement (8 novembre 2026) : fonctions d’équipe pour une équipe (Joueur, Remplaçant, Coach, Manager…, communes à tous les jeux), fonctions de la structure pour la structure (Président, Trésorier, Secrétaire, bénévole…). Le mot « rôle » reste réservé à Utilisateur et Administrateur |
 | Début et fin | Une fin vide signifie « en cours ». Plusieurs passages simultanés sont possibles |
 | Statut dans la structure | Calculé, jamais saisi : une fiche est dans la structure si un passage est en cours à la date du jour. Sans date de fin, il reste en cours ; une date de fin atteinte le clôt toute seule |
-| Motif de fin | Fin de contrat, départ volontaire, exclusion, transfert… : une liste de référence |
 | Dates approximatives | Année, mois ou jour : une date connue à l’année se saisit à l’année, sans inventer de jour |
 | Entité juridique | Aucune exigée : l’histoire commence en 2014, la structure en 2023 et l’association en octobre 2025 |
 | Roster à une date | Se déduit des passages ; aucune composition d’équipe n’est stockée à part |
 | Anciens pseudos | Conservés, pour retrouver une personne sous le nom qu’elle portait |
 | Anciens noms d’équipe | Conservés de la même façon : une équipe change de nom sans changer d’histoire |
+
+Un passage n’a pas de motif de fin (décision du 8 novembre 2026) : la fin se
+saisit à son endroit, dans le roster de l’équipe ou les Mandats. Un changement
+d’équipe ou de fonction se voit au passage suivant, une exclusion a son dossier
+d’incident, une fin de contrat se lit dans le contrat.
 
 Une correction modifie le passage ; elle ne crée pas une nouvelle identité. Toute
 écriture est tracée dans le [journal d’activité](../references/audit-historique.md).
@@ -91,11 +95,16 @@ Une liste de choix qui peut évoluer (jeux, fonctions…) se gère sur le site, 
 développement. Une liste fixée par une règle (statut, rôle) reste dans le code.
 
 - Chaque liste se gère en onglet, à côté de ce qu’elle classe, au gabarit des
-  listes de gestion (décision du 8 novembre 2026) : Jeux dans Équipes (Esport),
-  Fonctions et Étiquettes dans le Répertoire (Personnes), Catégories et Moyens de
-  paiement dans Comptes (Finances), Types de matériel dans Matériel & abonnements
-  (Structure). Aucune liste ne se gère dans Système.
-- **Renommer** met à jour la valeur partout.
+  listes de gestion (décision du 8 novembre 2026) : Jeux et Fonctions d’équipe
+  dans Équipes (Esport), Fonctions de la structure dans Identité juridique (Structure),
+  Catégories et Moyens de paiement dans Comptes (Finances), Types de matériel
+  dans Matériel & abonnements (Structure). Aucune liste ne se gère dans Système.
+  Les fonctions de la structure s’ajoutent depuis le champ du passage tant
+  qu’Identité juridique n’est pas livrée.
+- **Renommer** corrige une faute et met à jour la valeur partout. Quand la
+  chose change vraiment (CS:GO devenu Counter-Strike 2, une fonction qui change
+  de nature), on crée une nouvelle valeur et on archive l’ancienne, qui reste sur
+  les anciens passages : l’histoire n’est pas réécrite (décision du 8 novembre 2026).
 - **Archiver** retire la valeur des choix ; elle reste affichée sur les anciens
   passages. Une valeur utilisée ne se supprime pas.
 - **Ajouter depuis le champ** : un champ à choix multiples propose de créer la
@@ -112,7 +121,8 @@ Une donnée se modifie là où on la lit.
 | Besoin | Où |
 | --- | --- |
 | Changer le parcours d’un membre | Onglet Parcours de sa fiche, en fenêtre, comme les coordonnées |
-| Ajouter ou retirer quelqu’un d’une équipe | Fiche de l’équipe, avec la même fenêtre, équipe déjà remplie |
+| Ajouter ou retirer quelqu’un d’une équipe | Fiche de l’équipe, onglet Effectif (le roster : début et fin), avec la même fenêtre, équipe déjà remplie |
+| Ajouter ou terminer un mandat du bureau | Identité juridique, onglet Mandats, avec la même fenêtre, structure déjà remplie |
 | Voir les membres actuels et anciens d’une équipe | Fiche de l’équipe |
 | Changer une liste de choix | Onglet de la liste, à côté de ce qu’elle classe, ou ajout direct depuis le champ |
 

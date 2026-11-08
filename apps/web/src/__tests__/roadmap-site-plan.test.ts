@@ -123,8 +123,11 @@ describe('planned pages and tabs', () => {
   // classifies, never in Système; « Suivi » keeps a single meaning.
   it('keeps each list of choices next to what it classifies', () => {
     const tabsOf = (name: string): string[] => getTabLabels(name);
-    expect(tabsOf('Équipes')).toContain('Jeux');
-    expect(tabsOf('Répertoire')).toEqual(['Fiches', 'Fonctions', 'Étiquettes']);
+    // Team functions go with the teams, the bureau's with the structure.
+    expect(tabsOf('Équipes')).toEqual(['Équipes', 'Jeux', 'Fonctions']);
+    expect(tabsOf('Identité juridique')).toContain('Fonctions');
+    // Tags were dropped (8 November 2026): the directory stays a single list.
+    expect(tabsOf('Répertoire')).toEqual([]);
     expect(tabsOf('Comptes')).toEqual(
       expect.arrayContaining(['Catégories', 'Moyens de paiement']),
     );
@@ -195,7 +198,9 @@ describe('planned pages and tabs', () => {
     const directory = ROADMAP_PLANNED_PAGES.find(
       (page) => page.name === 'Répertoire',
     );
-    expect(directory?.tabs?.[0]?.summary).not.toContain('Toutes les fiches');
+    expect(directory?.summary).toBe(
+      'Filtres par équipe, jeu et anciens membres.',
+    );
   });
 
   // Owner's rule of 8 November 2026: a tab read here, modified elsewhere.
