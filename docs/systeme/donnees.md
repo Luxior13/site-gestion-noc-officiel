@@ -52,6 +52,12 @@ Colonnes : nombre de champs (relations comprises), nombre d’`@@index` et
 | `PersonSocialProfile` | 14 | 5 | `Person` | Réseaux sociaux, propriétaire protégé (REP-20) |
 | `PersonDeletionTombstone` | 3 | 0 | — | Trace minimale d’une fiche supprimée |
 
+### Esport
+
+| Modèle | Champs | Index | Relations | Rôle |
+| --- | ---: | ---: | --- | --- |
+| `Game` | 10 | 1 | — | Un jeu, une section : nom unique (`normalizedName`), nom court, première ouverture avec sa précision `DatePrecision`, actif, version optimiste (8 novembre 2026) |
+
 ### Système et préparation
 
 | Modèle | Champs | Index | Relations | Rôle |
@@ -65,14 +71,14 @@ L’actualité interne redéfinira son stockage à sa reconstruction.
 ## Énumérations
 
 `UserRole`, `MfaChallengePurpose`, `MfaAuthenticationMethod`,
-`PersonStructureStatus`, `AuditFieldChangeType`, `AuditValueStorageMode`,
+`PersonStructureStatus`, `DatePrecision`, `AuditFieldChangeType`, `AuditValueStorageMode`,
 `AuditAction`, `AuditCategory`, `AuditEventKind`, `AuditStream`,
 `AuditOutcome`, `AuditSeverity`.
 
 ## Migrations
 
-**62 migrations** dans `packages/database/prisma/migrations`, de
-`20250723121213_init` à `20261031140000_shared_search_text` (règle de recherche commune, audit RL du 31 octobre 2026 : fonction `public.search_text`, miroir de `normalizeSearchText`, colonne `AuditLog.searchText` remplie par déclencheur, index trigrammes d’expression des utilisateurs, noms normalisés du Répertoire recalculés ; la garde d’ajout seul du journal n’est levée que dans cette migration, le temps de remplir la colonne des événements passés). Les précédentes, `20261031130000_audit_purge_action` et `20261031120000_audit_attempts_blocked`, ajoutent `AUDIT_PURGE` (« Journal purgé ») et `ATTEMPTS_BLOCKED` (tentatives bloquées par la limitation de débit). Repères :
+**63 migrations** dans `packages/database/prisma/migrations`, de
+`20250723121213_init` à `20261108120000_games` (table `Game` et précision de date, actions `GAME_*` et catégorie `GAME` du journal, 8 novembre 2026). Avant elle, `20261031140000_shared_search_text` (règle de recherche commune, audit RL du 31 octobre 2026 : fonction `public.search_text`, miroir de `normalizeSearchText`, colonne `AuditLog.searchText` remplie par déclencheur, index trigrammes d’expression des utilisateurs, noms normalisés du Répertoire recalculés ; la garde d’ajout seul du journal n’est levée que dans cette migration, le temps de remplir la colonne des événements passés). Les précédentes, `20261031130000_audit_purge_action` et `20261031120000_audit_attempts_blocked`, ajoutent `AUDIT_PURGE` (« Journal purgé ») et `ATTEMPTS_BLOCKED` (tentatives bloquées par la limitation de débit). Repères :
 
 | Période | Migrations notables |
 | --- | --- |

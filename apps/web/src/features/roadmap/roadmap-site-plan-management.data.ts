@@ -262,7 +262,44 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
     chantier: 'events',
     name: 'Déplacements',
     phase: 10,
-    summary: 'Onglets définis à son cadrage.',
+    summary:
+      'Liste, sans onglet : les déplacements à venir et passés, filtrés par jeu et par équipe ; création en fenêtre.',
+  },
+  {
+    area: 'esport',
+    chantier: 'events',
+    name: 'Fiche déplacement',
+    phase: 10,
+    tabs: [
+      {
+        label: 'Informations',
+        phase: 10,
+        summary:
+          'Motif (tournoi en LAN lié ou bootcamp), lieu, dates, équipe ; dates reprises au calendrier du bureau.',
+      },
+      {
+        label: 'Participants',
+        phase: 10,
+        summary:
+          'Personnes du Répertoire ; un mineur sans autorisation parentale valide est signalé.',
+      },
+      {
+        label: 'Logistique',
+        phase: 10,
+        summary: 'Transport, hébergement, horaires.',
+      },
+      {
+        label: 'Budget',
+        phase: 10,
+        summary:
+          'Budget prévu, saisi ici ; dépenses réelles lues dans les Finances (opérations, notes de frais), avec un lien.',
+      },
+      {
+        label: 'Documents',
+        phase: 10,
+        summary: 'Billets, réservations, autorisations parentales.',
+      },
+    ],
   },
   {
     area: 'finance',

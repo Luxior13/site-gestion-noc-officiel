@@ -107,7 +107,8 @@ Une liste de choix qui peut évoluer (jeux, fonctions…) se gère sur le site, 
 développement. Une liste fixée par une règle (statut, rôle) reste dans le code.
 
 - Chaque liste se gère en onglet, à côté de ce qu’elle classe, au gabarit des
-  listes de gestion (décision du 8 novembre 2026) : Jeux dans la page Jeux et
+  listes de gestion (décision du 8 novembre 2026) : Jeux dans la page Jeux (livrée
+  le 8 novembre 2026, [fiche](../pages/esport/jeux.md)) et
   Fonctions de chaque jeu dans sa fiche (Esport), Fonctions de la structure dans Bureau & staff (Structure),
   Catégories et Moyens de paiement dans Comptes (Finances), Types de matériel
   dans Matériel & abonnements (Structure). Aucune liste ne se gère dans Système.

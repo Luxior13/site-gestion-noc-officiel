@@ -14,6 +14,9 @@ export const JOURNAL_ACTION_LABELS: Record<AuditAction, string> = {
   AUDIT_PURGE: 'Journal purgé',
   AUDIT_VIEW: 'Journal consulté',
   BACKGROUND_JOB_UPDATE: 'Tâche de fond modifiée',
+  GAME_CREATE: 'Jeu ajouté',
+  GAME_DELETE: 'Jeu supprimé',
+  GAME_UPDATE: 'Jeu modifié',
   INTERNAL_ANNOUNCEMENT_PIN_UPDATE: 'Annonce épinglée ou désépinglée',
   INTERNAL_ANNOUNCEMENT_PUBLISH: 'Annonce publiée',
   LOGIN_FAILED: 'Connexion échouée',
@@ -75,6 +78,14 @@ export const PERSON_FIELD_LABELS: Readonly<Record<string, string>> = {
   profileUrl: 'Lien du profil',
   structureStatus: 'Statut dans la structure',
 };
+
+/** Game fields recorded in `before` / `after`, in display order. */
+export const GAME_FIELD_LABELS: ReadonlyArray<readonly [string, string]> = [
+  ['name', 'Nom'],
+  ['shortName', 'Nom court'],
+  ['firstOpened', 'Première ouverture'],
+  ['isActive', 'Actif'],
+];
 
 /** Account fields recorded in `before` / `after`, in display order. */
 export const USER_FIELD_LABELS: ReadonlyArray<readonly [string, string]> = [

@@ -24,6 +24,7 @@ export type {
   AuditEncryptionKeyVersion,
   AuditFieldChange,
   AuditLog,
+  Game,
   MfaLoginChallenge,
   MfaRecoveryCode,
   Person,

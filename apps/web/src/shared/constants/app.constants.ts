@@ -86,6 +86,24 @@ export const NAV_SPACES: NavigationSpace[] = [
     tone: 'internal',
   },
   {
+    description: 'Les jeux de la structure, leurs équipes et leurs tournois.',
+    href: PAGE_PATHS.games,
+    icon: 'Gamepad2',
+    id: 'esport',
+    label: 'Esport',
+    matchHrefs: ['/esport'],
+    sections: [
+      {
+        id: 'sections',
+        items: [featureNavigation(FEATURES.games)],
+        label: 'Sections',
+        position: 'top',
+      },
+    ],
+    summary: 'Quelles équipes, quels tournois',
+    tone: 'esport',
+  },
+  {
     description: 'Comptes, sécurité, configuration et projet.',
     href: '/systeme',
     icon: 'Settings',

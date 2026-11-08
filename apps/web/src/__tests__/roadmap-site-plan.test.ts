@@ -127,6 +127,10 @@ describe('planned pages and tabs', () => {
     // Each game has its own functions, in its fiche (8 November 2026).
     expect(tabsOf('Jeux')).toEqual([]);
     expect(tabsOf('Fiche jeu')).toContain('Fonctions');
+    // Money read at each level, entered once in Finances (8 November 2026).
+    expect(tabsOf('Fiche jeu')).toContain('Finances');
+    expect(tabsOf('Fiche équipe')).toContain('Finances');
+    expect(tabsOf('Fiche équipe')).toContain('Partenaires');
     expect(tabsOf('Bureau & staff')).toEqual(['Effectif', 'Fonctions']);
     expect(tabsOf('Identité juridique')).not.toContain('Fonctions');
     // Tags were dropped (8 November 2026): the directory stays a single list.
@@ -181,8 +185,8 @@ describe('planned pages and tabs', () => {
       'Fiche équipe',
       'Tournois',
       'Fiche tournoi',
-      'Entraînement',
       'Déplacements',
+      'Fiche déplacement',
     ]);
   });
 

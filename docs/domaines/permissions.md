@@ -86,7 +86,7 @@ La migration conserve les accès effectifs aux coordonnées des comptes existant
 - Une page future ne justifie pas un droit actif. Les capacités futures restent
   dans `ROADMAP_PERMISSIONS` jusqu'à la mise en ligne complète du module.
 
-L'éditeur affiche deux pôles : **Personnes** (`internal`) et **Système** (`system`).
+L'éditeur affiche trois pôles : **Personnes** (`internal`), **Esport** (`esport`, depuis le 8 novembre 2026) et **Système** (`system`).
 Sa projection [permission-editor-view](../../apps/web/src/components/users/permission-editor-view.ts)
 croise le catalogue technique avec la disponibilité du registre des fonctionnalités.
 Les pôles vides ne sont pas proposés. Le journal d'activité est actif depuis le
@@ -97,7 +97,7 @@ Les pôles vides ne sont pas proposés. Le journal d'activité est actif depuis 
 La hiérarchie visible est : **Pôle → Page ou fonction → Rubrique →
 Autorisation**.
 
-- pôles `Personnes` et `Système` ;
+- pôles `Personnes`, `Esport` et `Système` ;
 - pages `Répertoire`, `Utilisateurs`, `Journal d'activité` et `Paramètres système` ;
 - la provenance des champs (`audit:view_field_history`) est retirée le
   27 octobre 2026 avec son écran, sa route et sa clé enregistrée ; le bouton
@@ -310,6 +310,17 @@ depuis l'ancien droit effectif de modification. Elle respecte les nouveaux
 choix explicites déjà présents, exclut le compte protégé et les tombstones
 supprimés, et ne réécrit aucun audit.
 
+### Page Jeux
+
+Première page du pôle Esport (8 novembre 2026). Les deux permissions peuvent être
+accordées individuellement à un USER ; preset `false` pour USER et `true` pour
+ADMIN, sans retrait possible ; le compte racine les possède implicitement.
+
+| Clé canonique | Action couverte | Dépend de | Risque | Step-up à l'usage |
+| --- | --- | --- | --- | --- |
+| `games:view` | consulter la liste des jeux et leur première ouverture | — | défaut | Non |
+| `games:manage` | ajouter, modifier, rendre actif ou non, supprimer un jeu qui n’a jamais servi | `games:view` | sensible | Non |
+
 ### Page Sponsors & partenaires (planifiée)
 
 Le module a été retiré le 21 septembre 2026 et sera reconstruit plus tard. Ses
@@ -361,6 +372,7 @@ pas en droits délégables individuellement.
 | `/personnes/repertoire/[id]`                       | `persons:view` pour l'identité ; coordonnées via `persons:view_contact` ; mutations via `persons:update`, `persons:update_contact` ou `persons:delete`                                                                  |
 | `/tableau-de-bord`                                   | alias de support redirigeant vers `/` ; aucune permission supplémentaire                                                                                   |
 | `/administration`                                    | route de support redirigeant vers les utilisateurs                                                                                                         |
+| `/esport/jeux`                                       | `games:view` pour lire ; `games:manage` pour ajouter, modifier et supprimer ; l’API refait le contrôle dans sa transaction |
 | `/systeme/utilisateurs`                       | `users:view`                                                                                                                                               |
 | `/systeme/utilisateurs/nouveau`               | `users:create`, donc aussi `users:view`                                                                                                                    |
 | `/systeme/utilisateurs/[id]?section=profile`  | lecture de fiche, contact, profil et identifiant via les clés `users:*` correspondantes                                                                    |

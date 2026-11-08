@@ -106,6 +106,7 @@ Ses mots-clés (`keywords`) alimentent la recherche rapide de l’en-tête.
 | --- | --- | --- | --- | --- |
 | `dashboard` | Mon travail | Aujourd’hui | `/` | `live` |
 | `persons` | Répertoire | Personnes | `/personnes/repertoire` | `live` |
+| `games` | Jeux | Esport | `/esport/jeux` | `live` (8 novembre 2026) |
 | `users` | Utilisateurs | Système | `/systeme/utilisateurs` | `live` |
 | `systemSettings` | Paramètres système | Système | `/systeme/parametres` | `live` |
 | `roadmap` | Feuille de route | Système | `/systeme/feuille-de-route` | `live` |

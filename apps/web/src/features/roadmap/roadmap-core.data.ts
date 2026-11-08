@@ -195,7 +195,7 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     doneWhen:
       'Les pièces signées et conditions historiques ne sont pas réécrites après un changement.',
     firstRelease:
-      'Parties, entité signataire, période, obligations, avenants, échéances et pièces.',
+      'Parties, entité signataire, période, obligations, avenants, échéances et pièces ; la date de fin d’un contrat de joueur s’affiche seule dans le Roster de son équipe.',
     id: 'contracts',
     later: 'Signature externe et renouvellements guidés.',
     legacyHrefs: ['/bureau-juridique/contrats'],

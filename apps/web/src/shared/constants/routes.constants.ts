@@ -1,6 +1,7 @@
 /** Stable page destinations, independent of navigation labels and API paths. */
 export const PAGE_PATHS = {
   account: '/mon-compte',
+  games: '/esport/jeux',
   home: '/',
   internalNews: '/activite/actualites',
   login: '/login',

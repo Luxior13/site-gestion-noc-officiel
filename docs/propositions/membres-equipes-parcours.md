@@ -29,7 +29,7 @@ Confidentialité & conservation et Données, exports & sauvegardes complètent l
 
 ## Lot 1 — Listes de choix
 
-**Données** : une table `ReferenceValue` pour toutes les listes (`list`, `label`,
+**Données** : les jeux ont leur table `Game`, livrée le 8 novembre 2026 avec la page Jeux (nom unique, nom court, première ouverture et sa précision, actif) ; une table `ReferenceValue` pour les autres listes (`list`, `label`,
 libellé normalisé, `archivedAt`, `version`, et le jeu pour les fonctions d’un jeu),
 unique par liste (et jeu) et libellé normalisé,
 et une table de liaison `PersonGame`. Une table commune évite une page, une API et
@@ -79,15 +79,16 @@ a un passage ne se supprime pas : la base le refuse et l’interface l’expliqu
 
 **Écrans** :
 
-- `/esport/jeux` : accueil d’Esport, au gabarit A, sans onglet : les sections,
+- `/esport/jeux` (première version livrée le 8 novembre 2026, sans les équipes) : accueil d’Esport, au gabarit A, sans onglet : les sections,
   actives ou archivées, chacune avec ses équipes en dessous ; une équipe ouvre sa
   fiche en un clic, le nom du jeu ouvre la fiche jeu (décision du 8 novembre 2026).
 - `/esport/jeux/[id]` : fiche jeu, onglets Équipes (principale, académie…, créées
   en fenêtre puisqu’elles ont deux champs), Finances ↗ et Fonctions (celles de ce
   jeu, réglage « Donne accès à son équipe »).
 - `/esport/equipes/[id]` : fiche équipe, sous son jeu, onglets Roster (membres
-  actuels et anciens, sélecteur « À une date »), Tournois ↗ et Informations (nom,
-  anciens noms, archivage).
+  actuels et anciens, sélecteur « À une date »), Tournois ↗, Entraînements,
+  Finances ↗ (invisible pour un manager), Partenaires ↗ et Informations (nom, anciens noms,
+  archivage).
 - Page Bureau & staff (pôle Structure) : onglet Effectif, le roster de la
   structure (bureau, staff, bénévoles, depuis 2014), et onglet Fonctions.
 - Onglet Parcours de la fiche personne (`?section=parcours`), en lecture ↗ :

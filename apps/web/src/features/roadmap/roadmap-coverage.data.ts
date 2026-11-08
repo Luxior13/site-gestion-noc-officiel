@@ -98,7 +98,7 @@ export const ROADMAP_COVERAGE: readonly RoadmapCoverageRow[] = [
   },
   {
     chantiers: ['sports-follow-up'],
-    subject: 'Suivi quotidien d’une équipe',
+    subject: 'Travail quotidien d’une équipe',
   },
   {
     chantiers: ['communication'],

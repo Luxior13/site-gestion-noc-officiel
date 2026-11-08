@@ -39,6 +39,8 @@ ce relevé n’est pas une revue de sécurité.
 
 | Route | Méthodes | Protections relevées |
 | --- | --- | --- |
+| `/api/jeux` | GET, POST | `games:view` ; POST `games:manage`. Nom unique quels que soient la casse et les accents (409 avec le détail du champ) |
+| `/api/jeux/[id]` | PATCH, DELETE | `games:manage`, version attendue ; ajout, modification et suppression tracés dans la même transaction |
 | `/api/personnes` | GET, POST | `persons:view` ; POST `persons:create`. GET renvoie `overview`, compteurs à facettes des filtres rapides (20 octobre 2026) |
 | `/api/personnes/[id]` | GET, PATCH, DELETE | `persons:view`, `persons:update`, `persons:delete` |
 | `/api/personnes/[id]/emails` | POST | `persons:update_contact` |

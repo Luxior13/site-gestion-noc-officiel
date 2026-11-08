@@ -128,9 +128,11 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
     area: 'esport',
     chantier: 'sport-teams',
     name: 'Jeux',
-    phase: 1,
+    phase: null,
     summary:
-      'Liste, sans onglet : les sections de la structure, actives ou archivées, chacune avec ses équipes en dessous ; une équipe ouvre sa fiche et son roster en un clic, le nom du jeu ouvre sa fiche. Ajouter un jeu, l’archiver quand la section ferme, le renommer seulement pour corriger une faute. C’est aussi la liste de choix des jeux.',
+      'Liste, sans onglet : les sections de la structure, les actives en tête, chacune avec une icône de manette par défaut, avec recherche et filtre ; ajout et modification en fenêtre (nom, nom court, première ouverture, actif), renommer seulement pour corriger une faute. C’est aussi la liste de choix des jeux.',
+    upcoming:
+      'Les équipes sous chaque jeu : une équipe ouvre sa fiche et son roster en un clic, le nom du jeu ouvre sa fiche ; l’image de chaque jeu à la place de la manette.',
   },
   {
     area: 'esport',
@@ -150,7 +152,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         managedIn: 'Finances',
         phase: 3,
         summary:
-          'Ce que la section coûte et rapporte, détaillé par équipe : inscriptions, gains, déplacements et autres opérations liées au jeu ou à ses équipes ; budget comparé au réalisé avec la fiche budget.',
+          'Total de la section : ses équipes, plus les opérations liées au jeu lui-même (licence, matériel commun) ; détaillé par équipe.',
       },
       {
         chantier: 'reference-lists',
@@ -171,7 +173,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         label: 'Roster',
         phase: 1,
         summary:
-          'Joueurs et encadrement actuels et anciens, avec début et fin ; composition à une date ; on y ajoute ou termine un passage. Seule fiche d’un manager, en lecture.',
+          'Joueurs et encadrement actuels et anciens, avec début et fin ; composition à une date ; on y ajoute ou termine un passage. Date de fin de contrat affichée seule, lue dans les contrats (étape 7). Seule fiche d’un manager, en lecture.',
       },
       {
         chantier: 'competitions',
@@ -180,6 +182,29 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         phase: 5,
         summary:
           'Tournois joués par cette équipe, avec son classement. Un manager les voit et crée ceux de son équipe, sans les gains ni le Suivi.',
+      },
+      {
+        chantier: 'sports-follow-up',
+        label: 'Entraînements',
+        phase: 10,
+        summary:
+          'Séances : date, type (entraînement, scrim, bootcamp), présents, objectif ou débrief court ; nombre de séances et de présents par saison, pour le bilan et les subventions. Un manager remplit celles de son équipe.',
+      },
+      {
+        chantier: 'payments',
+        label: 'Finances',
+        managedIn: 'Finances',
+        phase: 3,
+        summary:
+          'Ce que l’équipe coûte et rapporte : inscriptions, gains, déplacements et autres opérations liées à l’équipe ; enveloppe de budget comparée au réalisé. Invisible pour un manager.',
+      },
+      {
+        chantier: 'partnerships',
+        label: 'Partenaires',
+        managedIn: 'Partenariats',
+        phase: 7,
+        summary:
+          'Les partenaires qui soutiennent cette équipe et ce qu’elle leur doit (logo sur le maillot, publications, présence). Un manager les voit, sans les montants.',
       },
       {
         label: 'Informations',
@@ -252,13 +277,6 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
     area: 'people',
     chantier: 'recruitment',
     name: 'Recrutement',
-    phase: 10,
-    summary: 'Onglets définis à son cadrage.',
-  },
-  {
-    area: 'esport',
-    chantier: 'sports-follow-up',
-    name: 'Entraînement',
     phase: 10,
     summary: 'Onglets définis à son cadrage.',
   },
@@ -344,7 +362,8 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
       {
         label: 'Accord',
         phase: 7,
-        summary: 'Parties, période, contreparties, état.',
+        summary:
+          'Parties, équipe ou jeu soutenu (facultatif), période, contreparties, état.',
       },
       {
         label: 'Livrables',

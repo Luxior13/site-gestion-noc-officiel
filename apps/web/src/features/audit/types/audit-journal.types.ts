@@ -9,6 +9,7 @@ export const JOURNAL_TYPES = [
   'security',
   'accounts',
   'persons',
+  'games',
   'settings',
 ] as const;
 export type JournalType = (typeof JOURNAL_TYPES)[number];
@@ -30,6 +31,7 @@ export const JOURNAL_PERIOD_LABELS: Record<JournalPeriod, string> = {
 export const JOURNAL_TYPE_LABELS: Record<JournalType, string> = {
   accounts: 'Comptes et droits',
   all: 'Tous',
+  games: 'Jeux',
   persons: 'Personnes',
   security: 'Sécurité',
   settings: 'Paramètres',

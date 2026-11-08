@@ -71,6 +71,9 @@
   --color-nav-dashboard: var(--nav-dashboard);
   --color-nav-dashboard-icon: var(--nav-dashboard-icon);
   --color-nav-dashboard-foreground: var(--nav-dashboard-foreground);
+  --color-nav-esport: var(--nav-esport);
+  --color-nav-esport-icon: var(--nav-esport-icon);
+  --color-nav-esport-foreground: var(--nav-esport-foreground);
   --color-nav-internal: var(--nav-internal);
   --color-nav-internal-icon: var(--nav-internal-icon);
   --color-nav-internal-foreground: var(--nav-internal-foreground);
@@ -245,6 +248,10 @@
   --nav-dashboard: #2dd4bf;
   --nav-dashboard-icon: #5eead4;
   --nav-dashboard-foreground: #ccfbf1;
+  /* Esport: violet, the colour of games (8 November 2026). */
+  --nav-esport: #a78bfa;
+  --nav-esport-icon: #c4b5fd;
+  --nav-esport-foreground: #ede9fe;
   --nav-internal: #38bdf8;
   --nav-internal-icon: #7dd3fc;
   --nav-internal-foreground: #e0f2fe;

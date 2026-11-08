@@ -9,7 +9,7 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     doneWhen:
       'Ajouter, renommer ou archiver une valeur ne demande aucun développement et ne réécrit pas l’historique.',
     firstRelease:
-      'Chaque liste à côté de ce qu’elle classe : jeux sur la page Jeux, fonctions de chaque jeu en onglet de sa fiche, fonctions de la structure en onglet de Bureau & staff, jeux pratiqués choisis sur la fiche ; ajout direct depuis un champ et champ à choix multiples réutilisable. Renommer corrige une faute ; une chose qui change vraiment devient une nouvelle valeur.',
+      'Chaque liste à côté de ce qu’elle classe (la page Jeux est livrée depuis le 8 novembre 2026) : fonctions de chaque jeu en onglet de sa fiche, fonctions de la structure en onglet de Bureau & staff, jeux pratiqués choisis sur la fiche ; ajout direct depuis un champ et champ à choix multiples réutilisable. Renommer corrige une faute ; une chose qui change vraiment devient une nouvelle valeur.',
     id: 'reference-lists',
     later:
       'Les autres listes arrivent avec leur module : catégories et moyens de paiement dans Comptes, types de matériel dans Matériel & abonnements.',
@@ -104,7 +104,7 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     doneWhen:
       'Une négociation n’écrase pas un accord actif ; chaque livrable est suivi.',
     firstRelease:
-      'Opportunités, responsables, engagements, livrables et échéances liés aux contrats.',
+      'Opportunités, responsables, engagements, livrables et échéances liés aux contrats ; un partenariat peut soutenir une équipe ou un jeu précis, et apparaît alors sur sa fiche.',
     id: 'partnerships',
     later: 'Bilans partenaires, suivi des contreparties et renouvellements.',
     phase: 7,
@@ -356,13 +356,13 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
   },
   {
     area: 'esport',
-    dependsOn: ['sport-teams'],
+    dependsOn: ['sport-teams', 'access-scopes'],
     description:
-      'Outiller les managers si le travail quotidien d’une équipe doit vivre ici.',
+      'Garder la trace de l’activité d’une équipe : ses séances et qui y était.',
     doneWhen:
-      'Un manager ne voit que son équipe ; rien ne double le site public.',
+      'Un manager ne voit et ne remplit que son équipe ; rien ne double le site public ni les outils de jeu.',
     firstRelease:
-      'Entraînements, présences, objectifs, débriefs et préparation, à choisir au cadrage.',
+      'Onglet Entraînements de la fiche équipe : séances (date, type, présents, objectif ou débrief court), comptées par saison pour le bilan et les subventions ; le manager remplit celles de son équipe.',
     id: 'sports-follow-up',
     later: 'Statistiques et analyse vidéo, si elles servent.',
     legacyHrefs: [
@@ -377,12 +377,13 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
   },
   {
     area: 'esport',
-    dependsOn: ['tasks', 'payments'],
+    dependsOn: ['tasks', 'payments', 'competitions', 'documents'],
     description:
       'Organiser les déplacements en LAN et en bootcamp, et en garder le dossier.',
     doneWhen:
-      'Un déplacement relie participants, frais et documents sans les recopier.',
-    firstRelease: 'Participants, hébergement, transport, budget et pièces.',
+      'Un déplacement relie participants, frais et documents sans les recopier ; un mineur sans autorisation parentale enregistrée est signalé.',
+    firstRelease:
+      'Page et fiche déplacement : motif (tournoi en LAN ou bootcamp), lieu, dates, équipe ; participants ; logistique ; budget prévu face aux dépenses réelles des Finances ; documents.',
     id: 'events',
     later: 'Événements ouverts au public et billetterie.',
     phase: 10,

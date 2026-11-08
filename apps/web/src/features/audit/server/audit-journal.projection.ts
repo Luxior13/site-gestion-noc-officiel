@@ -35,6 +35,7 @@ import type {
 import {
   BLOCKED_ATTEMPT_PROOFS,
   BLOCKED_ATTEMPT_STEPS,
+  GAME_FIELD_LABELS,
   JOURNAL_ACTION_LABELS,
   LOGIN_FAILURE_REASONS,
   PERSON_FIELD_LABELS,
@@ -201,6 +202,29 @@ const projectUserChanges = (
   });
 };
 
+/** A game records its readable values in `before` / `after` (8 November 2026). */
+const projectGameChanges = (
+  metadata: Record<string, unknown>,
+): JournalChange[] => {
+  const before = isRecord(metadata.before) ? metadata.before : {};
+  const after = isRecord(metadata.after) ? metadata.after : {};
+
+  return GAME_FIELD_LABELS.flatMap(([key, label]) => {
+    if (!Object.hasOwn(before, key) && !Object.hasOwn(after, key)) return [];
+
+    return [
+      {
+        // Keys come from the fixed GAME_FIELD_LABELS list.
+        // eslint-disable-next-line security/detect-object-injection
+        after: formatValue(key, after[key]),
+        // eslint-disable-next-line security/detect-object-injection
+        before: formatValue(key, before[key]),
+        label,
+      },
+    ];
+  });
+};
+
 const permissionLabels = (value: unknown): string | null => {
   if (!Array.isArray(value) || value.length === 0) return null;
 
@@ -319,6 +343,7 @@ const toneOf = (row: AuditLog): JournalTone => {
 
 const typeLabelOf = (row: AuditLog): string => {
   if (row.category === 'PERSON') return 'Personnes';
+  if (row.category === 'GAME') return 'Jeux';
   if (row.stream === 'AUTHENTICATION' || row.stream === 'SECURITY')
     return 'Sécurité';
   if (row.category === 'USER' || row.category === 'PERMISSION')
@@ -344,6 +369,8 @@ const subjectOf = (
     typeof metadata.settingKey === 'string'
   )
     return SETTING_JOURNAL_LABELS[metadata.settingKey] ?? 'Paramètre';
+  if (row.category === 'GAME' && typeof metadata.gameName === 'string')
+    return `Jeu : ${metadata.gameName}`;
   if (
     row.action === 'AUDIT_PURGE' &&
     typeof metadata.deletedEvents === 'number'
@@ -395,7 +422,9 @@ export const projectJournalEvent = (
     ? row.fieldChanges.map((change) => projectPersonChange(row, change, rights))
     : row.action === 'SYSTEM_SETTING_UPDATE'
       ? projectSettingChanges(metadata)
-      : projectUserChanges(row, metadata, rights);
+      : row.category === 'GAME'
+        ? projectGameChanges(metadata)
+        : projectUserChanges(row, metadata, rights);
 
   return {
     actor:

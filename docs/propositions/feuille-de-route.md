@@ -14,7 +14,7 @@ Décisions du propriétaire du 7 novembre 2026, qui remplacent le plan du 9 octo
 
 ## État réel et lecture du plan
 
-Les comptes et leur sécurité, le répertoire, les paramètres techniques et le journal d’activité existent. Les paramètres actuels ne constituent pas un profil juridique métier. La navigation rapide de l’en-tête donne un accès direct aux pages autorisées ; elle ne parcourt pas encore de dossiers métier. Le module partenaires a été retiré le 21 septembre 2026 et le module notifications le 9 octobre 2026. Les migrations historiques ne prouvent pas qu’un modèle ou un écran est encore présent.
+Les comptes et leur sécurité, le répertoire, les paramètres techniques, le journal d’activité et la page Jeux (pôle Esport, 8 novembre 2026) existent. Les paramètres actuels ne constituent pas un profil juridique métier. La navigation rapide de l’en-tête donne un accès direct aux pages autorisées ; elle ne parcourt pas encore de dossiers métier. Le module partenaires a été retiré le 21 septembre 2026 et le module notifications le 9 octobre 2026. Les migrations historiques ne prouvent pas qu’un modèle ou un écran est encore présent.
 
 - La feuille de route ne décrit que **ce qui reste à construire** (décision du propriétaire du 8 novembre 2026 : « tout ce qui est déjà en place peut être retiré »). Un chantier sur un module existant ne nomme que son reste à faire ; une page ou un onglet déjà livrés n’apparaissent sur la page que pour ce qu’un chantier doit encore leur ajouter.
 - Le plan se lit par pôle. Les étapes sont un **ordre suggéré** pour aider à l’implémentation, sans dates promises : **le propriétaire choisit le prochain chantier** (décision du 7 novembre 2026 : « je ne veux pas que ce soit par étape mais par pôle ; les étapes, c’est plus pour aider à l’implémentation, mais c’est moi qui choisirais »). Chaque étape reste courte et livre un ensemble utilisable.
@@ -64,8 +64,11 @@ Sur décision du propriétaire (« on peut encore tout changer, mais il faut que
 | Mandats et fonctions de la structure dans Identité juridique (étape 3) | Page **Bureau & staff** (Structure, étape 1) : Effectif de la structure et Fonctions ; Identité juridique garde Identité, Assurances, Documents | Une équipe a son effectif, la structure le sien ; le bureau se saisit dès l’étape 1, sans dépendre d’une entité juridique, et un graphiste n’a pas de mandat |
 | Parcours modifiable sur la fiche | **Parcours en lecture ↗** ; anciens pseudos dans Identité | La fiche lit les deux effectifs, chaque passage se saisit à son endroit |
 | Page Équipes et fiche équipe | Page **Jeux**, accueil d’Esport ; **fiche jeu** : Équipes, Finances ↗, Fonctions (celles de ce jeu) ; **fiche équipe**, sous son jeu : Roster, Tournois ↗, Informations | Une structure esport s’organise par jeu, puis par équipe ; le roster vit dans son équipe, sans doublon au niveau du jeu |
-| Argent d’une section introuvable | Onglet **Finances ↗** de la fiche jeu ; une opération se lie à un jeu ou à une équipe | Le site sert d’abord à la trésorerie : savoir ce qu’une section coûte et rapporte |
+| Fiche équipe sans partenaires ni contrats | Onglet **Partenaires ↗** (partenaires de l’équipe et ce qu’elle leur doit ; le manager les voit sans les montants) ; **date de fin de contrat** affichée seule dans le Roster | Une équipe honore ses livrables ; les départs se préparent avant la fin des contrats, dont les conditions restent confidentielles |
+| Argent d’une section introuvable | Onglet **Finances ↗** de la fiche jeu (total de la section) et de la fiche équipe (son coût, ses gains, son budget, invisible pour un manager) ; une opération se lie à un jeu ou à une équipe | Le site sert d’abord à la trésorerie : savoir ce qu’une section coûte et rapporte |
 | Fiche tournoi à classement unique | **Line-up et classement par équipe** dans Participants, gains par équipe ; organisateur relié à sa fiche organisation ; « règles du tournoi » ; en ligne ou LAN ; état calculé ; le manager crée et remplit les tournois de son équipe | Deux équipes d’un même jeu ne finissent pas à la même place ; « Règlements » désigne l’argent |
+| Page Entraînement | Onglet **Entraînements** de la fiche équipe : séances et présents ; le manager remplit celles de son équipe | Un entraînement appartient à une équipe ; il sert surtout à la traçabilité (bilan, subventions) |
+| Déplacements sans contenu | Page et **fiche déplacement** : Informations, Participants (mineurs sans autorisation signalés), Logistique, Budget (prévu face au réel), Documents | Responsabilité de l’association envers les mineurs ; argent d’une LAN suivi sans double saisie |
 | Suivi d’une personne, tout sur la fiche | Problèmes et bans d’un tournoi saisis dans **sa fiche tournoi** ; sur la personne : notes, **sanctions de la structure** (tous ses tournois ou un jeu) et bans externes ; une sanction en cours **refuse l’inscription** à un tournoi | Chaque chose se saisit à son endroit, et une sanction agit là où l’on inscrit |
 | Étiquettes des fiches | **Retirées** ; le Répertoire reste une liste sans onglet, et le chantier Listes de choix passe dans Esport | Tout ce qu’on y mettrait a déjà sa place : fonction, statut calculé, jeux pratiqués, adhésion, contact d’organisation, Suivi, tâche |
 | Suivi sportif | **Entraînement** (Esport) | « Suivi » garde un seul sens : notes, problèmes et bans |
@@ -93,7 +96,7 @@ Regroupements toujours valables :
 
 Savoir qui est passé dans la structure, à quelle fonction et dans quelle équipe.
 
-- **Listes de choix** (Esport) : Chaque liste à côté de ce qu’elle classe : jeux sur la page Jeux, fonctions de chaque jeu en onglet de sa fiche, jeux pratiqués choisis sur la fiche ; ajout direct depuis un champ et champ à choix multiples réutilisable. Renommer corrige une faute ; une chose qui change vraiment devient une nouvelle valeur.
+- **Listes de choix** (Esport) : Chaque liste à côté de ce qu’elle classe : fonctions de chaque jeu en onglet de sa fiche (la page Jeux est livrée), jeux pratiqués choisis sur la fiche ; ajout direct depuis un champ et champ à choix multiples réutilisable. Renommer corrige une faute ; une chose qui change vraiment devient une nouvelle valeur.
 - **Équipes & parcours** (Personnes) : Page Jeux, fiche de chaque jeu (ses équipes) et de chaque équipe (Roster, anciens noms), page Bureau & staff ; passages datés (équipe ou structure, fonction, début, fin, dates approximatives admises) saisis dans le Roster d’une équipe ou l’Effectif de Bureau & staff, lus dans l’onglet Parcours de la fiche, membres actuels et anciens, anciens pseudos. Fiche complétée : nationalité, adresse, identifiants de jeu, contact d’urgence, représentants légaux.
 
 ## 2. Accès & conservation
@@ -144,8 +147,8 @@ Suivre les tâches, les dates et les décisions.
 Retrouver les pièces et ce que la structure a promis.
 
 - **Documents & acceptations** (Structure) : Bibliothèque, versions, modèles et acceptations saisies par le bureau.
-- **Contrats & obligations** (Structure) : Parties, entité signataire, période, obligations, avenants, échéances et pièces.
-- **Partenariats & opportunités** (Relations) : Opportunités, responsables, engagements, livrables et échéances liés aux contrats.
+- **Contrats & obligations** (Structure) : Parties, entité signataire, période, obligations, avenants, échéances et pièces ; la date de fin d’un contrat de joueur s’affiche seule dans le Roster de son équipe.
+- **Partenariats & opportunités** (Relations) : Opportunités, responsables, engagements, livrables et échéances liés aux contrats ; un partenariat peut soutenir une équipe ou un jeu précis, et apparaît alors sur sa fiche.
 - **Mon travail & espace personnel** (Aujourd’hui) : Mes tâches, mes réunions à venir, les documents en attente et les échéances proches.
 - **Export du journal d’activité** (Système) : Export CSV ou JSON des résultats filtrés du journal d’activité.
 
@@ -171,8 +174,8 @@ Ajouter ce qui répond à un usage réel, sans le construire d’avance.
 
 - **Rappels & notifications** (Aujourd’hui) : Mes rappels dans Mon travail, liés à leur source ; règles limitées dans Paramètres système, avec historique d’exécution.
 - **Intégrations & publication publique** (Système) : Publication validée des équipes et des parcours vers noctambule.gg, avec des identifiants stables.
-- **Entraînement** (Esport) : Entraînements, présences, objectifs, débriefs et préparation, à choisir au cadrage.
-- **Déplacements** (Esport) : Participants, hébergement, transport, budget et pièces.
+- **Entraînement** (Esport) : Onglet Entraînements de la fiche équipe : séances (date, type, présents, objectif ou débrief court), comptées par saison pour le bilan et les subventions ; le manager remplit celles de son équipe.
+- **Déplacements** (Esport) : Page et fiche déplacement : motif (tournoi en LAN ou bootcamp), lieu, dates, équipe ; participants, mineur sans autorisation parentale signalé ; logistique ; budget prévu face aux dépenses réelles des Finances ; documents.
 - **Salariés & paie** (Personnes) : Contrats de travail, périodes et pièces, à cadrer avec la forme juridique.
 - **Recrutement** (Personnes) : Poste ou équipe visée, essais, évaluations confidentielles et décision.
 - **Communication & contenus** (Relations) : Calendrier éditorial, ressources graphiques, audience et validation avant publication.
@@ -255,20 +258,27 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 
 | Page | Onglet | Contenu | État |
 | --- | --- | --- | --- |
-| **Jeux** | — | Liste, sans onglet : les sections de la structure, actives ou archivées, chacune avec ses équipes en dessous ; une équipe ouvre sa fiche et son roster en un clic, le nom du jeu ouvre sa fiche. Ajouter un jeu, l’archiver quand la section ferme, le renommer seulement pour corriger une faute. C’est aussi la liste de choix des jeux. | Étape 1 |
+| **Jeux** | — | Liste, sans onglet : les sections de la structure, les actives en tête, chacune avec une icône de manette par défaut, avec recherche et filtre ; ajout et modification en fenêtre (nom, nom court, première ouverture, actif), renommer seulement pour corriger une faute. C’est aussi la liste de choix des jeux. À venir (étape 1) : les équipes sous chaque jeu : une équipe ouvre sa fiche et son roster en un clic, le nom du jeu ouvre sa fiche ; l’image de chaque jeu à la place de la manette. | Livré |
 | **Fiche jeu** | Équipes | Les équipes de ce jeu (principale, académie…), actives ou archivées, avec leurs joueurs actuels ; création en fenêtre ; chaque ligne ouvre sa fiche. | Étape 1 |
-|  | Finances ↗ | Ce que la section coûte et rapporte, détaillé par équipe : inscriptions, gains, déplacements et autres opérations liées au jeu ou à ses équipes ; budget comparé au réalisé avec la fiche budget. Lu ici, se modifie dans Finances. | Étape 3 |
+|  | Finances ↗ | Total de la section : ses équipes, plus les opérations liées au jeu lui-même (licence, matériel commun) ; détaillé par équipe. Lu ici, se modifie dans Finances. | Étape 3 |
 |  | Fonctions | Les fonctions de ce jeu : joueur, remplaçant, coach, manager, ou des postes propres au jeu ; réglage « Donne accès à son équipe » ; ajouter, renommer, archiver. | Étape 1 |
-| **Fiche équipe** | Roster | Joueurs et encadrement actuels et anciens, avec début et fin ; composition à une date ; on y ajoute ou termine un passage. Seule fiche d’un manager, en lecture. | Étape 1 |
+| **Fiche équipe** | Roster | Joueurs et encadrement actuels et anciens, avec début et fin ; composition à une date ; on y ajoute ou termine un passage. Date de fin de contrat affichée seule, lue dans les contrats (étape 7). Seule fiche d’un manager, en lecture. | Étape 1 |
 |  | Tournois ↗ | Tournois joués par cette équipe, avec son classement. Un manager les voit et crée ceux de son équipe, sans les gains ni le Suivi. Lu ici, se modifie dans Tournois. | Étape 5 |
+|  | Entraînements | Séances : date, type (entraînement, scrim, bootcamp), présents, objectif ou débrief court ; nombre de séances et de présents par saison, pour le bilan et les subventions. Un manager remplit celles de son équipe. | Étape 10 |
+|  | Finances ↗ | Ce que l’équipe coûte et rapporte : inscriptions, gains, déplacements et autres opérations liées à l’équipe ; enveloppe de budget comparée au réalisé. Invisible pour un manager. Lu ici, se modifie dans Finances. | Étape 3 |
+|  | Partenaires ↗ | Les partenaires qui soutiennent cette équipe et ce qu’elle leur doit (logo sur le maillot, publications, présence). Un manager les voit, sans les montants. Lu ici, se modifie dans Partenariats. | Étape 7 |
 |  | Informations | Nom, anciens noms, jeu, archivage. | Étape 1 |
 | **Tournois** | — | Liste, sans onglet : les tournois, filtrés par jeu, équipe, année et état (à venir, en cours, terminé, calculé depuis les dates) ; chaque ligne : nom, jeu, équipes, dates, état, classement. Création en fenêtre : nom, jeu, dates, organisateur. Un manager crée ceux de son équipe. | Étape 5 |
 | **Fiche tournoi** | Informations | Nom, jeu, organisateur (sa fiche organisation), circuit ou ligue facultatif, en ligne ou LAN (lieu et déplacement lié), dates, règles du tournoi (lien ou pièce), frais d’inscription, échéances (inscription, dépôt du roster, check-in) reprises au calendrier ; état calculé depuis les dates. | Étape 5 |
 |  | Participants | Pour chacune de nos équipes engagées : line-up (membres engagés, remplaçants compris) et classement final. Une sanction de la structure en cours refuse l’inscription, avec son motif ; un ban externe du même jeu, organisateur ou circuit avertit. Un manager remplit ceux de son équipe. | Étape 5 |
 |  | Gains | Par équipe : montant annoncé, montant confirmé et répartition prévue entre les joueurs, saisis ici ; argent reçu et parts versées lus dans les Finances, avec un lien. Un résultat ne crée aucun encaissement. | Étape 5 |
 |  | Suivi | Problèmes et bans survenus pendant ce tournoi, saisis ici et visibles sur la fiche de chaque personne. Réservé aux personnes habilitées. | Étape 5 |
-| **Entraînement** | — | Onglets définis à son cadrage. | Étape 10 |
-| **Déplacements** | — | Onglets définis à son cadrage. | Étape 10 |
+| **Déplacements** | — | Liste, sans onglet : les déplacements à venir et passés, filtrés par jeu et par équipe ; création en fenêtre. | Étape 10 |
+| **Fiche déplacement** | Informations | Motif (tournoi en LAN lié ou bootcamp), lieu, dates, équipe ; dates reprises au calendrier du bureau. | Étape 10 |
+|  | Participants | Personnes du Répertoire ; un mineur sans autorisation parentale valide est signalé. | Étape 10 |
+|  | Logistique | Transport, hébergement, horaires. | Étape 10 |
+|  | Budget | Budget prévu, saisi ici ; dépenses réelles lues dans les Finances (opérations, notes de frais), avec un lien. | Étape 10 |
+|  | Documents | Billets, réservations, autorisations parentales. | Étape 10 |
 
 ### Finances
 
@@ -316,7 +326,7 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 |  | Règlements ↗ | Factures et opérations liées. Lu ici, se modifie dans Finances. | Étape 3 |
 |  | Contrats ↗ | Contrats et partenariats en cours et passés. Lu ici, se modifie dans Contrats et Partenariats. | Étape 7 |
 | **Partenariats** | — | Liste, sans onglet : opportunités et accords. | Étape 7 |
-| **Fiche partenariat** | Accord | Parties, période, contreparties, état. | Étape 7 |
+| **Fiche partenariat** | Accord | Parties, équipe ou jeu soutenu (facultatif), période, contreparties, état. | Étape 7 |
 |  | Livrables | Ce qui est promis, livré ou à renouveler. | Étape 7 |
 |  | Documents | Pièces liées à l’accord. | Étape 7 |
 | **Communication** | — | Onglets définis à son cadrage. | Étape 10 |

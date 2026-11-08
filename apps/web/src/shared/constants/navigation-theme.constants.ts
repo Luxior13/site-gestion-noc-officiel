@@ -1,5 +1,5 @@
 export type NavigationSpaceTone =
-  'dashboard' | 'internal' | 'legal' | 'system' | 'treasury';
+  'dashboard' | 'esport' | 'internal' | 'legal' | 'system' | 'treasury';
 
 export type NavigationSpaceToneClasses = {
   accent: string;
@@ -36,6 +36,18 @@ export const NAVIGATION_SPACE_TONE_CLASSES = {
     menuButton: baseMenuButton,
     row: baseRow,
     soft: 'border-nav-dashboard/25 bg-nav-dashboard/10 text-nav-dashboard-foreground',
+    subButton: baseSubButton,
+  },
+  esport: {
+    accent: 'bg-nav-esport',
+    activeItem: baseActiveItem,
+    branchButton: baseBranchButton,
+    dot: 'bg-nav-esport',
+    icon: 'border-nav-esport/30 bg-nav-esport/10 text-nav-esport-icon',
+    iconForeground: 'text-nav-esport-icon',
+    menuButton: baseMenuButton,
+    row: baseRow,
+    soft: 'border-nav-esport/25 bg-nav-esport/10 text-nav-esport-foreground',
     subButton: baseSubButton,
   },
   internal: {
@@ -94,6 +106,8 @@ export function getNavigationSpaceToneClasses(
   switch (tone) {
     case 'dashboard':
       return NAVIGATION_SPACE_TONE_CLASSES.dashboard;
+    case 'esport':
+      return NAVIGATION_SPACE_TONE_CLASSES.esport;
     case 'internal':
       return NAVIGATION_SPACE_TONE_CLASSES.internal;
     case 'legal':

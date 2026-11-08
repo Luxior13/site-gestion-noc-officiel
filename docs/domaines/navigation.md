@@ -4,12 +4,13 @@ Référence actualisée pendant la revue du 12 octobre 2026. Le catalogue des pr
 
 ## Navigation actuelle
 
-Six entrées sont déclarées dans trois pôles. Leur visibilité dépend des accès de l’utilisateur. Les noms et routes actifs proviennent du registre des fonctionnalités.
+Sept entrées sont déclarées dans quatre pôles. Leur visibilité dépend des accès de l’utilisateur. Les noms et routes actifs proviennent du registre des fonctionnalités.
 
 | Pôle actuel | Entrées actives | Placement |
 | --- | --- | --- |
 | Aujourd’hui | Mon travail `/` | Travail personnel |
 | Personnes | Répertoire `/personnes/repertoire` | Personnes et contacts de la structure |
+| Esport | Section Sections : Jeux `/esport/jeux` (8 novembre 2026) | Les jeux de la structure, une section par jeu |
 | Système | Section Administration : Utilisateurs `/systeme/utilisateurs`, Journal d’activité `/systeme/journal-activite`, Paramètres système `/systeme/parametres` ; section Projet : Feuille de route `/systeme/feuille-de-route` | Comptes, traçabilité, technique et plan produit |
 
 `/mon-compte` est accessible par les outils globaux. La navigation rapide de l’en-tête parcourt les pages autorisées sans page dédiée ; l’ancienne adresse `/recherche` redirige vers l’accueil. Elle cherche le nom de la page, sa rubrique, sa section (« Administration », « Projet »), sa description et une liste fermée de mots-clés déclarée avec la fonctionnalité dans le registre (`keywords`, jamais affichés : « logs », « historique » pour le journal, « mot de passe » pour Mon compte) ; un mot-clé passe devant une correspondance fortuite, sans recherche approximative (décision du 31 octobre 2026, [RR](../audits/2026-10-31-recherche-rapide.md)). Textes et saisie sont comparés selon la règle commune de recherche du site (`normalizeSearchText`, [comportements](../design/comportements.md#listes-recherche-et-pagination)). Une nouvelle fonctionnalité déclare ses mots-clés. Chaque vue nomme son onglet « Vue · Parente · Noctambule » par `pageTitle` (`$utils/page-title.utils`), « · Dev » en développement. `/login` appartient au parcours de connexion. Les formulaires de création et fiches de personnes ou utilisateurs restent sous leur liste principale.
@@ -28,7 +29,7 @@ Révision du 8 novembre 2026, sur décision du propriétaire (« on peut encore 
 | --- | --- | --- |
 | Aujourd’hui | Qu’est-ce qui m’attend ? | Mon travail (avec mes rappels), tâches, calendrier du bureau |
 | Personnes | Qui est passé par la structure ? | Répertoire, fiche personne, adhésions, recrutement, arrivées, départs et passations, salariés |
-| Esport | Quelles équipes, quels tournois ? | Jeux, page d’accueil du pôle, avec les équipes sous chaque jeu ; fiche jeu (Équipes, Finances, Fonctions) ; fiche équipe (Roster, Tournois, Informations) ; tournois, entraînement, déplacements |
+| Esport | Quelles équipes, quels tournois ? | Jeux, page d’accueil du pôle, avec les équipes sous chaque jeu ; fiche jeu (Équipes, Finances, Fonctions) ; fiche équipe (Roster, Tournois, Entraînements, Finances, Partenaires, Informations) ; tournois ; déplacements |
 | Finances | Où en est l’argent ? | Comptes (onglets Catégories et Moyens de paiement), opérations, factures, frais, subventions et dons, contrôles, budget |
 | Relations | Avec qui à l’extérieur ? | Organisations, partenariats, communication |
 | Structure | Qu’est-ce que l’association, qu’a-t-elle décidé et gardé ? | Bureau & staff (effectif et fonctions de la structure), identité juridique, chronologie, réunions et décisions, documents, contrats, incidents, matériel et abonnements (onglet Types de matériel), bilan annuel |

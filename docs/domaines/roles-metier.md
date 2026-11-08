@@ -36,7 +36,10 @@ Conséquences :
   la fin du passage retire l’accès sans autre action.
 - Il voit le parcours des membres de son équipe, **pas leurs coordonnées**, et
   les tournois de son équipe sans les gains ni le Suivi ; il crée ces tournois et
-  en remplit les informations et les participants (décision du 8 novembre 2026).
+  en remplit les informations et les participants, ainsi que les entraînements de
+  son équipe ; il voit les partenaires de son équipe et ses livrables, sans les
+  montants, et la date de fin des contrats, sans leurs conditions (décision du
+  8 novembre 2026).
 
 Détail et ordre de construction : [cadrage](../propositions/membres-equipes-parcours.md).
 

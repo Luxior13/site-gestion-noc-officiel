@@ -180,7 +180,7 @@ describe('global page search', () => {
       getActiveNavigationSpace('/', spaces),
     ).map((item) => item.href);
 
-    expect(suggestions).toHaveLength(7);
+    expect(suggestions).toHaveLength(8);
     expect(suggestions.some((href) => href.includes('?'))).toBe(false);
   });
 

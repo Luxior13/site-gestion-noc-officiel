@@ -1,3 +1,4 @@
+import { createGamesPermissionCategory } from '$constants/games-permission-category.constants';
 import type { NavigationIconName } from '$constants/navigation-icon.constants';
 import type { NavigationSpaceTone } from '$constants/navigation-theme.constants';
 import { createPersonsPermissionCategory } from '$constants/persons-permission-category.constants';
@@ -29,6 +30,10 @@ export const PERMISSIONS = {
   },
   DASHBOARD: {
     VIEW: 'dashboard:view',
+  },
+  GAMES: {
+    MANAGE: 'games:manage',
+    VIEW: 'games:view',
   },
   PERSONS: {
     CREATE: 'persons:create',
@@ -184,6 +189,12 @@ export const PERMISSION_POLES = [
     key: 'internal',
     label: 'Personnes',
     tone: 'internal',
+  },
+  {
+    icon: 'Gamepad2',
+    key: 'esport',
+    label: 'Esport',
+    tone: 'esport',
   },
   {
     icon: 'Handshake',
@@ -403,6 +414,7 @@ export const ACCOUNT_PERMISSION_CATEGORIES: AccountPermissionCategory[] = [
 /** All live administrative pages shown in the per-user access overview. */
 export const PERMISSION_CATEGORIES: PermissionCategory[] = [
   createPersonsPermissionCategory(PERMISSIONS.PERSONS),
+  createGamesPermissionCategory(PERMISSIONS.GAMES),
   {
     accessPermissionKey: PERMISSIONS.USERS.VIEW,
     assignment: 'delegable',

@@ -471,6 +471,8 @@ describe('permission catalogue', () => {
       'persons:view_contact',
       'persons:update_contact',
       'persons:delete',
+      'games:view',
+      'games:manage',
       'users:view',
       'users:create',
       'users:view_contact',
@@ -504,13 +506,14 @@ describe('permission catalogue', () => {
   it('shows every live administrative page without widening delegation', () => {
     expect(PERMISSION_CATEGORIES.map((category) => category.key)).toEqual([
       'persons',
+      'games',
       'users',
       'system-activity',
       'system-settings',
     ]);
     expect(
       DELEGABLE_PERMISSION_CATEGORIES.map((category) => category.key),
-    ).toEqual(['persons', 'users', 'system-activity']);
+    ).toEqual(['persons', 'games', 'users', 'system-activity']);
     expect(getAccessPermissionKeys()).toEqual(
       DELEGABLE_PERMISSION_CATEGORIES.flatMap((category) =>
         category.permissions.map((permission) => permission.key),
@@ -568,11 +571,13 @@ describe('permission catalogue', () => {
   it('uses a coherent user-facing taxonomy and action labels', () => {
     expect(PERMISSION_POLES).toMatchObject([
       { key: 'internal', label: 'Personnes' },
+      { key: 'esport', label: 'Esport' },
       { key: 'legal', label: 'Relations' },
       { key: 'system', label: 'Système' },
     ]);
     expect(PERMISSION_CATEGORIES.map((category) => category.label)).toEqual([
       'Répertoire',
+      'Jeux',
       'Utilisateurs',
       'Journal d’activité',
       'Paramètres système',

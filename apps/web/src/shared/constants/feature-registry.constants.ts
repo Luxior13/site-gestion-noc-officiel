@@ -47,6 +47,23 @@ export const FEATURES = {
     permissionMode: 'all',
     requiredPermissions: [PERMISSIONS.DASHBOARD.VIEW],
   }),
+  games: defineFeature({
+    audit: {
+      pageKey: 'games',
+      pageLabel: 'Jeux',
+      poleKey: 'esport',
+      poleLabel: 'Esport',
+    },
+    availability: 'live',
+    description: 'Les jeux de la structure, une section par jeu.',
+    href: PAGE_PATHS.games,
+    icon: 'Gamepad2',
+    id: 'games',
+    keywords: ['sections', 'esport', 'jeux vidéo'],
+    label: 'Jeux',
+    permissionMode: 'all',
+    requiredPermissions: [PERMISSIONS.GAMES.VIEW],
+  }),
   persons: defineFeature({
     audit: {
       pageKey: 'persons',

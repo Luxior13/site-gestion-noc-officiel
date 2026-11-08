@@ -34,7 +34,7 @@ export const ROADMAP_AREAS: readonly RoadmapArea[] = [
     icon: 'Gamepad2',
     id: 'esport',
     label: 'Esport',
-    tone: 'internal',
+    tone: 'esport',
   },
   {
     description:

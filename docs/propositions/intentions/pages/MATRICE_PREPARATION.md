@@ -11,6 +11,7 @@ Référence révisée le 7 novembre 2026. Les chantiers proviennent du [catalogu
 | `/mon-compte` | Profil, autorisations et sécurité du compte livrés | Outils globaux |
 | `/recherche` | Page retirée le 9 octobre 2026 ; navigation rapide conservée ; redirige vers l’accueil | Outils globaux |
 | `/personnes/repertoire`, `/nouveau`, `/[id]` sous ce chemin | Liste, création et fiche Personne livrées ; `/membres/repertoire/*` y redirige depuis le 8 novembre 2026 | Personnes |
+| `/esport/jeux` | Page Jeux livrée le 8 novembre 2026 (sans les équipes) | Esport |
 | `/activite/actualites` | Ancienne page ; redirige vers la feuille de route | — |
 | `/systeme/utilisateurs`, `/nouveau`, `/[id]` sous ce chemin | Liste, création et fiche Utilisateur livrées | Système |
 | `/systeme/journal-activite` | Vue globale reconstruite le 30 octobre 2026 | Système |
@@ -46,7 +47,7 @@ Les anciennes routes prévues ne sont pas des « squelettes disponibles » : ell
 | `expenses` | Notes de frais & remboursements | Finances | 4 | Opérations & règlements |
 | `finance-controls` | Contrôles & clôtures | Finances | 4 | Opérations & règlements |
 | `grants` | Subventions & dons | Finances | 4 | Organisations & contacts ; Opérations & règlements |
-| `competitions` | Tournois | Esport | 5 | Équipes & parcours |
+| `competitions` | Tournois | Esport | 5 | Équipes & parcours ; Accès & responsabilités métier ; Organisations & contacts |
 | `incidents` | Suivi, incidents & sanctions | Structure | 5 | Équipes & parcours ; Confidentialité & conservation ; Tournois |
 | `prizes` | Gains de compétition & primes | Finances | 5 | Tournois ; Opérations & règlements |
 | `tasks` | Projets & tâches | Aujourd’hui | 6 | — |
@@ -67,8 +68,8 @@ Les anciennes routes prévues ne sont pas des « squelettes disponibles » : ell
 | `automations` | Rappels & notifications | Aujourd’hui | 10 | Projets & tâches ; Documents & acceptations |
 | `integrations` | Intégrations & publication publique | Système | 10 | Équipes & parcours ; Données, exports & sauvegardes |
 | `communication` | Communication & contenus | Relations | 10 | Projets & tâches ; Confidentialité & conservation ; Partenariats & opportunités |
-| `sports-follow-up` | Entraînement | Esport | 10 | Équipes & parcours |
-| `events` | Déplacements | Esport | 10 | Projets & tâches ; Opérations & règlements |
+| `sports-follow-up` | Entraînement | Esport | 10 | Équipes & parcours ; Accès & responsabilités métier |
+| `events` | Déplacements | Esport | 10 | Projets & tâches ; Opérations & règlements ; Tournois ; Documents & acceptations |
 | `hr` | Salariés & paie | Personnes | 10 | Contrats & obligations |
 
 Retiré le 7 novembre 2026 : `approvals`. Fusionnés : `governance` dans `meetings`, `notifications` dans `automations`, `sport-planning`, `debriefs`, `preparation` et `performance` dans `sports-follow-up`. Raisons : [feuille de route](../../feuille-de-route.md#retraits-et-regroupements-du-7-novembre-2026).

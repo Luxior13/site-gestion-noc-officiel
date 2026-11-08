@@ -231,11 +231,18 @@ describe('navigation availability', () => {
     expect(liveHrefs).toEqual([
       '/',
       '/personnes/repertoire',
+      '/esport/jeux',
       '/systeme/utilisateurs',
       '/systeme/journal-activite',
       '/systeme/parametres',
       '/systeme/feuille-de-route',
     ]);
     expect(allHrefs).toEqual(rawHrefs);
+    // First page of the Esport pole (8 November 2026).
+    expect(
+      getActiveNavigationSpace('/esport/jeux', [
+        ...getVisibleNavigationSpaces(buildAdmin()),
+      ]).id,
+    ).toBe('esport');
   });
 });

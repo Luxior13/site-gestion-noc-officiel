@@ -90,6 +90,10 @@ Références : [liste du Répertoire](../pages/personnes/repertoire/liste.md) et
   ou les rôles.
 - Un filtre rapide enfoncé porte une bordure et un texte d’accent sur un fond
   teinté : les critères actifs se repèrent d’un coup d’œil.
+- Ordre : une liste sans tri au choix dont les éléments sont actifs ou non
+  montre les actifs d’abord, puis par nom (page Jeux, décision du 8 novembre
+  2026). Une liste qui propose un tri (Répertoire, Utilisateurs) garde le sien
+  (question ouverte PREF-Q8 du [journal](preferences.md#questions-ouvertes)).
 - Pagination à 25 lignes (`PAGINATION.DEFAULT_LIMIT`, partagé client et
   serveur) ; une exception de densité se justifie dans la fiche. Le nombre de
   lignes n’est pas un paramètre système.
