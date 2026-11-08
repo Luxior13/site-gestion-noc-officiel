@@ -807,9 +807,66 @@ describe('UserContext session activity', () => {
     expect(getContext(runtime).userData?.contactEmail).toBe(
       'updated@example.com',
     );
-    expect(getContext(runtime).authorizationRevision).toBeGreaterThan(
+    // A contact email decides no access: the pages stay mounted.
+    expect(getContext(runtime).authorizationRevision).toBe(
       previousAuthorizationRevision,
     );
+  });
+
+  it('keeps the pages mounted when an activity check brings back the same access', async () => {
+    await mountAuthenticatedProvider();
+    const previousAuthorizationRevision =
+      getContext(runtime).authorizationRevision;
+    vi.mocked(fetch).mockClear();
+    // The server answers with an equal snapshot, as every minute of activity.
+    vi.mocked(fetch).mockResolvedValue(
+      jsonResponse(false, {
+        ...user,
+        permissions: null,
+        updatedAt: new Date(NOW.getTime() + 60_000).toISOString(),
+      } as UserType),
+    );
+
+    await getContext(runtime).extendSession();
+    runtime.render();
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(getContext(runtime).userData?.id).toBe('user-1');
+    expect(getContext(runtime).authorizationRevision).toBe(
+      previousAuthorizationRevision,
+    );
+  });
+
+  it('counts a new revision when the role, the access or the security state changes', async () => {
+    await mountAuthenticatedProvider();
+    const revision = (): number => getContext(runtime).authorizationRevision;
+    const before = revision();
+
+    getContext(runtime).applyUserUpdate({
+      ...user,
+      permissions: { 'games:view': true },
+    });
+    runtime.render();
+    expect(revision()).toBeGreaterThan(before);
+
+    const afterAccess = revision();
+    getContext(runtime).applyUserUpdate({
+      ...user,
+      permissions: { 'games:view': true },
+      role: 'ADMIN',
+    } as UserType);
+    runtime.render();
+    expect(revision()).toBeGreaterThan(afterAccess);
+
+    const afterRole = revision();
+    getContext(runtime).applyUserUpdate({
+      ...user,
+      mfaEnabledAt: NOW,
+      permissions: { 'games:view': true },
+      role: 'ADMIN',
+    } as UserType);
+    runtime.render();
+    expect(revision()).toBeGreaterThan(afterRole);
   });
 
   it('does not restore an account from a refresh that finishes after logout', async () => {

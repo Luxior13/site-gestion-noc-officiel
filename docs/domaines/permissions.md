@@ -53,6 +53,15 @@ La migration conserve les accès effectifs aux coordonnées des comptes existant
   Ne déconnectent pas : rôle, autorisations, identifiant, prénom, nom, adresse
   de contact, régénération des codes de secours.
 
+  Pendant l’activité, le navigateur relit la session au plus une fois par
+  minute pour la prolonger (`UserContext`). Une page qui garde des données selon
+  les droits ne se reconstruit que si ce qui décide des droits change : compte,
+  rôle, autorisations, état du compte, double authentification, mot de passe,
+  dernière connexion. Une relecture identique ne la recharge pas (correction du
+  8 novembre 2026 : chaque relecture rechargeait le Répertoire et ses fiches, la
+  page Jeux et les fiches jeu et équipe au premier clic après une minute, en
+  perdant recherche, filtres et brouillon ; test `user-context`).
+
   « Rester connecté sur cet appareil » maintient la session 30 jours, sans
   limite d’inactivité plus courte ; chaque nouvelle connexion demande toujours
   le mot de passe puis le code. Aucun « appareil reconnu » ne saute le code.

@@ -69,6 +69,34 @@ const publishSessionActivity = (activityAt: number): void => {
 
 type AuthenticationRequestOptions = { signal?: AbortSignal };
 
+const timeOf = (value: Date | string | null | undefined): number | null =>
+  value ? new Date(value).getTime() : null;
+
+/**
+ * What decides the data a page may hold: the account, its role and access,
+ * and its security state (a new login changes `lastLoginAt`). A session check
+ * that brings these back unchanged is not a new authorization revision, so
+ * the pages keyed on it stay mounted (8 November 2026: every activity check,
+ * once a minute, remounted them, reloading lists and dropping drafts).
+ */
+const authorizationKeyOf = (user: UserType): string =>
+  JSON.stringify([
+    user.id,
+    user.role,
+    user.isProtected,
+    user.isActive,
+    user.mustChangePassword,
+    user.criticalAccessReady ?? null,
+    user.identityDetailsVisible ?? null,
+    user.securityDetailsVisible ?? null,
+    timeOf(user.mfaEnabledAt),
+    timeOf(user.passwordChangedAt),
+    timeOf(user.lastLoginAt),
+    Object.entries(user.permissions ?? {}).sort(([left], [right]) =>
+      left.localeCompare(right),
+    ),
+  ]);
+
 type ContextType = {
   applyUserUpdate: (user: UserType) => void;
   authorizationRevision: number;
@@ -175,10 +203,14 @@ export const UserProvider: FC<UserProviderProps> = ({
     sessionOperationRef.current += 1;
     currentUserRef.current = nextUser;
     setUserData(nextUser);
-    // A fresh server snapshot may represent a new session, role or permission
-    // revision. Consumers holding decrypted data must invalidate it even when
-    // the visible user fields happen to be unchanged.
-    setAuthorizationRevision((revision) => revision + 1);
+    // A new account, role, access or security state is a new revision:
+    // consumers holding decrypted data invalidate it. The same snapshot, as
+    // each activity check brings back, keeps them mounted.
+    if (
+      !currentUser ||
+      authorizationKeyOf(currentUser) !== authorizationKeyOf(nextUser)
+    )
+      setAuthorizationRevision((revision) => revision + 1);
     setMustChangePassword(nextUser.mustChangePassword);
     setIsLoading(false);
     setError(null);
