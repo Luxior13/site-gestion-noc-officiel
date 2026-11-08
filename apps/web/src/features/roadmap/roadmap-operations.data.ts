@@ -292,7 +292,7 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     doneWhen:
       'Un résultat sportif ne déclenche pas automatiquement un encaissement.',
     firstRelease:
-      'Montants annoncés, confirmés et reçus ; parts contractuelles et versements.',
+      'Par équipe : montants annoncés et confirmés, répartition prévue entre les joueurs ; argent reçu et parts versées lus dans les opérations.',
     id: 'prizes',
     later: 'Parts prévues aux contrats et paiements internationaux.',
     phase: 5,

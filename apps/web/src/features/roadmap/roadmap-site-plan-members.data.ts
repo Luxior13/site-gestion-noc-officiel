@@ -179,7 +179,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         managedIn: 'Tournois',
         phase: 5,
         summary:
-          'Tournois joués par cette équipe. Un manager les voit sans les gains ni le Suivi.',
+          'Tournois joués par cette équipe, avec son classement. Un manager les voit et crée ceux de son équipe, sans les gains ni le Suivi.',
       },
       {
         label: 'Informations',
@@ -212,7 +212,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
     name: 'Tournois',
     phase: 5,
     summary:
-      'Liste, sans onglet : les tournois, par jeu et par année. Création en fenêtre.',
+      'Liste, sans onglet : les tournois, filtrés par jeu, équipe, année et état (à venir, en cours, terminé, calculé depuis les dates) ; chaque ligne : nom, jeu, équipes, dates, état, classement. Création en fenêtre : nom, jeu, dates, organisateur. Un manager crée ceux de son équipe.',
   },
   {
     area: 'esport',
@@ -224,19 +224,20 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         label: 'Informations',
         phase: 5,
         summary:
-          'Nom, jeu, organisateur, dates, règlement, frais, échéances, classement final.',
+          'Nom, jeu, organisateur (sa fiche organisation), circuit ou ligue facultatif, en ligne ou LAN (lieu et déplacement lié), dates, règles du tournoi (lien ou pièce), frais d’inscription, échéances (inscription, dépôt du roster, check-in) reprises au calendrier ; état calculé depuis les dates.',
       },
       {
         label: 'Participants',
         phase: 5,
         summary:
-          'Équipes et membres engagés. Une sanction de la structure en cours refuse l’inscription, avec son motif ; un ban externe sur le même jeu ou organisateur avertit.',
+          'Pour chacune de nos équipes engagées : line-up (membres engagés, remplaçants compris) et classement final. Une sanction de la structure en cours refuse l’inscription, avec son motif ; un ban externe du même jeu, organisateur ou circuit avertit. Un manager remplit ceux de son équipe.',
       },
       {
         chantier: 'prizes',
         label: 'Gains',
         phase: 5,
-        summary: 'Montants annoncés, confirmés et reçus, et leur répartition.',
+        summary:
+          'Par équipe : montant annoncé, montant confirmé et répartition prévue entre les joueurs, saisis ici ; argent reçu et parts versées lus dans les Finances, avec un lien. Un résultat ne crée aucun encaissement.',
       },
       {
         chantier: 'incidents',

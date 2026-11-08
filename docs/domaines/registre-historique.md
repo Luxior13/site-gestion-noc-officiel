@@ -45,7 +45,9 @@ Une correction modifie le passage ; elle ne crée pas une nouvelle identité. To
 ## Tournois et suivi d’une personne
 
 Un **tournoi** est un dossier de la structure : qui y a participé, ce qu’il a
-rapporté, ce qui s’y est mal passé. Rencontres et résultats restent sur le site
+rapporté, ce qui s’y est mal passé. Line-up, classement final et gains se notent
+par équipe engagée ; l’organisateur est une fiche organisation ; l’état (à venir,
+en cours, terminé) se calcule depuis les dates (décision du 8 novembre 2026). Rencontres et résultats restent sur le site
 public. Les gains se lisent sur la fiche tournoi ; l’argent reçu vit dans les
 [Finances](../propositions/feuille-de-route.md#3-socle-de-trésorerie), et un résultat sportif
 ne déclenche aucun encaissement.
@@ -65,8 +67,8 @@ Le **suivi** réunit ce que le bureau sait d’une personne : notes, problèmes 
   jamais une case « banni » sur la fiche. Lever un ban ne l’efface pas.
 - Une sanction de la structure en cours refuse l’inscription de la personne à un
   tournoi concerné, avec son motif : il faut d’abord la lever, et la levée est
-  tracée. Un ban externe sur le même jeu ou le même organisateur avertit sans
-  bloquer.
+  tracée. Un ban externe sur le même jeu, le même organisateur ou le même circuit
+  avertit sans bloquer.
 - Le suivi est réservé aux personnes habilitées, par une autorisation dédiée. Un
   manager n’y a pas accès.
 - Une note libre peut contenir trop de choses : s’en tenir aux faits utiles, sans

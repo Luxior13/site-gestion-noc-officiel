@@ -124,7 +124,8 @@ accès. Elle est évaluée à chaque requête et dans chaque liste.
 fonction et dates. Il n’a ni `persons:view` ni accès au Répertoire : le serveur lui
 renvoie uniquement cette projection, sans coordonnées et sans lien vers la fiche. La
 navigation n’affiche que son équipe : sa fiche (Roster en lecture, Tournois sans les
-gains ni le Suivi), et Mon compte reste accessible.
+gains ni le Suivi) et, à l’étape 5, les tournois de son équipe, qu’il crée et
+remplit ; Mon compte reste accessible.
 
 **Scénarios à vérifier** : adresse d’une autre équipe, identifiant deviné, API
 appelée sans passer par l’écran, passage clôturé pendant la session, liaison retirée,

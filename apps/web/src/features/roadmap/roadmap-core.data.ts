@@ -111,13 +111,13 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
   },
   {
     area: 'esport',
-    dependsOn: ['sport-teams'],
+    dependsOn: ['sport-teams', 'access-scopes', 'organizations'],
     description:
       'Garder la trace de chaque tournoi : qui y a participé, ce qu’il a rapporté et ce qui s’y est mal passé.',
     doneWhen:
-      'Un problème ou un ban reste relié à sa personne et à son tournoi ; un résultat sportif ne déclenche aucun encaissement.',
+      'Un problème ou un ban reste relié à sa personne et à son tournoi ; un résultat sportif ne déclenche aucun encaissement ; un manager ne touche qu’aux tournois de son équipe, sans en voir les gains ni le suivi.',
     firstRelease:
-      'Liste des tournois avec organisateur, règlement, frais, échéances et classement final ; participants, gains, problèmes et bans. Les rencontres restent sur le site public.',
+      'Liste filtrable (jeu, équipe, année, état calculé) ; fiche avec organisateur relié à sa fiche, circuit, en ligne ou LAN, règles, frais et échéances ; line-up et classement par équipe ; gains et suivi. Un manager crée et remplit les tournois de son équipe. Les rencontres restent sur le site public.',
     id: 'competitions',
     later: 'Licences et programmes d’éditeurs.',
     legacyHrefs: ['/sport-team-control/tournois-matchs'],

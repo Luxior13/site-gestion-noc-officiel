@@ -65,6 +65,7 @@ Sur décision du propriétaire (« on peut encore tout changer, mais il faut que
 | Parcours modifiable sur la fiche | **Parcours en lecture ↗** ; anciens pseudos dans Identité | La fiche lit les deux effectifs, chaque passage se saisit à son endroit |
 | Page Équipes et fiche équipe | Page **Jeux**, accueil d’Esport ; **fiche jeu** : Équipes, Finances ↗, Fonctions (celles de ce jeu) ; **fiche équipe**, sous son jeu : Roster, Tournois ↗, Informations | Une structure esport s’organise par jeu, puis par équipe ; le roster vit dans son équipe, sans doublon au niveau du jeu |
 | Argent d’une section introuvable | Onglet **Finances ↗** de la fiche jeu ; une opération se lie à un jeu ou à une équipe | Le site sert d’abord à la trésorerie : savoir ce qu’une section coûte et rapporte |
+| Fiche tournoi à classement unique | **Line-up et classement par équipe** dans Participants, gains par équipe ; organisateur relié à sa fiche organisation ; « règles du tournoi » ; en ligne ou LAN ; état calculé ; le manager crée et remplit les tournois de son équipe | Deux équipes d’un même jeu ne finissent pas à la même place ; « Règlements » désigne l’argent |
 | Suivi d’une personne, tout sur la fiche | Problèmes et bans d’un tournoi saisis dans **sa fiche tournoi** ; sur la personne : notes, **sanctions de la structure** (tous ses tournois ou un jeu) et bans externes ; une sanction en cours **refuse l’inscription** à un tournoi | Chaque chose se saisit à son endroit, et une sanction agit là où l’on inscrit |
 | Étiquettes des fiches | **Retirées** ; le Répertoire reste une liste sans onglet, et le chantier Listes de choix passe dans Esport | Tout ce qu’on y mettrait a déjà sa place : fonction, statut calculé, jeux pratiqués, adhésion, contact d’organisation, Suivi, tâche |
 | Suivi sportif | **Entraînement** (Esport) | « Suivi » garde un seul sens : notes, problèmes et bans |
@@ -126,8 +127,8 @@ Couvrir factures, frais, subventions, adhésions et contrôles.
 
 Garder le dossier de chaque tournoi et le suivi des personnes.
 
-- **Tournois** (Esport) : Liste des tournois avec organisateur, règlement, frais, échéances et classement final ; participants, gains, problèmes et bans. Les rencontres restent sur le site public.
-- **Gains de compétition & primes** (Finances) : Montants annoncés, confirmés et reçus ; parts contractuelles et versements.
+- **Tournois** (Esport) : Liste filtrable (jeu, équipe, année, état calculé) ; fiche avec organisateur relié à sa fiche, circuit, en ligne ou LAN, règles, frais et échéances ; line-up et classement par équipe ; gains et suivi. Un manager crée et remplit les tournois de son équipe. Les rencontres restent sur le site public.
+- **Gains de compétition & primes** (Finances) : Par équipe : montants annoncés et confirmés, répartition prévue entre les joueurs ; argent reçu et parts versées lus dans les opérations.
 - **Suivi, incidents & sanctions** (Structure) : Onglet Suivi de la fiche : notes, sanctions de la structure (tous ses tournois ou un jeu) et bans externes ; les problèmes et bans d’un tournoi se saisissent dans sa fiche et se lisent sur la personne ; contrôle à l’inscription des participants. Dossiers d’incident : faits, preuves, instruction, décision, recours et durée.
 
 ## 6. Vie du bureau
@@ -259,12 +260,12 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 |  | Finances ↗ | Ce que la section coûte et rapporte, détaillé par équipe : inscriptions, gains, déplacements et autres opérations liées au jeu ou à ses équipes ; budget comparé au réalisé avec la fiche budget. Lu ici, se modifie dans Finances. | Étape 3 |
 |  | Fonctions | Les fonctions de ce jeu : joueur, remplaçant, coach, manager, ou des postes propres au jeu ; réglage « Donne accès à son équipe » ; ajouter, renommer, archiver. | Étape 1 |
 | **Fiche équipe** | Roster | Joueurs et encadrement actuels et anciens, avec début et fin ; composition à une date ; on y ajoute ou termine un passage. Seule fiche d’un manager, en lecture. | Étape 1 |
-|  | Tournois ↗ | Tournois joués par cette équipe. Un manager les voit sans les gains ni le Suivi. Lu ici, se modifie dans Tournois. | Étape 5 |
+|  | Tournois ↗ | Tournois joués par cette équipe, avec son classement. Un manager les voit et crée ceux de son équipe, sans les gains ni le Suivi. Lu ici, se modifie dans Tournois. | Étape 5 |
 |  | Informations | Nom, anciens noms, jeu, archivage. | Étape 1 |
-| **Tournois** | — | Liste, sans onglet : les tournois, par jeu et par année. Création en fenêtre. | Étape 5 |
-| **Fiche tournoi** | Informations | Nom, jeu, organisateur, dates, règlement, frais, échéances, classement final. | Étape 5 |
-|  | Participants | Équipes et membres engagés. Une sanction de la structure en cours refuse l’inscription, avec son motif ; un ban externe sur le même jeu ou organisateur avertit. | Étape 5 |
-|  | Gains | Montants annoncés, confirmés et reçus, et leur répartition. | Étape 5 |
+| **Tournois** | — | Liste, sans onglet : les tournois, filtrés par jeu, équipe, année et état (à venir, en cours, terminé, calculé depuis les dates) ; chaque ligne : nom, jeu, équipes, dates, état, classement. Création en fenêtre : nom, jeu, dates, organisateur. Un manager crée ceux de son équipe. | Étape 5 |
+| **Fiche tournoi** | Informations | Nom, jeu, organisateur (sa fiche organisation), circuit ou ligue facultatif, en ligne ou LAN (lieu et déplacement lié), dates, règles du tournoi (lien ou pièce), frais d’inscription, échéances (inscription, dépôt du roster, check-in) reprises au calendrier ; état calculé depuis les dates. | Étape 5 |
+|  | Participants | Pour chacune de nos équipes engagées : line-up (membres engagés, remplaçants compris) et classement final. Une sanction de la structure en cours refuse l’inscription, avec son motif ; un ban externe du même jeu, organisateur ou circuit avertit. Un manager remplit ceux de son équipe. | Étape 5 |
+|  | Gains | Par équipe : montant annoncé, montant confirmé et répartition prévue entre les joueurs, saisis ici ; argent reçu et parts versées lus dans les Finances, avec un lien. Un résultat ne crée aucun encaissement. | Étape 5 |
 |  | Suivi | Problèmes et bans survenus pendant ce tournoi, saisis ici et visibles sur la fiche de chaque personne. Réservé aux personnes habilitées. | Étape 5 |
 | **Entraînement** | — | Onglets définis à son cadrage. | Étape 10 |
 | **Déplacements** | — | Onglets définis à son cadrage. | Étape 10 |
