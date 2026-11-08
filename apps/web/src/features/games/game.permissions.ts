@@ -8,7 +8,9 @@ type GamePermissionUser = Pick<
 
 export type GameCapabilities = Readonly<{
   canManage: boolean;
+  canManageTeams: boolean;
   canView: boolean;
+  canViewTeams: boolean;
 }>;
 
 export const getGameCapabilities = (
@@ -21,8 +23,14 @@ export const getGameCapabilities = (
         hasPermission(user.role, permission, user.permissions)),
     );
 
+  const canView = permitted(PERMISSIONS.GAMES.VIEW);
+  // Teams sit under their game: no game, no team.
+  const canViewTeams = canView && permitted(PERMISSIONS.TEAMS.VIEW);
+
   return {
     canManage: permitted(PERMISSIONS.GAMES.MANAGE),
-    canView: permitted(PERMISSIONS.GAMES.VIEW),
+    canManageTeams: canViewTeams && permitted(PERMISSIONS.TEAMS.MANAGE),
+    canView,
+    canViewTeams,
   };
 };

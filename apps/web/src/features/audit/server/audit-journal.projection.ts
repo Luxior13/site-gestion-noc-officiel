@@ -41,6 +41,7 @@ import {
   PERSON_FIELD_LABELS,
   PERSON_SECTION_LABELS,
   STEP_UP_FAILURE_REASONS,
+  TEAM_FIELD_LABELS,
   USER_FIELD_LABELS,
 } from './audit-journal.labels';
 
@@ -202,19 +203,23 @@ const projectUserChanges = (
   });
 };
 
-/** A game records its readable values in `before` / `after` (8 November 2026). */
-const projectGameChanges = (
+/**
+ * A game or a team records its readable values in `before` / `after`
+ * (8 November 2026); the labels list fixes their names and order.
+ */
+const projectReadableChanges = (
   metadata: Record<string, unknown>,
+  labels: ReadonlyArray<readonly [string, string]>,
 ): JournalChange[] => {
   const before = isRecord(metadata.before) ? metadata.before : {};
   const after = isRecord(metadata.after) ? metadata.after : {};
 
-  return GAME_FIELD_LABELS.flatMap(([key, label]) => {
+  return labels.flatMap(([key, label]) => {
     if (!Object.hasOwn(before, key) && !Object.hasOwn(after, key)) return [];
 
     return [
       {
-        // Keys come from the fixed GAME_FIELD_LABELS list.
+        // Keys come from a fixed labels list.
         // eslint-disable-next-line security/detect-object-injection
         after: formatValue(key, after[key]),
         // eslint-disable-next-line security/detect-object-injection
@@ -344,6 +349,7 @@ const toneOf = (row: AuditLog): JournalTone => {
 const typeLabelOf = (row: AuditLog): string => {
   if (row.category === 'PERSON') return 'Personnes';
   if (row.category === 'GAME') return 'Jeux';
+  if (row.category === 'TEAM') return 'Équipes';
   if (row.stream === 'AUTHENTICATION' || row.stream === 'SECURITY')
     return 'Sécurité';
   if (row.category === 'USER' || row.category === 'PERMISSION')
@@ -371,6 +377,10 @@ const subjectOf = (
     return SETTING_JOURNAL_LABELS[metadata.settingKey] ?? 'Paramètre';
   if (row.category === 'GAME' && typeof metadata.gameName === 'string')
     return `Jeu : ${metadata.gameName}`;
+  if (row.category === 'TEAM' && typeof metadata.teamName === 'string')
+    return typeof metadata.gameName === 'string'
+      ? `Équipe : ${metadata.teamName} (${metadata.gameName})`
+      : `Équipe : ${metadata.teamName}`;
   if (
     row.action === 'AUDIT_PURGE' &&
     typeof metadata.deletedEvents === 'number'
@@ -423,8 +433,10 @@ export const projectJournalEvent = (
     : row.action === 'SYSTEM_SETTING_UPDATE'
       ? projectSettingChanges(metadata)
       : row.category === 'GAME'
-        ? projectGameChanges(metadata)
-        : projectUserChanges(row, metadata, rights);
+        ? projectReadableChanges(metadata, GAME_FIELD_LABELS)
+        : row.category === 'TEAM'
+          ? projectReadableChanges(metadata, TEAM_FIELD_LABELS)
+          : projectUserChanges(row, metadata, rights);
 
   return {
     actor:

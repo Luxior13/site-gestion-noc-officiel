@@ -11,16 +11,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '$ui/select';
-
 import {
+  APPROXIMATE_DATE_FIRST_YEAR,
+  APPROXIMATE_DATE_LAST_YEAR,
+  type ApproximateDate,
+  changeDatePrecision,
   DATE_PRECISION_LABELS,
   DATE_PRECISIONS,
   type DatePrecision,
-  GAME_FIRST_YEAR,
-  GAME_LAST_YEAR,
-} from '../game.constants';
-import { changeDatePrecision, parseDateOnly } from '../game-date.utils';
-import type { ApproximateDate } from '../types/game.types';
+  parseDateOnly,
+} from '$utils/approximate-date.utils';
 
 const MONTH_LABELS = [
   'Janvier',
@@ -43,20 +43,26 @@ type Props = {
   disabled?: boolean;
   error?: string;
   idPrefix: string;
+  /** Visible name of the group, « Première ouverture » or « Création ». */
+  label: string;
   onChange: (value: ApproximateDate) => void;
+  /** The same in a sentence, for the accessible names: « première ouverture ». */
+  subject: string;
   value: ApproximateDate;
 };
 
 /**
- * First opening of a section, as precisely as it is known: a day, a month or
- * only a year, never an invented day (registre historique). Month and year
- * use a menu and a number, readable in every browser.
+ * A required date as precisely as it is known: a day, a month or only a year,
+ * never an invented day (registre historique). Month and year use a menu and a
+ * number, readable in every browser. A game's first opening, a team's creation.
  */
-export const GameFirstOpenedField: FC<Props> = ({
+export const ApproximateDateField: FC<Props> = ({
   disabled,
   error,
   idPrefix,
+  label,
   onChange,
+  subject,
   value,
 }) => {
   const parts = parseDateOnly(value.date);
@@ -78,7 +84,7 @@ export const GameFirstOpenedField: FC<Props> = ({
     <fieldset className="space-y-1.5" disabled={disabled}>
       {/* Same look as a required Label: the legend names the whole group. */}
       <legend className="font-form mb-1.5 flex items-center gap-2 text-[14px] leading-5 font-semibold">
-        Première ouverture
+        {label}
         <span aria-hidden="true" className="text-destructive">
           *
         </span>
@@ -117,10 +123,10 @@ export const GameFirstOpenedField: FC<Props> = ({
           <Input
             aria-describedby={error ? errorId : undefined}
             aria-invalid={Boolean(error)}
-            aria-label="Date de première ouverture"
+            aria-label={`Date de ${subject}`}
             id={`${idPrefix}-date`}
-            max={`${GAME_LAST_YEAR}-12-31`}
-            min={`${GAME_FIRST_YEAR}-01-01`}
+            max={`${APPROXIMATE_DATE_LAST_YEAR}-12-31`}
+            min={`${APPROXIMATE_DATE_FIRST_YEAR}-01-01`}
             onChange={(event) =>
               onChange({ ...value, date: event.target.value })
             }
@@ -147,7 +153,7 @@ export const GameFirstOpenedField: FC<Props> = ({
                 value={String(month)}
               >
                 <SelectTrigger
-                  aria-label="Mois de première ouverture"
+                  aria-label={`Mois de ${subject}`}
                   className="w-full"
                 >
                   <SelectValue />
@@ -164,12 +170,12 @@ export const GameFirstOpenedField: FC<Props> = ({
             <Input
               aria-describedby={error ? errorId : undefined}
               aria-invalid={Boolean(error)}
-              aria-label="Année de première ouverture"
+              aria-label={`Année de ${subject}`}
               id={`${idPrefix}-year`}
               inputMode="numeric"
-              max={GAME_LAST_YEAR}
+              max={APPROXIMATE_DATE_LAST_YEAR}
               maxLength={4}
-              min={GAME_FIRST_YEAR}
+              min={APPROXIMATE_DATE_FIRST_YEAR}
               onChange={(event) => setYear(event.target.value)}
               type="number"
               value={parts ? String(year) : value.date.slice(0, 4)}

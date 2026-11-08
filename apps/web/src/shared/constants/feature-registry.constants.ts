@@ -1,5 +1,5 @@
 import { PERMISSIONS } from '$constants/permissions.constants';
-import { PAGE_PATHS } from '$constants/routes.constants';
+import { PAGE_PATHS, TEAM_RECORDS_PATH } from '$constants/routes.constants';
 
 type FeatureAuditLocation = Readonly<{
   pageKey: string;
@@ -21,6 +21,11 @@ export type FeatureDefinition = Readonly<{
    */
   keywords: readonly string[];
   label: string;
+  /**
+   * Other paths that belong to this page in the navigation: records opened
+   * from it outside its own path (a team from the Jeux page).
+   */
+  matchHrefs?: readonly string[];
   permissionMode: 'all' | 'any';
   requiredPermissions: readonly string[];
 }>;
@@ -61,6 +66,7 @@ export const FEATURES = {
     id: 'games',
     keywords: ['sections', 'esport', 'jeux vidéo'],
     label: 'Jeux',
+    matchHrefs: [TEAM_RECORDS_PATH],
     permissionMode: 'all',
     requiredPermissions: [PERMISSIONS.GAMES.VIEW],
   }),

@@ -40,6 +40,16 @@ export function isPrismaUniqueConstraintError(error: unknown): boolean {
   );
 }
 
+/** A row still referenced elsewhere (`ON DELETE RESTRICT`) or a missing parent. */
+export function isPrismaForeignKeyError(error: unknown): boolean {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    error.code === 'P2003'
+  );
+}
+
 /**
  * Marks a private API response so neither the browser nor a shared cache keeps
  * it. One rule (SYS-12, 31 October 2026): `apiSuccess` and `apiError` apply it

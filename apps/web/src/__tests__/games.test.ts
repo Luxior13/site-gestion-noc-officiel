@@ -13,16 +13,16 @@ import {
 } from '$features/audit/server/audit-journal.projection';
 import { getGameCapabilities } from '$features/games/game.permissions';
 import {
+  createGameSchema,
+  updateGameSchema,
+} from '$features/games/schemas/game.schemas';
+import { compareActiveThenName } from '$utils/active-order.utils';
+import {
   changeDatePrecision,
   formatApproximateDate,
   getLocalToday,
   normalizeApproximateDate,
-} from '$features/games/game-date.utils';
-import { compareGames } from '$features/games/game-order.utils';
-import {
-  createGameSchema,
-  updateGameSchema,
-} from '$features/games/schemas/game.schemas';
+} from '$utils/approximate-date.utils';
 
 const validGame = {
   firstOpened: { date: '2021-03-15', precision: 'DAY' },
@@ -119,7 +119,9 @@ describe('order of the games', () => {
       { isActive: true, name: 'League of Legends' },
     ];
 
-    expect([...games].sort(compareGames).map((game) => game.name)).toEqual([
+    expect(
+      [...games].sort(compareActiveThenName).map((game) => game.name),
+    ).toEqual([
       'échecs',
       'League of Legends',
       'Valorant',
@@ -137,17 +139,29 @@ describe('game rights', () => {
         permissions: null,
         role: UserRole.ADMIN,
       }),
-    ).toEqual({ canManage: true, canView: true });
+    ).toEqual({
+      canManage: true,
+      canManageTeams: true,
+      canView: true,
+      canViewTeams: true,
+    });
     expect(
       getGameCapabilities({
         isProtected: false,
         permissions: { [PERMISSIONS.GAMES.VIEW]: true },
         role: UserRole.USER,
       }),
-    ).toEqual({ canManage: false, canView: true });
+    ).toEqual({
+      canManage: false,
+      canManageTeams: false,
+      canView: true,
+      canViewTeams: false,
+    });
     expect(getGameCapabilities(null)).toEqual({
       canManage: false,
+      canManageTeams: false,
       canView: false,
+      canViewTeams: false,
     });
   });
 });

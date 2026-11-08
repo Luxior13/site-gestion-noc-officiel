@@ -8,7 +8,7 @@ import { EntityHeader } from './EntityHeader';
 import { type PageSection } from './PageSectionNavigation';
 
 type EntityDetailLayoutProps<SectionId extends string> = {
-  activeSection: SectionId;
+  activeSection?: SectionId;
   afterHero?: ReactNode;
   ariaLiveLabel?: string;
   children: ReactNode;
@@ -21,9 +21,10 @@ type EntityDetailLayoutProps<SectionId extends string> = {
   heroIcon: ReactNode;
   heroMeta?: ReactNode;
   heroTitle: ReactNode;
-  navigationAriaLabel: string;
-  sectionHref: (section: SectionId) => string;
-  sections: readonly PageSection<SectionId>[];
+  navigationAriaLabel?: string;
+  sectionHref?: (section: SectionId) => string;
+  /** Omitted for a record of a single content: no tabs at all. */
+  sections?: readonly PageSection<SectionId>[];
 };
 
 /**
@@ -55,14 +56,18 @@ export const EntityDetailLayout = <SectionId extends string>({
         description={heroDescription}
         icon={heroIcon}
         meta={heroMeta}
-        navigation={{
-          activeSection,
-          ariaLabel: navigationAriaLabel,
-          dirtySections,
-          getSectionHref: sectionHref,
-          replace: true,
-          sections,
-        }}
+        navigation={
+          sections && activeSection && sectionHref && navigationAriaLabel
+            ? {
+                activeSection,
+                ariaLabel: navigationAriaLabel,
+                dirtySections,
+                getSectionHref: sectionHref,
+                replace: true,
+                sections,
+              }
+            : undefined
+        }
         title={heroTitle}
       />
 

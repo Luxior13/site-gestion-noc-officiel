@@ -1,21 +1,24 @@
 import 'server-only';
 
 import type { Prisma } from '@prisma/client';
-import { AuditAction, AuditCategory, type Game } from '@repo/database';
+import { AuditAction, AuditCategory } from '@repo/database';
 
 import { FEATURES } from '$constants/feature-registry.constants';
 import { PERMISSIONS } from '$constants/permissions.constants';
-import { isPrismaUniqueConstraintError } from '$server/api-response';
+import {
+  isPrismaForeignKeyError,
+  isPrismaUniqueConstraintError,
+} from '$server/api-response';
 import { createAuditLogWithHeaders } from '$server/audit-log';
 import { prisma } from '$server/prisma';
 import { ServiceError, serviceErrors } from '$server/service-error';
 import { authorizeUserAction } from '$server/user-action-authorization';
 import { ErrorCode } from '$types/api.types';
 import type { SessionType, UserType } from '$types/auth.types';
+import { compareActiveThenName } from '$utils/active-order.utils';
+import { formatApproximateDate } from '$utils/approximate-date.utils';
 import { normalizeSearchText } from '$utils/search-text.utils';
 
-import { formatApproximateDate } from '../game-date.utils';
-import { compareGames } from '../game-order.utils';
 import type { GameInput, GameItem } from '../types/game.types';
 
 export type GameActor = Readonly<{
@@ -42,8 +45,16 @@ const gameChanged = (): ServiceError =>
   );
 const gameMissing = (): ServiceError =>
   serviceErrors.notFound('Ce jeu n’existe plus. Rechargez la liste.');
+/** A game that has teams stays in the history: it is made inactive instead. */
+const gameHasTeams = (count: number | null): ServiceError =>
+  serviceErrors.conflict(
+    `Ce jeu a ${count === null ? 'des équipes' : count > 1 ? `${count} équipes` : 'une équipe'} : rendez-le inactif plutôt que de le supprimer.`,
+  );
 
-const toGameItem = (game: Game): GameItem => ({
+const WITH_TEAM_COUNT = { _count: { select: { teams: true } } } as const;
+type GameRow = Prisma.GameGetPayload<{ include: typeof WITH_TEAM_COUNT }>;
+
+const toGameItem = (game: GameRow): GameItem => ({
   firstOpened: {
     date: game.firstOpenedOn.toISOString().slice(0, 10),
     precision: game.firstOpenedPrecision,
@@ -52,6 +63,7 @@ const toGameItem = (game: Game): GameItem => ({
   isActive: game.isActive,
   name: game.name,
   shortName: game.shortName,
+  teamCount: game._count.teams,
   updatedAt: game.updatedAt.toISOString(),
   version: game.version,
 });
@@ -125,7 +137,9 @@ const audit = async (
 
 /** Every game, active ones first: the list stays short (one section per game). */
 export const listGames = async (): Promise<GameItem[]> =>
-  (await prisma.game.findMany()).map(toGameItem).sort(compareGames);
+  (await prisma.game.findMany({ include: WITH_TEAM_COUNT }))
+    .map(toGameItem)
+    .sort(compareActiveThenName);
 
 /** Adds a game; its name is unique whatever the case or the accents. */
 export const createGame = async (
@@ -140,7 +154,10 @@ export const createGame = async (
         PERMISSIONS.GAMES.MANAGE,
       );
       const game = toGameItem(
-        await transaction.game.create({ data: writeData(input) }),
+        await transaction.game.create({
+          data: writeData(input),
+          include: WITH_TEAM_COUNT,
+        }),
       );
       const after = auditValues(game);
       await audit(transaction, {
@@ -178,7 +195,10 @@ export const updateGame = async (
         { actorId: actor.id, session },
         PERMISSIONS.GAMES.MANAGE,
       );
-      const previous = await transaction.game.findUnique({ where: { id } });
+      const previous = await transaction.game.findUnique({
+        include: WITH_TEAM_COUNT,
+        where: { id },
+      });
       if (!previous) throw gameMissing();
       if (previous.version !== input.expectedVersion) throw gameChanged();
       const current = toGameItem(previous);
@@ -193,7 +213,10 @@ export const updateGame = async (
       });
       if (result.count !== 1) throw gameChanged();
       const game = toGameItem(
-        await transaction.game.findUniqueOrThrow({ where: { id } }),
+        await transaction.game.findUniqueOrThrow({
+          include: WITH_TEAM_COUNT,
+          where: { id },
+        }),
       );
       await audit(transaction, {
         action: 'GAME_UPDATE',
@@ -214,39 +237,49 @@ export const updateGame = async (
 };
 
 /**
- * Deletes a game created by mistake. Nothing references a game yet; teams,
- * players and tournaments will, and the database will then refuse to delete
- * a game that has been used (it is made inactive instead).
+ * Deletes a game created by mistake. A game that has teams is refused here
+ * with its count, and by the database (`Team_gameId_fkey`, `ON DELETE
+ * RESTRICT`) if a team arrives in between: it is made inactive instead.
  */
 export const deleteGame = async (
   id: string,
   expectedVersion: number,
   { actor, session }: GameActor,
-): Promise<{ id: string }> =>
-  prisma.$transaction(async (transaction) => {
-    await authorizeUserAction(
-      transaction,
-      { actorId: actor.id, session },
-      PERMISSIONS.GAMES.MANAGE,
-    );
-    const previous = await transaction.game.findUnique({ where: { id } });
-    if (!previous) throw gameMissing();
-    if (previous.version !== expectedVersion) throw gameChanged();
-    const result = await transaction.game.deleteMany({
-      where: { id, version: expectedVersion },
-    });
-    if (result.count !== 1) throw gameChanged();
-    const game = toGameItem(previous);
-    const before = auditValues(game);
-    await audit(transaction, {
-      action: 'GAME_DELETE',
-      actorId: actor.id,
-      after: null,
-      before,
-      changes: Object.keys(before),
-      description: `Jeu supprimé : ${game.name}`,
-      game,
-    });
+): Promise<{ id: string }> => {
+  try {
+    return await prisma.$transaction(async (transaction) => {
+      await authorizeUserAction(
+        transaction,
+        { actorId: actor.id, session },
+        PERMISSIONS.GAMES.MANAGE,
+      );
+      const previous = await transaction.game.findUnique({
+        include: WITH_TEAM_COUNT,
+        where: { id },
+      });
+      if (!previous) throw gameMissing();
+      if (previous.version !== expectedVersion) throw gameChanged();
+      if (previous._count.teams > 0) throw gameHasTeams(previous._count.teams);
+      const result = await transaction.game.deleteMany({
+        where: { id, version: expectedVersion },
+      });
+      if (result.count !== 1) throw gameChanged();
+      const game = toGameItem(previous);
+      const before = auditValues(game);
+      await audit(transaction, {
+        action: 'GAME_DELETE',
+        actorId: actor.id,
+        after: null,
+        before,
+        changes: Object.keys(before),
+        description: `Jeu supprimé : ${game.name}`,
+        game,
+      });
 
-    return { id };
-  });
+      return { id };
+    });
+  } catch (error) {
+    if (isPrismaForeignKeyError(error)) throw gameHasTeams(null);
+    throw error;
+  }
+};

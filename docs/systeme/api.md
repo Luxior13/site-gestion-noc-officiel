@@ -39,8 +39,10 @@ ce relevé n’est pas une revue de sécurité.
 
 | Route | Méthodes | Protections relevées |
 | --- | --- | --- |
-| `/api/jeux` | GET, POST | `games:view` ; POST `games:manage`. Nom unique quels que soient la casse et les accents (409 avec le détail du champ) |
-| `/api/jeux/[id]` | PATCH, DELETE | `games:manage`, version attendue ; ajout, modification et suppression tracés dans la même transaction |
+| `/api/jeux` | GET, POST | `games:view` ; POST `games:manage`. Nom unique quels que soient la casse et les accents (409 avec le détail du champ) ; chaque jeu porte son nombre d’équipes (`teamCount`) |
+| `/api/jeux/[id]` | PATCH, DELETE | `games:manage`, version attendue ; ajout, modification et suppression tracés dans la même transaction ; DELETE refusé (409) pour un jeu qui a des équipes |
+| `/api/equipes` | GET, POST | `teams:view` ; POST `teams:manage`. Nom unique dans son jeu (409 avec le détail du champ), jeu inexistant refusé (404) ; 8 novembre 2026 |
+| `/api/equipes/[id]` | GET, PATCH, DELETE | GET `teams:view` : l’équipe avec son jeu, pour sa fiche ; PATCH et DELETE `teams:manage`, version attendue ; le jeu ne change pas (un `gameId` dans PATCH est refusé, 400) ; chaque écriture tracée dans la même transaction (catégorie `TEAM`) |
 | `/api/personnes` | GET, POST | `persons:view` ; POST `persons:create`. GET renvoie `overview`, compteurs à facettes des filtres rapides (20 octobre 2026) |
 | `/api/personnes/[id]` | GET, PATCH, DELETE | `persons:view`, `persons:update`, `persons:delete` |
 | `/api/personnes/[id]/emails` | POST | `persons:update_contact` |

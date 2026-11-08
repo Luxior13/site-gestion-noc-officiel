@@ -5,7 +5,7 @@ import type {
   PermissionItem,
 } from './permissions.constants';
 
-type GamePermissionKeys = Readonly<{
+type ViewManageKeys = Readonly<{
   MANAGE: string;
   VIEW: string;
 }>;
@@ -18,13 +18,18 @@ const permission = (
   status: 'active',
 });
 
-/** The games of the structure, first page of the Esport pole (8 November 2026). */
+/**
+ * The games of the structure, first page of the Esport pole, and the teams
+ * shown under each game (8 November 2026).
+ */
 export const createGamesPermissionCategory = (
-  keys: GamePermissionKeys,
+  keys: ViewManageKeys,
+  teamKeys: ViewManageKeys,
 ): PermissionCategory => ({
   accessPermissionKey: keys.VIEW,
   assignment: 'delegable',
-  description: 'Les jeux de la structure, une section par jeu.',
+  description:
+    'Les jeux de la structure, une section par jeu, et leurs équipes.',
   icon: 'Gamepad2',
   key: 'games',
   label: 'Jeux',
@@ -50,6 +55,31 @@ export const createGamesPermissionCategory = (
       key: keys.MANAGE,
       label: 'Gérer les jeux',
       module: 'Jeux',
+      risk: 'sensitive',
+      route: PAGE_PATHS.games,
+      surface: 'page',
+    }),
+    permission({
+      action: 'view',
+      dependencies: [keys.VIEW],
+      description: 'Voir les équipes sous chaque jeu, actives ou non',
+      grantable: true,
+      key: teamKeys.VIEW,
+      label: 'Consulter les équipes',
+      module: 'Équipes',
+      risk: 'default',
+      route: PAGE_PATHS.games,
+      surface: 'page',
+    }),
+    permission({
+      action: 'manage',
+      dependencies: [teamKeys.VIEW],
+      description:
+        'Ajouter une équipe à un jeu, la modifier, la rendre active ou non, et supprimer une équipe qui n’a jamais servi',
+      grantable: true,
+      key: teamKeys.MANAGE,
+      label: 'Gérer les équipes',
+      module: 'Équipes',
       risk: 'sensitive',
       route: PAGE_PATHS.games,
       surface: 'page',

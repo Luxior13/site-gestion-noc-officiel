@@ -118,6 +118,14 @@ développement. Une liste fixée par une règle (statut, rôle) reste dans le co
   les anciens passages : l’histoire n’est pas réécrite (décision du 8 novembre 2026).
 - **Archiver** retire la valeur des choix ; elle reste affichée sur les anciens
   passages. Une valeur utilisée ne se supprime pas.
+- La base le garantit : toute table qui référence un jeu (équipes depuis le
+  8 novembre 2026, puis fonctions, tournois, finances) le fait en
+  `ON DELETE RESTRICT`, jamais en `CASCADE` ; le service explique le refus
+  (« Ce jeu a 3 équipes : rendez-le inactif plutôt que de le supprimer ») et
+  l’interface ne propose pas la suppression ([Jeux](../pages/esport/jeux.md)).
+- Une équipe garde le jeu de sa création (8 novembre 2026) : un autre jeu, c’est
+  une autre équipe, et ses passages utilisent les fonctions de ce jeu. L’API et
+  la base refusent de le changer ([fiche équipe](../pages/esport/equipe.md)).
 - **Ajouter depuis le champ** : un champ à choix multiples propose de créer la
   valeur manquante, pour ne pas quitter la fiche. L’ajout suit les droits de la liste.
 - Le champ à choix multiples est un nouveau composant partagé de `components/ui`,

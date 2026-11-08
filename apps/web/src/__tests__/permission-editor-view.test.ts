@@ -109,7 +109,7 @@ describe('permission editor configured and effective access', () => {
       ),
     ).toBe(false);
   });
-  it('ignores the retired field history key and presents 30 current capabilities', () => {
+  it('ignores the retired field history key and presents 32 current capabilities', () => {
     // Field history left the catalogue on 27 October 2026.
     const state = buildPermissionEditorState(UserRole.USER, {
       'audit:view_field_history': true,
@@ -118,6 +118,6 @@ describe('permission editor configured and effective access', () => {
     expect(state.effective.has('audit:view_field_history')).toBe(false);
     expect(
       PERMISSION_EDITOR_CATEGORIES.flatMap((category) => category.permissions),
-    ).toHaveLength(30);
+    ).toHaveLength(32);
   });
 });

@@ -19,6 +19,8 @@ export type NavItem = {
   /** Searched by the quick navigation, never displayed. */
   keywords?: readonly string[];
   label: string;
+  /** Other paths where this item stays the current one (its records). */
+  matchHrefs?: readonly string[];
   permissionMode?: 'all' | 'any';
   requiredPermissions?: readonly string[];
   status?: string;

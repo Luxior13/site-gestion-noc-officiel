@@ -45,6 +45,7 @@ const featureNavigation = (
   icon: feature.icon,
   keywords: feature.keywords,
   label: feature.label,
+  matchHrefs: 'matchHrefs' in feature ? feature.matchHrefs : undefined,
   permissionMode: feature.permissionMode,
   requiredPermissions: feature.requiredPermissions,
 });

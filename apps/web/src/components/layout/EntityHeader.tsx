@@ -25,7 +25,11 @@ type EntityHeaderProps<SectionId extends string> = Omit<
 > & {
   /** Short state shown beside the name in the breadcrumb. */
   condensedAside?: ReactNode;
-  navigation: EntityHeaderNavigation<SectionId>;
+  /**
+   * Section tabs; none for a record of a single content (« une page d’un seul
+   * contenu n’a pas d’onglet »), such as a team before its roster.
+   */
+  navigation?: EntityHeaderNavigation<SectionId>;
 };
 
 /**
@@ -91,13 +95,15 @@ export const EntityHeader = <SectionId extends string>({
           footer={
             // While the condensed bar is shown, these tabs sit off screen:
             // keep keyboard focus on the visible ones.
-            <div aria-hidden={condensed || undefined} inert={condensed}>
-              <PageSectionNavigation
-                {...navigation}
-                contentStartRef={contentStartRef}
-                variant="embedded"
-              />
-            </div>
+            navigation && (
+              <div aria-hidden={condensed || undefined} inert={condensed}>
+                <PageSectionNavigation
+                  {...navigation}
+                  contentStartRef={contentStartRef}
+                  variant="embedded"
+                />
+              </div>
+            )
           }
           icon={icon}
           title={title}
@@ -106,7 +112,7 @@ export const EntityHeader = <SectionId extends string>({
       {/* Zero-height sticky anchor after the header: it sticks exactly when the
           header has scrolled away, and the bar overlays without moving the page. */}
       <div className="sticky top-0 z-30 mb-0 h-0">
-        {condensed && (
+        {condensed && navigation && (
           <div
             className="border-border-divider bg-surface-canvas absolute inset-x-0 top-0 border-b [box-shadow:var(--shadow-navigation-stuck)]"
             data-slot="entity-header-condensed"

@@ -338,6 +338,32 @@
   padding-right: 16px;
 }
 
+/*
+ * Grouped table (Jeux): one tbody per game, its teams under it. The band
+ * alternates per group, not per row, so a game and its teams read as one block;
+ * same specificity as the rules above, declared after them.
+ */
+.directory .groupedTable tbody tr,
+.directory .groupedTable tbody tr:nth-child(even):not([data-state='selected']) {
+  background: var(--m-row-bg);
+}
+
+.directory
+  .groupedTable
+  tbody:nth-of-type(even)
+  tr:not([data-state='selected']) {
+  background: var(--m-row-alt);
+}
+
+.directory .groupedTable tbody + tbody {
+  border-top: 1px solid var(--m-border);
+}
+
+.directory .groupedTable tbody tr:hover:not([data-state='selected']),
+.directory .groupedTable tbody tr:focus-within:not([data-state='selected']) {
+  background: var(--m-row-hover);
+}
+
 /* --------------------------------------------------------------- Pagination */
 .directory .pagination {
   display: flex;

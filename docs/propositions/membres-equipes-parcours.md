@@ -60,7 +60,7 @@ lecture des valeurs suit la page qui les affiche.
 
 | Modèle | Contenu |
 | --- | --- |
-| `Team` | Nom, anciens noms, jeu (liste Jeux), `archivedAt`, `version` |
+| `Team` | Livré le 8 novembre 2026 : jeu (`ON DELETE RESTRICT`, fixé à la création, déclencheur `Team_gameId_immutable`), nom unique dans son jeu, création avec sa précision, active, `version` ; anciens noms à venir avec la fiche équipe |
 | `PersonPassage` | Fiche, équipe facultative (vide pour une fonction de structure), fonction, début, fin, précision de chaque date, `version` |
 | `PersonFormerNickname` | Ancien pseudo, date du changement ; écrit par le service quand le pseudo change, saisi à la main dans l’onglet Identité pour un pseudo d’avant le site, et cherché par le Répertoire |
 
@@ -76,16 +76,22 @@ comparaison. L’affichage suit la précision, sans inventer de jour.
 **Règles serveur** : la fin ne précède pas le début (contrainte en base). Deux
 passages identiques (fiche, équipe, fonction) ne se chevauchent pas. Une fiche qui
 a un passage ne se supprime pas : la base le refuse et l’interface l’explique.
+De même, toute table qui référence un jeu (équipes, fonctions, puis tournois,
+identifiants de jeu, finances) le fait en `ON DELETE RESTRICT`, jamais en
+`CASCADE` comme l’ancien schéma de janvier 2026 : le service traduit le refus en
+« Ce jeu a des équipes : rendez-le inactif », et une suite SQL le vérifie
+(demande du propriétaire du 8 novembre 2026).
 
 **Écrans** :
 
-- `/esport/jeux` (première version livrée le 8 novembre 2026, sans les équipes) : accueil d’Esport, au gabarit A, sans onglet : les sections,
+- `/esport/jeux` (livrée le 8 novembre 2026, avec les équipes sous chaque jeu le même jour ; le nom d’une équipe ouvre sa fiche) : accueil d’Esport, au gabarit A, sans onglet : les sections,
   actives ou archivées, chacune avec ses équipes en dessous ; une équipe ouvre sa
   fiche en un clic, le nom du jeu ouvre la fiche jeu (décision du 8 novembre 2026).
-- `/esport/jeux/[id]` : fiche jeu, onglets Équipes (principale, académie…, créées
-  en fenêtre puisqu’elles ont deux champs), Finances ↗ et Fonctions (celles de ce
-  jeu, réglage « Donne accès à son équipe »).
-- `/esport/equipes/[id]` : fiche équipe, sous son jeu, onglets Roster (membres
+- `/esport/jeux/[id]` : fiche jeu, onglets Finances ↗ et Fonctions (celles de ce
+  jeu, réglage « Donne accès à son équipe ») ; l’onglet Équipes est retiré le
+  8 novembre 2026, les équipes s’affichent et s’ajoutent sous chaque jeu de la
+  page Jeux.
+- `/esport/equipes/[id]` (ouverte le 8 novembre 2026 avec ses informations seules, sans barre d’onglets) : fiche équipe, sous son jeu, onglets Roster (membres
   actuels et anciens, sélecteur « À une date »), Tournois ↗, Entraînements,
   Finances ↗ (invisible pour un manager), Partenaires ↗ et Informations (nom, anciens noms,
   archivage).
@@ -100,7 +106,7 @@ a un passage ne se supprime pas : la base le refuse et l’interface l’expliqu
 `/api/personnes/[id]/passages/[passageId]`, selon le
 [contrat d’une fonctionnalité](../references/architecture-fonctionnalite.md).
 
-**Droits** : `teams:view`, `teams:update`, `persons:view_journey`,
+**Droits** : `teams:view`, `teams:manage` (livrés le 8 novembre 2026), `persons:view_journey`,
 `persons:update_journey`, délégables, fournis aux Administrateurs.
 
 **Journal** : chaque écriture suit la

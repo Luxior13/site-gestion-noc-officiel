@@ -56,7 +56,8 @@ Colonnes : nombre de champs (relations comprises), nombre d’`@@index` et
 
 | Modèle | Champs | Index | Relations | Rôle |
 | --- | ---: | ---: | --- | --- |
-| `Game` | 10 | 1 | — | Un jeu, une section : nom unique (`normalizedName`), nom court, première ouverture avec sa précision `DatePrecision`, actif, version optimiste (8 novembre 2026) |
+| `Game` | 10 | 1 | `teams` | Un jeu, une section : nom unique (`normalizedName`), nom court, première ouverture avec sa précision `DatePrecision`, actif, version optimiste (8 novembre 2026) |
+| `Team` | 10 | 2 | `game` (`ON DELETE RESTRICT`) | Une équipe d’un jeu : nom unique dans son jeu (`gameId` + `normalizedName`), création avec sa précision, active, version optimiste (8 novembre 2026) ; un jeu qui a des équipes ne se supprime pas ; le jeu d’une équipe ne change pas (déclencheur `Team_gameId_immutable`, absent de `schema.prisma`) |
 
 ### Système et préparation
 
@@ -77,8 +78,8 @@ L’actualité interne redéfinira son stockage à sa reconstruction.
 
 ## Migrations
 
-**63 migrations** dans `packages/database/prisma/migrations`, de
-`20250723121213_init` à `20261108120000_games` (table `Game` et précision de date, actions `GAME_*` et catégorie `GAME` du journal, 8 novembre 2026). Avant elle, `20261031140000_shared_search_text` (règle de recherche commune, audit RL du 31 octobre 2026 : fonction `public.search_text`, miroir de `normalizeSearchText`, colonne `AuditLog.searchText` remplie par déclencheur, index trigrammes d’expression des utilisateurs, noms normalisés du Répertoire recalculés ; la garde d’ajout seul du journal n’est levée que dans cette migration, le temps de remplir la colonne des événements passés). Les précédentes, `20261031130000_audit_purge_action` et `20261031120000_audit_attempts_blocked`, ajoutent `AUDIT_PURGE` (« Journal purgé ») et `ATTEMPTS_BLOCKED` (tentatives bloquées par la limitation de débit). Repères :
+**65 migrations** dans `packages/database/prisma/migrations`, de
+`20250723121213_init` à `20261108200000_team_game_immutable` (déclencheur qui refuse de changer le jeu d’une équipe, 8 novembre 2026). Avant elle, `20261108180000_teams` (table `Team`, liée au jeu en `ON DELETE RESTRICT`, actions `TEAM_*` et catégorie `TEAM` du journal, même jour), puis `20261108120000_games` (table `Game` et précision de date, actions `GAME_*` et catégorie `GAME`, même jour), puis `20261031140000_shared_search_text` (règle de recherche commune, audit RL du 31 octobre 2026 : fonction `public.search_text`, miroir de `normalizeSearchText`, colonne `AuditLog.searchText` remplie par déclencheur, index trigrammes d’expression des utilisateurs, noms normalisés du Répertoire recalculés ; la garde d’ajout seul du journal n’est levée que dans cette migration, le temps de remplir la colonne des événements passés). Les précédentes, `20261031130000_audit_purge_action` et `20261031120000_audit_attempts_blocked`, ajoutent `AUDIT_PURGE` (« Journal purgé ») et `ATTEMPTS_BLOCKED` (tentatives bloquées par la limitation de débit). Repères :
 
 | Période | Migrations notables |
 | --- | --- |

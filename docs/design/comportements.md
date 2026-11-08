@@ -234,6 +234,10 @@ du 25 octobre 2026).
   Durand ? », « Réinitialiser le mot de passe de Camille Exemple ? ») ;
   décision du 31 octobre 2026 qui tranche AUD-Q1.
 - Une fenêtre ouverte au-dessus d’une autre laisse une seule zone active.
+- Une action que le serveur refuserait n’est pas proposée : la fenêtre dit à sa
+  place pourquoi et quoi faire (« Ce jeu a 3 équipes : rendez-le inactif
+  plutôt que de le supprimer. »), sans bouton désactivé muet ; le service et la
+  base refusent quand même (8 novembre 2026).
 - Décisions et preuves : [suivi des modales](../pages/transverse/modales.md).
 
 ## Lecture seule et droits

@@ -3,6 +3,7 @@
 import { Check, Trash2 } from 'lucide-react';
 import React, { type FC, useState } from 'react';
 
+import { ApproximateDateField } from '$components/forms/ApproximateDateField';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,6 +27,10 @@ import { Input } from '$ui/input';
 import { Label } from '$ui/label';
 import { Switch } from '$ui/switch';
 import { ApiClientError } from '$utils/api.utils';
+import {
+  type ApproximateDate,
+  getLocalToday,
+} from '$utils/approximate-date.utils';
 
 import {
   createGameRequest,
@@ -36,9 +41,7 @@ import {
   GAME_NAME_MAX_LENGTH,
   GAME_SHORT_NAME_MAX_LENGTH,
 } from '../game.constants';
-import { getLocalToday } from '../game-date.utils';
-import type { ApproximateDate, GameItem } from '../types/game.types';
-import { GameFirstOpenedField } from './GameFirstOpenedField';
+import type { GameItem } from '../types/game.types';
 
 type Draft = {
   firstOpened: ApproximateDate;
@@ -95,6 +98,8 @@ type Props = {
   onClose: () => void;
   onDeleted: (id: string) => void;
   onSaved: (game: GameItem) => void;
+  /** Teams under the game, as the page currently shows them. */
+  teamCount: number;
 };
 
 const GameDialogContent: FC<Props> = ({
@@ -102,6 +107,7 @@ const GameDialogContent: FC<Props> = ({
   onClose,
   onDeleted,
   onSaved,
+  teamCount,
 }) => {
   const initial = draftOf(game);
   const [draft, setDraft] = useState<Draft>(initial);
@@ -203,7 +209,7 @@ const GameDialogContent: FC<Props> = ({
               <DialogDescription>
                 {game
                   ? 'Renommer sert à corriger une faute. Pour un nouveau jeu (CS2 après CS:GO), rendez l’ancien inactif et ajoutez-en un nouveau.'
-                  : 'Une section de la structure : un jeu, ses équipes viendront ensuite.'}
+                  : 'Une section de la structure ; ses équipes s’ajoutent ensuite sous le jeu.'}
               </DialogDescription>
             </DialogHeader>
             <div className="min-h-0 space-y-4 overflow-y-auto px-4 py-4 sm:px-5">
@@ -270,11 +276,13 @@ const GameDialogContent: FC<Props> = ({
                   </p>
                 )}
               </div>
-              <GameFirstOpenedField
+              <ApproximateDateField
                 disabled={busy}
                 error={errors.firstOpened}
                 idPrefix={`${ID}-first-opened`}
+                label="Première ouverture"
                 onChange={(firstOpened) => change({ firstOpened })}
+                subject="première ouverture"
                 value={draft.firstOpened}
               />
               <div className="border-border-default bg-surface-inset flex items-center justify-between gap-4 rounded-lg border px-3 py-2.5">
@@ -295,7 +303,7 @@ const GameDialogContent: FC<Props> = ({
               </div>
             </div>
             <DialogFooter className="border-border-divider bg-surface-inset border-t px-4 py-4 sm:justify-between sm:px-5">
-              {game && (
+              {game && teamCount === 0 && (
                 <Button
                   disabled={busy}
                   onClick={() => setConfirmDelete(true)}
@@ -305,6 +313,12 @@ const GameDialogContent: FC<Props> = ({
                   <Trash2 className="size-4" />
                   Supprimer
                 </Button>
+              )}
+              {/* Said instead of a delete the base would refuse. */}
+              {game && teamCount > 0 && (
+                <p className="text-muted-foreground text-xs sm:max-w-60">
+                  {`Ce jeu a ${teamCount > 1 ? `${teamCount} équipes` : 'une équipe'} : rendez-le inactif plutôt que de le supprimer.`}
+                </p>
               )}
               <div className="flex flex-col-reverse gap-2 sm:ml-auto sm:flex-row">
                 <Button
@@ -341,8 +355,8 @@ const GameDialogContent: FC<Props> = ({
                 Supprimer définitivement le jeu {game.name} ?
               </AlertDialogTitle>
               <AlertDialogDescription>
-                Il disparaît de la liste. Un jeu qui a déjà servi (équipes,
-                joueurs, tournois) ne se supprime pas : rendez-le inactif.
+                Il disparaît de la liste ; le journal d’activité garde la trace
+                de la suppression.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

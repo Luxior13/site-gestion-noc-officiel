@@ -130,9 +130,9 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
     name: 'Jeux',
     phase: null,
     summary:
-      'Liste, sans onglet : les sections de la structure, les actives en tête, chacune avec une icône de manette par défaut, avec recherche et filtre ; ajout et modification en fenêtre (nom, nom court, première ouverture, actif), renommer seulement pour corriger une faute. C’est aussi la liste de choix des jeux.',
+      'Liste, sans onglet : les sections de la structure, chacune avec ses équipes en dessous, les actives en tête, une icône de manette par défaut, une recherche sur les jeux et les équipes et un filtre ; ajout et modification en fenêtre d’un jeu (nom, nom court, première ouverture, actif) ; ajout en fenêtre d’une équipe sous son jeu (jeu, nom unique dans le jeu, création, active), puis sa fiche s’ouvre ; le nom d’une équipe ouvre sa fiche ; renommer corrige une faute ; un jeu qui a des équipes ne se supprime pas, il devient inactif. C’est aussi la liste de choix des jeux.',
     upcoming:
-      'Les équipes sous chaque jeu : une équipe ouvre sa fiche et son roster en un clic, le nom du jeu ouvre sa fiche ; l’image de chaque jeu à la place de la manette.',
+      'Le nom du jeu ouvre sa fiche ; l’image de chaque jeu à la place de la manette.',
   },
   {
     area: 'esport',
@@ -140,12 +140,6 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
     name: 'Fiche jeu',
     phase: 1,
     tabs: [
-      {
-        label: 'Équipes',
-        phase: 1,
-        summary:
-          'Les équipes de ce jeu (principale, académie…), actives ou archivées, avec leurs joueurs actuels ; création en fenêtre ; chaque ligne ouvre sa fiche.',
-      },
       {
         chantier: 'payments',
         label: 'Finances',
@@ -167,7 +161,9 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
     area: 'esport',
     chantier: 'sport-teams',
     name: 'Fiche équipe',
-    phase: 1,
+    phase: null,
+    summary:
+      'Ouverte par le nom d’une équipe sur la page Jeux, ou juste après son ajout.',
     tabs: [
       {
         label: 'Roster',
@@ -207,11 +203,16 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'Les partenaires qui soutiennent cette équipe et ce qu’elle leur doit (logo sur le maillot, publications, présence). Un manager les voit, sans les montants.',
       },
       {
+        chantier: 'sport-teams',
         label: 'Informations',
-        phase: 1,
-        summary: 'Nom, anciens noms, jeu, archivage.',
+        phase: null,
+        summary:
+          'Nom, création, active, modifiés sur place ; le jeu, fixé à la création, figure dans l’en-tête ; zone dangereuse. Seul contenu de la fiche pour l’instant, donc sans barre d’onglets.',
+        upcoming: 'Anciens noms gardés au renommage.',
       },
     ],
+    upcoming:
+      'Le Roster, premier onglet : la barre d’onglets apparaît avec lui, puis les autres onglets.',
   },
   {
     area: 'people',

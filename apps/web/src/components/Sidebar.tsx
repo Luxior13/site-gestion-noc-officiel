@@ -81,8 +81,15 @@ function isActivePath(pathname: string, href: string): boolean {
   return pathname === href || (href !== '/' && pathname.startsWith(`${href}/`));
 }
 
+/** The item's own page or one of its records (a team under Jeux). */
+function isItemPath(pathname: string, item: NavItem): boolean {
+  return [item.href, ...(item.matchHrefs ?? [])].some((href) =>
+    isActivePath(pathname, href),
+  );
+}
+
 function isNavItemActive(pathname: string, item: NavItem): boolean {
-  if (isActivePath(pathname, item.href)) {
+  if (isItemPath(pathname, item)) {
     return true;
   }
 
@@ -188,7 +195,7 @@ const Sidebar: FC<SidebarProps> = ({ className }) => {
   const renderSubNavItem = (item: NavItem): React.ReactNode => {
     const Icon = getNavigationIcon(item.icon);
     const isExactActive = pathname === item.href;
-    const isActive = isActivePath(pathname, item.href);
+    const isActive = isItemPath(pathname, item);
 
     return (
       <SidebarMenuSubItem key={item.href}>
@@ -219,7 +226,7 @@ const Sidebar: FC<SidebarProps> = ({ className }) => {
       isNavItemActive(pathname, child),
     );
     const isExactActive = pathname === item.href;
-    const isActive = isActivePath(pathname, item.href);
+    const isActive = isItemPath(pathname, item);
 
     if (children.length > 0) {
       const isGroupOpen = openGroupHref === item.href;

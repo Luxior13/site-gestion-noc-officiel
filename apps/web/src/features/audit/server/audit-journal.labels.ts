@@ -50,6 +50,9 @@ export const JOURNAL_ACTION_LABELS: Record<AuditAction, string> = {
   STEP_UP_FAILED: 'Confirmation d’identité échouée',
   STEP_UP_SUCCESS: 'Identité confirmée',
   SYSTEM_SETTING_UPDATE: 'Paramètre modifié',
+  TEAM_CREATE: 'Équipe ajoutée',
+  TEAM_DELETE: 'Équipe supprimée',
+  TEAM_UPDATE: 'Équipe modifiée',
   USER_ACTIVATE: 'Compte réactivé',
   USER_CREATE: 'Compte créé',
   USER_DEACTIVATE: 'Compte désactivé',
@@ -85,6 +88,14 @@ export const GAME_FIELD_LABELS: ReadonlyArray<readonly [string, string]> = [
   ['shortName', 'Nom court'],
   ['firstOpened', 'Première ouverture'],
   ['isActive', 'Actif'],
+];
+
+/** Team fields recorded in `before` / `after`, in display order. */
+export const TEAM_FIELD_LABELS: ReadonlyArray<readonly [string, string]> = [
+  ['game', 'Jeu'],
+  ['name', 'Nom'],
+  ['founded', 'Création'],
+  ['isActive', 'Active'],
 ];
 
 /** Account fields recorded in `before` / `after`, in display order. */

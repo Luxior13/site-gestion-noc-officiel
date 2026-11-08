@@ -45,6 +45,7 @@ const TYPE_FILTERS: Record<
   persons: { category: 'PERSON' },
   security: { stream: { in: ['AUTHENTICATION', 'SECURITY'] } },
   settings: { action: 'SYSTEM_SETTING_UPDATE' },
+  teams: { category: 'TEAM' },
 };
 
 const getProtectedAccountIds = async (): Promise<string[]> =>

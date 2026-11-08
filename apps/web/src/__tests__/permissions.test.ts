@@ -473,6 +473,8 @@ describe('permission catalogue', () => {
       'persons:delete',
       'games:view',
       'games:manage',
+      'teams:view',
+      'teams:manage',
       'users:view',
       'users:create',
       'users:view_contact',

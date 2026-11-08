@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { normalizeSearchText } from '$utils/search-text.utils';
+
 /**
  * Canonical login name used for authentication.
  *
@@ -136,6 +138,26 @@ export function trimmedStringMinMax(
       message: maxMessage ?? `Maximum ${max} caractères autorisés`,
     });
 }
+
+/**
+ * Name of an item in a list (a game, a team): trimmed, required, bounded, and
+ * made of at least one letter or digit so its normalized form, which carries
+ * the uniqueness, is never empty.
+ */
+export const requiredNameSchema = (maxLength: number): z.ZodType<string> =>
+  z
+    .string()
+    .max(maxLength * 2)
+    .transform((value) => value.trim())
+    .pipe(
+      z
+        .string()
+        .min(1, 'Le nom est obligatoire')
+        .max(maxLength, `${maxLength} caractères au maximum`)
+        .refine((value) => normalizeSearchText(value).length > 0, {
+          message: 'Le nom doit contenir au moins une lettre ou un chiffre',
+        }),
+    );
 
 /**
  * Zod schema for phone number with basic sanitization.

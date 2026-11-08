@@ -43,7 +43,12 @@ Cadre privé (sidebar 264 px, header 56 px)
   propres à la liste (Utilisateurs : 48, 52, 56 ou 64 rem).
 - Quand on vient surtout pour les éléments d’une ligne, ils s’affichent en
   dessous, chacun ouvrant sa fiche : les équipes sous chaque jeu de la page Jeux
-  (8 novembre 2026). La ligne elle-même ouvre sa propre fiche.
+  (8 novembre 2026). La ligne elle-même ouvre sa propre fiche. Sur ordinateur,
+  un `tbody` par parent (`groupedTable`) : la bande alterne de parent en parent,
+  les éléments s’alignent en retrait sous le nom du parent, en graisse normale,
+  et « + Ajouter … » ferme le groupe ; sur téléphone, la carte du parent puis la
+  liste de ses éléments, chacun cliquable sur toute sa ligne. La recherche trouve
+  aussi les éléments ; un élément trouvé s’affiche seul sous son parent.
 - Retour de fiche avec contexte restauré ([comportements](comportements.md#listes-recherche-et-pagination)).
 
 Pages adoptant ce gabarit : voir [Harmonisation](harmonisation.md#état-par-page).
@@ -122,6 +127,11 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
 - **Pas d’onglet Historique** : le bouton de l’en-tête ouvre le journal, filtré.
 - **Un onglet en lecture le signale** (8 novembre 2026) : quand rien ne s’y modifie et que son contenu se gère sur une autre page (Adhésions ou Finances d’une fiche personne), l’onglet garde le même style, suivi d’une flèche ↗ et du texte accessible « se modifie dans … ». Dedans, une ligne en tête nomme la page source avec un bouton pour l’ouvrir, chaque ligne ouvre son dossier, sans action de modification. Un onglet mixte (Suivi d’une fiche personne, Gains d’une fiche tournoi) reste un onglet normal : ses lignes venues d’ailleurs portent leur source et un lien.
 - **Créer** : en fenêtre pour quelques champs, sur une page pour un long formulaire.
+  Un élément qui a sa fiche s’ouvre sur elle, jamais dans une fenêtre : la fenêtre
+  ne sert qu’à le créer, puis sa fiche s’ouvre (équipe, 8 novembre 2026).
+- **Avant le deuxième onglet** : une fiche d’un seul contenu garde l’en-tête de
+  fiche sans barre d’onglets (`EntityDetailLayout` sans `sections`), comme la
+  fiche équipe avant son Roster.
 
 ## C. Formulaire de création
 

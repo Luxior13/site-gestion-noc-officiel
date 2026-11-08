@@ -3,8 +3,9 @@
 [Index des pages](../README.md) · [Design](../../design/README.md) · [Guide général](../../REFERENCE_GENERALE.md)
 
 Pôle Esport de la navigation (`/esport/*`), ouvert le 8 novembre 2026 avec sa
-première page : les jeux de la structure. Suivront la fiche de chaque jeu, la
-fiche de chaque équipe, les tournois et les déplacements
+première page : les jeux de la structure, et le même jour leurs équipes, sous
+chaque jeu. Suivront la fiche de chaque jeu, la fiche de chaque équipe (Roster),
+les tournois et les déplacements
 ([feuille de route](../../propositions/feuille-de-route.md)). Couleur violette
 (`--nav-esport`, [fondations](../../design/fondations.md)), icône manette.
 
@@ -12,6 +13,7 @@ fiche de chaque équipe, les tournois et les déplacements
 
 | Page | Fiche | Contenu |
 | --- | --- | --- |
-| Jeux | [jeux.md](jeux.md) | `/esport/jeux` : les sections de la structure, ajout et modification en fenêtre |
+| Jeux | [jeux.md](jeux.md) | `/esport/jeux` : les sections de la structure et leurs équipes sous chaque jeu, ajout et modification en fenêtre |
+| Fiche équipe | [equipe.md](equipe.md) | `/esport/equipes/[id]` : les informations d’une équipe, modifiées sur place ; le Roster viendra en premier onglet |
 
 Les autres vues prévues du pôle reçoivent une fiche lors de leur création.

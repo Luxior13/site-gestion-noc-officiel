@@ -47,6 +47,10 @@ export const PERMISSIONS = {
     UPDATE: 'settings:update',
     VIEW: 'settings:view',
   },
+  TEAMS: {
+    MANAGE: 'teams:manage',
+    VIEW: 'teams:view',
+  },
   USERS: {
     CREATE: 'users:create',
     DELEGATE_ACCESS: 'users:delegate_access',
@@ -414,7 +418,7 @@ export const ACCOUNT_PERMISSION_CATEGORIES: AccountPermissionCategory[] = [
 /** All live administrative pages shown in the per-user access overview. */
 export const PERMISSION_CATEGORIES: PermissionCategory[] = [
   createPersonsPermissionCategory(PERMISSIONS.PERSONS),
-  createGamesPermissionCategory(PERMISSIONS.GAMES),
+  createGamesPermissionCategory(PERMISSIONS.GAMES, PERMISSIONS.TEAMS),
   {
     accessPermissionKey: PERMISSIONS.USERS.VIEW,
     assignment: 'delegable',

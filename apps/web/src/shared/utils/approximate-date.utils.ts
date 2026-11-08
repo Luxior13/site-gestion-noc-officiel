@@ -1,5 +1,29 @@
-import type { DatePrecision } from './game.constants';
-import type { ApproximateDate } from './types/game.types';
+import { z } from 'zod';
+
+/**
+ * How precisely a date is known (registre historique): a date known to the
+ * year is entered to the year, without an invented day. Shared by every
+ * approximate date of the site: a game's first opening, a team's creation and,
+ * later, the start and end of a passage.
+ */
+export const DATE_PRECISIONS = ['DAY', 'MONTH', 'YEAR'] as const;
+export type DatePrecision = (typeof DATE_PRECISIONS)[number];
+
+export const DATE_PRECISION_LABELS: Record<DatePrecision, string> = {
+  DAY: 'Jour précis',
+  MONTH: 'Mois',
+  YEAR: 'Année',
+};
+
+/** A date known to the day, the month or the year (`date` is YYYY-MM-DD). */
+export type ApproximateDate = Readonly<{
+  date: string;
+  precision: DatePrecision;
+}>;
+
+/** Earliest and latest year accepted for an approximate date. */
+export const APPROXIMATE_DATE_FIRST_YEAR = 1970;
+export const APPROXIMATE_DATE_LAST_YEAR = 2100;
 
 const DATE_ONLY = /^(\d{4})-(\d{2})-(\d{2})$/;
 
@@ -64,7 +88,7 @@ export const formatApproximateDate = (value: ApproximateDate): string => {
   return `${parts.day === 1 ? '1er' : parts.day} ${month} ${parts.year}`;
 };
 
-/** Today in the browser's calendar, as YYYY-MM-DD: the prefilled first opening. */
+/** Today in the browser's calendar, as YYYY-MM-DD: the prefilled date of a new record. */
 export const getLocalToday = (now: Date = new Date()): string =>
   `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 
@@ -73,3 +97,28 @@ export const changeDatePrecision = (
   value: ApproximateDate,
   precision: DatePrecision,
 ): ApproximateDate => normalizeApproximateDate({ ...value, precision });
+
+/** Validates a date and its precision, then stores it at the start of its period. */
+export const approximateDateSchema = z
+  .object({
+    date: z.string(),
+    precision: z.enum(DATE_PRECISIONS),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const parts = parseDateOnly(value.date);
+    if (!parts) {
+      context.addIssue({ code: 'custom', message: 'Date invalide' });
+
+      return;
+    }
+    if (
+      parts.year < APPROXIMATE_DATE_FIRST_YEAR ||
+      parts.year > APPROXIMATE_DATE_LAST_YEAR
+    )
+      context.addIssue({
+        code: 'custom',
+        message: `L’année doit être comprise entre ${APPROXIMATE_DATE_FIRST_YEAR} et ${APPROXIMATE_DATE_LAST_YEAR}`,
+      });
+  })
+  .transform(normalizeApproximateDate);

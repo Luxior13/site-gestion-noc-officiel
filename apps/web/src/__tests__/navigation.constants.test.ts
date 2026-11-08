@@ -244,5 +244,15 @@ describe('navigation availability', () => {
         ...getVisibleNavigationSpaces(buildAdmin()),
       ]).id,
     ).toBe('esport');
+    // A team record stays in Esport and keeps « Jeux » current.
+    expect(
+      getActiveNavigationSpace('/esport/equipes/team-1', [
+        ...getVisibleNavigationSpaces(buildAdmin()),
+      ]).id,
+    ).toBe('esport');
+    const games = NAV_SPACES.flatMap((space) => space.sections)
+      .flatMap((section) => section.items)
+      .find((item) => item.href === '/esport/jeux');
+    expect(games?.matchHrefs).toEqual(['/esport/equipes']);
   });
 });

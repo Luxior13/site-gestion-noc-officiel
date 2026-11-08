@@ -23,6 +23,7 @@ const SUITE_DATABASES = [
   },
   { database: 'creation_service_test', variable: 'USER_CREATION_TEST_DATABASE_URL' },
   { database: 'games_service_test', variable: 'GAMES_TEST_DATABASE_URL' },
+  { database: 'teams_service_test', variable: 'TEAMS_TEST_DATABASE_URL' },
   { database: 'login_service_test', variable: 'LOGIN_TEST_DATABASE_URL' },
   {
     database: 'person_creation_service_test',

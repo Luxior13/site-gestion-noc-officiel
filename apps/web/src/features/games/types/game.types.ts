@@ -1,10 +1,4 @@
-import type { DatePrecision } from '../game.constants';
-
-/** A date known to the day, the month or the year (`date` is YYYY-MM-DD). */
-export type ApproximateDate = Readonly<{
-  date: string;
-  precision: DatePrecision;
-}>;
+import type { ApproximateDate } from '$utils/approximate-date.utils';
 
 /** Browser-safe projection of a game (one section of the structure). */
 export type GameItem = Readonly<{
@@ -13,6 +7,8 @@ export type GameItem = Readonly<{
   isActive: boolean;
   name: string;
   shortName: string | null;
+  /** Teams attached to the game: a game that has some is not deleted. */
+  teamCount: number;
   updatedAt: string;
   version: number;
 }>;
