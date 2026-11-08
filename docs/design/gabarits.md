@@ -41,14 +41,20 @@ Cadre privé (sidebar 264 px, header 56 px)
   colonnes de données autorisées, statut en badge à pastille, date.
 - Les colonnes dépendent des droits ; leurs seuils de passage en cartes sont
   propres à la liste (Utilisateurs : 48, 52, 56 ou 64 rem).
-- Quand on vient surtout pour les éléments d’une ligne, ils s’affichent en
-  dessous, chacun ouvrant sa fiche : les équipes sous chaque jeu de la page Jeux
-  (8 novembre 2026). La ligne elle-même ouvre sa propre fiche. Sur ordinateur,
-  un `tbody` par parent (`groupedTable`) : la bande alterne de parent en parent,
-  les éléments s’alignent en retrait sous le nom du parent, en graisse normale,
-  et « + Ajouter … » ferme le groupe ; sur téléphone, la carte du parent puis la
-  liste de ses éléments, chacun cliquable sur toute sa ligne. La recherche trouve
-  aussi les éléments ; un élément trouvé s’affiche seul sous son parent.
+- Quand on vient surtout pour les éléments d’une ligne, ils s’affichent sur des
+  lignes sous elle, chacune ouvrant sa fiche : les équipes sous chaque jeu de la
+  page Jeux (8 novembre 2026). Chaque élément est une vraie ligne, cliquable
+  sur toute sa largeur, avec sa vignette (28 px), son nom et ses colonnes ; un
+  guide fin (`border-strong`) descend de la vignette du parent et mène à
+  chacune, comme une arborescence, coupé à mi-hauteur sur la dernière. Un
+  `tbody` par parent (`groupedTable`) : la couleur alterne par parent comme le
+  Répertoire alterne par fiche, sans trait à l’intérieur d’un groupe. Un parent
+  sans élément le dit sous son nom (« Aucune équipe »). Sur téléphone, la carte
+  du parent puis une ligne par élément, avec le même guide, de 44 px au moins.
+  La recherche trouve aussi les éléments ; un élément trouvé s’affiche seul sous
+  son parent. Écartés le même jour : lignes en retrait sans vignette, bande de
+  couleur par groupe, étiquettes sous le nom (petites cibles, et un clic à côté
+  ouvrait le parent).
 - Retour de fiche avec contexte restauré ([comportements](comportements.md#listes-recherche-et-pagination)).
 
 Pages adoptant ce gabarit : voir [Harmonisation](harmonisation.md#état-par-page).
@@ -129,6 +135,22 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
 - **Créer** : en fenêtre pour quelques champs, sur une page pour un long formulaire.
   Un élément qui a sa fiche s’ouvre sur elle, jamais dans une fenêtre : la fenêtre
   ne sert qu’à le créer, puis sa fiche s’ouvre (équipe, 8 novembre 2026).
+- **Ce que demande une création** (8 novembre 2026, pensé pour le long terme) :
+  seulement ce sans quoi l’élément n’existe pas, et ce qui ne changera plus
+  (le jeu d’une équipe). Le reste se complète dans la fiche qui s’ouvre
+  aussitôt : ce qui est automatique (anciens noms), daté (roster, rattachement
+  à une entité), géré ailleurs (finances, partenaires), facultatif (logo, tag,
+  réseaux) ou une action après coup (publication). Le choix entre fenêtre et
+  page se fait sur cet inventaire de tout ce qui est prévu, pas sur les seuls
+  champs du jour ; une page de création ne se justifie que si ce minimum reste
+  long. Équipe : jeu, nom, création, active, en fenêtre.
+- **Ajouter un élément à un parent** (8 novembre 2026) : un seul bouton dans le
+  bandeau de la liste (« Ajouter une équipe », en secondaire à côté de l’action
+  principale), jamais une ligne d’ajout sous chaque parent. La fenêtre demande le
+  parent, obligatoire et sans valeur par défaut (sauf s’il n’y en a qu’un),
+  puisqu’il ne changera plus ; elle propose tous les parents, actifs d’abord,
+  les inactifs marqués « (inactif) » et toujours choisissables, et rappelle que
+  le choix est définitif. Le bouton n’apparaît pas tant qu’aucun parent n’existe.
 - **Avant le deuxième onglet** : une fiche d’un seul contenu garde l’en-tête de
   fiche sans barre d’onglets (`EntityDetailLayout` sans `sections`), comme la
   fiche équipe avant son Roster.

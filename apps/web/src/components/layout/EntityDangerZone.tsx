@@ -46,6 +46,11 @@ type EntityDangerZoneProps = {
   onPasswordProofRequired?: (resume: () => void) => void;
   onReloadVersion: () => Promise<number>;
   triggerLabel?: string;
+  /**
+   * Why the deletion is not offered (a game that has teams): said in place of
+   * the button the server would refuse, with what to do instead.
+   */
+  unavailableReason?: ReactNode;
   version: number;
 };
 
@@ -60,6 +65,7 @@ export const EntityDangerZone: FC<EntityDangerZoneProps> = ({
   onPasswordProofRequired,
   onReloadVersion,
   triggerLabel = 'Supprimer la fiche',
+  unavailableReason,
   version: initialVersion,
 }) => {
   const [conflict, setConflict] = useState(false);
@@ -198,87 +204,93 @@ export const EntityDangerZone: FC<EntityDangerZoneProps> = ({
             {description}
           </p>
         </div>
-        <AlertDialog
-          onOpenChange={(nextOpen) => {
-            if (operationRef.current) return;
-            setOpen(nextOpen);
-            if (nextOpen && !attemptedRef.current) {
-              setVersion(initialVersion);
-              setConflict(false);
-              setError(null);
-              idempotencyKeyRef.current = crypto.randomUUID();
-            }
-          }}
-          open={open}
-        >
-          <AlertDialogTrigger asChild>
-            <Button className="shrink-0" variant="destructive">
-              <Trash2 className="size-4" />
-              {triggerLabel}
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent
-            aria-busy={isBusy || undefined}
-            className="sm:max-w-lg"
+        {unavailableReason ? (
+          <p className="text-muted-foreground max-w-sm shrink-0 text-sm sm:text-right">
+            {unavailableReason}
+          </p>
+        ) : (
+          <AlertDialog
+            onOpenChange={(nextOpen) => {
+              if (operationRef.current) return;
+              setOpen(nextOpen);
+              if (nextOpen && !attemptedRef.current) {
+                setVersion(initialVersion);
+                setConflict(false);
+                setError(null);
+                idempotencyKeyRef.current = crypto.randomUUID();
+              }
+            }}
+            open={open}
           >
-            <AlertDialogHeader>
-              <AlertDialogTitle>{dialogTitle}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {dialogDescription}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            {error && (
-              <p role="alert" className="text-destructive text-sm">
-                {error}
-              </p>
-            )}
-            <div className="border-destructive/30 bg-destructive/10 text-destructive rounded-lg border p-3 text-sm">
-              {dialogNotice}
-            </div>
-            {conflict && (
-              <ContentState
-                action={
-                  <Button
-                    disabled={isBusy}
-                    onClick={() => void refreshVersion()}
-                    size="sm"
-                    type="button"
-                    variant="outline"
-                  >
-                    {isReloading ? (
-                      <Loader2
-                        aria-hidden="true"
-                        className="size-4 animate-spin"
-                      />
-                    ) : (
-                      <RotateCcw aria-hidden="true" className="size-4" />
-                    )}
-                    {isReloading ? 'Actualisation…' : 'Actualiser'}
-                  </Button>
-                }
-                description="La fiche a changé depuis son ouverture. Actualisez-la puis confirmez à nouveau."
-                kind="warning"
-                title="Version périmée"
-              />
-            )}
-            <AlertDialogFooter>
-              <AlertDialogCancel disabled={isBusy}>Annuler</AlertDialogCancel>
-              <Button
-                disabled={isBusy || conflict}
-                onClick={() => void handleDelete()}
-                type="button"
-                variant="destructive"
-              >
-                {isDeleting ? (
-                  <Loader2 className="size-4 animate-spin" />
-                ) : (
-                  <Trash2 className="size-4" />
-                )}
-                {isDeleting ? 'Suppression…' : 'Supprimer définitivement'}
+            <AlertDialogTrigger asChild>
+              <Button className="shrink-0" variant="destructive">
+                <Trash2 className="size-4" />
+                {triggerLabel}
               </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+            </AlertDialogTrigger>
+            <AlertDialogContent
+              aria-busy={isBusy || undefined}
+              className="sm:max-w-lg"
+            >
+              <AlertDialogHeader>
+                <AlertDialogTitle>{dialogTitle}</AlertDialogTitle>
+                <AlertDialogDescription>
+                  {dialogDescription}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              {error && (
+                <p role="alert" className="text-destructive text-sm">
+                  {error}
+                </p>
+              )}
+              <div className="border-destructive/30 bg-destructive/10 text-destructive rounded-lg border p-3 text-sm">
+                {dialogNotice}
+              </div>
+              {conflict && (
+                <ContentState
+                  action={
+                    <Button
+                      disabled={isBusy}
+                      onClick={() => void refreshVersion()}
+                      size="sm"
+                      type="button"
+                      variant="outline"
+                    >
+                      {isReloading ? (
+                        <Loader2
+                          aria-hidden="true"
+                          className="size-4 animate-spin"
+                        />
+                      ) : (
+                        <RotateCcw aria-hidden="true" className="size-4" />
+                      )}
+                      {isReloading ? 'Actualisation…' : 'Actualiser'}
+                    </Button>
+                  }
+                  description="La fiche a changé depuis son ouverture. Actualisez-la puis confirmez à nouveau."
+                  kind="warning"
+                  title="Version périmée"
+                />
+              )}
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={isBusy}>Annuler</AlertDialogCancel>
+                <Button
+                  disabled={isBusy || conflict}
+                  onClick={() => void handleDelete()}
+                  type="button"
+                  variant="destructive"
+                >
+                  {isDeleting ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="size-4" />
+                  )}
+                  {isDeleting ? 'Suppression…' : 'Supprimer définitivement'}
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
       </CardContent>
     </Card>
   );

@@ -23,7 +23,7 @@ mention « Suivi à compléter ».
 | Aujourd’hui | [Accueil — Mon travail](accueil.md) | `/` ; l’alias `/tableau-de-bord` y redirige |
 | Hors cadre | [Connexion](connexion.md) | `/login`, double authentification |
 | Compte personnel | [Mon compte](mon-compte/README.md) | Profil, Autorisations et Sécurité |
-| Esport | [esport/](esport/README.md) | Jeux : les sections de la structure et leurs équipes ; fiche équipe |
+| Esport | [esport/](esport/README.md) | Jeux : les sections de la structure et leurs équipes ; fiche jeu ; fiche équipe |
 | Personnes | [personnes/](personnes/README.md) | Répertoire : liste de référence, création, fiche à deux sections |
 | Système | [systeme/](systeme/README.md) | Utilisateurs, Journal d’activité, Paramètres, Feuille de route |
 | Transverse | [transverse/](transverse/README.md) | Navigation générale, états techniques, composants partagés, modales |

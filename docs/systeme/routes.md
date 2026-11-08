@@ -42,6 +42,7 @@ Ce relevé ne remplace pas la [référence des permissions](../domaines/permissi
 | `/personnes/repertoire/nouveau` | Page | Session, `persons:create` | commun | [Nouvelle fiche personne](../pages/personnes/repertoire/creation.md) |
 | `/personnes/repertoire/[id]` | Page | `getPageAuthSession`, `persons:view`, `assertPersonFeatureReady` | oui | [Identité](../pages/personnes/repertoire/fiche-identite.md), [Coordonnées](../pages/personnes/repertoire/fiche-coordonnees.md) |
 | `/esport/equipes/[id]` | Page | Session, `teams:view` (`teams:manage` pour modifier et supprimer) | intégré | [Fiche équipe](../pages/esport/equipe.md) |
+| `/esport/jeux/[id]` | Page | Session, `games:view` (`games:manage` pour modifier et supprimer) | intégré | [Fiche jeu](../pages/esport/jeu.md) |
 | `/esport/jeux` | Page | Session, `games:view` (`games:manage` pour modifier ; `teams:view` et `teams:manage` pour les équipes) | intégré | [Jeux](../pages/esport/jeux.md) |
 | `/systeme/utilisateurs` | Page | Session, `users:view` | oui | [Liste des utilisateurs](../pages/systeme/utilisateurs/liste.md) |
 | `/systeme/utilisateurs/nouveau` | Page | Session, `users:create` | intégré | [Nouvel utilisateur](../pages/systeme/utilisateurs/creation.md) |

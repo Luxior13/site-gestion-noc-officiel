@@ -105,6 +105,9 @@ export const getCanonicalPagePathname = (pathname: string): string => {
     : pathname;
 };
 
+export const gameDetailPath = (id: string): string =>
+  `${PAGE_PATHS.games}/${encodeURIComponent(id)}`;
+
 /** Team records sit in the Esport pole, outside the Jeux list's path. */
 export const TEAM_RECORDS_PATH = '/esport/equipes';
 

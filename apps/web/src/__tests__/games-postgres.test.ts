@@ -12,7 +12,7 @@ import {
   vi,
 } from 'vitest';
 
-import { DELETE, PATCH } from '$app/api/jeux/[id]/route';
+import { DELETE, GET as GET_GAME, PATCH } from '$app/api/jeux/[id]/route';
 import { GET, POST } from '$app/api/jeux/route';
 import { PERMISSIONS } from '$constants/permissions.constants';
 import { mapUserToUserType } from '$server/user-projection';
@@ -278,6 +278,25 @@ describe.skipIf(!target)('games on fully migrated PostgreSQL', () => {
       before: { name: 'Valorant' },
     });
     expect((await remove(created.id, 1)).status).toBe(404);
+  });
+
+  it('reads a game with its number of teams for its record', async () => {
+    const created = (await body(await post(valorant))).data;
+    if (!created) throw new Error('Missing game');
+    const read = (id: string): ReturnType<typeof GET_GAME> =>
+      GET_GAME(new NextRequest(`${BASE}/${id}`), {
+        params: Promise.resolve({ id }),
+      });
+    const response = await read(created.id);
+    expect(response.status).toBe(200);
+    expect((await response.json()).data).toMatchObject({
+      id: created.id,
+      name: 'Valorant',
+      teamCount: 0,
+    });
+    expect((await read('missing-game')).status).toBe(404);
+    await authenticate(await createUser('USER'));
+    expect((await read(created.id)).status).toBe(403);
   });
 
   it('lets a reader see the games without changing them, and refuses anyone else', async () => {

@@ -18,6 +18,7 @@ export const GameAvatar: FC<{ className?: string }> = ({ className }) => (
       className,
     )}
   >
-    <Gamepad2 className="size-4" />
+    {/* About 16 px in a list (36 px), scaled in a record's header. */}
+    <Gamepad2 className="size-[45%]" />
   </span>
 );

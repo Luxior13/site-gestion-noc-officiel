@@ -5,7 +5,8 @@ import Link from 'next/link';
 import React, { type FC, useMemo, useState } from 'react';
 
 import { ContentState } from '$components/layout/ContentState';
-import { teamDetailPath } from '$constants/routes.constants';
+import { gameDetailPath, teamDetailPath } from '$constants/routes.constants';
+import { TeamAvatar } from '$features/teams/components/TeamAvatar';
 import type { TeamItem } from '$features/teams/types/team.types';
 import { Button } from '$ui/button';
 import {
@@ -44,23 +45,13 @@ import { GameAvatar } from './GameAvatar';
 
 const GAME_NOUN = ['jeu', 'jeux'] as const;
 
-/** One focus ring per line: the stretched name button lights its row. */
+/** One focus ring per line: the stretched name link lights its row. */
 const LINE_FOCUS =
-  'has-[button:focus-visible]:ring-ring relative has-[button:focus-visible]:ring-2 has-[button:focus-visible]:ring-inset';
-
-/** The same for a team line, whose name is a link to its record. */
-const TEAM_LINE_FOCUS =
   'has-[a:focus-visible]:ring-ring relative has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-inset';
 
-/** A team line starts under its game's name: avatar (36 px) and gap (10 px). */
-const TEAM_INDENT = 'pl-[46px]';
-
-/**
- * A game's name, which opens its window, stretched over its line; as tall as
- * its text on a computer.
- */
-const NAME_BUTTON =
-  'text-foreground hover:text-primary-emphasis h-auto justify-start p-0 text-left font-normal whitespace-normal after:absolute after:inset-0 hover:underline hover:underline-offset-[3px] focus-visible:ring-0 lg:h-auto';
+/** A name that opens its record, its link covering the whole line. */
+const NAME_LINK =
+  'text-foreground hover:text-primary-emphasis block min-w-0 outline-none after:absolute after:inset-0 hover:underline hover:underline-offset-[3px]';
 
 type GameGroup = Readonly<{ game: GameItem; teams: readonly TeamItem[] }>;
 
@@ -92,94 +83,74 @@ const TeamState: FC<{ className?: string; team: TeamItem }> = ({
     </StatusBadge>
   );
 
-const GameName: FC<{
-  canManage: boolean;
-  game: GameItem;
-  onOpen: (game: GameItem) => void;
-}> = ({ canManage, game, onOpen }) => {
-  const label = (
-    <>
-      <span className="font-semibold [overflow-wrap:anywhere]">
-        {game.name}
+/**
+ * A game's name opens its record (8 November 2026: a game will have tabs, so
+ * a page rather than a window), for every reader.
+ */
+const GameName: FC<{ game: GameItem }> = ({ game }) => (
+  <Link className={NAME_LINK} href={gameDetailPath(game.id)}>
+    <span className="font-semibold [overflow-wrap:anywhere]">{game.name}</span>
+    {game.shortName && (
+      <span className="text-muted-foreground ml-2 text-xs whitespace-nowrap">
+        {game.shortName}
       </span>
-      {game.shortName && (
-        <span className="text-muted-foreground ml-2 shrink-0 text-xs whitespace-nowrap">
-          {game.shortName}
-        </span>
-      )}
-    </>
-  );
+    )}
+  </Link>
+);
 
-  return canManage ? (
-    <Button
-      aria-label={`Modifier le jeu ${game.name}`}
-      className={NAME_BUTTON}
-      onClick={() => onOpen(game)}
-      type="button"
-      variant="link"
-    >
-      {label}
-    </Button>
-  ) : (
-    <span>{label}</span>
-  );
-};
+const teamLabel = (game: GameItem, team: TeamItem): string =>
+  `${team.name}, équipe ${game.name}, ${team.isActive ? 'active' : 'inactive'}`;
+
+/** Centre of a game's avatar from the line's left edge: 16 px + 36 / 2. */
+const GUIDE = 'pointer-events-none absolute left-[34px] w-px bg-border-strong';
+
+/**
+ * The guide from a game's controller down to its teams, as in a tree: under
+ * the avatar on the game's line, then through each team line with a tick to
+ * its crest, cut at mid-height on the last one (8 November 2026).
+ */
+const TeamGuide: FC<{ last: boolean }> = ({ last }) => (
+  <>
+    <span
+      aria-hidden="true"
+      className={cn(GUIDE, 'top-0', last ? 'h-1/2' : 'bottom-0')}
+    />
+    <span
+      aria-hidden="true"
+      className="bg-border-strong pointer-events-none absolute top-1/2 left-[34px] h-px w-3"
+    />
+  </>
+);
 
 /**
  * A team's name opens its record (owner, 8 November 2026: « une page équipe
- * et non juste un modal »), for every reader; the link covers its line.
+ * et non juste un modal »), for every reader; the link covers its whole line,
+ * a target as large as a record's line in the Répertoire.
  */
 const TeamName: FC<{ game: GameItem; team: TeamItem }> = ({ game, team }) => (
   <Link
-    aria-label={`${team.name}, équipe ${game.name}`}
-    className="text-foreground hover:text-primary-emphasis block min-w-0 [overflow-wrap:anywhere] outline-none after:absolute after:inset-0 hover:underline hover:underline-offset-[3px]"
+    aria-label={teamLabel(game, team)}
+    className={cn(NAME_LINK, '[overflow-wrap:anywhere]')}
     href={teamDetailPath(team.id)}
   >
     {team.name}
   </Link>
 );
 
-const AddTeamButton: FC<{
-  game: GameItem;
-  onAdd: (game: GameItem) => void;
-}> = ({ game, onAdd }) => (
-  <Button
-    aria-label={`Ajouter une équipe à ${game.name}`}
-    className="h-auto gap-1.5 p-0 text-xs font-medium has-[>svg]:px-0 lg:h-auto"
-    onClick={() => onAdd(game)}
-    size="sm"
-    type="button"
-    variant="link"
-  >
-    <Plus aria-hidden="true" className="size-3.5" />
-    Ajouter une équipe
-  </Button>
-);
-
 type Props = {
   canManage: boolean;
-  canManageTeams: boolean;
   games: GameItem[];
-  onAddTeam: (game: GameItem) => void;
   onCreate: () => void;
-  onOpen: (game: GameItem) => void;
   /** Null without the right to see teams: the list shows games only. */
   teams: TeamItem[] | null;
 };
 
 /**
- * The sections of the structure, each with its teams under it, searched and
- * filtered in the page (teams under each game, 8 November 2026).
+ * The sections of the structure, each with its teams on lines under it,
+ * searched and filtered in the page; the colour alternates per game, as the
+ * Répertoire alternates per record.
  */
-export const GamesList: FC<Props> = ({
-  canManage,
-  canManageTeams,
-  games,
-  onAddTeam,
-  onCreate,
-  onOpen,
-  teams,
-}) => {
+export const GamesList: FC<Props> = ({ canManage, games, onCreate, teams }) => {
   const [query, setQuery] = useState('');
   const [state, setState] = useState<GameStateFilter>('all');
   const terms = useMemo(() => getSearchTerms(query), [query]);
@@ -211,9 +182,6 @@ export const GamesList: FC<Props> = ({
   );
   const visible = searched.filter(({ game }) => matchesState(game, state));
   const isFiltered = Boolean(query.trim()) || state !== 'all';
-  // No add line in search results, nor under an inactive game.
-  const canAddTo = (game: GameItem): boolean =>
-    canManageTeams && game.isActive && !query.trim();
   const reset = (): void => {
     setQuery('');
     setState('all');
@@ -329,18 +297,27 @@ export const GamesList: FC<Props> = ({
               </TableRow>
             </TableBody>
           ) : (
-            // One tbody per game: the game and its teams form one band.
+            // One tbody per game: a game and its teams share one band.
             visible.map(({ game, teams: gameTeams }) => (
               <TableBody key={game.id}>
                 <TableRow className={LINE_FOCUS}>
                   <TableCell>
+                    {gameTeams.length > 0 && (
+                      <span
+                        aria-hidden="true"
+                        className={cn(GUIDE, 'top-[calc(50%+18px)] bottom-0')}
+                      />
+                    )}
                     <div className="flex min-w-0 items-center gap-2.5">
                       <GameAvatar />
-                      <GameName
-                        canManage={canManage}
-                        game={game}
-                        onOpen={onOpen}
-                      />
+                      <div className="min-w-0 flex-1">
+                        <GameName game={game} />
+                        {teams && gameTeams.length === 0 && (
+                          <p className="text-muted-foreground text-xs">
+                            Aucune équipe
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell className="pointer-events-none tabular-nums">
@@ -350,10 +327,13 @@ export const GamesList: FC<Props> = ({
                     <GameState game={game} />
                   </TableCell>
                 </TableRow>
-                {gameTeams.map((team) => (
-                  <TableRow className={TEAM_LINE_FOCUS} key={team.id}>
+                {gameTeams.map((team, index) => (
+                  <TableRow className={LINE_FOCUS} key={team.id}>
                     <TableCell>
-                      <div className={cn(TEAM_INDENT, 'text-sm')}>
+                      <TeamGuide last={index === gameTeams.length - 1} />
+                      {/* The crest starts after the tick: 34 + 12 + 2 px. */}
+                      <div className="flex min-w-0 items-center gap-2 pl-8 text-sm">
+                        <TeamAvatar className="rounded-tile size-7 shrink-0" />
                         <TeamName game={game} team={team} />
                       </div>
                     </TableCell>
@@ -365,15 +345,6 @@ export const GamesList: FC<Props> = ({
                     </TableCell>
                   </TableRow>
                 ))}
-                {canAddTo(game) && (
-                  <TableRow>
-                    <TableCell colSpan={3}>
-                      <div className={TEAM_INDENT}>
-                        <AddTeamButton game={game} onAdd={onAddTeam} />
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                )}
               </TableBody>
             ))
           )}
@@ -391,16 +362,18 @@ export const GamesList: FC<Props> = ({
                   'px-4 py-3 hover:bg-[var(--surface-row-hover)]',
                 )}
               >
+                {gameTeams.length > 0 && (
+                  // Below the avatar: 12 px of padding and 36 px.
+                  <span
+                    aria-hidden="true"
+                    className={cn(GUIDE, 'top-[48px] bottom-0')}
+                  />
+                )}
                 <div className="flex items-start gap-3">
-                  {/* Centred on the name, whose button keeps its 44 px target. */}
-                  <GameAvatar className="max-sm:mt-1" />
+                  <GameAvatar />
                   <div className="min-w-0 flex-1">
                     <h2 className="text-sm">
-                      <GameName
-                        canManage={canManage}
-                        game={game}
-                        onOpen={onOpen}
-                      />
+                      <GameName game={game} />
                     </h2>
                     <div className="text-muted-foreground mt-2 flex flex-wrap items-center gap-2 text-xs">
                       <GameState game={game} />
@@ -412,18 +385,25 @@ export const GamesList: FC<Props> = ({
                   </div>
                 </div>
               </div>
-              {(gameTeams.length > 0 || canAddTo(game)) && (
+              {teams && gameTeams.length === 0 && (
+                <p className="text-muted-foreground pr-4 pb-3 pl-16 text-xs">
+                  Aucune équipe
+                </p>
+              )}
+              {gameTeams.length > 0 && (
                 <ul aria-label={`Équipes de ${game.name}`} className="pb-2">
-                  {gameTeams.map((team) => (
-                    // Indented under the game's name: 16 + 36 + 12 px. The
-                    // whole line (44 px at least) is the name's target.
+                  {gameTeams.map((team, index) => (
+                    // The crest after the guide's tick (48 px); the whole
+                    // line (44 px at least) is the name's target.
                     <li
                       className={cn(
-                        TEAM_LINE_FOCUS,
-                        'flex min-h-11 items-center gap-3 py-1.5 pr-4 pl-16 text-sm hover:bg-[var(--surface-row-hover)]',
+                        LINE_FOCUS,
+                        'flex min-h-11 items-center gap-2 py-1.5 pr-4 pl-12 text-sm hover:bg-[var(--surface-row-hover)]',
                       )}
                       key={team.id}
                     >
+                      <TeamGuide last={index === gameTeams.length - 1} />
+                      <TeamAvatar className="rounded-tile size-7 shrink-0" />
                       <div className="min-w-0 flex-1">
                         <TeamName game={game} team={team} />
                         <p className="text-muted-foreground text-xs">
@@ -433,11 +413,6 @@ export const GamesList: FC<Props> = ({
                       <TeamState className="shrink-0" team={team} />
                     </li>
                   ))}
-                  {canAddTo(game) && (
-                    <li className="py-1 pr-4 pl-16">
-                      <AddTeamButton game={game} onAdd={onAddTeam} />
-                    </li>
-                  )}
                 </ul>
               )}
             </div>

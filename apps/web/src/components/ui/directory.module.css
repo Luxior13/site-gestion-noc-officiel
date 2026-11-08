@@ -168,6 +168,30 @@
   height: 15px;
 }
 
+/* Second action of a list header (« Ajouter une équipe » beside « Ajouter un
+   jeu »): the same size, outlined. */
+.directory .secondaryButton {
+  min-height: 36px;
+  gap: 8px;
+  padding: 8px 11px;
+  border: 1px solid var(--m-border-button);
+  border-radius: var(--shape-compact);
+  background: var(--m-control);
+  color: var(--m-foreground);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.directory .secondaryButton:hover {
+  border-color: var(--m-border-hover);
+  background: var(--m-row-hover);
+}
+
+.directory .secondaryButton svg {
+  width: 15px;
+  height: 15px;
+}
+
 .directory .listCaption {
   display: flex;
   flex-wrap: wrap;
@@ -339,28 +363,43 @@
 }
 
 /*
- * Grouped table (Jeux): one tbody per game, its teams under it. The band
- * alternates per group, not per row, so a game and its teams read as one block;
- * same specificity as the rules above, declared after them.
+ * Grouped table (Jeux): one tbody per game, its teams on the lines under it.
+ * The colour alternates per game, as the Répertoire alternates per record: a
+ * game and its teams share one band, without rules between them. One tbody
+ * pseudo-class more than the zebra rows of `.table`, so the CSS order never
+ * decides (8 November 2026).
  */
-.directory .groupedTable tbody tr,
-.directory .groupedTable tbody tr:nth-child(even):not([data-state='selected']) {
+.directory
+  .table.groupedTable
+  tbody:nth-of-type(n)
+  tr:not([data-state='selected']) {
   background: var(--m-row-bg);
 }
 
 .directory
-  .groupedTable
+  .table.groupedTable
   tbody:nth-of-type(even)
   tr:not([data-state='selected']) {
   background: var(--m-row-alt);
 }
 
-.directory .groupedTable tbody + tbody {
-  border-top: 1px solid var(--m-border);
+/* No rule inside a group (a transparent one would show the table beneath). */
+.directory .table.groupedTable tbody:nth-of-type(n) tr + tr {
+  border-top: 0;
 }
 
-.directory .groupedTable tbody tr:hover:not([data-state='selected']),
-.directory .groupedTable tbody tr:focus-within:not([data-state='selected']) {
+.directory .table.groupedTable tbody + tbody {
+  border-top: 1px solid var(--m-border-soft);
+}
+
+.directory
+  .table.groupedTable
+  tbody:nth-of-type(n)
+  tr:hover:not([data-state='selected']),
+.directory
+  .table.groupedTable
+  tbody:nth-of-type(n)
+  tr:focus-within:not([data-state='selected']) {
   background: var(--m-row-hover);
 }
 
@@ -437,7 +476,8 @@
     height: 44px;
   }
 
-  .directory .addButton {
+  .directory .addButton,
+  .directory .secondaryButton {
     min-height: 44px;
   }
 

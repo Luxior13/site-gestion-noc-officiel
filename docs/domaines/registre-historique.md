@@ -117,7 +117,15 @@ développement. Une liste fixée par une règle (statut, rôle) reste dans le co
   de nature), on crée une nouvelle valeur et on archive l’ancienne, qui reste sur
   les anciens passages : l’histoire n’est pas réécrite (décision du 8 novembre 2026).
 - **Archiver** retire la valeur des choix ; elle reste affichée sur les anciens
-  passages. Une valeur utilisée ne se supprime pas.
+  passages. Une valeur utilisée ne se supprime pas. Une valeur archivée reste-t-elle
+  choisissable pour saisir un fait ancien ? Question ouverte PREF-Q10 du
+  [journal des préférences](../design/preferences.md#questions-ouvertes).
+- **Inactif ne verrouille rien** (décision du 8 novembre 2026) : le site sert sur
+  le très long terme, en interne ; un élément inactif n’est simplement pas en
+  activité en ce moment. Un jeu inactif reçoit encore des équipes, pour saisir
+  l’historique ou préparer une reprise ; une équipe inactive gardera de même son
+  Roster à compléter. Seuls les choix courants mettent les éléments actifs en
+  tête.
 - La base le garantit : toute table qui référence un jeu (équipes depuis le
   8 novembre 2026, puis fonctions, tournois, finances) le fait en
   `ON DELETE RESTRICT`, jamais en `CASCADE` ; le service explique le refus

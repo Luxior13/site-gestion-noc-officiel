@@ -36,6 +36,7 @@ import type { TeamDetail } from '../types/team.types';
 
 type Draft = {
   founded: ApproximateDate;
+  /** Chosen explicitly: it never changes once the team exists. */
   gameId: string;
   isActive: boolean;
   name: string;
@@ -60,30 +61,28 @@ const fieldErrorsOf = (error: ApiClientError): FieldErrors => {
 };
 
 type Props = {
-  /** The game a new team is added to, from the line it was asked under. */
-  gameId: string;
+  /**
+   * Every game, active first: an inactive game still records past or upcoming
+   * teams (owner, 8 November 2026).
+   */
   games: readonly GameItem[];
   onClose: () => void;
   onCreated: (team: TeamDetail) => void;
 };
 
-const TeamDialogContent: FC<Props> = ({
-  gameId,
-  games,
-  onClose,
-  onCreated,
-}) => {
+const TeamDialogContent: FC<Props> = ({ games, onClose, onCreated }) => {
   const [draft, setDraft] = useState<Draft>({
     // Prefilled with today, like a game's first opening.
     founded: { date: getLocalToday(), precision: 'DAY' },
-    gameId,
+    // No default game, since it never changes; unless there is only one.
+    gameId: games.length === 1 ? (games[0]?.id ?? '') : '',
     isActive: true,
     name: '',
   });
+  const game = games.find((entry) => entry.id === draft.gameId);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const gameName = games.find((game) => game.id === draft.gameId)?.name;
   const change = (next: Partial<Draft>): void => {
     setDraft((current) => ({ ...current, ...next }));
     setFormError(null);
@@ -91,8 +90,12 @@ const TeamDialogContent: FC<Props> = ({
 
   const create = async (): Promise<void> => {
     if (busy) return;
-    if (!draft.name.trim()) {
-      setErrors({ name: 'Le nom est obligatoire' });
+    const missing: FieldErrors = {
+      gameId: draft.gameId ? undefined : 'Choisissez un jeu',
+      name: draft.name.trim() ? undefined : 'Le nom est obligatoire',
+    };
+    if (missing.gameId || missing.name) {
+      setErrors(missing);
 
       return;
     }
@@ -140,7 +143,7 @@ const TeamDialogContent: FC<Props> = ({
           <DialogHeader className="bg-surface-panel-header border-border-divider border-b px-4 py-4 pr-14 text-left sm:px-5">
             <DialogTitle>Ajouter une équipe</DialogTitle>
             <DialogDescription>
-              {`Une équipe de ${gameName ?? 'ce jeu'} ; sa fiche s’ouvre ensuite, son roster viendra y prendre place.`}
+              Sa fiche s’ouvre ensuite, pour la compléter.
             </DialogDescription>
           </DialogHeader>
           <div className="min-h-0 space-y-4 overflow-y-auto px-4 py-4 sm:px-5">
@@ -155,11 +158,16 @@ const TeamDialogContent: FC<Props> = ({
               </Label>
               <Select
                 disabled={busy}
-                onValueChange={(nextGameId) => change({ gameId: nextGameId })}
+                onValueChange={(gameId) => {
+                  change({ gameId });
+                  setErrors((current) => ({ ...current, gameId: undefined }));
+                }}
                 value={draft.gameId}
               >
                 <SelectTrigger
                   aria-describedby={`${ID}-game-hint${errors.gameId ? ` ${ID}-game-error` : ''}`}
+                  // The first choice to make, unless the only game is set.
+                  autoFocus={games.length !== 1}
                   aria-invalid={Boolean(errors.gameId)}
                   className="w-full"
                   id={`${ID}-game`}
@@ -167,9 +175,9 @@ const TeamDialogContent: FC<Props> = ({
                   <SelectValue placeholder="Choisir un jeu" />
                 </SelectTrigger>
                 <SelectContent>
-                  {games.map((game) => (
-                    <SelectItem key={game.id} value={game.id}>
-                      {game.isActive ? game.name : `${game.name} (inactif)`}
+                  {games.map((entry) => (
+                    <SelectItem key={entry.id} value={entry.id}>
+                      {entry.isActive ? entry.name : `${entry.name} (inactif)`}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -178,8 +186,11 @@ const TeamDialogContent: FC<Props> = ({
                 className="text-muted-foreground text-xs"
                 id={`${ID}-game-hint`}
               >
-                Il ne change plus une fois l’équipe créée : un autre jeu, c’est
-                une autre équipe.
+                {game && !game.isActive
+                  ? 'Ce jeu est inactif : l’équipe s’ajoute à son historique, passée ou à venir. '
+                  : ''}
+                Le jeu ne change plus une fois l’équipe créée : un autre jeu,
+                c’est une autre équipe.
               </p>
               {errors.gameId && (
                 <p
@@ -198,7 +209,7 @@ const TeamDialogContent: FC<Props> = ({
               <Input
                 aria-describedby={errors.name ? `${ID}-name-error` : undefined}
                 aria-invalid={Boolean(errors.name)}
-                autoFocus
+                autoFocus={games.length === 1}
                 disabled={busy}
                 id={`${ID}-name`}
                 maxLength={TEAM_NAME_MAX_LENGTH}
@@ -269,5 +280,4 @@ const TeamDialogContent: FC<Props> = ({
 export const TeamDialog: FC<Props & { open: boolean }> = ({
   open,
   ...props
-}) =>
-  open ? <TeamDialogContent key={`new:${props.gameId}`} {...props} /> : null;
+}) => (open ? <TeamDialogContent {...props} /> : null);

@@ -36,7 +36,7 @@ Champs d’une équipe :
 
 | Champ | Règle |
 | --- | --- |
-| Jeu | Obligatoire, prérempli par la ligne « Ajouter une équipe » du jeu ; liste de tous les jeux, actifs d’abord (« (inactif) » après le nom) ; fixé à la création, il ne change plus (un autre jeu, c’est une autre équipe), ce que la fenêtre dit sous le champ ; l’API et la base refusent de le changer |
+| Jeu | Obligatoire, choisi dans la fenêtre, sans valeur par défaut (sauf s’il n’y a qu’un jeu) puisqu’il ne changera plus ; tous les jeux, actifs d’abord, les inactifs marqués « (inactif) » et choisissables (une équipe passée ou à venir) ; la fenêtre rappelle « Le jeu ne change plus une fois l’équipe créée : un autre jeu, c’est une autre équipe. » ; l’API et la base refusent de le changer |
 | Nom | Obligatoire, 60 caractères ; unique **dans son jeu** quels que soient la casse et les accents : chaque jeu peut avoir sa « Noctambule » ; renommer corrige une faute, les anciens noms viendront avec la fiche équipe |
 | Création | Obligatoire, préremplie avec la date du jour, même précision que la première ouverture d’un jeu ; affichée « depuis 2023 », « depuis mars 2023 », « depuis le 15 mars 2023 » sur téléphone |
 | Active | Oui ou non ; une équipe inactive reste dans l’historique |
@@ -49,42 +49,48 @@ Composition, de haut en bas :
 
 1. `PageIdentityHero` : titre « Jeux », « Les sections de la structure, une par
    jeu, et leurs équipes. » (sans « et leurs équipes » pour qui ne les voit
-   pas), bouton « Ajouter un jeu » pour qui a `games:manage`.
+   pas) ; bouton « Ajouter une équipe » (secondaire, `secondaryButton`) pour qui
+   a `teams:manage` dès qu’un jeu existe, puis « Ajouter un jeu » pour qui a
+   `games:manage`.
 2. Carte de liste du Répertoire : recherche « Jeu ou équipe… » sur le nom et le
    nom court d’un jeu et le nom de ses équipes (une équipe trouvée s’affiche
    seule sous son jeu), filtres rapides « État » des jeux (Tous · Actifs ·
    Inactifs, avec compteurs), nombre de jeux.
-3. Tableau groupé « Jeu et équipes · Depuis · État » sur ordinateur : un
-   `tbody` par jeu, la ligne du jeu puis ses équipes en retrait sous son nom
-   (graisse normale, date grisée, pastille « Active » ou « Inactive »), puis
-   « + Ajouter une équipe » sous un jeu actif pour qui a `teams:manage`, hors
-   recherche. Le jeu et ses équipes forment une bande (`groupedTable`), qui
-   alterne de jeu en jeu. Sur téléphone, une carte par jeu et la liste de ses
-   équipes en dessous (nom et « depuis … » à gauche, pastille à droite, toute la
-   ligne cliquable sur 44 px au moins). Jeux et équipes : actifs d’abord, puis
-   par nom ; sans pagination (une section par jeu).
+3. Tableau « Jeu et équipes · Depuis · État » sur ordinateur, dans l’esprit du
+   Répertoire (« prends exemple sur la page /personnes/repertoire » ; « des
+   lignes en dessous, c’est bien, mais ça doit être réfléchi », 8 novembre
+   2026) : chaque jeu, puis ses équipes sur des lignes entières et cliquables,
+   avec leur écusson (28 px), leur création et leur état ; un guide fin descend
+   de la manette du jeu jusqu’à chaque équipe. La couleur alterne par jeu
+   (`groupedTable`), sans trait à l’intérieur d’un jeu ; « Aucune équipe » sous
+   un jeu vide. Sur téléphone, une carte par jeu puis une ligne par équipe avec
+   le même guide (nom et « depuis … » à gauche, pastille à droite, 44 px au
+   moins). Jeux et équipes : actifs d’abord, puis par nom ; sans pagination (une
+   section par jeu).
 4. Chaque jeu porte, à la place d’un avatar, une vignette de 36 px
    (`GameAvatar`, `rounded-tile`) avec une manette au ton du pôle Esport, en
    attendant les vraies images ; sur téléphone, elle se centre sur le nom, dont
    le bouton garde sa cible de 44 px. Le nom court ne se coupe jamais.
-5. Le nom d’un jeu ouvre la fenêtre « Modifier le jeu » pour qui a
-   `games:manage`. Le nom d’une équipe est un lien vers sa
+5. Le nom d’un jeu est un lien vers sa [fiche](jeu.md), pour tout lecteur
+   (8 novembre 2026). Le nom d’une équipe est un lien vers sa
    [fiche](equipe.md), pour tout lecteur des équipes (« une page équipe et non
    juste un modal », 8 novembre 2026). Sans `teams:view`, la liste reste celle
    des jeux seuls (colonne « Première ouverture »).
 
-Fenêtre « Ajouter un jeu » ou « Modifier le jeu » : Nom, Nom court, Première
-ouverture (précision, puis date, ou mois et année, ou année), Actif. En
-modification, la description rappelle « Renommer sert à corriger une faute. Pour
-un nouveau jeu (CS2 après CS:GO), rendez l’ancien inactif et ajoutez-en un
-nouveau. » ; « Supprimer » ouvre une confirmation qui nomme le jeu. Un jeu qui a
-des équipes n’a pas de bouton « Supprimer » : la fenêtre dit à sa place « Ce jeu
-a 3 équipes : rendez-le inactif plutôt que de le supprimer. »
+Fenêtre « Ajouter un jeu », pour la création seulement (« Une section de la
+structure ; sa fiche s’ouvre ensuite, pour la compléter. ») : Nom, Nom court,
+Première ouverture (précision, puis date, ou mois et année, ou année), Actif. Un
+nom déjà pris s’affiche sous le champ. Une fois ajouté, le jeu ouvre sa
+[fiche](jeu.md), où il se modifie et se supprime ; un jeu qui a des équipes y
+affiche, à la place du bouton de suppression, « Ce jeu a 3 équipes :
+rendez-le inactif plutôt que de le supprimer. »
 
-Fenêtre « Ajouter une équipe », pour la création seulement : Jeu, Nom,
-Création (champ de date partagé `ApproximateDateField`), Active ; « Une équipe
-de Valorant ; sa fiche s’ouvre ensuite, son roster viendra y prendre place. ».
-Un nom déjà pris dans le jeu s’affiche sous le champ. Une fois ajoutée,
+Fenêtre « Ajouter une équipe » (« Sa fiche s’ouvre ensuite, pour la
+compléter. »), pour la création seulement : Jeu (« Choisir un jeu », focus
+initial ; « Choisissez un jeu » s’il manque ; pour un jeu inactif, « Ce jeu est
+inactif : l’équipe s’ajoute à son historique, passée ou à venir. »), Nom,
+Création (champ de date partagé `ApproximateDateField`), Active. Un nom déjà
+pris dans le jeu s’affiche sous le champ. Une fois ajoutée,
 l’équipe ouvre sa [fiche](equipe.md), où elle se modifie et se supprime.
 
 Suppression, protégée en trois endroits (demande du propriétaire : « il faut y
@@ -119,9 +125,16 @@ chaque jeu et les jeux pratiqués sur la fiche personne
 - Une équipe : jeu, nom unique dans son jeu, création, active (« ok go »,
   8 novembre 2026).
 - Une équipe s’ouvre sur sa fiche, jamais dans une fenêtre ; la fenêtre ne sert
-  qu’à la créer (8 novembre 2026).
+  qu’à la créer (8 novembre 2026). De même pour un jeu, qui aura ses onglets
+  ([fiche jeu](jeu.md), même jour).
 - Le jeu d’une équipe est fixé à sa création ; il ne change plus (8 novembre
   2026, [fiche équipe](equipe.md#décisions-courantes)).
+- Un seul bouton « Ajouter une équipe » dans le bandeau ; le jeu se choisit dans
+  la fenêtre, sans valeur par défaut (8 novembre 2026, à la place d’une ligne
+  d’ajout sous chaque jeu, essayée le même jour). Liste sans bandes alternées.
+- Un jeu inactif reçoit encore des équipes, passées ou à venir : inactif veut
+  dire « pas en activité en ce moment », jamais « verrouillé » (8 novembre 2026,
+  [registre](../../domaines/registre-historique.md#listes-de-choix)).
 - Un jeu qui a des équipes ne se supprime pas : il devient inactif.
 - Couleur du pôle : violet (`--nav-esport`), proposée et appliquée sans objection.
 - Quatre autorisations délégables, `games:view`, `games:manage`, `teams:view`

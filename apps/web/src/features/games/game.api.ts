@@ -9,6 +9,12 @@ const gameUrl = (id: string): string =>
 export const fetchGames = (signal?: AbortSignal): Promise<GameItem[]> =>
   apiFetchJson<GameItem[]>(GAMES_API, { cache: 'no-store', signal });
 
+export const fetchGame = (
+  id: string,
+  signal?: AbortSignal,
+): Promise<GameItem> =>
+  apiFetchJson<GameItem>(gameUrl(id), { cache: 'no-store', signal });
+
 export const createGameRequest = (input: GameInput): Promise<GameItem> =>
   apiFetchJson<GameItem>(GAMES_API, jsonRequest('POST', input));
 

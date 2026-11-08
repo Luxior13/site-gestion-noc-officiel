@@ -24,8 +24,7 @@ lecteur des équipes ; une équipe ajoutée en fenêtre ouvre aussitôt sa fiche
 Composition, de haut en bas :
 
 1. Fil d’Ariane « Esport › Jeux › Valorant › Noctambule Academy » : « Jeux »
-   ramène à la liste ; le nom du jeu situe l’équipe, sans lien tant que la fiche
-   jeu n’existe pas.
+   ramène à la liste, le nom du jeu ouvre sa [fiche](jeu.md).
 2. En-tête de fiche (`EntityDetailLayout`) : écusson au ton du pôle Esport
    (`TeamAvatar`, en attendant le logo), nom, pastille « Active » ou
    « Inactive », ligne « Valorant · depuis septembre 2023 ». **Pas de barre
@@ -59,6 +58,14 @@ page Jeux (« Équipe modifiée », « Équipe supprimée »).
   (400) et la base refuse de le changer (déclencheur `Team_gameId_immutable`,
   migration `20261108200000_team_game_immutable`). Une erreur de jeu se répare
   en supprimant l’équipe tant que rien n’y est rattaché.
+- La création reste en fenêtre, même à long terme (8 novembre 2026, « ok pour
+  moi ») : de tout ce qu’une équipe portera, seuls le jeu, le nom, la création et
+  l’état se demandent à la création. Anciens noms : automatiques ; joueurs,
+  coach et manager : Roster ; budget : Finances ↗ ; partenaires : Partenaires ↗ ;
+  logo, publication sur noctambule.gg : Informations, après coup. Plausibles
+  sans être prévus : un tag d’équipe pour les inscriptions en tournoi, des
+  réseaux sociaux (facultatifs, Informations), un rattachement daté à une
+  entité juridique si la structure devient société.
 - Pas d’onglet seul : la barre d’onglets apparaît avec le Roster ; ordre prévu
   Roster, Tournois ↗, Entraînements, Finances ↗, Partenaires ↗, Informations
   ([feuille de route](../../propositions/feuille-de-route.md)).

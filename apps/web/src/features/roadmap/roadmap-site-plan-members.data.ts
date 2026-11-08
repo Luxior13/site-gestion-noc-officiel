@@ -130,16 +130,24 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
     name: 'Jeux',
     phase: null,
     summary:
-      'Liste, sans onglet : les sections de la structure, chacune avec ses équipes en dessous, les actives en tête, une icône de manette par défaut, une recherche sur les jeux et les équipes et un filtre ; ajout et modification en fenêtre d’un jeu (nom, nom court, première ouverture, actif) ; ajout en fenêtre d’une équipe sous son jeu (jeu, nom unique dans le jeu, création, active), puis sa fiche s’ouvre ; le nom d’une équipe ouvre sa fiche ; renommer corrige une faute ; un jeu qui a des équipes ne se supprime pas, il devient inactif. C’est aussi la liste de choix des jeux.',
-    upcoming:
-      'Le nom du jeu ouvre sa fiche ; l’image de chaque jeu à la place de la manette.',
+      'Liste, sans onglet, sur le modèle du Répertoire : chaque jeu et, sur des lignes dessous reliées par un guide, ses équipes, en bandes alternées par jeu, les actifs en tête, une icône de manette par défaut, une recherche sur les jeux et les équipes et un filtre ; ajout et modification en fenêtre d’un jeu (nom, nom court, première ouverture, actif) ; un bouton « Ajouter une équipe » : jeu choisi dans la fenêtre, actif ou non, nom unique dans le jeu, création, active, puis sa fiche s’ouvre ; le nom d’un jeu ou d’une équipe ouvre sa fiche ; renommer corrige une faute ; un jeu qui a des équipes ne se supprime pas, il devient inactif. C’est aussi la liste de choix des jeux.',
+    upcoming: 'L’image de chaque jeu à la place de la manette.',
   },
   {
     area: 'esport',
     chantier: 'sport-teams',
     name: 'Fiche jeu',
-    phase: 1,
+    phase: null,
+    summary:
+      'Ouverte par le nom d’un jeu sur la page Jeux, ou juste après son ajout.',
     tabs: [
+      {
+        chantier: 'reference-lists',
+        label: 'Fonctions',
+        phase: 1,
+        summary:
+          'Les fonctions de ce jeu : joueur, remplaçant, coach, manager, ou des postes propres au jeu ; réglage « Donne accès à son équipe » ; ajouter, renommer, archiver.',
+      },
       {
         chantier: 'payments',
         label: 'Finances',
@@ -149,13 +157,14 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'Total de la section : ses équipes, plus les opérations liées au jeu lui-même (licence, matériel commun) ; détaillé par équipe.',
       },
       {
-        chantier: 'reference-lists',
-        label: 'Fonctions',
-        phase: 1,
+        label: 'Informations',
+        phase: null,
         summary:
-          'Les fonctions de ce jeu : joueur, remplaçant, coach, manager, ou des postes propres au jeu ; réglage « Donne accès à son équipe » ; ajouter, renommer, archiver.',
+          'Nom, nom court, première ouverture, actif, modifiés sur place ; zone dangereuse, qui explique « rendez-le inactif » quand le jeu a des équipes. Seul contenu de la fiche pour l’instant, donc sans barre d’onglets.',
       },
     ],
+    upcoming:
+      'L’onglet Fonctions avec le Roster : la barre d’onglets apparaît avec lui, puis Finances.',
   },
   {
     area: 'esport',

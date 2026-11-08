@@ -87,7 +87,7 @@ identifiants de jeu, finances) le fait en `ON DELETE RESTRICT`, jamais en
 - `/esport/jeux` (livrée le 8 novembre 2026, avec les équipes sous chaque jeu le même jour ; le nom d’une équipe ouvre sa fiche) : accueil d’Esport, au gabarit A, sans onglet : les sections,
   actives ou archivées, chacune avec ses équipes en dessous ; une équipe ouvre sa
   fiche en un clic, le nom du jeu ouvre la fiche jeu (décision du 8 novembre 2026).
-- `/esport/jeux/[id]` : fiche jeu, onglets Finances ↗ et Fonctions (celles de ce
+- `/esport/jeux/[id]` (ouverte le 8 novembre 2026 avec ses informations seules, sans barre d’onglets) : fiche jeu, onglets Fonctions et Finances ↗ (celles de ce
   jeu, réglage « Donne accès à son équipe ») ; l’onglet Équipes est retiré le
   8 novembre 2026, les équipes s’affichent et s’ajoutent sous chaque jeu de la
   page Jeux.

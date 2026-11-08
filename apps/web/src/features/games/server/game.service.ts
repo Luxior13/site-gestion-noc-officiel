@@ -141,6 +141,17 @@ export const listGames = async (): Promise<GameItem[]> =>
     .map(toGameItem)
     .sort(compareActiveThenName);
 
+/** A game with its number of teams, for its record. */
+export const getGame = async (id: string): Promise<GameItem> => {
+  const game = await prisma.game.findUnique({
+    include: WITH_TEAM_COUNT,
+    where: { id },
+  });
+  if (!game) throw gameMissing();
+
+  return toGameItem(game);
+};
+
 /** Adds a game; its name is unique whatever the case or the accents. */
 export const createGame = async (
   input: GameInput,

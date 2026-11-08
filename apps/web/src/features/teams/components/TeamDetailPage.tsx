@@ -16,6 +16,7 @@ import { EntityDetailLayout } from '$components/layout/EntityDetailLayout';
 import { PageDetailSkeleton } from '$components/layout/PageDetailSkeleton';
 import { AccessDeniedState, PageState } from '$components/layout/PageState';
 import { FEATURES } from '$constants/feature-registry.constants';
+import { gameDetailPath } from '$constants/routes.constants';
 import { useUser } from '$context/UserContext';
 import { getGameCapabilities } from '$features/games/game.permissions';
 import { PageCanvas, PageShell } from '$ui/page-shell';
@@ -180,8 +181,10 @@ const TeamDetailContent: FC<{ teamId: string }> = ({ teamId }) => {
       breadcrumbs={[
         { label: FEATURES.games.audit.poleLabel },
         { href: GAMES_HREF, label: FEATURES.games.label },
-        // The game has no record yet: its name only places the team.
-        ...(team && !error ? [{ label: team.game.name }] : []),
+        // The team sits under its game, whose record the crumb opens.
+        ...(team && !error
+          ? [{ href: gameDetailPath(team.game.id), label: team.game.name }]
+          : []),
         { label: team && !error ? team.name : 'Équipe' },
       ]}
     >

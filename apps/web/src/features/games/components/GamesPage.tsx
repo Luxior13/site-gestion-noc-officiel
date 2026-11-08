@@ -9,7 +9,7 @@ import { ContentState } from '$components/layout/ContentState';
 import { PageIdentityHero } from '$components/layout/PageIdentityHero';
 import { AccessDeniedState } from '$components/layout/PageState';
 import { FEATURES } from '$constants/feature-registry.constants';
-import { teamDetailPath } from '$constants/routes.constants';
+import { gameDetailPath, teamDetailPath } from '$constants/routes.constants';
 import { useUser } from '$context/UserContext';
 import { TeamDialog } from '$features/teams/components/TeamDialog';
 import { fetchTeams } from '$features/teams/team.api';
@@ -30,10 +30,6 @@ import type { GameItem } from '../types/game.types';
 import { GameDialog } from './GameDialog';
 import { GamesList } from './GamesList';
 
-type GameDialogState = { game: GameItem | null } | null;
-/** The game a new team is added to. */
-type TeamDialogState = { gameId: string } | null;
-
 /** Replaces or adds an item, then keeps the list's order. */
 const upsert = <Item extends { id: string; isActive: boolean; name: string }>(
   items: readonly Item[] | null,
@@ -50,8 +46,8 @@ const GamesContent: FC<{ capabilities: GameCapabilities }> = ({
   const [games, setGames] = useState<GameItem[] | null>(null);
   const [teams, setTeams] = useState<TeamItem[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [gameDialog, setGameDialog] = useState<GameDialogState>(null);
-  const [teamDialog, setTeamDialog] = useState<TeamDialogState>(null);
+  const [gameDialogOpen, setGameDialogOpen] = useState(false);
+  const [teamDialogOpen, setTeamDialogOpen] = useState(false);
 
   const load = useCallback(
     async (signal?: AbortSignal): Promise<void> => {
@@ -81,23 +77,38 @@ const GamesContent: FC<{ capabilities: GameCapabilities }> = ({
     return (): void => controller.abort();
   }, [load]);
 
-  const openCreate = (): void => setGameDialog({ game: null });
-  const openGame = gameDialog?.game ?? null;
-  // The page's teams are the freshest count; the server's otherwise.
-  const teamCountOf = (game: GameItem): number =>
-    teams
-      ? teams.filter((team) => team.gameId === game.id).length
-      : game.teamCount;
+  const openCreate = (): void => setGameDialogOpen(true);
+  // A team needs a game: without any, the page offers « Ajouter un jeu ».
+  const canAddTeam = canManageTeams && Boolean(games?.length);
 
   return (
     <div className={cn(directoryStyles.directory, 'space-y-[18px]')}>
       <PageIdentityHero
         actions={
-          canManage ? (
-            <Button className={directoryStyles.addButton} onClick={openCreate}>
-              <Plus aria-hidden="true" />
-              Ajouter un jeu
-            </Button>
+          canManage || canAddTeam ? (
+            <>
+              {/* One entry for every team: its game is chosen in the window
+                  (owner, 8 November 2026), instead of a line under each game. */}
+              {canAddTeam && (
+                <Button
+                  className={directoryStyles.secondaryButton}
+                  onClick={() => setTeamDialogOpen(true)}
+                  variant="outline"
+                >
+                  <Plus aria-hidden="true" />
+                  Ajouter une équipe
+                </Button>
+              )}
+              {canManage && (
+                <Button
+                  className={directoryStyles.addButton}
+                  onClick={openCreate}
+                >
+                  <Plus aria-hidden="true" />
+                  Ajouter un jeu
+                </Button>
+              )}
+            </>
           ) : undefined
         }
         description={
@@ -129,11 +140,8 @@ const GamesContent: FC<{ capabilities: GameCapabilities }> = ({
       ) : games ? (
         <GamesList
           canManage={canManage}
-          canManageTeams={canManageTeams}
           games={games}
-          onAddTeam={(game) => setTeamDialog({ gameId: game.id })}
           onCreate={openCreate}
-          onOpen={(game) => setGameDialog({ game })}
           teams={teams}
         />
       ) : (
@@ -142,33 +150,26 @@ const GamesContent: FC<{ capabilities: GameCapabilities }> = ({
         </div>
       )}
       <GameDialog
-        game={openGame}
-        onClose={() => setGameDialog(null)}
-        onDeleted={(id) => {
-          setGames((current) =>
-            (current ?? []).filter((game) => game.id !== id),
-          );
-          setGameDialog(null);
+        onClose={() => setGameDialogOpen(false)}
+        onCreated={(created) => {
+          setGames((current) => upsert(current, created));
+          setGameDialogOpen(false);
+          // A new game opens on its record, where it is completed.
+          router.push(gameDetailPath(created.id));
         }}
-        onSaved={(saved) => {
-          setGames((current) => upsert(current, saved));
-          setGameDialog(null);
-        }}
-        open={gameDialog !== null}
-        teamCount={openGame ? teamCountOf(openGame) : 0}
+        open={gameDialogOpen}
       />
-      {canManageTeams && (
+      {canAddTeam && teamDialogOpen && (
         <TeamDialog
-          gameId={teamDialog?.gameId ?? ''}
           games={games ?? []}
-          onClose={() => setTeamDialog(null)}
+          onClose={() => setTeamDialogOpen(false)}
           onCreated={(created) => {
             setTeams((current) => upsert(current, created));
-            setTeamDialog(null);
+            setTeamDialogOpen(false);
             // A new team opens on its record, where it is completed.
             router.push(teamDetailPath(created.id));
           }}
-          open={teamDialog !== null}
+          open
         />
       )}
     </div>
