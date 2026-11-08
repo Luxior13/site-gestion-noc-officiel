@@ -1,6 +1,6 @@
 # Banc client de la fiche personne — 22 octobre 2026
 
-[Personne — Identité](../../../pages/membres/repertoire/fiche-identite.md#reprise--22-octobre-2026) · [Banc du 12 octobre](../../fiche-personne-2026-10-12/banc-client/README.md)
+[Personne — Identité](../../../pages/personnes/repertoire/fiche-identite.md#reprise--22-octobre-2026) · [Banc du 12 octobre](../../fiche-personne-2026-10-12/banc-client/README.md)
 
 Depuis la racine du dépôt :
 

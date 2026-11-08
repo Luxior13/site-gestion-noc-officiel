@@ -1,6 +1,6 @@
 # Banc client du Répertoire — 20 octobre 2026
 
-[Liste du Répertoire](../../../pages/membres/repertoire/liste.md) · [Banc du 11 octobre](../../repertoire-2026-10-11/banc-client/README.md)
+[Liste du Répertoire](../../../pages/personnes/repertoire/liste.md) · [Banc du 11 octobre](../../repertoire-2026-10-11/banc-client/README.md)
 
 Depuis la racine du dépôt :
 
@@ -14,7 +14,7 @@ Chromium avec un contexte neuf par scénario, observations et captures écrites
 dans un dossier temporaire affiché. `AUDIT_ONLY` filtre les scénarios.
 
 Passe exécutée le 20 octobre 2026 sur `main` à partir du commit `f224f80`, avec
-les modifications de la [reprise du jour](../../../pages/membres/repertoire/liste.md#reprise-en-profondeur--20-octobre-2026)
+les modifications de la [reprise du jour](../../../pages/personnes/repertoire/liste.md#reprise-en-profondeur--20-octobre-2026)
 non commitées. Elle ne décrit pas ce commit seul.
 
 ## Changements par rapport au banc du 11 octobre

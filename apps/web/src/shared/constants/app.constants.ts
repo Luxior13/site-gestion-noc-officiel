@@ -68,12 +68,12 @@ export const NAV_SPACES: NavigationSpace[] = [
     tone: 'dashboard',
   },
   {
-    description: 'Identités, adhésions, recrutement et parcours des membres.',
+    description: 'Identités, adhésions, recrutement et parcours des personnes.',
     href: PAGE_PATHS.persons,
     icon: 'Users',
     id: 'internal',
-    label: 'Membres',
-    matchHrefs: ['/membres'],
+    label: 'Personnes',
+    matchHrefs: ['/personnes'],
     sections: [
       {
         id: 'people',
@@ -82,7 +82,7 @@ export const NAV_SPACES: NavigationSpace[] = [
         position: 'top',
       },
     ],
-    summary: 'Le suivi des membres',
+    summary: 'Qui est passé par la structure',
     tone: 'internal',
   },
   {

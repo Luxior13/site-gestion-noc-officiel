@@ -3,13 +3,16 @@ import type { RoadmapPlannedPage } from './types/roadmap.types';
 export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   {
     area: 'today',
+    chantier: 'personal-work',
     name: 'Mon travail',
     phase: null,
-    summary:
-      'Accueil, sans onglet. Accueillera mes tâches, mes réunions à venir, les documents en attente et les échéances proches.',
+    summary: 'Accueil, sans onglet.',
+    upcoming:
+      'Mes tâches, mes réunions à venir, les documents en attente et les échéances proches.',
   },
   {
     area: 'today',
+    chantier: 'tasks',
     name: 'Tâches',
     phase: 6,
     summary:
@@ -17,6 +20,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'today',
+    chantier: 'calendar',
     name: 'Calendrier',
     phase: 6,
     summary:
@@ -49,8 +53,28 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
     area: 'people',
     name: 'Répertoire',
     phase: null,
-    summary:
-      'Liste, sans onglet : toutes les fiches, avec recherche et filtres. À venir (étape 1) : filtres par équipe, jeu, étiquette et anciens membres.',
+    tabs: [
+      {
+        chantier: 'sport-teams',
+        label: 'Fiches',
+        phase: null,
+        summary: 'Toutes les fiches, avec recherche et filtres.',
+        upcoming: 'Filtres par équipe, jeu, étiquette et anciens membres.',
+      },
+      {
+        chantier: 'reference-lists',
+        label: 'Fonctions',
+        phase: 1,
+        summary:
+          'Ajouter, renommer, archiver ; réglage « Donne accès à son équipe ».',
+      },
+      {
+        chantier: 'reference-lists',
+        label: 'Étiquettes',
+        phase: 1,
+        summary: 'Repères libres pour classer les fiches.',
+      },
+    ],
   },
   {
     area: 'people',
@@ -58,44 +82,58 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
     phase: null,
     tabs: [
       {
+        chantier: 'sport-teams',
         label: 'Identité',
         phase: null,
-        summary:
-          'Pseudo, nom, naissance, zone dangereuse ; statut calculé depuis le parcours, nationalité, jeux pratiqués et étiquettes (étape 1).',
+        summary: 'Pseudo, nom, naissance, zone dangereuse.',
+        upcoming:
+          'Statut calculé depuis le parcours, nationalité, jeux pratiqués et étiquettes.',
       },
       {
+        chantier: 'sport-teams',
         label: 'Coordonnées',
         phase: null,
-        summary:
-          'Emails, téléphones, réseaux sociaux ; adresse, identifiants de jeu, contact d’urgence et représentants légaux (étape 1).',
+        summary: 'Emails, téléphones, réseaux sociaux.',
+        upcoming:
+          'Adresse, identifiants de jeu, contact d’urgence et représentants légaux.',
       },
       {
+        chantier: 'sport-teams',
         label: 'Parcours',
         phase: 1,
         summary:
           'Passages datés : équipe ou structure, fonction, début, fin, motif de fin ; tournois joués ; anciens pseudos.',
       },
       {
+        chantier: 'person-relationships',
         label: 'Adhésions',
+        managedIn: 'Adhésions',
         phase: 4,
         summary: 'Adhésions par campagne et état de cotisation.',
       },
       {
+        chantier: 'person-relationships',
         label: 'Finances',
+        managedIn: 'Finances',
         phase: 4,
         summary: 'Cotisations réglées, remboursements et gains versés.',
       },
       {
+        chantier: 'documents',
         label: 'Documents',
+        managedIn: 'Documents et Contrats',
         phase: 7,
         summary: 'Contrats, autorisations et chartes acceptées.',
       },
       {
+        chantier: 'logistics',
         label: 'Matériel',
+        managedIn: 'Matériel & abonnements',
         phase: 8,
         summary: 'Prêts et restitutions, taille de maillot.',
       },
       {
+        chantier: 'incidents',
         label: 'Suivi',
         phase: 5,
         summary:
@@ -104,14 +142,28 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
     ],
   },
   {
-    area: 'people',
+    area: 'esport',
+    chantier: 'sport-teams',
     name: 'Équipes',
     phase: 1,
-    summary:
-      'Liste, sans onglet : les équipes par jeu, actives ou archivées. Création en fenêtre.',
+    tabs: [
+      {
+        label: 'Équipes',
+        phase: 1,
+        summary:
+          'Les équipes par jeu, actives ou archivées. Création en fenêtre.',
+      },
+      {
+        chantier: 'reference-lists',
+        label: 'Jeux',
+        phase: 1,
+        summary: 'Ajouter, renommer, archiver.',
+      },
+    ],
   },
   {
-    area: 'people',
+    area: 'esport',
+    chantier: 'sport-teams',
     name: 'Fiche équipe',
     phase: 1,
     tabs: [
@@ -122,7 +174,9 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'Membres actuels et anciens, composition à une date. Seul onglet d’un manager.',
       },
       {
+        chantier: 'competitions',
         label: 'Tournois',
+        managedIn: 'Tournois',
         phase: 5,
         summary: 'Tournois joués par cette équipe.',
       },
@@ -135,6 +189,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'people',
+    chantier: 'person-relationships',
     name: 'Adhésions',
     phase: 4,
     tabs: [
@@ -151,14 +206,16 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
     ],
   },
   {
-    area: 'people',
+    area: 'esport',
+    chantier: 'competitions',
     name: 'Tournois',
     phase: 5,
     summary:
       'Liste, sans onglet : les tournois, par jeu et par année. Création en fenêtre.',
   },
   {
-    area: 'people',
+    area: 'esport',
+    chantier: 'competitions',
     name: 'Fiche tournoi',
     phase: 5,
     tabs: [
@@ -174,11 +231,13 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         summary: 'Équipes et membres engagés.',
       },
       {
+        chantier: 'prizes',
         label: 'Gains',
         phase: 5,
         summary: 'Montants annoncés, confirmés et reçus, et leur répartition.',
       },
       {
+        chantier: 'incidents',
         label: 'Suivi',
         phase: 5,
         summary:
@@ -188,24 +247,28 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'people',
+    chantier: 'recruitment',
     name: 'Recrutement',
     phase: 10,
     summary: 'Onglets définis à son cadrage.',
   },
   {
-    area: 'people',
-    name: 'Suivi sportif',
+    area: 'esport',
+    chantier: 'sports-follow-up',
+    name: 'Entraînement',
     phase: 10,
     summary: 'Onglets définis à son cadrage.',
   },
   {
     area: 'people',
+    chantier: 'hr',
     name: 'Salariés & paie',
     phase: 10,
     summary: 'Onglets définis à son cadrage.',
   },
   {
     area: 'people',
+    chantier: 'onboarding',
     name: 'Arrivées, départs & passations',
     phase: 8,
     tabs: [
@@ -224,6 +287,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'relations',
+    chantier: 'organizations',
     name: 'Organisations',
     phase: 3,
     summary:
@@ -231,6 +295,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'relations',
+    chantier: 'organizations',
     name: 'Fiche organisation',
     phase: 3,
     tabs: [
@@ -245,12 +310,16 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         summary: 'Interlocuteurs, liés aux fiches du Répertoire.',
       },
       {
+        chantier: 'payments',
         label: 'Règlements',
+        managedIn: 'Finances',
         phase: 3,
         summary: 'Factures et opérations liées.',
       },
       {
+        chantier: 'contracts',
         label: 'Contrats',
+        managedIn: 'Contrats et Partenariats',
         phase: 7,
         summary: 'Contrats et partenariats en cours et passés.',
       },
@@ -258,12 +327,14 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'relations',
+    chantier: 'partnerships',
     name: 'Partenariats',
     phase: 7,
     summary: 'Liste, sans onglet : opportunités et accords.',
   },
   {
     area: 'relations',
+    chantier: 'partnerships',
     name: 'Fiche partenariat',
     phase: 7,
     tabs: [
@@ -286,6 +357,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'relations',
+    chantier: 'communication',
     name: 'Communication',
     phase: 10,
     summary: 'Onglets définis à son cadrage.',

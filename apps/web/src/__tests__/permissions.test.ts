@@ -528,15 +528,15 @@ describe('permission catalogue', () => {
       (category) => category.key === 'persons',
     );
     expect(personsCategory?.routes).toEqual([
-      '/membres/repertoire',
-      '/membres/repertoire/nouveau',
-      '/membres/repertoire/[id]',
+      '/personnes/repertoire',
+      '/personnes/repertoire/nouveau',
+      '/personnes/repertoire/[id]',
     ]);
     expect(
       personsCategory?.permissions.find(
         (permission) => permission.key === PERMISSIONS.PERSONS.CREATE,
       )?.route,
-    ).toBe('/membres/repertoire/nouveau');
+    ).toBe('/personnes/repertoire/nouveau');
 
     expect(getAccessPermissionKeys()).not.toEqual(
       expect.arrayContaining([
@@ -567,7 +567,7 @@ describe('permission catalogue', () => {
 
   it('uses a coherent user-facing taxonomy and action labels', () => {
     expect(PERMISSION_POLES).toMatchObject([
-      { key: 'internal', label: 'Membres' },
+      { key: 'internal', label: 'Personnes' },
       { key: 'legal', label: 'Relations' },
       { key: 'system', label: 'Système' },
     ]);

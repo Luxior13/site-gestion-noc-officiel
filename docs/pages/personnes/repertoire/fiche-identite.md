@@ -1,17 +1,17 @@
 # Personne — Identité
 
-[Index des pages](../../../pages/README.md) · [Répertoire](README.md) · [Design](../../../design/README.md) · [Guide général](../../../REFERENCE_GENERALE.md)
+[Index des pages](../../README.md) · [Répertoire](README.md) · [Design](../../../design/README.md) · [Guide général](../../../REFERENCE_GENERALE.md)
 
 ## Identité
 
 | Élément | Valeur |
 | --- | --- |
-| Route | `/membres/repertoire/[id]` |
+| Route | `/personnes/repertoire/[id]` |
 | Section | Identité, par défaut (`?section=identite`) |
-| Espace | Membres |
+| Espace | Personnes |
 | Gabarit visé | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections) |
 | État d’harmonisation | Aligné ; champs adoucis du 17 octobre 2026 — voir [Harmonisation](../../../design/harmonisation.md#état-par-page) |
-| Point d’entrée | [page.tsx](../../../../apps/web/src/app/membres/repertoire/[id]/page.tsx) → [PersonIdentitySection](../../../../apps/web/src/features/persons/components/PersonIdentitySection.tsx) |
+| Point d’entrée | [page.tsx](../../../../apps/web/src/app/personnes/repertoire/[id]/page.tsx) → [PersonIdentitySection](../../../../apps/web/src/features/persons/components/PersonIdentitySection.tsx) |
 | Contrôle d’accès | `persons:view` ; modification `persons:update` ; suppression `persons:delete` |
 | Chargement / erreur dédiés | oui, squelette de fiche / commune à l’application |
 

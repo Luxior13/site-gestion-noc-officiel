@@ -5,11 +5,11 @@
 Route `/membres/repertoire/[id]`, identité, coordonnées, provenance des
 champs, lecture selon les droits, conflits de version, navigation et
 suppression définitive. Départ propre au commit `0027a78`, projet en
-développement. Le [suivi du Répertoire](../pages/membres/repertoire/README.md)
+développement. Le [suivi du Répertoire](../pages/personnes/repertoire/README.md)
 porte les décisions courantes. Les audits de la liste et de la création
 restent des preuves datées distinctes.
 
-Sources principales : [page serveur](../../apps/web/src/app/membres/repertoire/[id]/page.tsx),
+Sources principales : [page serveur](../../apps/web/src/app/personnes/repertoire/[id]/page.tsx),
 [composition de fiche](../../apps/web/src/features/persons/components/PersonDetailPage.tsx),
 [identité](../../apps/web/src/features/persons/components/PersonIdentitySection.tsx),
 [coordonnées](../../apps/web/src/features/persons/components/PersonCollectionsSection.tsx),

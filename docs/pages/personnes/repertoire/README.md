@@ -1,6 +1,6 @@
 # Répertoire
 
-[Index des pages](../../../pages/README.md) · [Espace Membres](../README.md) · [Design](../../../design/README.md) · [Guide général](../../../REFERENCE_GENERALE.md)
+[Index des pages](../../README.md) · [Espace Personnes](../README.md) · [Design](../../../design/README.md) · [Guide général](../../../REFERENCE_GENERALE.md)
 
 Fiches des personnes, dans ou hors de la structure : liste de **référence
 visuelle et UX** de l’application, création et fiche à deux sections. Une fiche
@@ -10,10 +10,10 @@ personne n’est ni un compte utilisateur, ni une adhésion, ni un rôle.
 
 | Route | Section | Fiche | Gabarit | Harmonisation |
 | --- | --- | --- | --- | --- |
-| `/membres/repertoire` | — | [Liste du répertoire](liste.md) | [A. Liste de gestion](../../../design/gabarits.md#a-liste-de-gestion) | **Page de référence** |
-| `/membres/repertoire/nouveau` | — | [Nouvelle fiche](creation.md) | [C. Formulaire de création](../../../design/gabarits.md#c-formulaire-de-création) | Aligné |
-| `/membres/repertoire/[id]` | Identité (défaut) | [Personne — Identité](fiche-identite.md) | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections) | Aligné |
-| `/membres/repertoire/[id]` | `?section=coordonnees` | [Personne — Coordonnées](fiche-coordonnees.md) | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections) | Aligné |
+| `/personnes/repertoire` | — | [Liste du répertoire](liste.md) | [A. Liste de gestion](../../../design/gabarits.md#a-liste-de-gestion) | **Page de référence** |
+| `/personnes/repertoire/nouveau` | — | [Nouvelle fiche](creation.md) | [C. Formulaire de création](../../../design/gabarits.md#c-formulaire-de-création) | Aligné |
+| `/personnes/repertoire/[id]` | Identité (défaut) | [Personne — Identité](fiche-identite.md) | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections) | Aligné |
+| `/personnes/repertoire/[id]` | `?section=coordonnees` | [Personne — Coordonnées](fiche-coordonnees.md) | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections) | Aligné |
 
 Alias historiques `/personnes` et `/vie-interne/repertoire` : redirections
 vers la liste (voir les [routes](../../../systeme/routes.md)).
@@ -116,11 +116,12 @@ revue répond à un changement, un défaut constaté ou une règle nouvelle.
 
 ## Identité et état
 
-- Route(s) : `/membres/repertoire` (liste), `/membres/repertoire/nouveau`
-  (création), `/membres/repertoire/[id]` (fiche). Alias historiques :
-  `/personnes` et `/vie-interne/repertoire`.
+- Route(s) : `/personnes/repertoire` (liste), `/personnes/repertoire/nouveau`
+  (création), `/personnes/repertoire/[id]` (fiche). Alias historiques :
+  `/membres/repertoire` (nom du pôle jusqu’au 8 novembre 2026) et
+  `/vie-interne/repertoire`.
 - Module propriétaire : `apps/web/src/features/persons`. Rendu de la liste :
-  `app/membres/repertoire/page.tsx` (serveur) →
+  `app/personnes/repertoire/page.tsx` (serveur) →
   `features/persons/components/PersonsPageClient.tsx` →
   `PersonsList.tsx`, styles partagés `components/ui/directory.module.css`.
 - Statut : liste conforme sur le périmètre vérifié le 11 octobre, référence
@@ -255,7 +256,7 @@ humaine restent distinctes de ces succès et sont décrites dans le
 
 ### Contour des champs de fiche — 10 octobre 2026
 
-Écart signalé entre `/membres/repertoire/[id]` et la fiche Utilisateurs :
+Écart signalé entre `/personnes/repertoire/[id]` et la fiche Utilisateurs :
 `PersonIdentityFields` utilise bien les primitives communes, mais sa variante
 `quiet` remplaçait le focus par un halo de 3 px à 22 % d'opacité et un autre
 fond. `SectionForm.module.css` limite désormais cette variante au repos et au
@@ -277,7 +278,7 @@ restent datées.
 ### Présentation des sélecteurs alignée sur les filtres — 10 octobre 2026
 
 Après le contrôle des contours, l'utilisateur a signalé l'écart encore visible
-entre le statut de `/membres/repertoire/[id]` et les filtres de la liste : hauteur,
+entre le statut de `/personnes/repertoire/[id]` et les filtres de la liste : hauteur,
 typographie, flèche, fond au repos et espacement des options différaient.
 **Corrigé et vérifié** : variante `compact` commune de `SelectTrigger` et
 `SelectContent`, extraite du style des filtres. Le statut de fiche ne reçoit plus

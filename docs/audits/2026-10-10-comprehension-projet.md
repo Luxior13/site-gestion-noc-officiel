@@ -192,7 +192,7 @@ erreurs ont des composants dédiés. L'autocomplétion désactivée est une déc
 explicite du projet, avec les exceptions documentées pour l'authentification.
 
 Sources : [design system](../design/README.md),
-[suivi du répertoire](../pages/membres/repertoire/README.md),
+[suivi du répertoire](../pages/personnes/repertoire/README.md),
 [suivi des utilisateurs](../pages/systeme/utilisateurs/README.md).
 
 ## Exploitation

@@ -23,7 +23,7 @@ mention « Suivi à compléter ».
 | Aujourd’hui | [Accueil — Mon travail](accueil.md) | `/` ; l’alias `/tableau-de-bord` y redirige |
 | Hors cadre | [Connexion](connexion.md) | `/login`, double authentification |
 | Compte personnel | [Mon compte](mon-compte/README.md) | Profil, Autorisations et Sécurité |
-| Membres | [membres/](membres/README.md) | Répertoire : liste de référence, création, fiche à deux sections |
+| Personnes | [personnes/](personnes/README.md) | Répertoire : liste de référence, création, fiche à deux sections |
 | Système | [systeme/](systeme/README.md) | Utilisateurs, Journal d’activité, Paramètres, Feuille de route |
 | Transverse | [transverse/](transverse/README.md) | Navigation générale, états techniques, composants partagés, modales |
 
@@ -31,7 +31,7 @@ mention « Suivi à compléter ».
 
 | Gabarit | Fiche |
 | --- | --- |
-| Liste de gestion | [Liste du répertoire](membres/repertoire/liste.md), complétée par la [liste des utilisateurs](systeme/utilisateurs/liste.md) |
+| Liste de gestion | [Liste du répertoire](personnes/repertoire/liste.md), complétée par la [liste des utilisateurs](systeme/utilisateurs/liste.md) |
 | Fiche à sections et barre d’enregistrement | [Utilisateurs](systeme/utilisateurs/README.md) |
 | Réglages en lignes compactes | [Utilisateur — Autorisations](systeme/utilisateurs/fiche-autorisations.md) |
 
@@ -40,10 +40,10 @@ mention « Suivi à compléter ».
 | Fiche | État au 19 octobre 2026 |
 | --- | --- |
 | [Utilisateurs](systeme/utilisateurs/README.md) | 18 octobre : Autorisations en cartes, détails en popover, Administrateur complet ; 17 octobre : champs harmonisés et présentation allégée ; catalogue 27/7 et corrections serveur du 15 octobre conservés (28/7 depuis l’ajout du journal d’activité le 30 octobre) |
-| [Répertoire](membres/repertoire/README.md) | **Référence visuelle et UX** ; 15 octobre : confidentialité de provenance et minimisation corrigées, lecture et écriture des coordonnées séparées ; 82 tests SQL et parcours réels ciblés |
+| [Répertoire](personnes/repertoire/README.md) | **Référence visuelle et UX** ; 15 octobre : confidentialité de provenance et minimisation corrigées, lecture et écriture des coordonnées séparées ; 82 tests SQL et parcours réels ciblés |
 | [Mon compte](mon-compte/README.md) | 15 octobre : capacité d’activité sans écran retirée ; sept capacités personnelles dont une configurable ; garanties maintenues |
 | [Paramètres système](systeme/parametres.md) | 15 octobre : droits fixes ADMIN documentés ; refonte de l’interface du 14 octobre |
-| [Feuille de route](systeme/feuille-de-route.md) | Revérifiée dans la clôture du 13 octobre ; catalogue inchangé, chantiers futurs non activés |
+| [Feuille de route](systeme/feuille-de-route.md) | Refondue le 7 novembre 2026 : chantiers par pôle, puis Pages et onglets, Couverture et Ordre suggéré ; chantiers futurs non activés |
 | [Accueil](accueil.md) | Parcours réel du 13 octobre réussi ; aucun widget futur ajouté |
 | [Connexion](connexion.md) | Connexion et MFA réelles rejouées pour la clôture ; AUTH-02 et limites d’exploitation conservés |
 | [Navigation générale](transverse/navigation-generale.md) | Menu Rubriques confirmé ; focus du fil d’Ariane corrigé ; limite du défilement natif précisée |

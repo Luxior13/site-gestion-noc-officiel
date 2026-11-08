@@ -43,7 +43,7 @@ les preuves de chaque comportement sont dans les fiches de page et les audits.
 
 ## Listes, recherche et pagination
 
-Références : [liste du Répertoire](../pages/membres/repertoire/liste.md) et
+Références : [liste du Répertoire](../pages/personnes/repertoire/liste.md) et
 [liste des Utilisateurs](../pages/systeme/utilisateurs/liste.md).
 
 - Recherche large et prioritaire (`ListSearchField`), filtres alignés sur la

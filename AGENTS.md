@@ -78,7 +78,7 @@
   mineure actualise la fiche seulement si elle change une information durable.
   Les fiches marquées « Suivi à compléter » se complètent à la première reprise.
 - Pour l’interface, partir du [système de design](docs/design/README.md) :
-  pages de référence (liste `/membres/repertoire`, complétée par
+  pages de référence (liste `/personnes/repertoire`, complétée par
   `/systeme/utilisateurs` ; fiche `/systeme/utilisateurs/[id]` pour la barre
   d’enregistrement), gabarits, composants, fondations et comportements, puis la
   fiche de la page. Examiner aussi le choix de chaque contrôle, la justesse des

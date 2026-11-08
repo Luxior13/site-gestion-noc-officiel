@@ -82,7 +82,7 @@ contient `e2e` ou `test`. Ne pas committer ni pousser sans demande explicite.
 Cartographie complète : [docs/systeme](docs/systeme/README.md).
 
 - `apps/web` : Next.js 15 (App Router), React 19, Tailwind v4, primitives
-  shadcn/Radix dans `src/components/ui`. Routes françaises (`/membres`,
+  shadcn/Radix dans `src/components/ui`. Routes françaises (`/personnes`,
   `/systeme`, `/mon-compte`…), API sous `src/app/api`.
 - `packages/database` (`@repo/database`) : Prisma 6 sur PostgreSQL, migrations
   SQL, scripts de sauvegarde/restauration chiffrées et de récupération root.

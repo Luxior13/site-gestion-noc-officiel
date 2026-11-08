@@ -26,8 +26,6 @@ describe('roadmap planning contracts', () => {
       expect(ROADMAP_PHASES.some((phase) => phase.id === item.phase)).toBe(
         true,
       );
-      if (item.status === 'partial')
-        expect(item.baseline?.length).toBeGreaterThan(0);
     }
   });
 

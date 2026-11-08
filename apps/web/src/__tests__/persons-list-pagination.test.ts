@@ -65,8 +65,8 @@ describe('directory URL pagination', () => {
         renderToStaticMarkup(
           createElement(PersonsList, {
             canCreate: false,
-            createHref: '/membres/repertoire/nouveau',
-            returnHref: '/membres/repertoire',
+            createHref: '/personnes/repertoire/nouveau',
+            returnHref: '/personnes/repertoire',
           }),
         ),
       ).not.toThrow();
@@ -82,12 +82,12 @@ describe('directory URL pagination', () => {
     const html = renderToStaticMarkup(
       createElement(PersonsList, {
         canCreate: false,
-        createHref: '/membres/repertoire/nouveau',
+        createHref: '/personnes/repertoire/nouveau',
         initialState: {
           data: emptyData,
           request: { cursor: 'page-three', q: 'ada', sort: 'name' },
         },
-        returnHref: '/membres/repertoire?page=3&cursor=page-three&q=ada',
+        returnHref: '/personnes/repertoire?page=3&cursor=page-three&q=ada',
       }),
     );
     expect(html).toContain('Première page');
@@ -99,9 +99,9 @@ describe('directory URL pagination', () => {
     const html = renderToStaticMarkup(
       createElement(PersonsList, {
         canCreate: false,
-        createHref: '/membres/repertoire/nouveau',
+        createHref: '/personnes/repertoire/nouveau',
         initialState: { data: emptyData, request: { q: '', sort: 'name' } },
-        returnHref: '/membres/repertoire?contacts=missing',
+        returnHref: '/personnes/repertoire?contacts=missing',
       }),
     );
     expect(html).toContain('Chargement du répertoire');
@@ -111,17 +111,17 @@ describe('directory URL pagination', () => {
   it.each([
     [
       '?page=2&cursor=third&sort=invalid&structureStatus=invalid&contacts=false',
-      '/membres/repertoire?cursor=third&page=2',
+      '/personnes/repertoire?cursor=third&page=2',
     ],
-    ['?page=4&q=%20Ada%20&sort=name', '/membres/repertoire?q=Ada'],
-    ['?page=1&cursor=orphan&unknown=value', '/membres/repertoire'],
+    ['?page=4&q=%20Ada%20&sort=name', '/personnes/repertoire?q=Ada'],
+    ['?page=1&cursor=orphan&unknown=value', '/personnes/repertoire'],
     [
       '?q=one&q=two&contacts=missing',
-      '/membres/repertoire?contacts=missing&q=one',
+      '/personnes/repertoire?contacts=missing&q=one',
     ],
     [
       `?q=${'x'.repeat(120)}&page=3&cursor=${'y'.repeat(2049)}`,
-      `/membres/repertoire?q=${'x'.repeat(100)}`,
+      `/personnes/repertoire?q=${'x'.repeat(100)}`,
     ],
   ])(
     'normalizes malformed locations without inventing a page cursor: %s',

@@ -1,6 +1,6 @@
 # Banc client de la création de fiche personne — 23 octobre 2026
 
-[Nouvelle fiche](../../../pages/membres/repertoire/creation.md#reprise--23-octobre-2026) · [Banc du 12 octobre](../../creation-personne-2026-10-12/banc-client/README.md)
+[Nouvelle fiche](../../../pages/personnes/repertoire/creation.md#reprise--23-octobre-2026) · [Banc du 12 octobre](../../creation-personne-2026-10-12/banc-client/README.md)
 
 Depuis la racine du dépôt :
 

@@ -55,12 +55,12 @@ describe('shared form control semantics', () => {
       createElement(
         Button,
         { asChild: true },
-        createElement('a', { href: '/membres/repertoire' }, 'Retour'),
+        createElement('a', { href: '/personnes/repertoire' }, 'Retour'),
       ),
     );
 
     expect(markup).toMatch(/^<a /);
-    expect(markup).toContain('href="/membres/repertoire"');
+    expect(markup).toContain('href="/personnes/repertoire"');
     expect(markup).not.toContain('<button');
     expect(markup).not.toContain('type=');
     expect(markup).not.toContain('disabled=');

@@ -1,64 +1,85 @@
 import { describe, expect, it } from 'vitest';
 
 import { ROADMAP_ITEMS } from '$features/roadmap/roadmap.constants';
+import { ROADMAP_COVERAGE } from '$features/roadmap/roadmap-coverage.data';
 import {
   getRoadmapQueryCorrection,
+  getVisibleCoverage,
+  getVisiblePlannedPages,
   getVisibleRoadmapItems,
   readRoadmapFilters,
 } from '$features/roadmap/roadmap-search';
+import { ROADMAP_PLANNED_PAGES } from '$features/roadmap/roadmap-site-plan.data';
 
 const search = (query: string): string[] =>
-  getVisibleRoadmapItems({ areaId: 'all', phase: null, query }).map(
-    (item) => item.id,
-  );
+  getVisibleRoadmapItems({ areaId: 'all', query }).map((item) => item.id);
 
 describe('roadmap local search and URL filters', () => {
   it('bounds external searches and rejects unknown filters as displayed', () => {
     const params = new URLSearchParams({
-      phase: '99',
       pole: 'private',
       q: 'a'.repeat(250),
+      vue: 'tableau',
     });
     expect(readRoadmapFilters(params)).toEqual({
       areaId: 'all',
-      phase: null,
       query: 'a'.repeat(200),
+      view: 'chantiers',
     });
     expect(getRoadmapQueryCorrection(params)).toEqual({
-      phase: null,
       pole: null,
       q: 'a'.repeat(200),
+      vue: null,
     });
   });
 
-  it('makes duplicate and neutral parameters unambiguous without touching others', () => {
+  // The phase filter left with the steps view (7 November 2026).
+  it('drops the former phase filter and keeps the other parameters', () => {
     const params = new URLSearchParams(
-      'phase=2&phase=3&pole=all&q=&q=planning&keep=yes',
+      'phase=2&phase=3&pole=all&q=&q=planning&vue=pages&vue=ordre&keep=yes',
     );
     expect(readRoadmapFilters(params)).toEqual({
       areaId: 'all',
-      phase: 2,
       query: '',
+      view: 'pages',
     });
     const correction = getRoadmapQueryCorrection(params);
-    expect(correction).toEqual({ phase: '2', pole: null, q: null });
+    expect(correction).toEqual({
+      phase: null,
+      pole: null,
+      q: null,
+      vue: 'pages',
+    });
     for (const [key, value] of Object.entries(correction ?? {})) {
       if (value === null) params.delete(key);
       else params.set(key, value);
     }
-    expect(params.toString()).toBe('phase=2&keep=yes');
+    expect(params.toString()).toBe('vue=pages&keep=yes');
     expect(getRoadmapQueryCorrection(params)).toBeNull();
+  });
+
+  // Chantiers by pole are the default view since 7 November 2026.
+  it('keeps the default view out of the URL', () => {
+    expect(
+      getRoadmapQueryCorrection(new URLSearchParams('vue=chantiers')),
+    ).toEqual({ vue: null });
+    expect(
+      getRoadmapQueryCorrection(new URLSearchParams('vue=etapes')),
+    ).toEqual({ vue: null });
+    expect(getRoadmapQueryCorrection(new URLSearchParams())).toBeNull();
+    expect(
+      getRoadmapQueryCorrection(new URLSearchParams('vue=ordre')),
+    ).toBeNull();
   });
 
   it('leaves valid input untouched while a user types spaces or accented words', () => {
     const params = new URLSearchParams({
-      phase: '2',
       pole: 'people',
       q: '  Équipes ',
+      vue: 'couverture',
     });
     expect(readRoadmapFilters(params).query).toBe('  Équipes ');
     expect(getRoadmapQueryCorrection(params)).toBeNull();
-    expect(getRoadmapQueryCorrection(new URLSearchParams())).toBeNull();
   });
 
   it('combines every word independently of accents, case, punctuation and order', () => {
@@ -75,33 +96,52 @@ describe('roadmap local search and URL filters', () => {
     expect(search('reunion').length).toBeGreaterThan(1);
   });
 
-  it('searches the delivery criterion, even while its disclosure is collapsed', () => {
+  it('searches the delivery criterion, even while the line is folded', () => {
     expect(search('corriger passage')).toContain('sport-teams');
     expect(search('nOuVeLLe identité')).toContain('person-relationships');
   });
 
-  it('intersects the search, target area and phase rather than replacing a criterion', () => {
+  it('intersects the search and the target area rather than replacing a criterion', () => {
     expect(
       getVisibleRoadmapItems({
         areaId: 'people',
-        phase: 1,
         query: 'corriger passage',
       }).map((item) => item.id),
     ).toEqual(['sport-teams']);
     expect(
       getVisibleRoadmapItems({
-        areaId: 'people',
-        phase: 2,
-        query: 'corriger passage',
-      }),
-    ).toEqual([]);
-    expect(
-      getVisibleRoadmapItems({
         areaId: 'structure',
-        phase: 1,
         query: 'corriger passage',
       }),
     ).toEqual([]);
+  });
+
+  it('finds a page by one of its tabs or by the chantier building it', () => {
+    const names = (query: string): string[] =>
+      getVisiblePlannedPages({ areaId: 'all', query }).map((page) => page.name);
+    expect(names('bans')).toEqual(
+      expect.arrayContaining(['Fiche personne', 'Fiche tournoi']),
+    );
+    expect(names('Suivi')).toContain('Fiche personne');
+    expect(
+      getVisiblePlannedPages({ areaId: 'finance', query: 'recrutement' }),
+    ).toEqual([]);
+  });
+
+  it('places a subject in the poles of its chantiers', () => {
+    const outside = ROADMAP_COVERAGE.filter((row) => !row.chantiers.length);
+    expect(outside.every((row) => row.outside)).toBe(true);
+    for (const row of getVisibleCoverage({ areaId: 'finance', query: '' })) {
+      expect(
+        row.chantiers.some(
+          (id) =>
+            ROADMAP_ITEMS.find((item) => item.id === id)?.area === 'finance',
+        ),
+      ).toBe(true);
+    }
+    expect(getVisibleCoverage({ areaId: 'all', query: '' })).toEqual(
+      ROADMAP_COVERAGE,
+    );
   });
 
   it('returns the entire unchanged catalogue when neutral criteria are restored', () => {
@@ -110,6 +150,9 @@ describe('roadmap local search and URL filters', () => {
     expect(
       getVisibleRoadmapItems(readRoadmapFilters(new URLSearchParams())),
     ).toEqual(ROADMAP_ITEMS);
+    expect(
+      getVisiblePlannedPages(readRoadmapFilters(new URLSearchParams())),
+    ).toEqual(ROADMAP_PLANNED_PAGES);
     expect(ROADMAP_ITEMS.map((item) => item.id)).toEqual(before);
   });
 });

@@ -20,7 +20,7 @@ une simple valeur de liste.
 ## Le passage
 
 Un seul objet central : le **passage**, une relation datée entre une fiche du
-[Répertoire](../pages/membres/repertoire/README.md) et la structure.
+[Répertoire](../pages/personnes/repertoire/README.md) et la structure.
 
 | Élément | Règle |
 | --- | --- |
@@ -85,12 +85,16 @@ cours : la mémoire ne doit pas dépendre d’une personne.
 - **Le registre doit survivre à l’outil** : un export lisible le reprend en entier,
   indépendamment du format des sauvegardes.
 
-## Listes de référence
+## Listes de choix
 
 Une liste de choix qui peut évoluer (jeux, fonctions…) se gère sur le site, sans
 développement. Une liste fixée par une règle (statut, rôle) reste dans le code.
 
-- Une seule page, un onglet par liste, au gabarit des listes de gestion.
+- Chaque liste se gère en onglet, à côté de ce qu’elle classe, au gabarit des
+  listes de gestion (décision du 8 novembre 2026) : Jeux dans Équipes (Esport),
+  Fonctions et Étiquettes dans le Répertoire (Personnes), Catégories et Moyens de
+  paiement dans Comptes (Finances), Types de matériel dans Matériel & abonnements
+  (Structure). Aucune liste ne se gère dans Système.
 - **Renommer** met à jour la valeur partout.
 - **Archiver** retire la valeur des choix ; elle reste affichée sur les anciens
   passages. Une valeur utilisée ne se supprime pas.
@@ -110,10 +114,10 @@ Une donnée se modifie là où on la lit.
 | Changer le parcours d’un membre | Onglet Parcours de sa fiche, en fenêtre, comme les coordonnées |
 | Ajouter ou retirer quelqu’un d’une équipe | Fiche de l’équipe, avec la même fenêtre, équipe déjà remplie |
 | Voir les membres actuels et anciens d’une équipe | Fiche de l’équipe |
-| Changer une liste de choix | Page Listes de référence, ou ajout direct depuis le champ |
+| Changer une liste de choix | Onglet de la liste, à côté de ce qu’elle classe, ou ajout direct depuis le champ |
 
 Pas de page « Parcours » séparée : elle dupliquerait les fiches. Les équipes
-rejoignent le pôle Membres, à côté du Répertoire.
+forment, avec les jeux et les tournois, le pôle Esport.
 
 ## Source des données
 

@@ -22,12 +22,12 @@ import {
 
 describe('page URL migration', () => {
   it.each([
-    ['/personnes', '/membres/repertoire'],
-    ['/personnes/record-1', '/membres/repertoire/record-1'],
-    ['/vie-interne/repertoire/nouveau', '/membres/repertoire/nouveau'],
+    ['/membres/repertoire', '/personnes/repertoire'],
+    ['/membres/repertoire/record-1', '/personnes/repertoire/record-1'],
+    ['/vie-interne/repertoire/nouveau', '/personnes/repertoire/nouveau'],
     [
       '/vie-interne/repertoire/record-1?section=coordonnees#contact',
-      '/membres/repertoire/record-1?section=coordonnees#contact',
+      '/personnes/repertoire/record-1?section=coordonnees#contact',
     ],
     [
       '/administration/utilisateurs/user-1?section=access',
@@ -74,9 +74,9 @@ describe('page URL migration', () => {
   });
 
   it.each([
-    'membres/repertoire',
-    'membres/repertoire/nouveau',
-    'membres/repertoire/[id]',
+    'personnes/repertoire',
+    'personnes/repertoire/nouveau',
+    'personnes/repertoire/[id]',
     'systeme/utilisateurs',
     'systeme/utilisateurs/nouveau',
     'systeme/utilisateurs/[id]',
@@ -95,23 +95,23 @@ describe('page URL migration', () => {
       getSafePersonReturnHref(
         '/vie-interne/repertoire?q=Alex&sort=updated&cursor=abc',
       ),
-    ).toBe('/membres/repertoire?q=Alex&sort=updated&cursor=abc');
+    ).toBe('/personnes/repertoire?q=Alex&sort=updated&cursor=abc');
     expect(
       getSafeCollectionReturnHref(
         '/administration/utilisateurs?search=Alex&page=3&status=inactive',
         PAGE_PATHS.users,
       ),
     ).toBe('/systeme/utilisateurs?search=Alex&page=3&status=inactive');
-    const legacyHref = `/personnes/record-1?${new URLSearchParams({ returnTo: '/vie-interne/repertoire?q=Alex', section: 'coordonnees' })}`;
+    const legacyHref = `/membres/repertoire/record-1?${new URLSearchParams({ returnTo: '/vie-interne/repertoire?q=Alex', section: 'coordonnees' })}`;
     const destination = new URL(
       getSafeReturnPath(legacyHref),
       'https://example.test',
     );
-    expect(destination.pathname).toBe('/membres/repertoire/record-1');
+    expect(destination.pathname).toBe('/personnes/repertoire/record-1');
     expect(destination.searchParams.get('section')).toBe('coordonnees');
     expect(
       getSafePersonReturnHref(destination.searchParams.get('returnTo')),
-    ).toBe('/membres/repertoire?q=Alex');
+    ).toBe('/personnes/repertoire?q=Alex');
   });
 
   it.each([
@@ -181,7 +181,7 @@ describe('page URL migration', () => {
     );
     expect(getActiveNavigationSpace(PAGE_PATHS.roadmap).id).toBe('system');
     expect(personDetailPath('id with space')).toBe(
-      '/membres/repertoire/id%20with%20space',
+      '/personnes/repertoire/id%20with%20space',
     );
   });
 });

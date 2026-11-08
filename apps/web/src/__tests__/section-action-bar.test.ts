@@ -79,13 +79,13 @@ describe('shared form action bar', () => {
 
   it('keeps the cancellation link available on a pristine creation form', () => {
     const html = render({
-      cancelHref: '/membres/repertoire',
+      cancelHref: '/personnes/repertoire',
       hasChanges: false,
       saveType: 'submit',
     });
     const link = /<a\b[^>]*>[\s\S]*?<\/a>/.exec(html)?.[0];
 
-    expect(link).toContain('href="/membres/repertoire"');
+    expect(link).toContain('href="/personnes/repertoire"');
     expect(link).not.toContain('aria-disabled');
     expect(buttons(html)[0]).toContain('disabled=""');
   });
@@ -98,7 +98,7 @@ describe('shared form action bar', () => {
   ])('exposes a disabled cancellation link when blocked by %j', (props) => {
     const html = render({
       ...props,
-      cancelHref: '/membres/repertoire',
+      cancelHref: '/personnes/repertoire',
       saveType: 'submit',
     });
     const link = /<a\b[^>]*>[\s\S]*?<\/a>/.exec(html)?.[0];

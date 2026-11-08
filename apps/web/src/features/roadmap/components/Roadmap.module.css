@@ -1,0 +1,427 @@
+/*
+ * Feuille de route (7 November 2026): one block per pole or step, one dense
+ * line per entry, unfolded in place like the activity journal. Container
+ * queries are unnamed on purpose: a CSS module may rename a container name.
+ */
+.group {
+  scroll-margin-top: 128px;
+}
+
+.group + .group {
+  border-top: 1px solid var(--border-content);
+}
+
+.groupHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-divider);
+  background: var(--surface-panel-header);
+}
+
+.groupEyebrow {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.groupTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.groupDescription {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.groupMeta {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  scroll-margin-top: 128px;
+}
+
+.item + .item {
+  border-top: 1px solid var(--border-divider);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto 16px;
+  grid-template-areas:
+    'icon title state chevron'
+    'icon summary summary .';
+  align-items: center;
+  gap: 2px 12px;
+  width: 100%;
+  height: auto;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+  text-align: left;
+  white-space: normal;
+  cursor: pointer;
+}
+
+.row:hover {
+  background: var(--surface-row-hover);
+}
+
+.row:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+
+/* Same open block as the journal (preference of 31 October 2026). */
+.item:has(> .row[aria-expanded='true']) {
+  background: var(--surface-row-alternate);
+  box-shadow: inset 2px 0 0 var(--border-strong);
+}
+
+.icon {
+  grid-area: icon;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: start;
+  width: 28px;
+  height: 28px;
+  border: 1px solid;
+  border-radius: var(--shape-tile);
+}
+
+.icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.title {
+  grid-area: title;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.summary {
+  grid-area: summary;
+  display: -webkit-box;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 12px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.tabs {
+  grid-area: summary;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 1px 6px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--shape-badge);
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.tabPhase {
+  color: var(--text-muted);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A tab read here, modified elsewhere (owner's rule, 8 November 2026). */
+.managedIcon {
+  display: inline-block;
+  flex: none;
+  align-self: center;
+  width: 12px;
+  height: 12px;
+  margin-left: 2px;
+  vertical-align: -1px;
+  color: var(--text-secondary);
+}
+
+.tab .managedIcon {
+  margin-left: -2px;
+}
+
+.managedNote {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-muted);
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-content);
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.legend .managedIcon {
+  margin-left: 0;
+}
+
+@container (min-width: 44rem) {
+  .legend {
+    padding: 10px 20px;
+  }
+}
+
+.state {
+  grid-area: state;
+  justify-self: end;
+}
+
+.chevron {
+  grid-area: chevron;
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  transition: transform 150ms ease;
+}
+
+.row[aria-expanded='true'] .chevron {
+  transform: rotate(90deg);
+}
+
+/* Open, the details repeat the summary in full. */
+.row[aria-expanded='true'] .summary {
+  display: none;
+}
+
+@container (min-width: 44rem) {
+  .groupHeader {
+    padding: 12px 20px;
+  }
+
+  .row {
+    grid-template-columns: 28px minmax(0, 0.85fr) minmax(0, 1.6fr) 112px 16px;
+    grid-template-areas: 'icon title summary state chevron';
+    min-height: 52px;
+    padding: 8px 20px;
+  }
+
+  .summary {
+    -webkit-line-clamp: 1;
+  }
+
+  .icon {
+    align-self: center;
+  }
+}
+
+.details {
+  display: grid;
+  gap: 14px;
+  padding: 4px 16px 16px 56px;
+}
+
+@container (min-width: 44rem) {
+  .details {
+    padding: 4px 20px 18px 60px;
+  }
+}
+
+.facts {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  font-size: 12px;
+}
+
+.facts dt {
+  color: var(--text-muted);
+}
+
+.facts dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+@container (min-width: 32rem) {
+  .facts > div {
+    display: grid;
+    grid-template-columns: 9.5rem minmax(0, 1fr);
+    gap: 16px;
+  }
+}
+
+.related {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.relatedLabel {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Step strip: a sideways row on a narrow screen, two rows of five beyond. */
+.steps {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 16px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border-content);
+  list-style: none;
+}
+
+.steps > li {
+  flex: 0 0 10.5rem;
+}
+
+@container (min-width: 44rem) {
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    padding: 14px 20px;
+    overflow: visible;
+  }
+}
+
+.stepLink {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  grid-template-areas:
+    'number label'
+    'number count';
+  align-items: center;
+  gap: 0 10px;
+  height: 100%;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-content);
+  border-radius: var(--shape-control);
+  background: var(--surface-panel);
+  color: var(--foreground);
+  text-decoration: none;
+}
+
+a.stepLink:hover {
+  background: var(--surface-tile-hover);
+}
+
+a.stepLink:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.stepNumber {
+  grid-area: number;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border-default);
+  border-radius: 999px;
+  background: var(--surface-inset);
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.stepLabel {
+  grid-area: label;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.stepCount {
+  grid-area: count;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.stepLink[aria-disabled='true'] {
+  color: var(--text-muted);
+}
+
+/* Coverage: a subject, then where it lives. */
+.coverageRow {
+  display: grid;
+  gap: 6px;
+  padding: 10px 16px;
+}
+
+.coverageRow + .coverageRow {
+  border-top: 1px solid var(--border-divider);
+}
+
+.coverageSubject {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.outside {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+@container (min-width: 44rem) {
+  .coverageRow {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    align-items: center;
+    gap: 16px;
+    padding: 10px 20px;
+  }
+}

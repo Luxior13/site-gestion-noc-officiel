@@ -8,7 +8,7 @@ import {
 import { haveSamePersonsListRequest } from '$features/persons/person-list-state';
 import { personsListQuerySchema } from '$features/persons/schemas/person.schemas';
 
-const href = '/membres/repertoire?q=ada&cursor=third&page=3&contacts=missing';
+const href = '/personnes/repertoire?q=ada&cursor=third&page=3&contacts=missing';
 const history = new Map<number, string | undefined>([
   [0, undefined],
   [1, 'second'],
@@ -22,15 +22,15 @@ describe('directory return navigation', () => {
       href,
       history,
       750,
-      '/membres/repertoire/person-001',
+      '/personnes/repertoire/person-001',
     );
     const saved = readPersonsNavigation(
       JSON.stringify(state),
       'user-a',
-      '/membres/repertoire?page=3&contacts=missing&cursor=third&q=ada',
+      '/personnes/repertoire?page=3&contacts=missing&cursor=third&q=ada',
     );
     expect(saved?.scrollTop).toBe(750);
-    expect(saved?.focusHref).toBe('/membres/repertoire/person-001');
+    expect(saved?.focusHref).toBe('/personnes/repertoire/person-001');
     expect(new Map(saved?.cursors).get(1)).toBe('second');
   });
 
@@ -60,7 +60,7 @@ describe('directory return navigation', () => {
       cursors.set(index, `cursor-${index}`);
     const state = capturePersonsNavigation(
       'user-a',
-      '/membres/repertoire?page=151&cursor=cursor-150',
+      '/personnes/repertoire?page=151&cursor=cursor-150',
       cursors,
       0,
       null,

@@ -4,7 +4,7 @@
 
 Comptes de connexion, rôles et autorisations administratives : liste, création
 et fiche à trois sections. Un compte n’est pas une fiche Personne du
-[Répertoire](../../membres/repertoire/README.md).
+[Répertoire](../../personnes/repertoire/README.md).
 
 ## Pages et sections
 
@@ -227,7 +227,7 @@ Les API simulées du banc ne rejouent pas l'intégration PostgreSQL des audits p
   **sensible** pour la conservation des données après révocation de droits.
   Les vérifications exécutées pendant cette passe sont distinguées ci-dessous.
 - Passe du 10 octobre 2026 : **alignement visuel de la liste terminé**, alignée sur la page
-  de référence `/membres/repertoire` (voir la section dédiée plus bas).
+  de référence `/personnes/repertoire` (voir la section dédiée plus bas).
 - Analyse puis corrections du 10 octobre 2026 : **USR-09 à USR-17 corrigés et
   vérifiés**, avec serveur Next et PostgreSQL isolés. Les limites de validation
   restantes sont distinguées dans les points ouverts.
@@ -391,7 +391,7 @@ réactive pas Activité et n'étend pas les capacités de gestion du compte.
   partagées, chips de capacité des Autorisations en pastilles (`CapabilityChip`).
 - L'onglet Profil est désormais modifiable directement (plus de bouton
   « Modifier » ni de vue en lecture) avec la barre d'enregistrement partagée
-  `SectionActionBar` (récupérée de `/membres/repertoire/[id]`).
+  `SectionActionBar` (récupérée de `/personnes/repertoire/[id]`).
 - L'état enregistré et le brouillon sont distincts. Une réponse fusionne les
   champs inchangés et conserve les saisies d'autres sections ; une soumission
   utilise son instantané. Les champs concernés sont verrouillés pendant l'envoi,

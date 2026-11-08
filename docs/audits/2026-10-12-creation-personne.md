@@ -5,11 +5,11 @@
 Route `/membres/repertoire/nouveau`, formulaire d'identité essentielle,
 validation, navigation, reprise après échec, permissions et création avec
 audit via `/api/personnes`. Départ propre au commit `5706bba`, projet en
-développement. Le [suivi du Répertoire](../pages/membres/repertoire/README.md)
+développement. Le [suivi du Répertoire](../pages/personnes/repertoire/README.md)
 conserve les décisions courantes ; la revue de liste du 11 octobre et ses
 preuves restent distinctes.
 
-Sources principales : [page](../../apps/web/src/app/membres/repertoire/nouveau/page.tsx),
+Sources principales : [page](../../apps/web/src/app/personnes/repertoire/nouveau/page.tsx),
 [formulaire](../../apps/web/src/features/persons/components/PersonCreateForm.tsx),
 [API](../../apps/web/src/app/api/personnes/route.ts) et
 [service de création](../../apps/web/src/features/persons/server/person-core.service.ts).
@@ -162,7 +162,7 @@ Une première exécution du banc réel cliquait le fil d'Ariane pendant le
 squelette de la fiche et perdait ainsi les filtres attendus. Attendre le titre
 a d'abord permis de valider le retour de la fiche chargée dans les dix
 parcours. La fenêtre intermédiaire a ensuite été examinée séparément : elle
-révèle bien REP-N06. Le [squelette](../../apps/web/src/app/membres/repertoire/[id]/loading.tsx)
+révèle bien REP-N06. Le [squelette](../../apps/web/src/app/personnes/repertoire/[id]/loading.tsx)
 ne propose plus une destination statique avant de connaître le retour
 contextuel. Le onzième scénario observe le vrai chargement Next en bloquant
 la lecture de Person après le commit de création dans la base isolée : aucun

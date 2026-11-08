@@ -134,7 +134,7 @@ reste applicable ; la refonte est fonctionnelle côté interface, sans migration
 ## Analyse ciblée de l'interface — 14 octobre 2026
 
 Demande utilisateur : expliquer les problèmes de `/systeme/parametres`, dont
-l'interface ne convient pas, avec `/membres/repertoire/[id]` comme exemple.
+l'interface ne convient pas, avec `/personnes/repertoire/[id]` comme exemple.
 Cette passe analyse et propose ; elle ne réalise pas de refonte.
 
 État examiné : branche `main`, commit `09f256c`, avec les six modifications

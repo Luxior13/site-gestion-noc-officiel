@@ -16,6 +16,85 @@
 
 Contenu métier de la feuille de route : [propositions](../../propositions/feuille-de-route.md).
 
+## État courant — refonte du 7 novembre 2026
+
+Le propriétaire trouvait la page dispersée (« plein de sections différentes »)
+et a validé la refonte recommandée (« fais ce que tu recommandes, mais bien »).
+Le même jour, il a demandé une lecture par pôle : « je ne veux pas que ce soit par étape mais par pôle ; les étapes, c’est plus pour aider à l’implémentation, mais c’est moi qui choisirais ».
+La page montre donc un seul plan sous quatre vues, les chantiers par pôle
+d’abord, avec une seule recherche et un seul filtre de pôle partagés par les
+vues. Les étapes restent un ordre suggéré : la page ne désigne aucune
+« prochaine » étape.
+
+Composition, de haut en bas :
+
+1. `PageIdentityHero` : titre, phrase « ce qui reste à construire, pôle par
+   pôle » (ce qui existe n’y figure pas ; étapes suggérées, sans date promise,
+   prochain chantier à choisir) et compteurs (chantiers, pages concernées,
+   pôles).
+2. `PageSectionNavigation` en barre : **Chantiers** (par défaut, sans
+   paramètre), **Pages et onglets** (`vue=pages`), **Couverture**
+   (`vue=couverture`), **Ordre suggéré** (`vue=ordre`). Une vue est un filtre
+   local : le changement passe par l’historique du navigateur
+   (`onSectionChange` → `usePageQuery`), sans requête au serveur.
+3. Une carte `DataTableSection` : barre d’outils du Répertoire (`ListSearchField`,
+   filtres rapides « Pôle » à choix unique avec compteurs propres à la vue,
+   « N chantiers » ou « N chantiers trouvés »), puis la vue active.
+   - **Chantiers** : un groupe par pôle (titre, description, nombre de
+     chantiers), puis une ligne par chantier, rangée par étape suggérée puis
+     dans l’ordre du catalogue : icône du pôle, titre, première version,
+     pastille « Étape N », chevron. La ligne se déplie sur place comme au
+     Journal d’activité : pourquoi, première version, critère de livraison,
+     suite ; prérequis et pages ou onglets en boutons.
+   - **Pages et onglets** : les pages qui ont encore quelque chose à livrer
+     (51 au 8 novembre 2026), par pôle : une ligne par page avec ses onglets
+     restants en pastilles (l’étape d’un onglet s’affiche quand elle diffère de
+     celle de la page) et sa première étape (« Étape N ») ; dépliée, chaque
+     onglet avec son contenu et les chantiers qui construisent la page. Une
+     page ou un onglet déjà livrés n’y figurent que pour ce qu’un chantier
+     doit encore leur ajouter (`upcoming`), à l’étape de ce chantier. Un
+     onglet en lecture (`managedIn`) porte une flèche ↗ dans sa pastille et
+     dans le détail, avec « Lu ici, se modifie dans … » ; une légende l’explique
+     en tête de la vue (règle du 8 novembre 2026).
+   - **Couverture** : les sujets d’une structure esport, chacun avec ses
+     chantiers en boutons ou l’outil qui le traite hors de ce site.
+   - **Ordre suggéré** : les mêmes lignes, sans pastille d’étape, rangées par
+     étape pour aider à l’implémentation : frise des dix étapes (lien vers
+     chaque étape, étape vidée par un filtre non cliquable), puis un groupe par
+     étape (numéro, titre, description, nombre de chantiers).
+4. « À savoir », sous les vues Chantiers et Ordre suggéré : quatre principes
+   courts, dont « les étapes ne sont qu’un ordre suggéré ».
+
+Un bouton de prérequis, de page ou de chantier efface recherche et pôle, ouvre
+la vue concernée (un chantier s’ouvre dans Ordre suggéré si cette vue est
+affichée, sinon dans Chantiers), déplie la ligne visée, la fait défiler et y
+place le focus.
+Les données relient pages, onglets et sujets aux chantiers (`chantier`,
+`ROADMAP_COVERAGE`) ; des tests vérifient qu’aucun chantier ni aucune page à
+venir n’est orphelin, hors Recherche dans les dossiers et Intégrations.
+
+Adaptations du gabarit, retenues le 7 novembre 2026 :
+
+- Lignes dépliables plutôt que cartes : 38 cartes se lisaient mal ; une ligne
+  ouverte masque son résumé, que le détail reprend en entier.
+- Pas de bouton « Réinitialiser » dans la barre : deux critères seulement, la
+  croix du champ et « Tous » les remettent à zéro, l’état vide propose
+  « Réinitialiser les filtres » (et rend le focus à la recherche). Sur
+  téléphone, le bouton aurait occupé une ligne seul et fait sauter la liste.
+- Pas de filtre d’étape : chaque ligne porte son étape, et la vue Ordre
+  suggéré les montre toutes dans l’ordre, avec la frise pour y sauter. Le
+  paramètre `phase` d’un ancien lien est retiré.
+- Pas de « Prochaine » étape mise en avant : le propriétaire choisit le
+  prochain chantier ; un chantier sans prérequis « peut commencer à tout
+  moment ».
+- Rien de ce qui existe déjà (décision du 8 novembre 2026 : « tout ce qui est déjà en place peut être retiré ») :
+  ni page ou onglet livrés, ni pastille « À compléter », ni « Déjà en place »,
+  ni liste des modules présents. Le plan complet du site reste dans
+  `ROADMAP_SITE_PLAN`, qui sert aux tests de cohérence des onglets ; la page
+  lit `ROADMAP_PLANNED_PAGES`, qui en garde le reste à faire.
+- Pas de badge « Type » ni de « Pour qui » : tout compte connecté appartient
+  au bureau ou encadre une équipe ; ces champs sont retirés des données.
+
 ## État courant — clôture du socle du 13 octobre 2026
 
 La [revue finale du socle](../../audits/2026-10-12-cloture-socle.md) est
@@ -53,46 +132,87 @@ Sources : [décisions produit](../../propositions/feuille-de-route.md),
   38 chantiers, de huit à six pôles et de six à dix étapes courtes : registre historique,
   puis trésorerie ([décisions](../../propositions/feuille-de-route.md#à-quoi-sert-le-site)).
   Les identifiants conservés ne changent pas, même quand le titre change
-  (`sport-teams` devient « Équipes & parcours »). La page et sa présentation sont
-  inchangées ; le filtre `pole=esport` ou `pole=activity` d’un ancien lien revient
-  au filtre neutre.
-- 7 novembre 2026 : bloc dépliant « Voir les pages et les onglets prévus » (`RoadmapSitePlan`, données dans `roadmap-site-plan.data.ts`), page par page, hors des filtres des chantiers : un filtre porte sur les chantiers, le plan se lit en entier. Rendu relu à 1 440 et 390 px, mesuré aussi à 768 et 320 px, sans débordement ni erreur, sur banc client (cadre et session simulés).
+  (`sport-teams` devient « Équipes & parcours »). Le filtre `pole=esport` ou
+  `pole=activity` d’un ancien lien revient au filtre neutre.
+- 7 novembre 2026 : présentation refondue en vues (voir l’état courant
+  ci-dessus) ; le bloc dépliant du plan des pages (`RoadmapSitePlan`) et les
+  cartes (`RoadmapCard`) sont retirés. Le même jour, sur demande du
+  propriétaire, les chantiers par pôle deviennent la vue par défaut et la vue
+  par étape devient « Ordre suggéré », en dernier onglet.
+- 8 novembre 2026 : sept pôles (Personnes, ex-Membres ; Esport, nouveau) et
+  listes de choix réparties dans les pages qui les utilisent
+  ([réorganisation](../../propositions/feuille-de-route.md#réorganisation-du-8-novembre-2026)) ;
+  le filtre `pole=esport` redevient valide. Esport reprend la couleur de
+  Personnes en attendant la sienne.
 - 25 octobre 2026 : la page reste ouverte à tout compte connecté et figure
   dans la section « Projet » du pôle Système, plus sous « Administration »
   ([DRT-04](../../audits/2026-10-25-coherence-des-droits.md)).
-- Une carte décrit public, socle éventuel, première version, prérequis et critère
-  de livraison. « À compléter » ne rend pas son futur parcours disponible.
-- Les étapes donnent une priorité, sans calendrier promis ni tâche planifiée.
+- Une ligne dépliée décrit raison, première version, critère de livraison,
+  suite, prérequis et pages. Un chantier ne décrit que ce qui reste à
+  construire, même sur un module existant (« Export du journal d’activité »).
+- Les étapes suggèrent un ordre de construction, sans calendrier promis ni
+  tâche planifiée ; le propriétaire choisit le prochain chantier, une fois ses
+  prérequis livrés (7 novembre 2026).
 - Les notifications sont replanifiées en étape 10 ; le journal d’activité est livré
-  depuis le 30 octobre 2026 et reste à compléter (export). L’actualité interne devient
-  la Chronologie de la structure. Leurs anciens liens ne rouvrent pas les modules.
+  depuis le 30 octobre 2026, seul son export reste au catalogue. L’actualité interne
+  devient la Chronologie de la structure. Leurs anciens liens ne rouvrent pas les
+  modules.
 - Faire évoluer ensemble décisions, données applicatives et matrice. Vérifier
   les identifiants, doublons, prérequis et dépendances circulaires.
-- Une carte livrée doit refléter son reste à faire ; la masquer ou changer son
-  statut ne modifie pas automatiquement le registre des fonctionnalités.
+- À la livraison d’un chantier : le retirer du catalogue ou réduire son texte
+  au reste à faire ; passer ses pages et onglets à `phase: null`, avec
+  `upcoming` seulement si un autre chantier les complète encore. Cette mise à
+  jour ne modifie pas le registre des fonctionnalités.
 - Sélectionner Q01–Q05, Q09, Q19, Q27 et Q30 selon le changement. Un tri du
   catalogue n’autorise aucune permission supplémentaire.
-- Barre de filtres sur `surface-content-header`, sélecteurs et menus `compact`
-  comme le Répertoire ; corps de section `surface-panel`, en-tête
-  `surface-panel-header`. La composition par pôles reste adaptée à la lecture.
-- Conserver `PageIdentityHero`, les compteurs et les cartes de lecture : les
-  descriptions et prérequis n'appellent ni tableau de gestion, ni pagination,
-  ni barre d'enregistrement. Le catalogue versionné en code ne nécessite
-  aucun modèle Prisma ou éditeur métier.
+- Barre d’outils sur `surface-content-header` comme le Répertoire ; en-têtes
+  de groupe `surface-panel-header` ; ligne ouverte en `surface-row-alternate`
+  avec filet `border-strong`, comme le Journal d’activité.
+- Conserver `PageIdentityHero` et ses compteurs : la page reste en lecture,
+  sans tableau de gestion, pagination ni barre d’enregistrement. Le catalogue
+  versionné en code ne nécessite aucun modèle Prisma ou éditeur métier.
 - Recherche selon la règle commune du site : chaque mot dans n’importe quel
   ordre, accents et ponctuation ignorés, petits mots ignorés, singulier et
   pluriel équivalents (31 octobre 2026, RL-06).
-- Utiliser `ListSearchField` avec son label visible associé, son effacement
-  partagé et la limite de 200 caractères. Les commandes de remise à zéro
-  rendent le focus à la recherche ; chaque commande de détail nomme son
-  chantier pour la navigation accessible.
-- La recherche inclut le critère de livraison `doneWhen`, déjà visible dans les
-  cartes. Les valeurs inconnues de pôle/étape reviennent aux filtres neutres ;
-  l'URL est normalisée sans entrée d'historique supplémentaire, en conservant
-  les autres paramètres et l'ancre. La remise à zéro rend tous les chantiers.
-  Aucun module futur n’est activé par cet écran.
+- Utiliser `ListSearchField` avec son effacement partagé et la limite de
+  200 caractères. La remise à zéro de l’état vide rend le focus à la
+  recherche ; chaque ligne est un bouton nommé par son titre (et son pôle pour
+  les lecteurs d’écran), avec `aria-expanded` et `aria-controls`.
+- La recherche porte sur tout le texte d’un chantier, critère de livraison
+  compris, même ligne repliée ; sur une page, elle lit aussi ses onglets et le
+  titre de ses chantiers. Les valeurs inconnues de pôle ou de vue reviennent
+  aux valeurs neutres ; l’URL est normalisée sans entrée d’historique
+  supplémentaire, en conservant les autres paramètres et l’ancre. Aucun module
+  futur n’est activé par cet écran.
 
 ## Preuves et limites
+
+Le 8 novembre 2026, la flèche des onglets en lecture est vérifiée par les tests
+`roadmap-site-plan` (onglets marqués, onglets normaux de la fiche personne,
+texte pour lecteurs d’écran et légende), lint, types, la suite web, knip et
+budget d’architecture ; rendu relu sur le banc client à 1 440, 768, 390 et
+320 px, sans débordement ni erreur JavaScript.
+
+Le 8 novembre 2026, le retrait de ce qui existe déjà est vérifié par lint,
+types, la suite web (dont `roadmap-catalog`, `roadmap-search`,
+`roadmap-site-plan` et `roadmap-views` : aucune ligne « Déjà en place » ni
+« À compléter », Mon compte, Utilisateurs et Feuille de route absents, Fiche
+utilisateur réduite à son Profil), knip, budget d’architecture, build et budget
+de performance. Rendu relu sur le même banc client aux quatre largeurs, sans
+débordement ni erreur JavaScript.
+
+Le 7 novembre 2026, la refonte puis le regroupement par pôle sont vérifiés
+par lint, types, la suite web (dont `roadmap-search`, `roadmap-site-plan` et
+`roadmap-views`), knip, budget d’architecture, build et budget de
+performance. Rendu relu sur banc client (composant et catalogue réels ; cadre,
+session et `next/link` simulés) à 1 440, 768, 390 et 320 px : vue par défaut
+par pôle, pôle Système avec « À compléter » et « Étape N », ligne dépliée,
+prérequis suivi, onglet Ordre suggéré, frise et prérequis suivi sans quitter
+cette vue, pôle et recherche, état vide, onglet Pages et onglets, page dépliée
+puis chantier rejoint, Couverture ; aucun débordement horizontal ni erreur
+JavaScript. À 320 px, la barre des vues défile avec ses flèches, comme
+prévu par le composant. L’intégration authentifiée avec le vrai serveur Next
+n’est pas rejouée pour cette refonte ; les E2E et suites SQL non plus.
 
 Le [contrôle transverse des menus du 10 octobre](../../audits/2026-10-10-menus.md)
 exécute les sélecteurs pôle et phase du composant réel, avec contexte de navigation

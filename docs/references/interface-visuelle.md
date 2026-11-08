@@ -62,5 +62,5 @@ ou une page de lecture conserve sa composition utile avec le socle visuel commun
 ## Références
 
 [Système de design](../design/README.md) · [Accessibilité](accessibilite.md) ·
-[Répertoire — décisions courantes](../pages/membres/repertoire/README.md) ·
+[Répertoire — décisions courantes](../pages/personnes/repertoire/README.md) ·
 [Utilisateurs — décisions courantes](../pages/systeme/utilisateurs/README.md).

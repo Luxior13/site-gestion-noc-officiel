@@ -262,7 +262,7 @@ la fiche utilisateur, la création de compte et la création de fiche personne
 utilisent déjà `PageIdentityHero`. La fiche personne le compose en variante
 compacte via `EntityDetailLayout` depuis la revue du 12 octobre 2026 ;
 `UsersAdminHero` a été retiré.
-Les routes canoniques sont `/membres/repertoire` et `/systeme/utilisateurs` ;
+Les routes canoniques sont `/personnes/repertoire` et `/systeme/utilisateurs` ;
 ne plus créer de lien vers les anciens alias (`/personnes`,
 `/vie-interne/*`, `/administration/*`).
 
@@ -302,6 +302,12 @@ structure restent adaptées au contenu de chaque écran.
   rangée cachée. Les règles ci-dessous sur la barre collante autonome
   (variante `bar`, flèches en cas de débordement) restent valables pour les
   autres pages.
+- **Onglet en lecture** (8 novembre 2026) : un onglet dont le contenu se
+  modifie sur une autre page porte, après son nom, l’icône `ArrowUpRight`
+  (décorative) et le texte réservé aux lecteurs d’écran « , se modifie dans … ».
+  À ajouter à `PageSectionNavigation` (variantes `embedded` et `condensed`, menu
+  « Plus ▾ » compris) avec le premier onglet de ce type ; référence visuelle
+  actuelle : vue Pages et onglets de la feuille de route, avec sa légende.
 - **Point de modification d’un onglet d’en-tête** (28 octobre 2026) : pastille
   superposée au libellé, sans largeur ; une modification ne fait jamais
   basculer les onglets en sélecteur.

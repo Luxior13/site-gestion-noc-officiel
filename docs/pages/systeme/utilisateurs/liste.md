@@ -395,7 +395,7 @@ Une modification future doit choisir ses propres vérifications pertinentes.
 
 ### Alignement sur la page de référence — 10 octobre 2026
 
-`/membres/repertoire` est devenue la page de référence visuelle et UX. Cette
+`/personnes/repertoire` est devenue la page de référence visuelle et UX. Cette
 passe aligne la liste des comptes sans changer le métier :
 
 - Squelette structuré aligné sur la référence : nouveau `loading.tsx` de route

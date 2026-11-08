@@ -1,14 +1,14 @@
 # Personne — Coordonnées
 
-[Index des pages](../../../pages/README.md) · [Répertoire](README.md) · [Design](../../../design/README.md) · [Guide général](../../../REFERENCE_GENERALE.md)
+[Index des pages](../../README.md) · [Répertoire](README.md) · [Design](../../../design/README.md) · [Guide général](../../../REFERENCE_GENERALE.md)
 
 ## Identité
 
 | Élément | Valeur |
 | --- | --- |
-| Route | `/membres/repertoire/[id]` |
+| Route | `/personnes/repertoire/[id]` |
 | Section | `?section=coordonnees` |
-| Espace | Membres |
+| Espace | Personnes |
 | Gabarit visé | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections) |
 | État d’harmonisation | Aligné ; sélecteurs en variante par défaut depuis le 17 octobre 2026 — voir [Harmonisation](../../../design/harmonisation.md#état-par-page) |
 | Point d’entrée | [PersonCollectionsSection](../../../../apps/web/src/features/persons/components/PersonCollectionsSection.tsx) |

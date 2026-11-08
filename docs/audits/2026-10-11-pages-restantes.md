@@ -9,7 +9,7 @@ propre au départ ; corrections locales non commitées pendant cette passe.
 
 Propriétaires : [accueil](../pages/accueil.md),
 [connexion](../pages/connexion.md), [Mon compte](../pages/mon-compte/README.md),
-[création de personne](../pages/membres/repertoire/README.md),
+[création de personne](../pages/personnes/repertoire/README.md),
 [feuille de route](../pages/systeme/feuille-de-route.md) et
 [états techniques](../pages/transverse/etats-techniques.md).
 API modifiée : `PATCH /api/auth/me`. Consommateurs indirects : dialogues de

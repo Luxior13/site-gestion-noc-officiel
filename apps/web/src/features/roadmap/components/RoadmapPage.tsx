@@ -1,53 +1,93 @@
 'use client';
 
-import { ClipboardList } from 'lucide-react';
-import React, { useEffect, useRef } from 'react';
+import {
+  ClipboardList,
+  Layers,
+  LayoutGrid,
+  ListChecks,
+  ListOrdered,
+} from 'lucide-react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import AuthenticatedLayout from '$components/AuthenticatedLayout';
 import { ContentState } from '$components/layout/ContentState';
-import { Disclosure } from '$components/layout/Disclosure';
 import { PageIdentityHero } from '$components/layout/PageIdentityHero';
-import { getNavigationIcon } from '$constants/navigation-icon.constants';
-import { getNavigationSpaceToneClasses } from '$constants/navigation-theme.constants';
+import {
+  type PageSection,
+  PageSectionNavigation,
+} from '$components/layout/PageSectionNavigation';
+import { PAGE_PATHS } from '$constants/routes.constants';
 import { usePageQuery } from '$hooks/usePageQuery';
 import { Badge } from '$ui/badge';
 import { Button } from '$ui/button';
+import { DataTableSection } from '$ui/data-table-section';
 import directoryStyles from '$ui/directory.module.css';
-import { Label } from '$ui/label';
 import { ListSearchField } from '$ui/list-search-field';
 import { PageCanvas, PageShell } from '$ui/page-shell';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '$ui/select';
-import { ServiceIcon } from '$ui/service-icon';
+import { QuickFilter, QuickFilterGroup } from '$ui/quick-filter';
 import { cn } from '$utils/css.utils';
 
-import {
-  ROADMAP_AREAS,
-  ROADMAP_ITEMS,
-  ROADMAP_PHASES,
-} from '../roadmap.constants';
+import { ROADMAP_AREAS, ROADMAP_ITEMS } from '../roadmap.constants';
 import {
   getRoadmapQueryCorrection,
+  getVisibleCoverage,
+  getVisiblePlannedPages,
   getVisibleRoadmapItems,
   readRoadmapFilters,
+  ROADMAP_DEFAULT_VIEW,
   ROADMAP_SEARCH_MAX_LENGTH,
+  ROADMAP_VIEWS,
+  type RoadmapView,
 } from '../roadmap-search';
-import type { RoadmapPhaseId } from '../types/roadmap.types';
-import { RoadmapCard } from './RoadmapCard';
-import { RoadmapSitePlan } from './RoadmapSitePlan';
+import { ROADMAP_PLANNED_PAGES } from '../roadmap-site-plan.data';
+import type { RoadmapAreaId } from '../types/roadmap.types';
+import { RoadmapChantiersView } from './RoadmapChantiersView';
+import { RoadmapCoverageView } from './RoadmapCoverageView';
+import { RoadmapPagesView } from './RoadmapPagesView';
 
+const SEARCH_ID = 'roadmap-search';
+const VIEW_ICONS: Record<RoadmapView, React.ReactNode> = {
+  chantiers: <Layers aria-hidden="true" />,
+  couverture: <ListChecks aria-hidden="true" />,
+  ordre: <ListOrdered aria-hidden="true" />,
+  pages: <LayoutGrid aria-hidden="true" />,
+};
+const VIEW_SECTIONS: readonly PageSection<RoadmapView>[] = ROADMAP_VIEWS.map(
+  (view) => ({ icon: VIEW_ICONS[view.id], id: view.id, label: view.label }),
+);
+
+const countVisible = (
+  view: RoadmapView,
+  areaId: RoadmapAreaId | 'all',
+  query: string,
+): number => {
+  const scope = { areaId, query };
+  if (view === 'pages') return getVisiblePlannedPages(scope).length;
+  if (view === 'couverture') return getVisibleCoverage(scope).length;
+
+  return getVisibleRoadmapItems(scope).length;
+};
+
+type Focus = { id: string; kind: 'item' | 'page' };
+
+/**
+ * Read-only roadmap (7 November 2026): views of one plan, chantiers by pole
+ * first, one search and pole filters shared by them, every line unfolded in
+ * place. The steps only suggest an order: the owner picks the next chantier.
+ * Only what remains to build is shown (8 November 2026).
+ */
 export function RoadmapPage(): React.ReactNode {
   const { searchParams, updateQuery } = usePageQuery();
-  const filtersRef = useRef<HTMLDivElement>(null);
-  const setPhase = (value: RoadmapPhaseId | null): void =>
-    updateQuery({ phase: value === null ? null : String(value) });
-  const { areaId, phase, query } = readRoadmapFilters(searchParams);
-  const visibleItems = getVisibleRoadmapItems({ areaId, phase, query });
+  const [focus, setFocus] = useState<Focus | null>(null);
+  const { areaId, query, view } = readRoadmapFilters(searchParams);
+  const viewInfo =
+    ROADMAP_VIEWS.find((candidate) => candidate.id === view) ??
+    ROADMAP_VIEWS[0];
+  const scope = { areaId, query };
+  const total = countVisible(view, areaId, query);
+  const filtered = areaId !== 'all' || query !== '';
+  const clearFocus = useCallback(() => setFocus(null), []);
+
   useEffect(() => {
     // History writes are synchronous; normalize the current URL, never an old render.
     const correction = getRoadmapQueryCorrection(
@@ -55,21 +95,42 @@ export function RoadmapPage(): React.ReactNode {
     );
     if (correction) updateQuery(correction, 'replace');
   }, [searchParams, updateQuery]);
-  const resetFilters = (): void => {
-    updateQuery({ phase: null, pole: null, q: null });
-    filtersRef.current
-      ?.querySelector<HTMLInputElement>('input[type="search"]')
-      ?.focus();
+
+  // A link to a chantier or a page clears the filters that could hide it;
+  // a chantier stays in the chantier view already open.
+  const showItem = (id: string): void => {
+    updateQuery({ pole: null, q: null, vue: view === 'ordre' ? view : null });
+    setFocus({ id, kind: 'item' });
   };
+  const showPage = (name: string): void => {
+    updateQuery({ pole: null, q: null, vue: 'pages' });
+    setFocus({ id: name, kind: 'page' });
+  };
+  const resetFilters = (): void => {
+    updateQuery({ pole: null, q: null });
+    document.getElementById(SEARCH_ID)?.focus();
+  };
+  const getSectionHref = (id: RoadmapView): string => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (id === ROADMAP_DEFAULT_VIEW) params.delete('vue');
+    else params.set('vue', id);
+    const search = params.toString();
+
+    return `${PAGE_PATHS.roadmap}${search ? `?${search}` : ''}`;
+  };
+  const noun = total > 1 ? viewInfo.noun[1] : viewInfo.noun[0];
+  const found = total > 1 ? viewInfo.found[1] : viewInfo.found[0];
 
   return (
     <AuthenticatedLayout
       breadcrumbs={[{ label: 'Système' }, { label: 'Feuille de route' }]}
     >
       <PageShell className="py-0">
-        <PageCanvas contentClassName="space-y-6">
+        <PageCanvas
+          contentClassName={cn(directoryStyles.directory, 'space-y-4')}
+        >
           <PageIdentityHero
-            description="Construire la gestion de la structure esport, de l’association d’aujourd’hui à une éventuelle société."
+            description="Ce qui reste à construire pour la structure, pôle par pôle ; ce qui existe déjà n’y figure pas. Les étapes suggèrent un ordre, sans date promise ; le prochain chantier reste à choisir."
             icon={<ClipboardList aria-hidden="true" />}
             meta={
               <div className="flex flex-wrap gap-2">
@@ -77,261 +138,153 @@ export function RoadmapPage(): React.ReactNode {
                   {ROADMAP_ITEMS.length} chantiers
                 </Badge>
                 <Badge variant="outline">
-                  {ROADMAP_AREAS.length} pôles cibles
+                  {ROADMAP_PLANNED_PAGES.length} pages
                 </Badge>
-                <Badge variant="outline">{ROADMAP_PHASES.length} étapes</Badge>
+                <Badge variant="outline">{ROADMAP_AREAS.length} pôles</Badge>
               </div>
             }
             title="Feuille de route"
           />
-          <Disclosure
-            className="border-border-divider border-b pb-4"
-            label="Comprendre les étapes et les principes du projet"
-          >
-            <div className="space-y-5 pt-4">
-              <ContentState
-                title="Le plan de construction"
-                description="Ce catalogue est visible par tous les comptes connectés. Il présente les nouveaux modules et les fonctions existantes à compléter. Les étapes donnent un ordre de priorité, sans date de livraison promise."
-                icon={<ClipboardList className="size-4" />}
-              />
-              <section
-                aria-labelledby="roadmap-phases-title"
-                className="space-y-3"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h2
-                    id="roadmap-phases-title"
-                    className="text-base font-semibold"
-                  >
-                    Dans quel ordre ?
-                  </h2>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    aria-pressed={phase === null}
-                    onClick={() => setPhase(null)}
-                  >
-                    Toutes les étapes
-                  </Button>
-                </div>
-                <ol className="grid gap-2 @min-[32rem]/page:grid-cols-2 @min-[60rem]/page:grid-cols-3">
-                  {ROADMAP_PHASES.map((step) => (
-                    <li key={step.id}>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="inline"
-                        aria-pressed={phase === step.id}
-                        onClick={() =>
-                          setPhase(phase === step.id ? null : step.id)
-                        }
-                        className={cn(
-                          'block h-full w-full rounded-lg border p-3 text-left',
-                          phase === step.id
-                            ? 'border-primary bg-primary/10'
-                            : 'border-border bg-card hover:bg-accent',
-                        )}
-                      >
-                        <span className="text-sm font-medium">
-                          {step.id}. {step.label}
-                        </span>
-                        <span className="text-muted-foreground mt-1 block text-xs leading-5">
-                          {step.description}
-                        </span>
-                      </Button>
-                    </li>
-                  ))}
-                </ol>
-                <p className="text-muted-foreground text-sm">
-                  Les obligations déjà présentes et les besoins urgents passent
-                  en priorité. L’espace personnel se complète à mesure que les
-                  modules sont livrés.
-                </p>
-              </section>
-              <Disclosure
-                className="border-border rounded-lg border p-4 text-sm"
-                label="Les principes retenus et le socle disponible"
-              >
-                <ul className="text-muted-foreground mt-3 list-disc space-y-2 pl-5 leading-6">
-                  <li>
-                    Déjà présents : comptes et sécurité, répertoire, journal
-                    d’activité, paramètres techniques et recherche de pages.
-                  </li>
-                  <li>
-                    Une personne garde la même identité ; ses adhésions,
-                    fonctions et passages ont leur propre historique.
-                  </li>
-                  <li>
-                    Association et société peuvent avoir des contrats et
-                    finances séparés. Les anciens dossiers gardent leur entité
-                    d’origine.
-                  </li>
-                  <li>
-                    Facture, paiement, budget et remboursement suivent des
-                    parcours distincts.
-                  </li>
-                  <li>
-                    Le registre et la trésorerie arrivent d’abord : qui est
-                    passé dans la structure, et où va l’argent.
-                  </li>
-                  <li>
-                    Les vues partagées évitent les doublons ; un chantier ne
-                    correspond pas forcément à une nouvelle entrée de menu.
-                  </li>
-                </ul>
-              </Disclosure>
-            </div>
-          </Disclosure>
-          <Disclosure
-            className="border-border-divider border-b pb-4"
-            label="Voir les pages et les onglets prévus"
-          >
-            <RoadmapSitePlan />
-          </Disclosure>
-          <div
-            ref={filtersRef}
-            className="border-border-content bg-surface-content-header rounded-panel grid gap-3 border p-4 @min-[44rem]/page:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] @min-[44rem]/page:items-end"
-          >
-            <div
-              className={cn(
-                directoryStyles.directory,
-                'space-y-1.5 @min-[44rem]/page:col-span-3',
-              )}
-            >
-              <Label htmlFor="roadmap-search">Rechercher un chantier</Label>
-              <ListSearchField
-                ariaLabel="Rechercher un chantier"
-                id="roadmap-search"
-                value={query}
-                maxLength={ROADMAP_SEARCH_MAX_LENGTH}
-                onValueChange={(value) =>
-                  updateQuery(
-                    { q: value.slice(0, ROADMAP_SEARCH_MAX_LENGTH) },
-                    'replace',
-                  )
-                }
-                onClear={() => updateQuery({ q: null }, 'replace')}
-                placeholder="Disponibilités, factures, documents…"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="roadmap-area">Pôle cible</Label>
-              <Select
-                value={areaId}
-                onValueChange={(value) =>
-                  updateQuery({ pole: value === 'all' ? null : value })
-                }
-              >
-                <SelectTrigger
-                  id="roadmap-area"
-                  className="w-full"
-                  variant="compact"
+          <PageSectionNavigation
+            activeSection={view}
+            ariaLabel="Vues de la feuille de route"
+            getSectionHref={getSectionHref}
+            // A view is a local filter: history only, no new server request.
+            onSectionChange={(id) =>
+              updateQuery({ vue: id === ROADMAP_DEFAULT_VIEW ? null : id })
+            }
+            sections={VIEW_SECTIONS}
+          />
+          <DataTableSection
+            className="border-border-content bg-surface-content rounded-panel"
+            headerClassName="bg-surface-content-header"
+            toolbar={
+              <div className="w-full">
+                <form
+                  aria-label="Rechercher dans la feuille de route"
+                  autoComplete="off"
+                  className={directoryStyles.filterForm}
+                  onSubmit={(event) => event.preventDefault()}
+                  role="search"
                 >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent variant="compact">
-                  <SelectItem value="all">Tous les pôles</SelectItem>
-                  {ROADMAP_AREAS.map((area) => (
-                    <SelectItem key={area.id} value={area.id}>
-                      {area.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="roadmap-phase">Étape</Label>
-              <Select
-                value={phase === null ? 'all' : String(phase)}
-                onValueChange={(value) =>
-                  updateQuery({ phase: value === 'all' ? null : value })
-                }
-              >
-                <SelectTrigger
-                  id="roadmap-phase"
-                  className="w-full"
-                  variant="compact"
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent variant="compact">
-                  <SelectItem value="all">Toutes les étapes</SelectItem>
-                  {ROADMAP_PHASES.map((step) => (
-                    <SelectItem key={step.id} value={String(step.id)}>
-                      {step.id}. {step.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <Button
-              onClick={resetFilters}
-              variant="outline"
-              disabled={phase === null && areaId === 'all' && !query}
-            >
-              Réinitialiser
-            </Button>
-          </div>
-          <p
-            className="text-muted-foreground text-sm"
-            role="status"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {visibleItems.length} chantier{visibleItems.length > 1 ? 's' : ''}{' '}
-            affiché{visibleItems.length > 1 ? 's' : ''} sur{' '}
-            {ROADMAP_ITEMS.length}
-            {phase !== null ? ` · Étape ${phase}` : ''}
-          </p>
-          {ROADMAP_AREAS.map((area) => {
-            const items = visibleItems
-              .filter((item) => item.area === area.id)
-              .sort((first, second) => first.phase - second.phase);
-            if (!items.length) return null;
-            const tone = getNavigationSpaceToneClasses(area.tone);
-            const Icon = getNavigationIcon(area.icon);
-
-            return (
-              <section
-                key={area.id}
-                aria-labelledby={`roadmap-area-${area.id}`}
-                className="border-border-content bg-surface-panel rounded-panel overflow-hidden border"
-              >
-                <div className="border-border-divider bg-surface-panel-header flex items-start gap-3 border-b px-4 py-4 @min-[40rem]/page:px-5">
-                  <ServiceIcon className={cn('size-9', tone.icon)}>
-                    <Icon className="size-4" />
-                  </ServiceIcon>
-                  <div>
-                    <h2
-                      id={`roadmap-area-${area.id}`}
-                      className="text-base font-semibold"
-                    >
-                      {area.label}
-                    </h2>
-                    <p className="text-muted-foreground text-sm">
-                      {area.description}
+                  <ListSearchField
+                    ariaLabel="Rechercher dans la feuille de route"
+                    id={SEARCH_ID}
+                    maxLength={ROADMAP_SEARCH_MAX_LENGTH}
+                    onClear={() => updateQuery({ q: null }, 'replace')}
+                    onValueChange={(value) =>
+                      updateQuery(
+                        { q: value.slice(0, ROADMAP_SEARCH_MAX_LENGTH) },
+                        'replace',
+                      )
+                    }
+                    placeholder="Factures, tournois, parcours…"
+                    value={query}
+                  />
+                </form>
+                <div className={directoryStyles.filterBar}>
+                  <div className={directoryStyles.quickFilterSets}>
+                    <QuickFilterGroup caption="Pôle" label="Filtrer par pôle">
+                      <QuickFilter
+                        count={countVisible(view, 'all', query)}
+                        label="Tous"
+                        noun={viewInfo.noun}
+                        onClick={() => updateQuery({ pole: null })}
+                        pressed={areaId === 'all'}
+                      />
+                      {ROADMAP_AREAS.map((area) => (
+                        <QuickFilter
+                          count={countVisible(view, area.id, query)}
+                          key={area.id}
+                          label={area.label}
+                          noun={viewInfo.noun}
+                          onClick={() => {
+                            if (area.id !== areaId)
+                              updateQuery({ pole: area.id });
+                          }}
+                          pressed={area.id === areaId}
+                        />
+                      ))}
+                    </QuickFilterGroup>
+                  </div>
+                  <div className={directoryStyles.listCaption}>
+                    <p aria-live="polite" role="status">
+                      {`${total.toLocaleString('fr-FR')} ${noun}${filtered ? ` ${found}` : ''}`}
                     </p>
                   </div>
                 </div>
-                <div className="grid items-start gap-3 p-4 @min-[32rem]/page:grid-cols-2 @min-[40rem]/page:px-5 @min-[60rem]/page:grid-cols-3">
-                  {items.map((item) => (
-                    <RoadmapCard key={item.id} item={item} />
-                  ))}
-                </div>
-              </section>
-            );
-          })}
-          {visibleItems.length === 0 && (
-            <ContentState
-              title="Aucun chantier ne correspond"
-              description="Essayez un autre terme ou réinitialisez les filtres."
-              layout="panel"
-              action={
-                <Button onClick={resetFilters} variant="outline">
-                  Réinitialiser les filtres
-                </Button>
-              }
-            />
+              </div>
+            }
+          >
+            {total === 0 ? (
+              <ContentState
+                action={
+                  <Button
+                    onClick={resetFilters}
+                    type="button"
+                    variant="outline"
+                  >
+                    Réinitialiser les filtres
+                  </Button>
+                }
+                description="Essayez un autre mot ou un autre pôle."
+                title={viewInfo.empty}
+              />
+            ) : view === 'pages' ? (
+              <RoadmapPagesView
+                focusName={focus?.kind === 'page' ? focus.id : null}
+                onFocusDone={clearFocus}
+                onShowItem={showItem}
+                pages={getVisiblePlannedPages(scope)}
+              />
+            ) : view === 'couverture' ? (
+              <RoadmapCoverageView
+                onShowItem={showItem}
+                rows={getVisibleCoverage(scope)}
+              />
+            ) : (
+              <RoadmapChantiersView
+                focusId={focus?.kind === 'item' ? focus.id : null}
+                grouping={view === 'ordre' ? 'phase' : 'area'}
+                items={getVisibleRoadmapItems(scope)}
+                onFocusDone={clearFocus}
+                onShowItem={showItem}
+                onShowPage={showPage}
+              />
+            )}
+          </DataTableSection>
+          {(view === 'chantiers' || view === 'ordre') && (
+            <section
+              aria-labelledby="roadmap-principes"
+              className="text-muted-foreground space-y-2 text-sm"
+            >
+              <h2
+                className="text-foreground text-sm font-semibold"
+                id="roadmap-principes"
+              >
+                À savoir
+              </h2>
+              <ul className="list-disc space-y-1 pl-5">
+                <li>
+                  Une personne garde la même identité ; ses adhésions, fonctions
+                  et passages ont leur propre historique.
+                </li>
+                <li>
+                  Association et société peuvent avoir des contrats et des
+                  finances séparés ; les anciens dossiers gardent leur entité
+                  d’origine.
+                </li>
+                <li>
+                  Facture, paiement, budget et remboursement suivent des
+                  parcours distincts.
+                </li>
+                <li>
+                  Les étapes ne sont qu’un ordre suggéré : le prochain chantier
+                  se choisit selon les besoins, une fois ses prérequis livrés.
+                  Un chantier ne crée pas forcément une entrée de menu.
+                </li>
+              </ul>
+            </section>
           )}
         </PageCanvas>
       </PageShell>

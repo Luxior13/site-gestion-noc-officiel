@@ -9,9 +9,9 @@ pour tous les gabarits du cadre privé.
 
 | Gabarit | Tâche principale | Référence |
 | --- | --- | --- |
-| [A. Liste de gestion](#a-liste-de-gestion) | Retrouver, comparer, filtrer, ouvrir | `/membres/repertoire`, complété par `/systeme/utilisateurs` |
-| [B. Fiche à sections](#b-fiche-à-sections) | Comprendre une entité et la modifier sans perte | `/systeme/utilisateurs/[id]` ; aussi `/membres/repertoire/[id]`, `/mon-compte` |
-| [C. Formulaire de création](#c-formulaire-de-création) | Créer une entité avec le minimum utile | `/systeme/utilisateurs/nouveau`, `/membres/repertoire/nouveau` |
+| [A. Liste de gestion](#a-liste-de-gestion) | Retrouver, comparer, filtrer, ouvrir | `/personnes/repertoire`, complété par `/systeme/utilisateurs` |
+| [B. Fiche à sections](#b-fiche-à-sections) | Comprendre une entité et la modifier sans perte | `/systeme/utilisateurs/[id]` ; aussi `/personnes/repertoire/[id]`, `/mon-compte` |
+| [C. Formulaire de création](#c-formulaire-de-création) | Créer une entité avec le minimum utile | `/systeme/utilisateurs/nouveau`, `/personnes/repertoire/nouveau` |
 | [D. Page de réglages](#d-page-de-réglages) | Comprendre la valeur effective et la changer en connaissance de cause | `/systeme/parametres` |
 | [E. Page de lecture](#e-page-de-lecture) | Lire, filtrer et retrouver une information | `/systeme/feuille-de-route` |
 | [F. Accueil personnel](#f-accueil-personnel) | Savoir quoi faire maintenant | `/` |
@@ -109,10 +109,13 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
   ont droit, sans mention « à venir ».
 - **Un mot par idée, sur toutes les pages** : « Identité » pour une personne, une
   organisation ou une entité ; « Profil » pour un compte ; « Coordonnées » ;
-  « Effectif » pour une équipe ; « Suivi » pour les notes, problèmes et bans ;
+  « Effectif » pour une équipe ; « Suivi » pour les notes, problèmes et bans, et
+  rien d’autre (« Entraînement » pour le travail d’une équipe, « Réalisé » pour
+  un budget, 8 novembre 2026) ;
   « Règlements » pour l’argent lié à l’objet ;
   « Documents » pour les pièces, « Justificatifs » pour celles des Finances.
 - **Pas d’onglet Historique** : le bouton de l’en-tête ouvre le journal, filtré.
+- **Un onglet en lecture le signale** (8 novembre 2026) : quand rien ne s’y modifie et que son contenu se gère sur une autre page (Adhésions ou Finances d’une fiche personne), l’onglet garde le même style, suivi d’une flèche ↗ et du texte accessible « se modifie dans … ». Dedans, une ligne en tête nomme la page source avec un bouton pour l’ouvrir, chaque ligne ouvre son dossier, sans action de modification. Un onglet mixte (Parcours ou Suivi d’une fiche personne, Gains d’une fiche tournoi) reste un onglet normal : ses lignes venues d’ailleurs portent leur source et un lien.
 - **Créer** : en fenêtre pour quelques champs, sur une page pour un long formulaire.
 
 ## C. Formulaire de création
@@ -135,7 +138,7 @@ qui remplace les rubriques en petites capitales et la barre dans la carte.
   seulement pour un état utile, par exemple un résultat à vérifier.
 
 Détail : [Nouvel utilisateur](../pages/systeme/utilisateurs/creation.md),
-[Nouvelle fiche personne](../pages/membres/repertoire/creation.md).
+[Nouvelle fiche personne](../pages/personnes/repertoire/creation.md).
 
 ## D. Page de réglages
 
@@ -150,8 +153,17 @@ Détail : [Paramètres système](../pages/systeme/parametres.md).
 
 ## E. Page de lecture
 
-Bandeau, filtres de lecture (phases, statuts), cartes ou sections lisibles,
-détails accessibles au clavier. Les filtres ne sont pas des onglets.
+Bandeau, puis une carte de liste : recherche et filtres rapides partagés,
+contenu en lignes dépliables sur place (bloc ouvert comme au Journal
+d’activité), détails accessibles au clavier. Quand un même plan se lit de
+plusieurs façons, chaque façon est une vue en onglet (`PageSectionNavigation`
+en barre, paramètre d’URL, changement par l’historique sans requête) ; un
+filtre n’est pas une vue ni un onglet. La vue par défaut range le plan par
+pôle, comme le site ; un ordre suggéré reste une indication de ligne et une
+vue secondaire, sans étape « prochaine » imposée. Le plan ne montre que ce qui
+reste à faire : rien de ce qui existe déjà (8 novembre 2026). Un renvoi interne
+(prérequis, page liée) ouvre la vue de sa cible, la déplie et y place le focus
+(préférences du 7 novembre 2026).
 
 Détail : [Feuille de route](../pages/systeme/feuille-de-route.md).
 

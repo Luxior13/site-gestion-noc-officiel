@@ -3,9 +3,6 @@ import type { RoadmapItem } from './types/roadmap.types';
 export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
   {
     area: 'today',
-    audience: 'Membres du bureau',
-    baseline:
-      'L’accueil existe ; les vues métier personnelles restent à construire.',
     dependsOn: ['tasks', 'documents'],
     description:
       'Retrouver ce qui me concerne sans parcourir tous les dossiers.',
@@ -14,7 +11,6 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     firstRelease:
       'Mes tâches, mes réunions à venir, les documents en attente et les échéances proches.',
     id: 'personal-work',
-    kind: 'extension',
     later: 'Mes frais et mes rappels au fil des modules.',
     legacyHrefs: [
       '/tableau-de-bord/mes-taches',
@@ -24,14 +20,10 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
       '/tableau-de-bord/mes-rappels',
     ],
     phase: 7,
-    status: 'partial',
     title: 'Mon travail & espace personnel',
   },
   {
     area: 'system',
-    audience: 'Administrateurs et managers d’équipe',
-    baseline:
-      'L’authentification, les autorisations et les comptes existent ; la portée par équipe reste à construire.',
     dependsOn: ['sport-teams'],
     description:
       'Ouvrir un compte à un manager en le limitant à son équipe, sans lui montrer les autres pôles.',
@@ -40,16 +32,13 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     firstRelease:
       'Liaison explicite entre un compte et une fiche, et portée par équipe.',
     id: 'access-scopes',
-    kind: 'extension',
     later:
       'Portées par entité, délégations datées et revue périodique des accès, si le besoin apparaît.',
     phase: 2,
-    status: 'partial',
     title: 'Accès & responsabilités métier',
   },
   {
     area: 'people',
-    audience: 'Membres du bureau et managers',
     dependsOn: ['reference-lists'],
     description:
       'Savoir qui est passé dans la structure, à quelle fonction et dans quelle équipe.',
@@ -58,7 +47,6 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     firstRelease:
       'Équipes par jeu et leurs anciens noms, passages datés (équipe ou structure, fonction, début, fin, motif de fin, dates approximatives admises), onglet Parcours, membres actuels et anciens, anciens pseudos. Fiche complétée : nationalité, étiquettes, adresse, identifiants de jeu, contact d’urgence, représentants légaux.',
     id: 'sport-teams',
-    kind: 'module',
     later: 'Frises et synthèses de parcours si elles servent.',
     legacyHrefs: [
       '/sport-team-control',
@@ -67,14 +55,10 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
       '/sport-team-control/membres-esport',
     ],
     phase: 1,
-    status: 'planned',
     title: 'Équipes & parcours',
   },
   {
     area: 'people',
-    audience: 'Secrétariat et trésorerie',
-    baseline:
-      'Le répertoire gère déjà les identités et les coordonnées ; fonctions et équipes relèvent d’Équipes & parcours. Les adhésions restent à construire.',
     dependsOn: ['legal-entities', 'sport-teams'],
     description:
       'Suivre qui est adhérent, pour quelle période et à quelles conditions.',
@@ -83,7 +67,6 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     firstRelease:
       'Campagnes d’adhésion, adhésions datées et état de cotisation, rattachés aux fiches du répertoire.',
     id: 'person-relationships',
-    kind: 'extension',
     later: 'Relances et liens vers les règlements.',
     legacyHrefs: [
       '/vie-interne/membres-adherents',
@@ -92,12 +75,10 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
       '/bureau-juridique/personnes-contacts',
     ],
     phase: 4,
-    status: 'partial',
     title: 'Adhésions & cotisations',
   },
   {
     area: 'people',
-    audience: 'Membres du bureau',
     dependsOn: ['sport-teams'],
     description: 'Suivre les candidatures jusqu’à la décision et à l’arrivée.',
     doneWhen:
@@ -105,19 +86,16 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     firstRelease:
       'Poste ou équipe visée, essais, évaluations confidentielles et décision.',
     id: 'recruitment',
-    kind: 'module',
     later: 'Campagnes et formulaire public avec contrôle des données reçues.',
     legacyHrefs: [
       '/vie-interne/recrutement-tryouts',
       '/sport-team-control/recrutement-tryouts',
     ],
     phase: 10,
-    status: 'planned',
     title: 'Recrutement',
   },
   {
     area: 'people',
-    audience: 'Membres du bureau',
     dependsOn: ['sport-teams', 'documents', 'tasks'],
     description:
       'Éviter les oublis de documents, d’accès ou de matériel, y compris quand le bureau change.',
@@ -126,16 +104,13 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     firstRelease:
       'Checklists datées, responsables, étapes et vue collective des dossiers ouverts ; passation d’un mandat.',
     id: 'onboarding',
-    kind: 'module',
     later: 'Actions sur les services connectés après validation.',
     legacyHrefs: ['/vie-interne/onboarding-depart'],
     phase: 8,
-    status: 'planned',
     title: 'Arrivées, départs & passations',
   },
   {
-    area: 'people',
-    audience: 'Membres du bureau',
+    area: 'esport',
     dependsOn: ['sport-teams'],
     description:
       'Garder la trace de chaque tournoi : qui y a participé, ce qu’il a rapporté et ce qui s’y est mal passé.',
@@ -144,16 +119,13 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     firstRelease:
       'Liste des tournois avec organisateur, règlement, frais, échéances et classement final ; participants, gains, problèmes et bans. Les rencontres restent sur le site public.',
     id: 'competitions',
-    kind: 'module',
     later: 'Licences et programmes d’éditeurs.',
     legacyHrefs: ['/sport-team-control/tournois-matchs'],
     phase: 5,
-    status: 'planned',
     title: 'Tournois',
   },
   {
     area: 'structure',
-    audience: 'Membres du bureau',
     dependsOn: ['sport-teams'],
     description:
       'Garder le parcours dans la durée sans conserver plus de données personnelles que nécessaire.',
@@ -162,16 +134,13 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     firstRelease:
       'Règles de conservation écrites, purge des coordonnées après le départ et anonymisation à la demande.',
     id: 'compliance',
-    kind: 'module',
     later:
       'Preuves d’autorisation (droit à l’image, mineurs) selon le besoin réel.',
     phase: 2,
-    status: 'planned',
     title: 'Confidentialité & conservation',
   },
   {
     area: 'structure',
-    audience: 'Membres du bureau',
     dependsOn: [],
     description:
       'Préparer l’évolution de l’association et une éventuelle société.',
@@ -180,16 +149,13 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     firstRelease:
       'Entité porteuse, identifiants, règles datées, assurances et responsabilités.',
     id: 'legal-entities',
-    kind: 'module',
     later:
       'Coexistence association/société et transferts documentés quand nécessaires.',
     phase: 3,
-    status: 'planned',
     title: 'Identité juridique & périmètres',
   },
   {
     area: 'structure',
-    audience: 'Membres du bureau',
     dependsOn: ['legal-entities'],
     description: 'Retrouver la bonne version et suivre les actions attendues.',
     doneWhen:
@@ -197,7 +163,6 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     firstRelease:
       'Bibliothèque, versions, modèles et acceptations saisies par le bureau.',
     id: 'documents',
-    kind: 'module',
     later: 'Campagnes de relance et intégration de signature selon le besoin.',
     legacyHrefs: [
       '/bureau-juridique/documents',
@@ -206,12 +171,10 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
       '/systeme/modeles-documents',
     ],
     phase: 7,
-    status: 'planned',
     title: 'Documents & acceptations',
   },
   {
     area: 'structure',
-    audience: 'Membres du bureau expressément habilités',
     dependsOn: ['sport-teams', 'compliance', 'competitions'],
     description:
       'Garder les notes sur une personne et traiter les signalements avec confidentialité et traçabilité.',
@@ -220,16 +183,13 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     firstRelease:
       'Onglet Suivi de la fiche : notes, problèmes et bans, par tournoi ou par jeu. Dossiers d’incident : faits, preuves, instruction, décision, recours et durée.',
     id: 'incidents',
-    kind: 'module',
     later: 'Liens restreints vers personnes et équipes.',
     legacyHrefs: ['/bureau-juridique/incidents-sanctions'],
     phase: 5,
-    status: 'planned',
     title: 'Suivi, incidents & sanctions',
   },
   {
     area: 'structure',
-    audience: 'Membres du bureau',
     dependsOn: ['documents', 'legal-entities'],
     description: 'Suivre les engagements au-delà du fichier signé.',
     doneWhen:
@@ -237,11 +197,9 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     firstRelease:
       'Parties, entité signataire, période, obligations, avenants, échéances et pièces.',
     id: 'contracts',
-    kind: 'module',
     later: 'Signature externe et renouvellements guidés.',
     legacyHrefs: ['/bureau-juridique/contrats'],
     phase: 7,
-    status: 'planned',
     title: 'Contrats & obligations',
   },
 ];

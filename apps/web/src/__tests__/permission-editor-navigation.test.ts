@@ -57,12 +57,12 @@ describe('permissions editor navigation (26 October 2026)', () => {
         deletion,
         persons,
         getSearchTerms(query),
-        'Membres',
+        'Personnes',
       );
     expect(matches('supprimer')).toBe(true);
     // The page and pole labels match too.
     expect(matches('repertoire')).toBe(true);
-    expect(matches('membres')).toBe(true);
+    expect(matches('personnes')).toBe(true);
     expect(matches('facture')).toBe(false);
   });
 

@@ -23,7 +23,7 @@ vi.mock('$features/persons/components/PersonsPageClient', () => ({
   PersonsPageClient: (): null => null,
 }));
 
-import PersonsPage from '$app/membres/repertoire/page';
+import PersonsPage from '$app/personnes/repertoire/page';
 
 type PageElement = ReactElement<{
   initialState?: {

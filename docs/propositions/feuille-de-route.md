@@ -1,6 +1,6 @@
 # Feuille de route — priorités de construction
 
-Référence produit révisée le 7 novembre 2026. La page `/systeme/feuille-de-route` présente **38 chantiers, 6 pôles cibles et 10 étapes**. Un chantier peut être un module, une extension, une vue partagée ou une intégration ; ce nombre ne représente pas 38 nouvelles pages.
+Référence produit révisée le 7 novembre 2026. La page `/systeme/feuille-de-route` présente **38 chantiers, rangés dans 7 pôles cibles, avec un ordre suggéré en 10 étapes**. Un chantier peut être un module, une extension, une vue partagée ou une intégration ; ce nombre ne représente pas 38 nouvelles pages.
 
 Le catalogue exécutable se trouve dans [features/roadmap](../../apps/web/src/features/roadmap/roadmap.constants.ts). Ce document fixe les décisions ; la [matrice](intentions/pages/MATRICE_PREPARATION.md) conserve la correspondance avec les anciens projets de pages. Lors d’une modification de priorité ou de périmètre, mettre ces trois références à jour ensemble.
 
@@ -16,25 +16,25 @@ Décisions du propriétaire du 7 novembre 2026, qui remplacent le plan du 9 octo
 
 Les comptes et leur sécurité, le répertoire, les paramètres techniques et le journal d’activité existent. Les paramètres actuels ne constituent pas un profil juridique métier. La navigation rapide de l’en-tête donne un accès direct aux pages autorisées ; elle ne parcourt pas encore de dossiers métier. Le module partenaires a été retiré le 21 septembre 2026 et le module notifications le 9 octobre 2026. Les migrations historiques ne prouvent pas qu’un modèle ou un écran est encore présent.
 
-- **À cadrer** : nouveau périmètre, non livré.
-- **À compléter** : une base existe ; la carte précise ce qui reste à construire.
-- Les étapes sont un ordre de priorité, sans dates promises. Chacune est courte et livre un ensemble utilisable avant de passer à la suivante. Les prérequis d’une carte doivent être traités, y compris ceux de la même étape.
-- Un besoin urgent déjà réel peut modifier cet ordre : échéance documentaire, suivi des mineurs ou paiement à traiter.
+- La feuille de route ne décrit que **ce qui reste à construire** (décision du propriétaire du 8 novembre 2026 : « tout ce qui est déjà en place peut être retiré »). Un chantier sur un module existant ne nomme que son reste à faire ; une page ou un onglet déjà livrés n’apparaissent sur la page que pour ce qu’un chantier doit encore leur ajouter.
+- Le plan se lit par pôle. Les étapes sont un **ordre suggéré** pour aider à l’implémentation, sans dates promises : **le propriétaire choisit le prochain chantier** (décision du 7 novembre 2026 : « je ne veux pas que ce soit par étape mais par pôle ; les étapes, c’est plus pour aider à l’implémentation, mais c’est moi qui choisirais »). Chaque étape reste courte et livre un ensemble utilisable.
+- Les prérequis d’un chantier doivent être livrés avant lui, quelle que soit leur étape. Un besoin urgent déjà réel (échéance documentaire, suivi des mineurs, paiement à traiter) est une bonne raison de s’écarter de l’ordre suggéré.
 - La présente révision organise le plan ; elle ne livre aucun de ces nouveaux modules métier.
 
 ## Décisions structurantes
 
 1. **Le registre d’abord, la trésorerie ensuite** : les deux raisons d’être du site passent avant le reste.
-2. **Six pôles** : Aujourd’hui, Membres, Relations, Structure, Finances, Système. Le menu n’affiche que les pôles ayant des fonctions livrées et accessibles. Esport rejoint Membres ; Activité se répartit entre Aujourd’hui, Structure et Relations.
+2. **Sept pôles, chacun répond à une question** (décision du propriétaire du 8 novembre 2026) : Aujourd’hui (ce qui m’attend), Personnes (qui est passé par la structure), Esport (quelles équipes, quels tournois), Finances (où en est l’argent), Relations (avec qui à l’extérieur), Structure (l’association et sa mémoire), Système (le fonctionnement de l’outil). Le menu n’affiche que les pôles ayant des fonctions livrées et accessibles. Activité se répartit entre Aujourd’hui, Structure et Relations.
 3. **Personne et compte restent distincts**. Presque toutes les fiches n’auront jamais de compte. Les adhésions, mandats, contrats et passages sont des relations datées, pas un statut unique. Aucun rapprochement automatique par email.
 4. **La portée par équipe ne sert qu’aux managers.** Les modules du bureau utilisent les autorisations actuelles et n’attendent pas ce chantier.
 5. **Une page seulement si elle sert** : une donnée se modifie là où on la lit, sans page dédiée inutile ([règles de placement](../domaines/navigation.md#règles-de-placement)).
-6. **Les listes de choix se gèrent sur le site** : jeux, fonctions et autres valeurs évoluent sans développement ([listes de référence](../domaines/registre-historique.md#listes-de-référence)).
+6. **Les listes de choix se gèrent sur le site, à côté de ce qu’elles classent** : jeux, fonctions et autres valeurs évoluent sans développement, jamais depuis Système ([listes de choix](../domaines/registre-historique.md#listes-de-choix)).
 7. **Préparer plusieurs entités juridiques**, avec leurs dossiers et historiques propres, tout en commençant par l’association réellement utilisée. Une évolution vers une société ne renomme pas les anciens engagements. Un passage n’exige pas d’entité : l’histoire de la structure précède l’association.
 8. **Distinguer facture, paiement, note de frais et budget** : ils ont leurs propres états et liens. Un PDF ne remplace pas le cycle de vie d’une facture.
 9. **Une source par donnée, plusieurs vues possibles** : les vues personnelles consultent les données du module d’origine.
 10. **Livrer le contrôle d’accès avec chaque module** : politique serveur, confidentialité, audit, états d’erreur et tests pertinents.
 11. **L’espace personnel évolue avec les modules**, sans construire un tableau de bord rempli de fonctions indisponibles.
+12. **Un mot, un sens** : « Suivi » désigne seulement les notes, problèmes et bans ; le travail d’une équipe s’appelle Entraînement, et le réalisé d’un budget Réalisé.
 
 ## Retraits et regroupements du 7 novembre 2026
 
@@ -50,6 +50,20 @@ Les comptes et leur sécurité, le répertoire, les paramètres techniques et le
 | Notifications personnelles, Rappels & automatisations | Fusionnés dans **Rappels & notifications** | Peu de destinataires, un seul besoin |
 | Listes de référence, Subventions & dons, Bilan annuel, Événements & déplacements, Salariés & paie | Ajoutés | Ne pas être bloqué par une liste figée ; couvrir ce qu’une structure rencontre sur la durée |
 
+## Réorganisation du 8 novembre 2026
+
+Sur décision du propriétaire (« on peut encore tout changer, mais il faut que tout soit logique » ; « ok pour tes reco »), après le constat que « Membres » mêlait les personnes et l’activité sportive :
+
+| Avant | Après | Raison |
+| --- | --- | --- |
+| Pôle Membres (`/membres/…`) | Pôle **Personnes** (`/personnes/…`), l’ancienne adresse redirige | Le Répertoire contient aussi candidats, anciens et contacts ; la page s’appelle déjà Fiche personne |
+| Équipes, tournois et jeux dans Membres | Pôle **Esport** | Ce ne sont pas des personnes ; c’est le pôle d’un manager |
+| Page Listes de référence (Système) | **Listes de choix**, chaque liste en onglet à côté de ce qu’elle classe | Les jeux ne se gèrent pas dans Système |
+| Suivi sportif | **Entraînement** (Esport) | « Suivi » garde un seul sens : notes, problèmes et bans |
+| Événements & déplacements (Structure) | **Déplacements** (Esport) | Surtout LAN et bootcamps ; un événement de l’association est une réunion |
+| Page Rappels & notifications (Système) | Rappels dans **Mon travail**, règles dans **Paramètres** | Une page seulement si elle sert |
+| Onglet Suivi d’une fiche budget | **Réalisé** | Un mot, un sens |
+
 Regroupements toujours valables :
 
 | Ancienne présentation | Décision |
@@ -58,7 +72,7 @@ Regroupements toujours valables :
 | Mes tâches et tâches internes | Même source, vues personnelles et collectives |
 | Prochaines réunions, rappels, alertes | Vues de Mon travail ; la source garde son échéance |
 | Recettes et dépenses | Filtres des règlements ; factures et demandes de remboursement restent distinctes |
-| Cotisations | Adhésion/campagne chez Membres, montant attendu et règlement côté Finances |
+| Cotisations | Adhésion/campagne chez Personnes, montant attendu et règlement côté Finances |
 | Sponsoring | Accord et livrables chez Relations, factures et règlements côté Finances |
 | Archives, exports, modèles | Dans les modules propriétaires ; outils transverses limités à leur responsabilité |
 | Incidents | Structure, dossier confidentiel ; seuls les effets autorisés remontent dans les fiches |
@@ -70,16 +84,16 @@ Regroupements toujours valables :
 
 Savoir qui est passé dans la structure, à quelle fonction et dans quelle équipe.
 
-- **Listes de référence** (Système) : Une page avec un onglet par liste (jeux, fonctions, étiquettes, puis catégories et moyens de paiement), ajout direct depuis un champ et champ à choix multiples réutilisable.
-- **Équipes & parcours** (Membres) : Équipes par jeu et leurs anciens noms, passages datés (équipe ou structure, fonction, début, fin, motif de fin, dates approximatives admises), onglet Parcours, membres actuels et anciens, anciens pseudos. Fiche complétée : nationalité, étiquettes, adresse, identifiants de jeu, contact d’urgence, représentants légaux.
+- **Listes de choix** (Personnes) : Chaque liste à côté de ce qu’elle classe : jeux en onglet de la page Équipes, fonctions et étiquettes en onglets du Répertoire ; ajout direct depuis un champ et champ à choix multiples réutilisable.
+- **Équipes & parcours** (Personnes) : Équipes par jeu et leurs anciens noms, passages datés (équipe ou structure, fonction, début, fin, motif de fin, dates approximatives admises), onglet Parcours, membres actuels et anciens, anciens pseudos. Fiche complétée : nationalité, étiquettes, adresse, identifiants de jeu, contact d’urgence, représentants légaux.
 
 ## 2. Accès & conservation
 
 Ouvrir le site aux managers et garder le registre dans la durée.
 
-- **Accès & responsabilités métier** (Système, **à compléter**) : Liaison explicite entre un compte et une fiche, et portée par équipe.
+- **Accès & responsabilités métier** (Système) : Liaison explicite entre un compte et une fiche, et portée par équipe.
 - **Confidentialité & conservation** (Structure) : Règles de conservation écrites, purge des coordonnées après le départ et anonymisation à la demande.
-- **Données, exports & sauvegardes** (Système, **à compléter**) : Export lisible du registre, suivi des sauvegardes et restauration essayée.
+- **Données, exports & sauvegardes** (Système) : Export lisible du registre, suivi des sauvegardes et restauration essayée.
 
 ## 3. Socle de trésorerie
 
@@ -94,7 +108,7 @@ Suivre les comptes et l’argent réellement reçu ou versé.
 
 Couvrir factures, frais, subventions, adhésions et contrôles.
 
-- **Adhésions & cotisations** (Membres, **à compléter**) : Campagnes d’adhésion, adhésions datées et état de cotisation, rattachés aux fiches du répertoire.
+- **Adhésions & cotisations** (Personnes) : Campagnes d’adhésion, adhésions datées et état de cotisation, rattachés aux fiches du répertoire.
 - **Facturation & achats** (Finances) : Factures clients/fournisseurs, pièces, échéances et règlements ; émission ou import selon l’outil retenu.
 - **Notes de frais & remboursements** (Finances) : Dossier, lignes de frais, justificatifs, décision et règlement.
 - **Subventions & dons** (Finances) : Dossiers de subvention, échéances et versements ; dons et reçus.
@@ -104,7 +118,7 @@ Couvrir factures, frais, subventions, adhésions et contrôles.
 
 Garder le dossier de chaque tournoi et le suivi des personnes.
 
-- **Tournois** (Membres) : Liste des tournois avec organisateur, règlement, frais, échéances et classement final ; participants, gains, problèmes et bans. Les rencontres restent sur le site public.
+- **Tournois** (Esport) : Liste des tournois avec organisateur, règlement, frais, échéances et classement final ; participants, gains, problèmes et bans. Les rencontres restent sur le site public.
 - **Gains de compétition & primes** (Finances) : Montants annoncés, confirmés et reçus ; parts contractuelles et versements.
 - **Suivi, incidents & sanctions** (Structure) : Onglet Suivi de la fiche : notes, problèmes et bans, par tournoi ou par jeu. Dossiers d’incident : faits, preuves, instruction, décision, recours et durée.
 
@@ -123,15 +137,15 @@ Retrouver les pièces et ce que la structure a promis.
 - **Documents & acceptations** (Structure) : Bibliothèque, versions, modèles et acceptations saisies par le bureau.
 - **Contrats & obligations** (Structure) : Parties, entité signataire, période, obligations, avenants, échéances et pièces.
 - **Partenariats & opportunités** (Relations) : Opportunités, responsables, engagements, livrables et échéances liés aux contrats.
-- **Mon travail & espace personnel** (Aujourd’hui, **à compléter**) : Mes tâches, mes réunions à venir, les documents en attente et les échéances proches.
-- **Journal d’activité** (Système, **à compléter**) : Vue globale filtrable, recherche par acteur et par catégorie, export autorisé et suivi des accès.
+- **Mon travail & espace personnel** (Aujourd’hui) : Mes tâches, mes réunions à venir, les documents en attente et les échéances proches.
+- **Export du journal d’activité** (Système) : Export CSV ou JSON des résultats filtrés du journal d’activité.
 
 ## 8. Mémoire & continuité
 
 Transmettre le matériel, les accès et l’histoire de la structure.
 
 - **Matériel & abonnements** (Structure) : Inventaire, prêts, maillots et stock ; services, domaines et licences avec titulaire, coût et échéance, jamais de mot de passe.
-- **Arrivées, départs & passations** (Membres) : Checklists datées, responsables, étapes et vue collective des dossiers ouverts ; passation d’un mandat.
+- **Arrivées, départs & passations** (Personnes) : Checklists datées, responsables, étapes et vue collective des dossiers ouverts ; passation d’un mandat.
 - **Chronologie de la structure** (Structure) : Faits datés saisis par le bureau ou tirés des modules : arrivée, départ, changement de roster, sponsor, décision, titre.
 
 ## 9. Pilotage
@@ -140,23 +154,23 @@ Exploiter des données fiables pour décider.
 
 - **Budget & pilotage** (Finances) : Budgets versionnés, enveloppes par équipe/projet, écarts, prévisions de trésorerie et bilan par mois ou par année.
 - **Bilan annuel** (Structure) : Par année : membres et mouvements, tournois et gains, finances, décisions ; prêt pour l’assemblée générale.
-- **Recherche dans les dossiers** (Système, **à compléter**) : Recherche métier progressive, extraits limités et liens vers les fiches.
+- **Recherche dans les dossiers** (Système) : Recherche métier progressive, extraits limités et liens vers les fiches.
 
 ## 10. Selon les besoins
 
 Ajouter ce qui répond à un usage réel, sans le construire d’avance.
 
-- **Rappels & notifications** (Système) : Boîte personnelle, rappels métier liés à leur source et règles limitées avec historique d’exécution.
+- **Rappels & notifications** (Aujourd’hui) : Mes rappels dans Mon travail, liés à leur source ; règles limitées dans Paramètres système, avec historique d’exécution.
 - **Intégrations & publication publique** (Système) : Publication validée des équipes et des parcours vers noctambule.gg, avec des identifiants stables.
-- **Suivi sportif** (Membres) : Entraînements, présences, objectifs, débriefs et préparation, à choisir au cadrage.
-- **Événements & déplacements** (Structure) : Participants, hébergement, transport, budget et pièces.
-- **Salariés & paie** (Membres) : Contrats de travail, périodes et pièces, à cadrer avec la forme juridique.
-- **Recrutement** (Membres) : Poste ou équipe visée, essais, évaluations confidentielles et décision.
+- **Entraînement** (Esport) : Entraînements, présences, objectifs, débriefs et préparation, à choisir au cadrage.
+- **Déplacements** (Esport) : Participants, hébergement, transport, budget et pièces.
+- **Salariés & paie** (Personnes) : Contrats de travail, périodes et pièces, à cadrer avec la forme juridique.
+- **Recrutement** (Personnes) : Poste ou équipe visée, essais, évaluations confidentielles et décision.
 - **Communication & contenus** (Relations) : Calendrier éditorial, ressources graphiques, audience et validation avant publication.
 
 ## Couverture d’une structure esport
 
-Relecture du 7 novembre 2026 : chaque sujet qu’une structure esport rencontre sur la durée, et l’endroit qui le prend en charge. Elle confronte le plan aux [intentions historiques](intentions/README.md) et à la vie d’une structure ; un sujet absent s’ajoute ici avant de devenir un chantier. Les obligations légales citées restent à qualifier pour la situation réelle.
+Relecture du 7 novembre 2026 : chaque sujet qu’une structure esport rencontre sur la durée, et l’endroit qui le prend en charge. Le tableau s’affiche dans la vue Couverture de la page Feuille de route, depuis [roadmap-coverage.data.ts](../../apps/web/src/features/roadmap/roadmap-coverage.data.ts), qui relie chaque sujet à ses chantiers : les modifier ensemble. Elle confronte le plan aux [intentions historiques](intentions/README.md) et à la vie d’une structure ; un sujet absent s’ajoute ici avant de devenir un chantier. Les obligations légales citées restent à qualifier pour la situation réelle.
 
 | Sujet | Pris en charge par |
 | --- | --- |
@@ -179,9 +193,9 @@ Relecture du 7 novembre 2026 : chaque sujet qu’une structure esport rencontre 
 | Matériel, maillots, prêts | Matériel & abonnements |
 | Comptes, domaines et abonnements de la structure | Matériel & abonnements |
 | Changement de bureau, passation | Arrivées, départs & passations |
-| LAN, bootcamps, déplacements | Événements & déplacements |
+| LAN, bootcamps, déplacements | Déplacements |
 | Recrutement et essais | Recrutement |
-| Suivi quotidien d’une équipe | Suivi sportif, en réserve |
+| Travail quotidien d’une équipe | Entraînement, en réserve |
 | Communication et visibilité | Communication & contenus |
 | Mémoire de la structure, bilan pour l’assemblée | Chronologie, Bilan annuel |
 | Échéances et rappels | Calendrier, Rappels & notifications |
@@ -192,15 +206,15 @@ Relecture du 7 novembre 2026 : chaque sujet qu’une structure esport rencontre 
 
 ## Pages et onglets prévus
 
-Toutes les pages visées, avec leurs onglets et leur contenu. Ce plan s’affiche aussi sur la page Feuille de route, depuis [roadmap-site-plan.data.ts](../../apps/web/src/features/roadmap/roadmap-site-plan.data.ts) : les modifier ensemble. Il suit les [règles des onglets](../design/gabarits.md#onglets-dune-fiche). L’état d’un onglet n’est jamais antérieur à celui de sa page ; un onglet n’apparaît qu’une fois livré et pour les comptes qui y ont droit.
+Toutes les pages visées, avec leurs onglets et leur contenu. Ce plan s’affiche aussi dans la vue Pages et onglets de la page Feuille de route, sans ce qui est déjà livré (seul le reste à faire d’une page existante, `upcoming`, y figure), depuis [roadmap-site-plan.data.ts](../../apps/web/src/features/roadmap/roadmap-site-plan.data.ts), où chaque page ou onglet nomme le chantier qui le construit : les modifier ensemble. Un test vérifie que chaque page à venir a un chantier et que chaque chantier a une page ou un onglet, sauf Rappels & notifications, Recherche dans les dossiers et Intégrations & publication publique. Il suit les [règles des onglets](../design/gabarits.md#onglets-dune-fiche). Un onglet marqué ↗ se lit sur sa page et se modifie sur la page nommée dans son contenu ; la vue Pages et onglets le montre de la même façon. L’état d’un onglet n’est jamais antérieur à celui de sa page ; un onglet n’apparaît qu’une fois livré et pour les comptes qui y ont droit.
 
-Cinq chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **Accès & responsabilités métier** vit sur la fiche utilisateur et dans la liste des fonctions, **Confidentialité & conservation** dans Paramètres système, **Gains de compétition & primes** sur la fiche tournoi, **Recherche dans les dossiers** dans la recherche de l’en-tête, **Intégrations & publication publique** n’a pas d’écran propre tant qu’elle n’est pas cadrée.
+Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **Rappels & notifications** vit dans Mon travail et Paramètres système, **Listes de choix** en onglets des pages qui utilisent chaque liste, **Accès & responsabilités métier** vit sur la fiche utilisateur et dans la liste des fonctions, **Confidentialité & conservation** dans Paramètres système, **Gains de compétition & primes** sur la fiche tournoi, **Recherche dans les dossiers** dans la recherche de l’en-tête, **Intégrations & publication publique** n’a pas d’écran propre tant qu’elle n’est pas cadrée.
 
 ### Aujourd’hui
 
 | Page | Onglet | Contenu | État |
 | --- | --- | --- | --- |
-| **Mon travail** | — | Accueil, sans onglet. Accueillera mes tâches, mes réunions à venir, les documents en attente et les échéances proches. | Livré |
+| **Mon travail** | — | Accueil, sans onglet. À venir (étape 7) : mes tâches, mes réunions à venir, les documents en attente et les échéances proches. | Livré |
 | **Tâches** | — | Liste, sans onglet : les tâches du bureau, avec le filtre « Mes tâches ». Détail en fenêtre. | Étape 6 |
 | **Calendrier** | — | Lecture, sans onglet : réunions, échéances, renouvellements et dates limites, lus depuis leurs modules. | Étape 6 |
 | **Mon compte** | — | Depuis le menu du compte, pas dans un pôle. | Livré |
@@ -208,86 +222,44 @@ Cinq chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : *
 |  | Autorisations | Ce que mon compte permet, en lecture seule. | Livré |
 |  | Sécurité | Mot de passe, double authentification, sessions. | Livré |
 
-### Membres
+### Personnes
 
 | Page | Onglet | Contenu | État |
 | --- | --- | --- | --- |
-| **Répertoire** | — | Liste, sans onglet : toutes les fiches, avec recherche et filtres. À venir (étape 1) : filtres par équipe, jeu, étiquette et anciens membres. | Livré |
-| **Fiche personne** | Identité | Pseudo, nom, naissance, zone dangereuse ; statut calculé depuis le parcours, nationalité, jeux pratiqués et étiquettes (étape 1). | Livré |
-|  | Coordonnées | Emails, téléphones, réseaux sociaux ; adresse, identifiants de jeu, contact d’urgence et représentants légaux (étape 1). | Livré |
+| **Répertoire** | Fiches | Toutes les fiches, avec recherche et filtres. À venir (étape 1) : filtres par équipe, jeu, étiquette et anciens membres. | Livré |
+|  | Fonctions | Ajouter, renommer, archiver ; réglage « Donne accès à son équipe ». | Étape 1 |
+|  | Étiquettes | Repères libres pour classer les fiches. | Étape 1 |
+| **Fiche personne** | Identité | Pseudo, nom, naissance, zone dangereuse. À venir (étape 1) : statut calculé depuis le parcours, nationalité, jeux pratiqués et étiquettes. | Livré |
+|  | Coordonnées | Emails, téléphones, réseaux sociaux. À venir (étape 1) : adresse, identifiants de jeu, contact d’urgence et représentants légaux. | Livré |
 |  | Parcours | Passages datés : équipe ou structure, fonction, début, fin, motif de fin ; tournois joués ; anciens pseudos. | Étape 1 |
-|  | Adhésions | Adhésions par campagne et état de cotisation. | Étape 4 |
-|  | Finances | Cotisations réglées, remboursements et gains versés. | Étape 4 |
-|  | Documents | Contrats, autorisations et chartes acceptées. | Étape 7 |
-|  | Matériel | Prêts et restitutions, taille de maillot. | Étape 8 |
+|  | Adhésions ↗ | Adhésions par campagne et état de cotisation. Lu ici, se modifie dans Adhésions. | Étape 4 |
+|  | Finances ↗ | Cotisations réglées, remboursements et gains versés. Lu ici, se modifie dans Finances. | Étape 4 |
+|  | Documents ↗ | Contrats, autorisations et chartes acceptées. Lu ici, se modifie dans Documents et Contrats. | Étape 7 |
+|  | Matériel ↗ | Prêts et restitutions, taille de maillot. Lu ici, se modifie dans Matériel & abonnements. | Étape 8 |
 |  | Suivi | Notes datées, problèmes et bans, par tournoi ou par jeu, réservés aux personnes habilitées. | Étape 5 |
-| **Équipes** | — | Liste, sans onglet : les équipes par jeu, actives ou archivées. Création en fenêtre. | Étape 1 |
-| **Fiche équipe** | Effectif | Membres actuels et anciens, composition à une date. Seul onglet d’un manager. | Étape 1 |
-|  | Tournois | Tournois joués par cette équipe. | Étape 5 |
-|  | Informations | Nom, anciens noms, jeu, archivage. | Étape 1 |
 | **Adhésions** | Adhérents | Adhésions de la campagne choisie et état de cotisation. | Étape 4 |
 |  | Campagnes | Périodes d’adhésion et leurs conditions. | Étape 4 |
+| **Recrutement** | — | Onglets définis à son cadrage. | Étape 10 |
+| **Salariés & paie** | — | Onglets définis à son cadrage. | Étape 10 |
+| **Arrivées, départs & passations** | Dossiers | Arrivées, départs et passations en cours, avec leur checklist. | Étape 8 |
+|  | Modèles | Checklists types. | Étape 8 |
+
+### Esport
+
+| Page | Onglet | Contenu | État |
+| --- | --- | --- | --- |
+| **Équipes** | Équipes | Les équipes par jeu, actives ou archivées. Création en fenêtre. | Étape 1 |
+|  | Jeux | Ajouter, renommer, archiver. | Étape 1 |
+| **Fiche équipe** | Effectif | Membres actuels et anciens, composition à une date. Seul onglet d’un manager. | Étape 1 |
+|  | Tournois ↗ | Tournois joués par cette équipe. Lu ici, se modifie dans Tournois. | Étape 5 |
+|  | Informations | Nom, anciens noms, jeu, archivage. | Étape 1 |
 | **Tournois** | — | Liste, sans onglet : les tournois, par jeu et par année. Création en fenêtre. | Étape 5 |
 | **Fiche tournoi** | Informations | Nom, jeu, organisateur, dates, règlement, frais, échéances, classement final. | Étape 5 |
 |  | Participants | Équipes et membres engagés. | Étape 5 |
 |  | Gains | Montants annoncés, confirmés et reçus, et leur répartition. | Étape 5 |
 |  | Suivi | Problèmes et bans liés à ce tournoi, réservés aux personnes habilitées. | Étape 5 |
-| **Recrutement** | — | Onglets définis à son cadrage. | Étape 10 |
-| **Suivi sportif** | — | Onglets définis à son cadrage. | Étape 10 |
-| **Salariés & paie** | — | Onglets définis à son cadrage. | Étape 10 |
-| **Arrivées, départs & passations** | Dossiers | Arrivées, départs et passations en cours, avec leur checklist. | Étape 8 |
-|  | Modèles | Checklists types. | Étape 8 |
-
-### Relations
-
-| Page | Onglet | Contenu | État |
-| --- | --- | --- | --- |
-| **Organisations** | — | Liste, sans onglet : partenaires, sponsors, clients et fournisseurs. | Étape 3 |
-| **Fiche organisation** | Identité | Nom, type, adresse, identifiants. | Étape 3 |
-|  | Contacts | Interlocuteurs, liés aux fiches du Répertoire. | Étape 3 |
-|  | Règlements | Factures et opérations liées. | Étape 3 |
-|  | Contrats | Contrats et partenariats en cours et passés. | Étape 7 |
-| **Partenariats** | — | Liste, sans onglet : opportunités et accords. | Étape 7 |
-| **Fiche partenariat** | Accord | Parties, période, contreparties, état. | Étape 7 |
-|  | Livrables | Ce qui est promis, livré ou à renouveler. | Étape 7 |
-|  | Documents | Pièces liées à l’accord. | Étape 7 |
-| **Communication** | — | Onglets définis à son cadrage. | Étape 10 |
-
-### Structure
-
-| Page | Onglet | Contenu | État |
-| --- | --- | --- | --- |
-| **Identité juridique** | Identité | Dénomination, forme, identifiants, adresse. | Étape 3 |
-|  | Mandats | Qui occupe quelle fonction, lu depuis les parcours. | Étape 3 |
-|  | Assurances | Assurances, affiliations, licences, marque, et leurs échéances. | Étape 3 |
-|  | Documents | Statuts et pièces officielles. | Étape 7 |
-| **Chronologie** | — | Lecture, sans onglet : les grands faits de la structure depuis ses débuts, saisis ou tirés des modules. | Étape 8 |
-| **Réunions** | Réunions | Réunions passées et à venir. | Étape 6 |
-|  | Décisions | Toutes les décisions, retrouvables sans ouvrir chaque réunion. | Étape 6 |
-| **Fiche réunion** | Préparation | Instance, date, participants, ordre du jour. | Étape 6 |
-|  | Compte rendu | Ce qui a été dit. | Étape 6 |
-|  | Décisions | Décisions prises, avec portée et preuve. | Étape 6 |
-|  | Tâches | Actions issues de la réunion. | Étape 6 |
-| **Documents** | — | Liste, sans onglet : la bibliothèque de la structure. | Étape 7 |
-| **Fiche document** | Document | Titre, nature, état, version en vigueur. | Étape 7 |
-|  | Versions | Toutes les versions et leurs dates. | Étape 7 |
-|  | Acceptations | Qui a accepté quelle version, saisi par le bureau. | Étape 7 |
-| **Contrats** | — | Liste, sans onglet : contrats en cours et passés. | Étape 7 |
-| **Fiche contrat** | Contrat | Parties, entité signataire, période, état. | Étape 7 |
-|  | Obligations | Obligations, échéances et avenants. | Étape 7 |
-|  | Règlements | Factures et opérations liées. | Étape 7 |
-|  | Documents | Pièces signées. | Étape 7 |
-| **Incidents** | — | Liste, sans onglet, réservée aux personnes habilitées. | Étape 5 |
-| **Fiche incident** | Faits | Signalement, personnes concernées, dates. | Étape 5 |
-|  | Instruction | Preuves et échanges. | Étape 5 |
-|  | Décision | Décision, recours et durée. | Étape 5 |
-|  | Documents | Pièces du dossier. | Étape 7 |
-| **Bilan annuel** | Membres | Effectifs, arrivées et départs de l’année. | Étape 9 |
-|  | Activité | Tournois, gains, décisions et événements. | Étape 9 |
-|  | Finances | Recettes, dépenses et résultat de l’exercice. | Étape 9 |
-| **Matériel & abonnements** | Matériel | Inventaire, prêts, maillots et stock. | Étape 8 |
-|  | Abonnements | Services, domaines et licences : titulaire, coût, échéance, jamais de mot de passe. | Étape 8 |
-| **Événements & déplacements** | — | Onglets définis à son cadrage. | Étape 10 |
+| **Entraînement** | — | Onglets définis à son cadrage. | Étape 10 |
+| **Déplacements** | — | Onglets définis à son cadrage. | Étape 10 |
 
 ### Finances
 
@@ -295,6 +267,8 @@ Cinq chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : *
 | --- | --- | --- | --- |
 | **Comptes** | Comptes | Comptes bancaires et caisses, avec leur solde. | Étape 3 |
 |  | Exercices | Exercices ouverts et clôturés ; la clôture se fait ici. | Étape 3 |
+|  | Catégories | Catégories d’opération : cotisations, sponsoring, cashprize… | Étape 3 |
+|  | Moyens de paiement | Virement, espèces, carte… | Étape 3 |
 | **Fiche compte** | Mouvements | Opérations de ce compte. | Étape 3 |
 |  | Relevés | Relevés et rapprochement. | Étape 3 |
 |  | Informations | Titulaire, devise, solde initial. | Étape 3 |
@@ -321,28 +295,75 @@ Cinq chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : *
 |  | Exports | Exports par exercice. | Étape 4 |
 | **Budget** | — | Liste, sans onglet : les budgets, par version. | Étape 9 |
 | **Fiche budget** | Prévisions | Enveloppes par équipe ou par projet. | Étape 9 |
-|  | Suivi | Réalisé, écarts et trésorerie prévue. | Étape 9 |
+|  | Réalisé ↗ | Dépenses et recettes réelles, écarts et trésorerie prévue. Lu ici, se modifie dans Opérations. | Étape 9 |
+
+### Relations
+
+| Page | Onglet | Contenu | État |
+| --- | --- | --- | --- |
+| **Organisations** | — | Liste, sans onglet : partenaires, sponsors, clients et fournisseurs. | Étape 3 |
+| **Fiche organisation** | Identité | Nom, type, adresse, identifiants. | Étape 3 |
+|  | Contacts | Interlocuteurs, liés aux fiches du Répertoire. | Étape 3 |
+|  | Règlements ↗ | Factures et opérations liées. Lu ici, se modifie dans Finances. | Étape 3 |
+|  | Contrats ↗ | Contrats et partenariats en cours et passés. Lu ici, se modifie dans Contrats et Partenariats. | Étape 7 |
+| **Partenariats** | — | Liste, sans onglet : opportunités et accords. | Étape 7 |
+| **Fiche partenariat** | Accord | Parties, période, contreparties, état. | Étape 7 |
+|  | Livrables | Ce qui est promis, livré ou à renouveler. | Étape 7 |
+|  | Documents | Pièces liées à l’accord. | Étape 7 |
+| **Communication** | — | Onglets définis à son cadrage. | Étape 10 |
+
+### Structure
+
+| Page | Onglet | Contenu | État |
+| --- | --- | --- | --- |
+| **Identité juridique** | Identité | Dénomination, forme, identifiants, adresse. | Étape 3 |
+|  | Mandats ↗ | Qui occupe quelle fonction, lu depuis les parcours. Lu ici, se modifie dans Fiche personne, onglet Parcours. | Étape 3 |
+|  | Assurances | Assurances, affiliations, licences, marque, et leurs échéances. | Étape 3 |
+|  | Documents | Statuts et pièces officielles. | Étape 7 |
+| **Chronologie** | — | Lecture, sans onglet : les grands faits de la structure depuis ses débuts, saisis ou tirés des modules. | Étape 8 |
+| **Réunions** | Réunions | Réunions passées et à venir. | Étape 6 |
+|  | Décisions ↗ | Toutes les décisions, retrouvables sans ouvrir chaque réunion. Lu ici, se modifie dans Fiche réunion. | Étape 6 |
+| **Fiche réunion** | Préparation | Instance, date, participants, ordre du jour. | Étape 6 |
+|  | Compte rendu | Ce qui a été dit. | Étape 6 |
+|  | Décisions | Décisions prises, avec portée et preuve. | Étape 6 |
+|  | Tâches | Actions issues de la réunion. | Étape 6 |
+| **Documents** | — | Liste, sans onglet : la bibliothèque de la structure. | Étape 7 |
+| **Fiche document** | Document | Titre, nature, état, version en vigueur. | Étape 7 |
+|  | Versions | Toutes les versions et leurs dates. | Étape 7 |
+|  | Acceptations | Qui a accepté quelle version, saisi par le bureau. | Étape 7 |
+| **Contrats** | — | Liste, sans onglet : contrats en cours et passés. | Étape 7 |
+| **Fiche contrat** | Contrat | Parties, entité signataire, période, état. | Étape 7 |
+|  | Obligations | Obligations, échéances et avenants. | Étape 7 |
+|  | Règlements ↗ | Factures et opérations liées. Lu ici, se modifie dans Finances. | Étape 7 |
+|  | Documents | Pièces signées. | Étape 7 |
+| **Incidents** | — | Liste, sans onglet, réservée aux personnes habilitées. | Étape 5 |
+| **Fiche incident** | Faits | Signalement, personnes concernées, dates. | Étape 5 |
+|  | Instruction | Preuves et échanges. | Étape 5 |
+|  | Décision | Décision, recours et durée. | Étape 5 |
+|  | Documents | Pièces du dossier. | Étape 7 |
+| **Bilan annuel** | Membres ↗ | Effectifs, arrivées et départs de l’année. Lu ici, se modifie dans Fiches personnes et équipes. | Étape 9 |
+|  | Activité ↗ | Tournois, gains, décisions et événements. Lu ici, se modifie dans Tournois, Réunions et Déplacements. | Étape 9 |
+|  | Finances ↗ | Recettes, dépenses et résultat de l’exercice. Lu ici, se modifie dans Finances. | Étape 9 |
+| **Matériel & abonnements** | Matériel | Inventaire, prêts, maillots et stock. | Étape 8 |
+|  | Abonnements | Services, domaines et licences : titulaire, coût, échéance, jamais de mot de passe. | Étape 8 |
+|  | Types de matériel | Maillot, périphérique, licence… | Étape 8 |
 
 ### Système
 
 | Page | Onglet | Contenu | État |
 | --- | --- | --- | --- |
 | **Utilisateurs** | — | Liste, sans onglet : les comptes, avec recherche et filtres. | Livré |
-| **Fiche utilisateur** | Profil | Identité, connexion, contact ; fiche Répertoire liée (étape 2). | Livré |
+| **Fiche utilisateur** | Profil | Identité, connexion, contact. À venir (étape 2) : fiche du répertoire liée au compte. | Livré |
 |  | Autorisations | Rôle et autorisations du compte. | Livré |
 |  | Sécurité | État du compte, mot de passe, double authentification, sessions. | Livré |
-| **Journal d’activité** | — | Liste, sans onglet : qui a fait quoi. Export à venir (étape 7). | Livré |
-| **Paramètres système** | — | Réglages, sans onglet. Accueillera la conservation des coordonnées (étape 2). | Livré |
-| **Listes de référence** | Jeux | Ajouter, renommer, archiver. | Étape 1 |
-|  | Fonctions | Ajouter, renommer, archiver ; réglage « Donne accès à son équipe ». | Étape 1 |
-|  | Étiquettes | Repères libres pour classer les fiches. | Étape 1 |
-|  | Catégories | Catégories d’opération : cotisations, sponsoring, cashprize… | Étape 3 |
-|  | Moyens de paiement | Virement, espèces, carte… | Étape 3 |
-|  | Types de matériel | Maillot, périphérique, licence… | Étape 8 |
+| **Journal d’activité** | — | Liste, sans onglet : qui a fait quoi. À venir (étape 7) : export CSV ou JSON des résultats filtrés. | Livré |
+| **Paramètres système** | — | Réglages, sans onglet. À venir (étape 2) : conservation des coordonnées après le départ d’une personne. | Livré |
 | **Données** | Exports | Export lisible du registre. | Étape 2 |
 |  | Sauvegardes | État des sauvegardes et dernière restauration essayée. | Étape 2 |
-| **Rappels & notifications** | — | Onglets définis à son cadrage. | Étape 10 |
-| **Feuille de route** | — | Lecture, sans onglet : chantiers, pages et onglets prévus. | Livré |
+| **Feuille de route** | Chantiers | Chantiers par pôle avec leur étape suggérée, dépliés sur place : première version, critère de livraison, prérequis et pages. | Livré |
+|  | Pages et onglets | Les pages visées par pôle, leurs onglets et leur étape. | Livré |
+|  | Couverture | Les sujets d’une structure esport et les chantiers qui les traitent. | Livré |
+|  | Ordre suggéré | Les mêmes chantiers rangés par étape, pour aider à choisir le prochain. | Livré |
 
 ## Passage d’un chantier au menu
 

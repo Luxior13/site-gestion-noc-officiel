@@ -1,16 +1,16 @@
 # Nouvelle fiche personne
 
-[Index des pages](../../../pages/README.md) · [Répertoire](README.md) · [Design](../../../design/README.md) · [Guide général](../../../REFERENCE_GENERALE.md)
+[Index des pages](../../README.md) · [Répertoire](README.md) · [Design](../../../design/README.md) · [Guide général](../../../REFERENCE_GENERALE.md)
 
 ## Identité
 
 | Élément | Valeur |
 | --- | --- |
-| Route | `/membres/repertoire/nouveau` |
-| Espace | Membres |
+| Route | `/personnes/repertoire/nouveau` |
+| Espace | Personnes |
 | Gabarit visé | [C. Formulaire de création](../../../design/gabarits.md#c-formulaire-de-création) |
 | État d’harmonisation | Aligné : bandeau compact, champs adoucis, barre commune — voir [Harmonisation](../../../design/harmonisation.md#état-par-page) |
-| Point d’entrée | [page.tsx](../../../../apps/web/src/app/membres/repertoire/nouveau/page.tsx) → [PersonCreateForm](../../../../apps/web/src/features/persons/components/PersonCreateForm.tsx) |
+| Point d’entrée | [page.tsx](../../../../apps/web/src/app/personnes/repertoire/nouveau/page.tsx) → [PersonCreateForm](../../../../apps/web/src/features/persons/components/PersonCreateForm.tsx) |
 | Contrôle d’accès | `persons:create` (page et `POST /api/personnes`) |
 | Chargement / erreur dédiés | non / commune à l’application |
 
@@ -130,7 +130,7 @@ lint et budgets d'architecture/performance passent. Voir le
 
 ### Création de fiche — contrôle historique du 11 octobre 2026
 
-`/membres/repertoire/nouveau` utilise maintenant `PageIdentityHero` compact,
+`/personnes/repertoire/nouveau` utilise maintenant `PageIdentityHero` compact,
 avec les champs et le sélecteur de statut partagés. Le formulaire conserve sa
 composition propre ; pseudo seul ou prénom et nom restent les règles métier.
 

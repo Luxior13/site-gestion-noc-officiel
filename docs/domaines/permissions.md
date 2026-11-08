@@ -86,7 +86,7 @@ La migration conserve les accès effectifs aux coordonnées des comptes existant
 - Une page future ne justifie pas un droit actif. Les capacités futures restent
   dans `ROADMAP_PERMISSIONS` jusqu'à la mise en ligne complète du module.
 
-L'éditeur affiche deux pôles : **Membres** (`internal`) et **Système** (`system`).
+L'éditeur affiche deux pôles : **Personnes** (`internal`) et **Système** (`system`).
 Sa projection [permission-editor-view](../../apps/web/src/components/users/permission-editor-view.ts)
 croise le catalogue technique avec la disponibilité du registre des fonctionnalités.
 Les pôles vides ne sont pas proposés. Le journal d'activité est actif depuis le
@@ -97,7 +97,7 @@ Les pôles vides ne sont pas proposés. Le journal d'activité est actif depuis 
 La hiérarchie visible est : **Pôle → Page ou fonction → Rubrique →
 Autorisation**.
 
-- pôles `Membres` et `Système` ;
+- pôles `Personnes` et `Système` ;
 - pages `Répertoire`, `Utilisateurs`, `Journal d'activité` et `Paramètres système` ;
 - la provenance des champs (`audit:view_field_history`) est retirée le
   27 octobre 2026 avec son écran, sa route et sa clé enregistrée ; le bouton
@@ -356,9 +356,9 @@ pas en droits délégables individuellement.
 | `/mon-compte`                                        | droits `account:*`, toujours limités au compte connecté                                                                                                    |
 | `/systeme/feuille-de-route`                                  | authentification ; catalogue informatif des pages planifiées, sans attribution de droits                                                                   |
 | `/recherche`                                         | redirection vers `/` ; la navigation rapide de l’en-tête reste sans permission supplémentaire et filtre chaque destination autorisée                       |
-| `/membres/repertoire`                            | `persons:view` pour consulter et rechercher le répertoire                                                                                                  |
-| `/membres/repertoire/nouveau`                    | `persons:create`, donc aussi `persons:view`                                                                                                                |
-| `/membres/repertoire/[id]`                       | `persons:view` pour l'identité ; coordonnées via `persons:view_contact` ; mutations via `persons:update`, `persons:update_contact` ou `persons:delete`                                                                  |
+| `/personnes/repertoire`                            | `persons:view` pour consulter et rechercher le répertoire                                                                                                  |
+| `/personnes/repertoire/nouveau`                    | `persons:create`, donc aussi `persons:view`                                                                                                                |
+| `/personnes/repertoire/[id]`                       | `persons:view` pour l'identité ; coordonnées via `persons:view_contact` ; mutations via `persons:update`, `persons:update_contact` ou `persons:delete`                                                                  |
 | `/tableau-de-bord`                                   | alias de support redirigeant vers `/` ; aucune permission supplémentaire                                                                                   |
 | `/administration`                                    | route de support redirigeant vers les utilisateurs                                                                                                         |
 | `/systeme/utilisateurs`                       | `users:view`                                                                                                                                               |

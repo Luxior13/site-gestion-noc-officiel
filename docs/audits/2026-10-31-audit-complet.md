@@ -200,7 +200,7 @@ Fiches mises à jour : [journal d’activité](../pages/systeme/journal-activite
 [connexion](../pages/connexion.md), [Mon compte — Profil](../pages/mon-compte/profil.md),
 [Mon compte — Sécurité](../pages/mon-compte/securite.md),
 [fiche utilisateur](../pages/systeme/utilisateurs/README.md),
-[Répertoire](../pages/membres/repertoire/README.md),
+[Répertoire](../pages/personnes/repertoire/README.md),
 [navigation générale](../pages/transverse/navigation-generale.md) ;
 écarts de design dans l’[harmonisation](../design/harmonisation.md)
 (HARMO-08 à HARMO-11) ; constats d’architecture SYS-11 à SYS-14. Réexamen : à la

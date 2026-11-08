@@ -139,7 +139,7 @@ const personsPageSource = [
   // Test-owned path only; the URL never receives external input.
   // eslint-disable-next-line security/detect-non-literal-fs-filename
   readFileSync(
-    new URL('../app/membres/repertoire/page.tsx', import.meta.url),
+    new URL('../app/personnes/repertoire/page.tsx', import.meta.url),
     'utf8',
   ),
   // Test-owned path only; the URL never receives external input.
@@ -169,12 +169,12 @@ const personsListSource =
   );
 // eslint-disable-next-line security/detect-non-literal-fs-filename
 const newPersonPageSource = readFileSync(
-  new URL('../app/membres/repertoire/nouveau/page.tsx', import.meta.url),
+  new URL('../app/personnes/repertoire/nouveau/page.tsx', import.meta.url),
   'utf8',
 );
 // eslint-disable-next-line security/detect-non-literal-fs-filename
 const personLoadingSource = readFileSync(
-  new URL('../app/membres/repertoire/[id]/loading.tsx', import.meta.url),
+  new URL('../app/personnes/repertoire/[id]/loading.tsx', import.meta.url),
   'utf8',
 );
 

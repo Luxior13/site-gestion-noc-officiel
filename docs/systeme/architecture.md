@@ -105,7 +105,7 @@ Ses mots-clés (`keywords`) alimentent la recherche rapide de l’en-tête.
 | Clé | Libellé | Pôle | Route | Statut |
 | --- | --- | --- | --- | --- |
 | `dashboard` | Mon travail | Aujourd’hui | `/` | `live` |
-| `persons` | Répertoire | Membres | `/membres/repertoire` | `live` |
+| `persons` | Répertoire | Personnes | `/personnes/repertoire` | `live` |
 | `users` | Utilisateurs | Système | `/systeme/utilisateurs` | `live` |
 | `systemSettings` | Paramètres système | Système | `/systeme/parametres` | `live` |
 | `roadmap` | Feuille de route | Système | `/systeme/feuille-de-route` | `live` |

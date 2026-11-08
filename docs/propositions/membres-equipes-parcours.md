@@ -5,7 +5,7 @@
 [Feuille de route](feuille-de-route.md)
 
 - **Date** : 7 novembre 2026. **Demandeur** : le propriétaire.
-- **Périmètre** : chantiers Listes de référence, Équipes & parcours, Accès &
+- **Périmètre** : chantiers Listes de choix, Équipes & parcours, Accès &
   responsabilités métier (étapes 1 et 2).
 - **Statut** : proposée. Rien n’est construit ; les choix techniques ci-dessous
   restent à valider au moment de chaque lot.
@@ -20,14 +20,14 @@ migration. Ils demandent des scénarios d’abus et une validation sur base isol
 
 | Lot | Contenu | Résultat visible |
 | --- | --- | --- |
-| 1 | Listes de référence | Une page pour gérer jeux et fonctions ; champ « Jeux » sur la fiche |
+| 1 | Listes de choix | Onglets Fonctions et Étiquettes du Répertoire ; champ « Jeux » sur la fiche (l’onglet Jeux de la page Équipes arrive au lot 2) |
 | 2 | Équipes & parcours | Page Équipes, onglet Parcours, anciens pseudos |
 | 3 | Accès manager | Un manager se connecte et ne voit que son équipe |
 
 Confidentialité & conservation et Données, exports & sauvegardes complètent l’étape 2. Le lot 1 introduit TanStack Query, prévu avec son premier consommateur
 ([décision REV-20](../references/architecture-fonctionnalite.md#5-états-ux-obligatoires)).
 
-## Lot 1 — Listes de référence
+## Lot 1 — Listes de choix
 
 **Données** : une table `ReferenceValue` pour toutes les listes (`list`, `label`,
 libellé normalisé, `archivedAt`, `version`), unique par liste et libellé normalisé,
@@ -36,9 +36,10 @@ une migration par liste. Pour qu’une fonction ne puisse pas remplir un champ
 « jeu », la base contrôle la liste de chaque référence ; une contrainte vaut mieux
 qu’une vérification du seul formulaire.
 
-**Écran** : `/systeme/listes`, dans Système › Administration, au
-[gabarit A](../design/gabarits.md#a-liste-de-gestion), un onglet par liste
-(`PageSectionNavigation`). Ajout et renommage en fenêtre. Une colonne indique le
+**Écrans** (décision du 8 novembre 2026) : chaque liste en onglet à côté de ce
+qu’elle classe, au [gabarit A](../design/gabarits.md#a-liste-de-gestion) :
+Fonctions et Étiquettes sur `/personnes/repertoire`, Jeux sur `/esport/equipes`
+(lot 2). Aucune liste dans Système. Ajout et renommage en fenêtre. Une colonne indique le
 nombre d’usages, pour comprendre pourquoi une valeur s’archive sans se supprimer.
 
 **Composant** : `MultiSelect` dans `components/ui`, composé de `Popover` et
@@ -75,11 +76,11 @@ a un passage ne se supprime pas : la base le refuse et l’interface l’expliqu
 
 **Écrans** :
 
-- `/membres/equipes` : liste au gabarit A, filtres par jeu et par état. Une équipe
+- `/esport/equipes` : liste au gabarit A, onglets Équipes et Jeux, filtres par jeu et par état. Une équipe
   se crée en fenêtre, sans page dédiée, puisqu’elle a deux champs.
-- `/membres/equipes/[id]` : membres actuels et anciens, sélecteur « À une date ».
+- `/esport/equipes/[id]` : membres actuels et anciens, sélecteur « À une date ».
 - Onglet Parcours de la fiche personne (`?section=parcours`), sur le modèle de
-  [Coordonnées](../pages/membres/repertoire/fiche-coordonnees.md).
+  [Coordonnées](../pages/personnes/repertoire/fiche-coordonnees.md).
 - Une seule fenêtre de passage, ouverte depuis la fiche ou depuis l’équipe.
 
 **API** : `/api/equipes`, `/api/equipes/[id]`, `/api/personnes/[id]/passages` et
@@ -121,7 +122,7 @@ réglage retiré de la fonction, compte désactivé, recherche rapide, totaux de
 | Élément | Effet |
 | --- | --- |
 | Statut du Répertoire | Colonne `structureStatus` remplacée par le calcul ; 19 fichiers du code la citent |
-| Suppression d’une fiche | Refus si la fiche a un passage ; [règle du Répertoire](../pages/membres/repertoire/README.md) à actualiser |
+| Suppression d’une fiche | Refus si la fiche a un passage ; [règle du Répertoire](../pages/personnes/repertoire/README.md) à actualiser |
 | Sauvegarde | Nouvelles tables dans le manifeste, format v11 |
 | Journal d’activité | Nouvelles actions et nouveau filtre |
 | Registre, navigation, recherche rapide | Entrées et mots-clés de Listes et d’Équipes |

@@ -102,7 +102,7 @@ Valeurs de `:root` (portée par défaut).
 | Rôle | Tokens et valeurs |
 | --- | --- |
 | Pôle Aujourd’hui | `--nav-dashboard` `#2dd4bf` (icône `#5eead4`) |
-| Pôle Membres | `--nav-internal` `#38bdf8` (icône `#7dd3fc`) |
+| Pôle Personnes (et Esport, en attendant sa couleur propre, à fixer avec sa première page) | `--nav-internal` `#38bdf8` (icône `#7dd3fc`) |
 | Pôle Structure (thème `legal`) | `--nav-legal` `#facc15` (icône `#fde047`) |
 | Pôle Système | `--nav-system` `#94a3b8` (icône `#cbd5e1`) |
 | Pôle Finances (thème `treasury`) | `--nav-treasury` `#4ade80` (icône `#86efac`) |

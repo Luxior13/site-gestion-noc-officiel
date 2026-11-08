@@ -100,7 +100,7 @@ et les chemins historiques en texte restent soumis à une lecture contextualisé
 Les anciens rapports gardent leurs constats d’origine derrière leur statut explicite.
 
 Les défauts applicatifs du diagnostic initial restent suivis dans
-[Membres](../pages/membres/repertoire/README.md),
+[Membres](../pages/personnes/repertoire/README.md),
 [Utilisateurs](../pages/systeme/utilisateurs/README.md),
 [Navigation](../pages/transverse/navigation-generale.md) et
 [Accueil](../pages/accueil.md). Ils ne sont ni corrigés ni clos par cette passe.

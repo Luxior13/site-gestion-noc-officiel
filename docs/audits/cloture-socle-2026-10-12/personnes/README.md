@@ -75,7 +75,7 @@ dans les bases isolées. Aucune migration ni table nouvelle justifiée :
 
 Ces décisions suivent [Structure](../../../domaines/structure-juridique.md), le
 [contrat SQL](../../../../packages/database/prisma/README.md) et le
-[suivi du Répertoire](../../../pages/membres/repertoire/README.md).
+[suivi du Répertoire](../../../pages/personnes/repertoire/README.md).
 
 ## Exécution et limites
 

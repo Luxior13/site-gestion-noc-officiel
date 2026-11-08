@@ -22,7 +22,7 @@ fiche par page ou section importante. Voir l’[organisation des fiches](../orga
 | --- | --- |
 | Route | `/chemin/[param]` |
 | Section | `?section=…` |
-| Espace | Aujourd’hui / Membres / Système / Compte personnel / Hors cadre |
+| Espace | Aujourd’hui / Personnes / Système / Compte personnel / Hors cadre |
 | Gabarit visé | Lien vers le gabarit dans design/gabarits.md |
 | État d’harmonisation | Page de référence / aligné / à harmoniser, lien vers l’harmonisation |
 | Point d’entrée | Lien vers page.tsx et le composant principal |

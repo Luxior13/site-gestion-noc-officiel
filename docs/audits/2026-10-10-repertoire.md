@@ -17,7 +17,7 @@ parcours de pagination, de reprise et les identités longues.
   visuelle et UX avec `/systeme/utilisateurs` selon la décision utilisateur.
 - État : branche `main`, commit `1175ffd`, dépôt initialement propre. Aucun
   changement de code applicatif ni de données pendant cette passe.
-- Propriétaire : [suivi du répertoire](../pages/membres/repertoire/README.md).
+- Propriétaire : [suivi du répertoire](../pages/personnes/repertoire/README.md).
 - Chaîne examinée : page serveur, `PersonsPageClient`, `PersonsList`,
   `PersonOverview`, styles et primitives partagés, `GET /api/personnes`, schémas,
   recherche, curseurs, service de liste et index déclarés en base.
@@ -267,7 +267,7 @@ documents et les pièces fictives de cet audit sont ajoutés ou modifiés.
 Reprise : corriger REP-04 et REP-06, puis les quatre défauts P2 ; intégrer les
 scénarios aux contrôles adaptés et rejouer une session réelle sur une base
 isolée. Les états courants et décisions restent dans le
-[suivi propriétaire](../pages/membres/repertoire/README.md).
+[suivi propriétaire](../pages/personnes/repertoire/README.md).
 
 ## Passe de correction du 10 octobre 2026
 

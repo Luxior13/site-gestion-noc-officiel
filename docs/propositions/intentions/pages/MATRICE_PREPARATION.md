@@ -10,7 +10,7 @@ Référence révisée le 7 novembre 2026. Les chantiers proviennent du [catalogu
 | `/mes-notifications` | Module retiré le 9 octobre 2026 ; redirige vers la feuille de route | — |
 | `/mon-compte` | Profil, autorisations et sécurité du compte livrés | Outils globaux |
 | `/recherche` | Page retirée le 9 octobre 2026 ; navigation rapide conservée ; redirige vers l’accueil | Outils globaux |
-| `/membres/repertoire`, `/nouveau`, `/[id]` sous ce chemin | Liste, création et fiche Personne livrées | Membres |
+| `/personnes/repertoire`, `/nouveau`, `/[id]` sous ce chemin | Liste, création et fiche Personne livrées ; `/membres/repertoire/*` y redirige depuis le 8 novembre 2026 | Personnes |
 | `/activite/actualites` | Ancienne page ; redirige vers la feuille de route | — |
 | `/systeme/utilisateurs`, `/nouveau`, `/[id]` sous ce chemin | Liste, création et fiche Utilisateur livrées | Système |
 | `/systeme/journal-activite` | Vue globale reconstruite le 30 octobre 2026 | Système |
@@ -23,55 +23,53 @@ Les libellés de familles ci-dessus ne créent pas des routes racines `/nouveau`
 
 Les anciennes routes prévues ne sont pas des « squelettes disponibles » : elles aboutissent à la page introuvable. Les organisations partenaires sont à reconstruire ; les anciens modèles supprimés ne sont pas comptés comme existants.
 
-## Statuts des projets
+## Lecture des chantiers
 
-- **À cadrer** : périmètre nouveau, à concevoir puis construire.
-- **À compléter** : socle existant décrit dans la carte, extension à réaliser.
-- Une carte livrée devra être retirée ou recentrée sur son reste à faire, avec une mise à jour de cette matrice.
-- Chaque carte de l’interface précise public, première version, prérequis, critère de livraison et suite éventuelle. Les étapes ne sont pas des échéances.
+- Le catalogue ne décrit que ce qui reste à construire (décision du 8 novembre 2026) : un chantier livré est retiré ou réduit à son reste à faire, avec une mise à jour de cette matrice.
+- Chaque ligne de l’interface précise première version, prérequis, critère de livraison et suite éventuelle. Les étapes sont un ordre suggéré, pas des échéances ; le propriétaire choisit le prochain chantier.
 
 ## Les 38 chantiers
 
-| Identifiant stable | Chantier | Pôle cible | Étape | État | Prérequis |
-| --- | --- | --- | --- | --- | --- |
-| `reference-lists` | Listes de référence | Système | 1 | À cadrer | — |
-| `sport-teams` | Équipes & parcours | Membres | 1 | À cadrer | Listes de référence |
-| `access-scopes` | Accès & responsabilités métier | Système | 2 | À compléter | Équipes & parcours |
-| `compliance` | Confidentialité & conservation | Structure | 2 | À cadrer | Équipes & parcours |
-| `data` | Données, exports & sauvegardes | Système | 2 | À compléter | Équipes & parcours |
-| `legal-entities` | Identité juridique & périmètres | Structure | 3 | À cadrer | — |
-| `accounts` | Comptes & rapprochement | Finances | 3 | À cadrer | Identité juridique & périmètres |
-| `organizations` | Organisations & contacts | Relations | 3 | À cadrer | — |
-| `payments` | Opérations & règlements | Finances | 3 | À cadrer | Comptes & rapprochement ; Organisations & contacts |
-| `person-relationships` | Adhésions & cotisations | Membres | 4 | À compléter | Identité juridique & périmètres ; Équipes & parcours |
-| `invoices` | Facturation & achats | Finances | 4 | À cadrer | Opérations & règlements |
-| `expenses` | Notes de frais & remboursements | Finances | 4 | À cadrer | Opérations & règlements |
-| `grants` | Subventions & dons | Finances | 4 | À cadrer | Organisations & contacts ; Opérations & règlements |
-| `finance-controls` | Contrôles & clôtures | Finances | 4 | À cadrer | Opérations & règlements |
-| `competitions` | Tournois | Membres | 5 | À cadrer | Équipes & parcours |
-| `prizes` | Gains de compétition & primes | Finances | 5 | À cadrer | Tournois ; Opérations & règlements |
-| `incidents` | Suivi, incidents & sanctions | Structure | 5 | À cadrer | Équipes & parcours ; Confidentialité & conservation ; Tournois |
-| `tasks` | Projets & tâches | Aujourd’hui | 6 | À cadrer | — |
-| `calendar` | Calendrier du bureau | Aujourd’hui | 6 | À cadrer | Projets & tâches |
-| `meetings` | Réunions & décisions | Structure | 6 | À cadrer | Identité juridique & périmètres ; Projets & tâches |
-| `documents` | Documents & acceptations | Structure | 7 | À cadrer | Identité juridique & périmètres |
-| `contracts` | Contrats & obligations | Structure | 7 | À cadrer | Documents & acceptations ; Identité juridique & périmètres |
-| `partnerships` | Partenariats & opportunités | Relations | 7 | À cadrer | Organisations & contacts ; Contrats & obligations ; Projets & tâches |
-| `personal-work` | Mon travail & espace personnel | Aujourd’hui | 7 | À compléter | Projets & tâches ; Documents & acceptations |
-| `activity-journal` | Journal d’activité | Système | 7 | À compléter | — |
-| `logistics` | Matériel & abonnements | Structure | 8 | À cadrer | — |
-| `onboarding` | Arrivées, départs & passations | Membres | 8 | À cadrer | Équipes & parcours ; Documents & acceptations ; Projets & tâches |
-| `internal-news` | Chronologie de la structure | Structure | 8 | À cadrer | Équipes & parcours |
-| `budget` | Budget & pilotage | Finances | 9 | À cadrer | Opérations & règlements ; Facturation & achats |
-| `annual-report` | Bilan annuel | Structure | 9 | À cadrer | Opérations & règlements ; Réunions & décisions |
-| `business-search` | Recherche dans les dossiers | Système | 9 | À compléter | Documents & acceptations |
-| `automations` | Rappels & notifications | Système | 10 | À cadrer | Projets & tâches ; Documents & acceptations |
-| `integrations` | Intégrations & publication publique | Système | 10 | À cadrer | Équipes & parcours ; Données, exports & sauvegardes |
-| `sports-follow-up` | Suivi sportif | Membres | 10 | À cadrer | Équipes & parcours |
-| `events` | Événements & déplacements | Structure | 10 | À cadrer | Projets & tâches ; Opérations & règlements |
-| `hr` | Salariés & paie | Membres | 10 | À cadrer | Contrats & obligations |
-| `recruitment` | Recrutement | Membres | 10 | À cadrer | Équipes & parcours |
-| `communication` | Communication & contenus | Relations | 10 | À cadrer | Projets & tâches ; Confidentialité & conservation ; Partenariats & opportunités |
+| Identifiant stable | Chantier | Pôle cible | Étape | Prérequis |
+| --- | --- | --- | --- | --- |
+| `sport-teams` | Équipes & parcours | Personnes | 1 | Listes de choix |
+| `reference-lists` | Listes de choix | Personnes | 1 | — |
+| `access-scopes` | Accès & responsabilités métier | Système | 2 | Équipes & parcours |
+| `compliance` | Confidentialité & conservation | Structure | 2 | Équipes & parcours |
+| `data` | Données, exports & sauvegardes | Système | 2 | Équipes & parcours |
+| `legal-entities` | Identité juridique & périmètres | Structure | 3 | — |
+| `organizations` | Organisations & contacts | Relations | 3 | — |
+| `accounts` | Comptes & rapprochement | Finances | 3 | Identité juridique & périmètres |
+| `payments` | Opérations & règlements | Finances | 3 | Comptes & rapprochement ; Organisations & contacts |
+| `person-relationships` | Adhésions & cotisations | Personnes | 4 | Identité juridique & périmètres ; Équipes & parcours |
+| `invoices` | Facturation & achats | Finances | 4 | Opérations & règlements |
+| `expenses` | Notes de frais & remboursements | Finances | 4 | Opérations & règlements |
+| `finance-controls` | Contrôles & clôtures | Finances | 4 | Opérations & règlements |
+| `grants` | Subventions & dons | Finances | 4 | Organisations & contacts ; Opérations & règlements |
+| `competitions` | Tournois | Esport | 5 | Équipes & parcours |
+| `incidents` | Suivi, incidents & sanctions | Structure | 5 | Équipes & parcours ; Confidentialité & conservation ; Tournois |
+| `prizes` | Gains de compétition & primes | Finances | 5 | Tournois ; Opérations & règlements |
+| `tasks` | Projets & tâches | Aujourd’hui | 6 | — |
+| `meetings` | Réunions & décisions | Structure | 6 | Identité juridique & périmètres ; Projets & tâches |
+| `calendar` | Calendrier du bureau | Aujourd’hui | 6 | Projets & tâches |
+| `personal-work` | Mon travail & espace personnel | Aujourd’hui | 7 | Projets & tâches ; Documents & acceptations |
+| `documents` | Documents & acceptations | Structure | 7 | Identité juridique & périmètres |
+| `contracts` | Contrats & obligations | Structure | 7 | Documents & acceptations ; Identité juridique & périmètres |
+| `activity-journal` | Export du journal d’activité | Système | 7 | — |
+| `partnerships` | Partenariats & opportunités | Relations | 7 | Organisations & contacts ; Contrats & obligations ; Projets & tâches |
+| `onboarding` | Arrivées, départs & passations | Personnes | 8 | Équipes & parcours ; Documents & acceptations ; Projets & tâches |
+| `logistics` | Matériel & abonnements | Structure | 8 | — |
+| `internal-news` | Chronologie de la structure | Structure | 8 | Équipes & parcours |
+| `budget` | Budget & pilotage | Finances | 9 | Opérations & règlements ; Facturation & achats |
+| `business-search` | Recherche dans les dossiers | Système | 9 | Documents & acceptations |
+| `annual-report` | Bilan annuel | Structure | 9 | Opérations & règlements ; Réunions & décisions |
+| `recruitment` | Recrutement | Personnes | 10 | Équipes & parcours |
+| `automations` | Rappels & notifications | Aujourd’hui | 10 | Projets & tâches ; Documents & acceptations |
+| `integrations` | Intégrations & publication publique | Système | 10 | Équipes & parcours ; Données, exports & sauvegardes |
+| `communication` | Communication & contenus | Relations | 10 | Projets & tâches ; Confidentialité & conservation ; Partenariats & opportunités |
+| `sports-follow-up` | Entraînement | Esport | 10 | Équipes & parcours |
+| `events` | Déplacements | Esport | 10 | Projets & tâches ; Opérations & règlements |
+| `hr` | Salariés & paie | Personnes | 10 | Contrats & obligations |
 
 Retiré le 7 novembre 2026 : `approvals`. Fusionnés : `governance` dans `meetings`, `notifications` dans `automations`, `sport-planning`, `debriefs`, `preparation` et `performance` dans `sports-follow-up`. Raisons : [feuille de route](../../feuille-de-route.md#retraits-et-regroupements-du-7-novembre-2026).
 
@@ -81,10 +79,10 @@ Les références suivantes préservent le périmètre des anciennes propositions
 
 | Ancienne destination | Chantier qui reprend le besoin | Étape |
 | --- | --- | --- |
-| `/sport-team-control` | Membres → Équipes & parcours | 1 |
-| `/sport-team-control/jeux` | Membres → Équipes & parcours | 1 |
-| `/sport-team-control/rosters` | Membres → Équipes & parcours | 1 |
-| `/sport-team-control/membres-esport` | Membres → Équipes & parcours | 1 |
+| `/sport-team-control` | Personnes → Équipes & parcours | 1 |
+| `/sport-team-control/jeux` | Personnes → Équipes & parcours | 1 |
+| `/sport-team-control/rosters` | Personnes → Équipes & parcours | 1 |
+| `/sport-team-control/membres-esport` | Personnes → Équipes & parcours | 1 |
 | `/systeme/exports-sauvegardes` | Système → Données, exports & sauvegardes | 2 |
 | `/systeme/archives` | Système → Données, exports & sauvegardes | 2 |
 | `/tresorerie/comptes` | Finances → Comptes & rapprochement | 3 |
@@ -95,10 +93,10 @@ Les références suivantes préservent le périmètre des anciennes propositions
 | `/tresorerie/depenses` | Finances → Opérations & règlements | 3 |
 | `/tresorerie/cotisations-adherents` | Finances → Opérations & règlements | 3 |
 | `/tresorerie/sponsoring-financier` | Finances → Opérations & règlements | 3 |
-| `/vie-interne/membres-adherents` | Membres → Adhésions & cotisations | 4 |
-| `/vie-interne/membres` | Membres → Adhésions & cotisations | 4 |
-| `/vie-interne/adherents` | Membres → Adhésions & cotisations | 4 |
-| `/bureau-juridique/personnes-contacts` | Membres → Adhésions & cotisations | 4 |
+| `/vie-interne/membres-adherents` | Personnes → Adhésions & cotisations | 4 |
+| `/vie-interne/membres` | Personnes → Adhésions & cotisations | 4 |
+| `/vie-interne/adherents` | Personnes → Adhésions & cotisations | 4 |
+| `/bureau-juridique/personnes-contacts` | Personnes → Adhésions & cotisations | 4 |
 | `/tresorerie/factures-justificatifs` | Finances → Facturation & achats | 4 |
 | `/tresorerie/remboursements` | Finances → Notes de frais & remboursements | 4 |
 | `/systeme/validations` | Finances → Contrôles & clôtures | 4 |
@@ -106,7 +104,7 @@ Les références suivantes préservent le périmètre des anciennes propositions
 | `/tresorerie/exports-finance` | Finances → Contrôles & clôtures | 4 |
 | `/tresorerie/journal-financier` | Finances → Contrôles & clôtures | 4 |
 | `/tresorerie/archives-finance` | Finances → Contrôles & clôtures | 4 |
-| `/sport-team-control/tournois-matchs` | Membres → Tournois | 5 |
+| `/sport-team-control/tournois-matchs` | Esport → Tournois | 5 |
 | `/bureau-juridique/incidents-sanctions` | Structure → Suivi, incidents & sanctions | 5 |
 | `/vie-interne/calendrier-interne` | Aujourd’hui → Calendrier du bureau | 6 |
 | `/vie-interne/reunions` | Structure → Réunions & décisions | 6 |
@@ -123,21 +121,21 @@ Les références suivantes préservent le périmètre des anciennes propositions
 | `/tableau-de-bord/alertes-importantes` | Aujourd’hui → Mon travail & espace personnel | 7 |
 | `/tableau-de-bord/mes-rappels` | Aujourd’hui → Mon travail & espace personnel | 7 |
 | `/bureau-juridique/inventaire-acces` | Structure → Matériel & abonnements | 8 |
-| `/vie-interne/onboarding-depart` | Membres → Arrivées, départs & passations | 8 |
+| `/vie-interne/onboarding-depart` | Personnes → Arrivées, départs & passations | 8 |
 | `/activite/actualites` | Structure → Chronologie de la structure | 8 |
 | `/tresorerie/budget` | Finances → Budget & pilotage | 9 |
 | `/tresorerie/bilans` | Finances → Budget & pilotage | 9 |
-| `/vie-interne/notifications-rappels` | Système → Rappels & notifications | 10 |
-| `/systeme/modeles` | Système → Rappels & notifications | 10 |
-| `/systeme/modeles-notifications` | Système → Rappels & notifications | 10 |
-| `/systeme/automatisations` | Système → Rappels & notifications | 10 |
-| `/sport-team-control/scrims` | Membres → Suivi sportif | 10 |
-| `/sport-team-control/calendrier-esport` | Membres → Suivi sportif | 10 |
-| `/sport-team-control/performance` | Membres → Suivi sportif | 10 |
-| `/sport-team-control/debriefs` | Membres → Suivi sportif | 10 |
-| `/vie-interne/debriefs` | Membres → Suivi sportif | 10 |
-| `/vie-interne/recrutement-tryouts` | Membres → Recrutement | 10 |
-| `/sport-team-control/recrutement-tryouts` | Membres → Recrutement | 10 |
+| `/vie-interne/notifications-rappels` | Aujourd’hui → Rappels & notifications | 10 |
+| `/systeme/modeles` | Aujourd’hui → Rappels & notifications | 10 |
+| `/systeme/modeles-notifications` | Aujourd’hui → Rappels & notifications | 10 |
+| `/systeme/automatisations` | Aujourd’hui → Rappels & notifications | 10 |
+| `/sport-team-control/scrims` | Esport → Entraînement | 10 |
+| `/sport-team-control/calendrier-esport` | Esport → Entraînement | 10 |
+| `/sport-team-control/performance` | Esport → Entraînement | 10 |
+| `/sport-team-control/debriefs` | Esport → Entraînement | 10 |
+| `/vie-interne/debriefs` | Esport → Entraînement | 10 |
+| `/vie-interne/recrutement-tryouts` | Personnes → Recrutement | 10 |
+| `/sport-team-control/recrutement-tryouts` | Personnes → Recrutement | 10 |
 
 Les accueils de pôles sans synthèse utile ne sont pas recréés. La messagerie interne autonome est écartée du périmètre actuel. Une ancienne fiche qui décrit un besoin plus large doit être relue à la lumière du chantier cible avant développement.
 

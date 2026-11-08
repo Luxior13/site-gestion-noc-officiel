@@ -313,7 +313,7 @@ async function expectPersonsListFilteringAndPagination(
 
   // The list accepts SSR data on navigation and may abort a redundant client GET.
   // Assert the rendered list, and exercise its real API separately.
-  await page.goto(`/membres/repertoire?q=${encodeURIComponent(listPrefix)}`);
+  await page.goto(`/personnes/repertoire?q=${encodeURIComponent(listPrefix)}`);
   const firstPageResponse = await browserApi(
     page,
     `/api/personnes?q=${encodeURIComponent(listPrefix)}`,
@@ -372,7 +372,7 @@ async function expectPersonsListFilteringAndPagination(
   ).toBe(true);
   await expect(page).toHaveURL((url) => {
     return (
-      url.pathname === '/membres/repertoire' &&
+      url.pathname === '/personnes/repertoire' &&
       url.searchParams.get('q') === listPrefix &&
       url.searchParams.get('structureStatus') === 'IN_STRUCTURE'
     );
@@ -393,7 +393,7 @@ async function expectPersonsListFilteringAndPagination(
   ).toHaveLength(25);
   await expect(page).toHaveURL((url) => {
     return (
-      url.pathname === '/membres/repertoire' &&
+      url.pathname === '/personnes/repertoire' &&
       url.searchParams.get('q') === listPrefix &&
       !url.searchParams.has('structureStatus')
     );
@@ -464,7 +464,7 @@ async function expectPersonIdentityLifecycle(page: Page): Promise<void> {
     duplicateSourceResponse,
   );
 
-  await page.goto('/membres/repertoire/nouveau');
+  await page.goto('/personnes/repertoire/nouveau');
   await expect(
     page.getByRole('heading', { exact: true, name: 'Nouvelle fiche' }),
   ).toBeVisible();
@@ -488,7 +488,7 @@ async function expectPersonIdentityLifecycle(page: Page): Promise<void> {
   expect(creationResult.person.socialProfiles).toHaveLength(0);
   const personId = creationResult.person.id;
   await expect(page).toHaveURL(
-    (url) => url.pathname === `/membres/repertoire/${personId}`,
+    (url) => url.pathname === `/personnes/repertoire/${personId}`,
   );
   await expect(
     page.getByRole('heading', { exact: true, name: nickname }),
@@ -879,7 +879,7 @@ async function expectPersonIdentityLifecycle(page: Page): Promise<void> {
       readinessRequests += 1;
   };
   page.on('request', onReadinessRequest);
-  await page.goto(`/membres/repertoire/${personId}`);
+  await page.goto(`/personnes/repertoire/${personId}`);
   await expect(
     page.getByRole('heading', { exact: true, name: updatedNickname }),
   ).toBeVisible();
@@ -907,7 +907,7 @@ async function expectPersonIdentityLifecycle(page: Page): Promise<void> {
       { timeout: 30_000 },
     )
     .toEqual({ personId });
-  await expect(page).toHaveURL('/membres/repertoire', {
+  await expect(page).toHaveURL('/personnes/repertoire', {
     timeout: 30_000,
   });
   await expect(

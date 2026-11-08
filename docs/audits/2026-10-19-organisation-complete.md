@@ -83,7 +83,7 @@ fichiers sont déplacés sans `git mv` : Git détecte les renommages par similar
 | `docs/qualite/modeles/revue-page.md`, `audit.md`, `decision.md` | [methode/modeles/](../methode/modeles/suivi-page.md) `suivi-page.md`, `rapport-audit.md`, `decision.md` |
 | `docs/qualite/pages/README.md` | [pages/README.md](../pages/README.md) |
 | `docs/qualite/pages/systeme-utilisateurs.md` | [pages/systeme/utilisateurs/](../pages/systeme/utilisateurs/README.md), découpé (voir ci-dessous) |
-| `docs/qualite/pages/membres-repertoire.md` | [pages/membres/repertoire/](../pages/membres/repertoire/README.md), découpé |
+| `docs/qualite/pages/membres-repertoire.md` | [pages/membres/repertoire/](../pages/personnes/repertoire/README.md), découpé |
 | `docs/qualite/pages/mon-compte.md` | [pages/mon-compte/](../pages/mon-compte/README.md), découpé |
 | `docs/qualite/pages/accueil.md`, `connexion.md` | [pages/accueil.md](../pages/accueil.md), [pages/connexion.md](../pages/connexion.md) |
 | `docs/qualite/pages/systeme-parametres.md`, `systeme-feuille-de-route.md`, `systeme-journal-activite.md` | [pages/systeme/](../pages/systeme/README.md) `parametres.md`, `feuille-de-route.md`, `journal-activite.md` |
@@ -164,7 +164,7 @@ décisions retenues, les points ouverts, les références et l’historique.
 | Ancien suivi | Fiches |
 | --- | --- |
 | Utilisateurs | [README](../pages/systeme/utilisateurs/README.md) (synthèse, revues de la fiche, composants communs), [liste](../pages/systeme/utilisateurs/liste.md) (13 sections, registre USR-01 à USR-25), [création](../pages/systeme/utilisateurs/creation.md), [Profil](../pages/systeme/utilisateurs/fiche-profil.md) (nouvelle, « Suivi à compléter »), [Autorisations](../pages/systeme/utilisateurs/fiche-autorisations.md) (7 sections), [Sécurité](../pages/systeme/utilisateurs/fiche-securite.md) (4 sections) |
-| Répertoire | [README](../pages/membres/repertoire/README.md), [liste](../pages/membres/repertoire/liste.md) (8 sections dont l’inventaire A à Z), [création](../pages/membres/repertoire/creation.md), [Identité](../pages/membres/repertoire/fiche-identite.md) (nouvelle), [Coordonnées](../pages/membres/repertoire/fiche-coordonnees.md) |
+| Répertoire | [README](../pages/personnes/repertoire/README.md), [liste](../pages/personnes/repertoire/liste.md) (8 sections dont l’inventaire A à Z), [création](../pages/personnes/repertoire/creation.md), [Identité](../pages/personnes/repertoire/fiche-identite.md) (nouvelle), [Coordonnées](../pages/personnes/repertoire/fiche-coordonnees.md) |
 | Mon compte | [README](../pages/mon-compte/README.md), [Profil](../pages/mon-compte/profil.md), [Sécurité](../pages/mon-compte/securite.md) |
 
 ### Répartition de `DESIGN_SYSTEM.md`

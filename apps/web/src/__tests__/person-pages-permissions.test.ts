@@ -46,8 +46,8 @@ vi.mock('$features/persons/server/person.service', () => ({
   listPersons: vi.fn(),
 }));
 
-import PersonPage from '$app/membres/repertoire/[id]/page';
-import NewPersonPage from '$app/membres/repertoire/nouveau/page';
+import PersonPage from '$app/personnes/repertoire/[id]/page';
+import NewPersonPage from '$app/personnes/repertoire/nouveau/page';
 import { PersonsPageClient as PersonsPage } from '$features/persons/components/PersonsPageClient';
 
 const user = (
@@ -120,16 +120,16 @@ describe('direct Person page permission boundaries', () => {
         canCreate: true,
         canViewContact: false,
         createHref:
-          '/membres/repertoire/nouveau?returnTo=%2Fmembres%2Frepertoire',
+          '/personnes/repertoire/nouveau?returnTo=%2Fpersonnes%2Frepertoire',
         initialState: undefined,
         navigationScope: 'user-1',
-        returnHref: '/membres/repertoire',
+        returnHref: '/personnes/repertoire',
       },
       undefined,
     );
   });
 
-  it('denies /membres/repertoire/nouveau without persons:create and never mounts its form', () => {
+  it('denies /personnes/repertoire/nouveau without persons:create and never mounts its form', () => {
     mocks.useUser.mockReturnValue({
       userData: user({ [PERMISSIONS.PERSONS.VIEW]: true }),
     });
@@ -152,7 +152,7 @@ describe('direct Person page permission boundaries', () => {
 
     expect(mocks.createForm).toHaveBeenCalledOnce();
     expect(mocks.createForm).toHaveBeenCalledWith(
-      { returnHref: '/membres/repertoire' },
+      { returnHref: '/personnes/repertoire' },
       undefined,
     );
   });

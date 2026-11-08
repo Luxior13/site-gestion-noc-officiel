@@ -48,4 +48,4 @@ des statistiques ou une action collective change.
 
 [Architecture](architecture-fonctionnalite.md) · [Performance](performance.md) ·
 [Permissions](permissions.md) · [Système de design](../design/README.md) ·
-[Répertoire — décisions courantes](../pages/membres/repertoire/README.md).
+[Répertoire — décisions courantes](../pages/personnes/repertoire/README.md).

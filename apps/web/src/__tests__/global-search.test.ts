@@ -121,7 +121,7 @@ describe('global page search', () => {
   const member = { isProtected: false, permissions: {}, role: 'USER' as const };
 
   it.each([
-    ['personne', '/membres/repertoire'],
+    ['personne', '/personnes/repertoire'],
     ['logs', '/systeme/journal-activite'],
     ['historique', '/systeme/journal-activite'],
     ['mot de passe', '/mon-compte?section=security'],

@@ -89,4 +89,4 @@ suivis, notamment NAV-02.
 Suivis : [navigation](../pages/transverse/navigation-generale.md),
 [Mon compte](../pages/mon-compte/README.md),
 [Utilisateurs](../pages/systeme/utilisateurs/README.md),
-[Répertoire](../pages/membres/repertoire/README.md).
+[Répertoire](../pages/personnes/repertoire/README.md).

@@ -3,44 +3,42 @@ import { OPERATIONS_ROADMAP_ITEMS } from './roadmap-operations.data';
 import type {
   RoadmapArea,
   RoadmapItem,
-  RoadmapKind,
   RoadmapPhase,
-  RoadmapStatus,
 } from './types/roadmap.types';
 
+/**
+ * Seven poles, each answering one question (owner, 8 November 2026): who
+ * passed through the structure, which teams and tournaments, where the money
+ * stands… A list of choices lives next to what it classifies.
+ */
 export const ROADMAP_AREAS: readonly RoadmapArea[] = [
   {
-    description: 'Mon travail, mes tâches et ce qui m’attend.',
+    description:
+      'Ce qui m’attend : mon travail, mes rappels, les tâches et le calendrier du bureau.',
     icon: 'LayoutDashboard',
     id: 'today',
     label: 'Aujourd’hui',
     tone: 'dashboard',
   },
   {
-    description: 'Répertoire, équipes, parcours et adhésions des membres.',
+    description:
+      'Qui est passé par la structure : répertoire, parcours, adhésions, recrutement, arrivées et départs.',
     icon: 'Users',
     id: 'people',
-    label: 'Membres',
+    label: 'Personnes',
     tone: 'internal',
   },
   {
     description:
-      'Organisations externes, partenariats et engagements commerciaux.',
-    icon: 'Handshake',
-    id: 'relations',
-    label: 'Relations',
-    tone: 'legal',
+      'Quelles équipes, quels tournois : jeux, équipes, tournois, entraînement et déplacements.',
+    icon: 'Gamepad2',
+    id: 'esport',
+    label: 'Esport',
+    tone: 'internal',
   },
   {
     description:
-      'Identité juridique, réunions, décisions, documents et confidentialité.',
-    icon: 'ShieldCheck',
-    id: 'structure',
-    label: 'Structure',
-    tone: 'legal',
-  },
-  {
-    description: 'Comptes, factures, paiements, budgets et contrôles.',
+      'Où en est l’argent : comptes, opérations, factures, frais, subventions, budgets et contrôles.',
     icon: 'Wallet',
     id: 'finance',
     label: 'Finances',
@@ -48,7 +46,23 @@ export const ROADMAP_AREAS: readonly RoadmapArea[] = [
   },
   {
     description:
-      'Accès, configuration, listes de référence, données et intégrations.',
+      'Avec qui à l’extérieur : organisations, partenariats et communication.',
+    icon: 'Handshake',
+    id: 'relations',
+    label: 'Relations',
+    tone: 'legal',
+  },
+  {
+    description:
+      'L’association et sa mémoire : identité juridique, réunions et décisions, documents, contrats, incidents, matériel.',
+    icon: 'ShieldCheck',
+    id: 'structure',
+    label: 'Structure',
+    tone: 'legal',
+  },
+  {
+    description:
+      'Le fonctionnement de l’outil : comptes utilisateurs, accès, journal, paramètres, données et feuille de route.',
     icon: 'Settings',
     id: 'system',
     label: 'Système',
@@ -117,16 +131,5 @@ export const ROADMAP_ITEMS: readonly RoadmapItem[] = [
   ...CORE_ROADMAP_ITEMS,
   ...OPERATIONS_ROADMAP_ITEMS,
 ];
-export const ROADMAP_STATUS_LABELS: Record<RoadmapStatus, string> = {
-  partial: 'À compléter',
-  planned: 'À cadrer',
-};
-export const ROADMAP_KIND_LABELS: Record<RoadmapKind, string> = {
-  extension: 'Extension',
-  integration: 'Intégration',
-  module: 'Module',
-  view: 'Vue partagée',
-};
-
 export const getRoadmapItem = (id: string): RoadmapItem | undefined =>
   ROADMAP_ITEMS.find((item) => item.id === id);

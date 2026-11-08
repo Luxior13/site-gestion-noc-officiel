@@ -14,7 +14,7 @@ Le site sert d’abord à la trésorerie et à la traçabilité de la structure
 | Manager d’équipe | Seulement son équipe, sans les autres pôles | Compte Utilisateur et portée par équipe, à construire |
 
 Les joueurs, coachs et autres membres sont des fiches du
-[Répertoire](../pages/membres/repertoire/README.md), sans compte. Valable jusqu’à
+[Répertoire](../pages/personnes/repertoire/README.md), sans compte. Valable jusqu’à
 nouvelle décision ; la portée après une évolution en société reste à préciser.
 
 Conséquences :

@@ -3,6 +3,7 @@ import type { RoadmapPlannedPage } from './types/roadmap.types';
 export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   {
     area: 'structure',
+    chantier: 'legal-entities',
     name: 'Identité juridique',
     phase: 3,
     tabs: [
@@ -13,6 +14,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
       },
       {
         label: 'Mandats',
+        managedIn: 'Fiche personne, onglet Parcours',
         phase: 3,
         summary: 'Qui occupe quelle fonction, lu depuis les parcours.',
       },
@@ -23,6 +25,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'Assurances, affiliations, licences, marque, et leurs échéances.',
       },
       {
+        chantier: 'documents',
         label: 'Documents',
         phase: 7,
         summary: 'Statuts et pièces officielles.',
@@ -31,6 +34,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'structure',
+    chantier: 'internal-news',
     name: 'Chronologie',
     phase: 8,
     summary:
@@ -38,6 +42,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'structure',
+    chantier: 'meetings',
     name: 'Réunions',
     phase: 6,
     tabs: [
@@ -48,6 +53,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
       },
       {
         label: 'Décisions',
+        managedIn: 'Fiche réunion',
         phase: 6,
         summary:
           'Toutes les décisions, retrouvables sans ouvrir chaque réunion.',
@@ -56,6 +62,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'structure',
+    chantier: 'meetings',
     name: 'Fiche réunion',
     phase: 6,
     tabs: [
@@ -75,6 +82,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         summary: 'Décisions prises, avec portée et preuve.',
       },
       {
+        chantier: 'tasks',
         label: 'Tâches',
         phase: 6,
         summary: 'Actions issues de la réunion.',
@@ -83,12 +91,14 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'structure',
+    chantier: 'documents',
     name: 'Documents',
     phase: 7,
     summary: 'Liste, sans onglet : la bibliothèque de la structure.',
   },
   {
     area: 'structure',
+    chantier: 'documents',
     name: 'Fiche document',
     phase: 7,
     tabs: [
@@ -111,12 +121,14 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'structure',
+    chantier: 'contracts',
     name: 'Contrats',
     phase: 7,
     summary: 'Liste, sans onglet : contrats en cours et passés.',
   },
   {
     area: 'structure',
+    chantier: 'contracts',
     name: 'Fiche contrat',
     phase: 7,
     tabs: [
@@ -131,7 +143,9 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         summary: 'Obligations, échéances et avenants.',
       },
       {
+        chantier: 'payments',
         label: 'Règlements',
+        managedIn: 'Finances',
         phase: 7,
         summary: 'Factures et opérations liées.',
       },
@@ -144,12 +158,14 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'structure',
+    chantier: 'incidents',
     name: 'Incidents',
     phase: 5,
     summary: 'Liste, sans onglet, réservée aux personnes habilitées.',
   },
   {
     area: 'structure',
+    chantier: 'incidents',
     name: 'Fiche incident',
     phase: 5,
     tabs: [
@@ -169,6 +185,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         summary: 'Décision, recours et durée.',
       },
       {
+        chantier: 'documents',
         label: 'Documents',
         phase: 7,
         summary: 'Pièces du dossier.',
@@ -177,21 +194,25 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'structure',
+    chantier: 'annual-report',
     name: 'Bilan annuel',
     phase: 9,
     tabs: [
       {
         label: 'Membres',
+        managedIn: 'Fiches personnes et équipes',
         phase: 9,
         summary: 'Effectifs, arrivées et départs de l’année.',
       },
       {
         label: 'Activité',
+        managedIn: 'Tournois, Réunions et Déplacements',
         phase: 9,
         summary: 'Tournois, gains, décisions et événements.',
       },
       {
         label: 'Finances',
+        managedIn: 'Finances',
         phase: 9,
         summary: 'Recettes, dépenses et résultat de l’exercice.',
       },
@@ -199,6 +220,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'structure',
+    chantier: 'logistics',
     name: 'Matériel & abonnements',
     phase: 8,
     tabs: [
@@ -213,16 +235,23 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         summary:
           'Services, domaines et licences : titulaire, coût, échéance, jamais de mot de passe.',
       },
+      {
+        label: 'Types de matériel',
+        phase: 8,
+        summary: 'Maillot, périphérique, licence…',
+      },
     ],
   },
   {
-    area: 'structure',
-    name: 'Événements & déplacements',
+    area: 'esport',
+    chantier: 'events',
+    name: 'Déplacements',
     phase: 10,
     summary: 'Onglets définis à son cadrage.',
   },
   {
     area: 'finance',
+    chantier: 'accounts',
     name: 'Comptes',
     phase: 3,
     tabs: [
@@ -236,10 +265,23 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         phase: 3,
         summary: 'Exercices ouverts et clôturés ; la clôture se fait ici.',
       },
+      {
+        chantier: 'payments',
+        label: 'Catégories',
+        phase: 3,
+        summary: 'Catégories d’opération : cotisations, sponsoring, cashprize…',
+      },
+      {
+        chantier: 'payments',
+        label: 'Moyens de paiement',
+        phase: 3,
+        summary: 'Virement, espèces, carte…',
+      },
     ],
   },
   {
     area: 'finance',
+    chantier: 'accounts',
     name: 'Fiche compte',
     phase: 3,
     tabs: [
@@ -262,6 +304,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'finance',
+    chantier: 'payments',
     name: 'Opérations',
     phase: 3,
     summary:
@@ -269,6 +312,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'finance',
+    chantier: 'payments',
     name: 'Fiche opération',
     phase: 3,
     tabs: [
@@ -292,12 +336,14 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'finance',
+    chantier: 'invoices',
     name: 'Factures',
     phase: 4,
     summary: 'Liste, sans onglet : ventes et achats, avec leur échéance.',
   },
   {
     area: 'finance',
+    chantier: 'invoices',
     name: 'Fiche facture',
     phase: 4,
     tabs: [
@@ -320,12 +366,14 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'finance',
+    chantier: 'expenses',
     name: 'Notes de frais',
     phase: 4,
     summary: 'Liste, sans onglet : demandes de remboursement et leur état.',
   },
   {
     area: 'finance',
+    chantier: 'expenses',
     name: 'Fiche note de frais',
     phase: 4,
     tabs: [
@@ -348,6 +396,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'finance',
+    chantier: 'grants',
     name: 'Subventions & dons',
     phase: 4,
     tabs: [
@@ -365,6 +414,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'finance',
+    chantier: 'grants',
     name: 'Fiche subvention',
     phase: 4,
     tabs: [
@@ -392,6 +442,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'finance',
+    chantier: 'finance-controls',
     name: 'Contrôles',
     phase: 4,
     tabs: [
@@ -414,12 +465,14 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'finance',
+    chantier: 'budget',
     name: 'Budget',
     phase: 9,
     summary: 'Liste, sans onglet : les budgets, par version.',
   },
   {
     area: 'finance',
+    chantier: 'budget',
     name: 'Fiche budget',
     phase: 9,
     tabs: [
@@ -429,9 +482,10 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         summary: 'Enveloppes par équipe ou par projet.',
       },
       {
-        label: 'Suivi',
+        label: 'Réalisé',
+        managedIn: 'Opérations',
         phase: 9,
-        summary: 'Réalisé, écarts et trésorerie prévue.',
+        summary: 'Dépenses et recettes réelles, écarts et trésorerie prévue.',
       },
     ],
   },
@@ -447,10 +501,11 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
     phase: null,
     tabs: [
       {
+        chantier: 'access-scopes',
         label: 'Profil',
         phase: null,
-        summary:
-          'Identité, connexion, contact ; fiche Répertoire liée (étape 2).',
+        summary: 'Identité, connexion, contact.',
+        upcoming: 'Fiche du répertoire liée au compte.',
       },
       {
         label: 'Autorisations',
@@ -467,57 +522,23 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'system',
+    chantier: 'activity-journal',
     name: 'Journal d’activité',
     phase: null,
-    summary: 'Liste, sans onglet : qui a fait quoi. Export à venir (étape 7).',
+    summary: 'Liste, sans onglet : qui a fait quoi.',
+    upcoming: 'Export CSV ou JSON des résultats filtrés.',
   },
   {
     area: 'system',
+    chantier: 'compliance',
     name: 'Paramètres système',
     phase: null,
-    summary:
-      'Réglages, sans onglet. Accueillera la conservation des coordonnées (étape 2).',
+    summary: 'Réglages, sans onglet.',
+    upcoming: 'Conservation des coordonnées après le départ d’une personne.',
   },
   {
     area: 'system',
-    name: 'Listes de référence',
-    phase: 1,
-    tabs: [
-      {
-        label: 'Jeux',
-        phase: 1,
-        summary: 'Ajouter, renommer, archiver.',
-      },
-      {
-        label: 'Fonctions',
-        phase: 1,
-        summary:
-          'Ajouter, renommer, archiver ; réglage « Donne accès à son équipe ».',
-      },
-      {
-        label: 'Étiquettes',
-        phase: 1,
-        summary: 'Repères libres pour classer les fiches.',
-      },
-      {
-        label: 'Catégories',
-        phase: 3,
-        summary: 'Catégories d’opération : cotisations, sponsoring, cashprize…',
-      },
-      {
-        label: 'Moyens de paiement',
-        phase: 3,
-        summary: 'Virement, espèces, carte…',
-      },
-      {
-        label: 'Types de matériel',
-        phase: 8,
-        summary: 'Maillot, périphérique, licence…',
-      },
-    ],
-  },
-  {
-    area: 'system',
+    chantier: 'data',
     name: 'Données',
     phase: 2,
     tabs: [
@@ -535,14 +556,32 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'system',
-    name: 'Rappels & notifications',
-    phase: 10,
-    summary: 'Onglets définis à son cadrage.',
-  },
-  {
-    area: 'system',
     name: 'Feuille de route',
     phase: null,
-    summary: 'Lecture, sans onglet : chantiers, pages et onglets prévus.',
+    tabs: [
+      {
+        label: 'Chantiers',
+        phase: null,
+        summary:
+          'Chantiers par pôle avec leur étape suggérée, dépliés sur place : première version, critère de livraison, prérequis et pages.',
+      },
+      {
+        label: 'Pages et onglets',
+        phase: null,
+        summary: 'Les pages visées par pôle, leurs onglets et leur étape.',
+      },
+      {
+        label: 'Couverture',
+        phase: null,
+        summary:
+          'Les sujets d’une structure esport et les chantiers qui les traitent.',
+      },
+      {
+        label: 'Ordre suggéré',
+        phase: null,
+        summary:
+          'Les mêmes chantiers rangés par étape, pour aider à choisir le prochain.',
+      },
+    ],
   },
 ];

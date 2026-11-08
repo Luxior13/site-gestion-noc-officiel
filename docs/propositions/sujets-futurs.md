@@ -139,7 +139,7 @@ Principes à reprendre :
   sens. Les effets et ombres restent rares.
 - Tableau dense : recherche large, sélecteurs sur une ligne, remise à zéro
   seulement si un filtre est actif, chips retirables, compteur + taille de page.
-  C'est la forme retenue comme page de référence (`/membres/repertoire`).
+  C'est la forme retenue comme page de référence (`/personnes/repertoire`).
 
 ## Outils personnels (type notes)
 

@@ -319,7 +319,7 @@ pas prérequises à ces corrections. Rejouer les projections et les refus d'acc�
 sur base isolée avec un compte racine auteur et des lecteurs distincts, puis
 les parcours correspondants dans la fiche et l'éditeur. Les propriétaires
 courants sont [Utilisateurs](../pages/systeme/utilisateurs/README.md),
-[Répertoire](../pages/membres/repertoire/README.md),
+[Répertoire](../pages/personnes/repertoire/README.md),
 [Mon compte](../pages/mon-compte/README.md) et
 [Paramètres](../pages/systeme/parametres.md).
 
@@ -343,7 +343,7 @@ cette session, sur instruction de l'utilisateur.
 
 La référence [Permissions](../domaines/permissions.md) et les suivis
 [Utilisateurs](../pages/systeme/utilisateurs/README.md),
-[Répertoire](../pages/membres/repertoire/README.md) et
+[Répertoire](../pages/personnes/repertoire/README.md) et
 [Mon compte](../pages/mon-compte/README.md) portent les décisions courantes.
 
 ### Preuves de correction

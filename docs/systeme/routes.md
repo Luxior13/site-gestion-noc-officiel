@@ -19,7 +19,7 @@ vérifie que chaque route y est citée.
 | [login/layout.tsx](../../apps/web/src/app/login/layout.tsx) | Métadonnées de la connexion |
 | [mon-compte/layout.tsx](../../apps/web/src/app/mon-compte/layout.tsx) | Métadonnées de Mon compte |
 | [systeme/utilisateurs/layout.tsx](../../apps/web/src/app/systeme/utilisateurs/layout.tsx) | Métadonnées du module Utilisateurs |
-| [membres/repertoire/nouveau/layout.tsx](../../apps/web/src/app/membres/repertoire/nouveau/layout.tsx), [membres/repertoire/[id]/layout.tsx](../../apps/web/src/app/membres/repertoire/%5Bid%5D/layout.tsx), [systeme/utilisateurs/nouveau/layout.tsx](../../apps/web/src/app/systeme/utilisateurs/nouveau/layout.tsx), [systeme/utilisateurs/[id]/layout.tsx](../../apps/web/src/app/systeme/utilisateurs/%5Bid%5D/layout.tsx), [systeme/journal-activite/layout.tsx](../../apps/web/src/app/systeme/journal-activite/layout.tsx), [systeme/feuille-de-route/layout.tsx](../../apps/web/src/app/systeme/feuille-de-route/layout.tsx) | Titre d’onglet de la page (31 octobre 2026, WCAG 2.4.2) ; Paramètres système le déclare dans sa propre `page.tsx` |
+| [membres/repertoire/nouveau/layout.tsx](../../apps/web/src/app/personnes/repertoire/nouveau/layout.tsx), [membres/repertoire/[id]/layout.tsx](../../apps/web/src/app/personnes/repertoire/%5Bid%5D/layout.tsx), [systeme/utilisateurs/nouveau/layout.tsx](../../apps/web/src/app/systeme/utilisateurs/nouveau/layout.tsx), [systeme/utilisateurs/[id]/layout.tsx](../../apps/web/src/app/systeme/utilisateurs/%5Bid%5D/layout.tsx), [systeme/journal-activite/layout.tsx](../../apps/web/src/app/systeme/journal-activite/layout.tsx), [systeme/feuille-de-route/layout.tsx](../../apps/web/src/app/systeme/feuille-de-route/layout.tsx) | Titre d’onglet de la page (31 octobre 2026, WCAG 2.4.2) ; Paramètres système le déclare dans sa propre `page.tsx` |
 | [error.tsx](../../apps/web/src/app/error.tsx), [global-error.tsx](../../apps/web/src/app/global-error.tsx) | Erreurs de rendu, dont l’état racine autonome |
 | [not-found.tsx](../../apps/web/src/app/not-found.tsx) | Page introuvable |
 | [loading.tsx](../../apps/web/src/app/loading.tsx) et `loading.tsx` des listes et fiches | Squelettes de chargement |
@@ -38,9 +38,9 @@ Ce relevé ne remplace pas la [référence des permissions](../domaines/permissi
 | `/` | Page | Session (`AuthenticatedLayout`), `dashboard:view` | commun | [Accueil — Mon travail](../pages/accueil.md) |
 | `/login` | Page | Publique | intégré | [Connexion](../pages/connexion.md) |
 | `/mon-compte` | Page | Session | commun | [Mon compte](../pages/mon-compte/README.md), [Profil](../pages/mon-compte/profil.md), [Autorisations](../pages/mon-compte/acces.md), [Sécurité](../pages/mon-compte/securite.md) |
-| `/membres/repertoire` | Page | `getPageAuthSession`, `persons:view`, `assertPersonFeatureReady` | oui | [Liste du répertoire](../pages/membres/repertoire/liste.md) |
-| `/membres/repertoire/nouveau` | Page | Session, `persons:create` | commun | [Nouvelle fiche personne](../pages/membres/repertoire/creation.md) |
-| `/membres/repertoire/[id]` | Page | `getPageAuthSession`, `persons:view`, `assertPersonFeatureReady` | oui | [Identité](../pages/membres/repertoire/fiche-identite.md), [Coordonnées](../pages/membres/repertoire/fiche-coordonnees.md) |
+| `/personnes/repertoire` | Page | `getPageAuthSession`, `persons:view`, `assertPersonFeatureReady` | oui | [Liste du répertoire](../pages/personnes/repertoire/liste.md) |
+| `/personnes/repertoire/nouveau` | Page | Session, `persons:create` | commun | [Nouvelle fiche personne](../pages/personnes/repertoire/creation.md) |
+| `/personnes/repertoire/[id]` | Page | `getPageAuthSession`, `persons:view`, `assertPersonFeatureReady` | oui | [Identité](../pages/personnes/repertoire/fiche-identite.md), [Coordonnées](../pages/personnes/repertoire/fiche-coordonnees.md) |
 | `/systeme/utilisateurs` | Page | Session, `users:view` | oui | [Liste des utilisateurs](../pages/systeme/utilisateurs/liste.md) |
 | `/systeme/utilisateurs/nouveau` | Page | Session, `users:create` | intégré | [Nouvel utilisateur](../pages/systeme/utilisateurs/creation.md) |
 | `/systeme/utilisateurs/[id]` | Page | `getPageAuthSession`, `users:view`, sections selon les capacités | oui | [Profil](../pages/systeme/utilisateurs/fiche-profil.md), [Autorisations](../pages/systeme/utilisateurs/fiche-autorisations.md), [Sécurité](../pages/systeme/utilisateurs/fiche-securite.md) |
@@ -58,7 +58,7 @@ avant le rendu des pages.
 
 | Ancienne adresse | Destination |
 | --- | --- |
-| `/personnes/*`, `/vie-interne/repertoire/*` | `/membres/repertoire/*` |
+| `/membres/repertoire/*` (pôle renommé le 8 novembre 2026), `/vie-interne/repertoire/*` | `/personnes/repertoire/*` |
 | `/administration/utilisateurs/*`, `/administration` | `/systeme/utilisateurs/*` |
 | `/vie-interne/actualite-interne`, `/activite/actualites`, `/feuille-de-route` | `/systeme/feuille-de-route` |
 | `/mes-notifications`, `/tableau-de-bord/mes-notifications` | `/systeme/feuille-de-route` |

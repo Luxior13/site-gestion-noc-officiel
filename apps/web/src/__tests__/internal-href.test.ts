@@ -52,16 +52,16 @@ describe('known page destinations', () => {
     '/',
     '/mon-compte?section=security',
     '/systeme/parametres',
-    '/membres/repertoire/nouveau',
-    '/membres/repertoire/person-1?section=contacts',
+    '/personnes/repertoire/nouveau',
+    '/personnes/repertoire/person-1?section=contacts',
     '/systeme/utilisateurs/user-1?section=access',
   ])('accepts the live destination %s', (href) => {
     expect(isKnownInternalPageHref(href)).toBe(true);
   });
 
   it.each([
-    '/personnes/nouveau',
-    '/personnes/person-1?section=contacts',
+    '/membres/repertoire/nouveau',
+    '/membres/repertoire/person-1?section=contacts',
     '/systeme/journal-activite?period=7d',
     '/mes-notifications?status=unread',
   ])('keeps legacy or parked destinations redirectable: %s', (href) => {

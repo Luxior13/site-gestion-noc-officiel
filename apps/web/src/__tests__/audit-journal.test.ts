@@ -560,7 +560,7 @@ describe('activity journal projection', () => {
     );
 
     expect(forAdmin.target).toEqual({
-      href: '/membres/repertoire/person-1',
+      href: '/personnes/repertoire/person-1',
       id: 'person-1',
       kind: 'person',
       name: 'MaxLaFontaine',

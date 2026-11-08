@@ -4,9 +4,9 @@ export const PAGE_PATHS = {
   home: '/',
   internalNews: '/activite/actualites',
   login: '/login',
-  newPerson: '/membres/repertoire/nouveau',
+  newPerson: '/personnes/repertoire/nouveau',
   newUser: '/systeme/utilisateurs/nouveau',
-  persons: '/membres/repertoire',
+  persons: '/personnes/repertoire',
   roadmap: '/systeme/feuille-de-route',
   system: '/systeme',
   systemActivity: '/systeme/journal-activite',
@@ -14,10 +14,16 @@ export const PAGE_PATHS = {
   users: '/systeme/utilisateurs',
 } as const;
 
-// These aliases go straight to the canonical destination, including /personnes.
-// Only the resource collections accept suffixes; an alias creates no new page.
+// These aliases go straight to the canonical destination. Only the resource
+// collections accept suffixes; an alias creates no new page. The pole Membres
+// became Personnes on 8 November 2026: /personnes is now the pole itself, so
+// its former alias (/personnes/:id) is gone.
 export const LEGACY_PAGE_ALIASES = [
-  { collection: true, destination: PAGE_PATHS.persons, source: '/personnes' },
+  {
+    collection: true,
+    destination: PAGE_PATHS.persons,
+    source: '/membres/repertoire',
+  },
   {
     collection: true,
     destination: PAGE_PATHS.persons,

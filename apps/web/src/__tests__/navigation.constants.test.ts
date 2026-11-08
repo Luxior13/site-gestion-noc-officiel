@@ -83,7 +83,7 @@ describe('navigation availability', () => {
     expect(hrefs).toContain('/tableau-de-bord/mes-taches');
     expect(hrefs).toContain('/vie-interne/reunions');
     expect(hrefs).toContain('/bureau-juridique/decisions-bureau');
-    expect(hrefs).not.toContain('/membres/repertoire');
+    expect(hrefs).not.toContain('/personnes/repertoire');
     expect(hrefs).toContain('/bureau-juridique/documents');
     expect(hrefs).toContain('/bureau-juridique/partenaires');
     expect(hrefs).toContain('/tresorerie/operations');
@@ -148,11 +148,11 @@ describe('navigation availability', () => {
     const user = buildUser({ [PERMISSIONS.PERSONS.VIEW]: true });
     const hrefs = getVisibleHrefs(user.permissions);
 
-    expect(hrefs).toContain('/membres/repertoire');
+    expect(hrefs).toContain('/personnes/repertoire');
     expect(hrefs).not.toContain('/vie-interne/membres');
     expect(hrefs).not.toContain('/bureau-juridique/personnes-contacts');
     expect(
-      getActiveNavigationSpace('/membres/repertoire', [
+      getActiveNavigationSpace('/personnes/repertoire', [
         ...getVisibleNavigationSpaces(user),
       ]).id,
     ).toBe('internal');
@@ -199,7 +199,7 @@ describe('navigation availability', () => {
       buildUser({ [PERMISSIONS.PERSONS.VIEW]: true }),
     );
     expect(
-      getActiveNavigationSpace('/membres/repertoire', personSpaces).id,
+      getActiveNavigationSpace('/personnes/repertoire', personSpaces).id,
     ).toBe('internal');
     // The system pole has no hub page anymore: its remaining destinations must
     // still resolve to the system space for the sidebar highlight.
@@ -215,7 +215,7 @@ describe('navigation availability', () => {
     const hrefs = getRoadmapHrefs();
 
     expect(hrefs).toContain('/vie-interne/reunions');
-    expect(hrefs).not.toContain('/membres/repertoire');
+    expect(hrefs).not.toContain('/personnes/repertoire');
     expect(hrefs).not.toContain('/');
     expect(hrefs).not.toContain('/mon-compte');
     expect(hrefs).not.toContain('/systeme/utilisateurs');
@@ -230,7 +230,7 @@ describe('navigation availability', () => {
 
     expect(liveHrefs).toEqual([
       '/',
-      '/membres/repertoire',
+      '/personnes/repertoire',
       '/systeme/utilisateurs',
       '/systeme/journal-activite',
       '/systeme/parametres',

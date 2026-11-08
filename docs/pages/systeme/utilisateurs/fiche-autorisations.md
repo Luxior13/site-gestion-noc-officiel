@@ -563,7 +563,7 @@ Décisions courantes :
 
 - Distinguer réglage configuré et accès réellement utilisable ; expliquer les
   dépendances qui bloquent un réglage autorisé et les exclure du compteur utilisable.
-- Afficher uniquement les trois pages livrées et les pôles Membres/Système.
+- Afficher uniquement les trois pages livrées et les pôles Personnes/Système (« Membres » jusqu’au 8 novembre 2026).
   Conserver les droits transverses dans « Historique et provenance », sans
   prétendre qu'ils donnent accès à une page Journal actuellement prévue.
 - Présenter les cascades et changements de rôle dans un détail avant sauvegarde,

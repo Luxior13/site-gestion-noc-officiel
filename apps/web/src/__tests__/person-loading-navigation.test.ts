@@ -20,7 +20,7 @@ vi.mock('$components/AuthenticatedLayout', () => ({
     ),
 }));
 
-import PersonLoading from '$app/membres/repertoire/[id]/loading';
+import PersonLoading from '$app/personnes/repertoire/[id]/loading';
 
 describe('person detail navigation while the server page is loading', () => {
   it('keeps the directory label without a fallback link that would discard return filters', () => {
@@ -28,6 +28,6 @@ describe('person detail navigation while the server page is loading', () => {
 
     expect(html).toContain('Répertoire');
     expect(html).toContain('Chargement de la fiche');
-    expect(html).not.toContain('href="/membres/repertoire"');
+    expect(html).not.toContain('href="/personnes/repertoire"');
   });
 });

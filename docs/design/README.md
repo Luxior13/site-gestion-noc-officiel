@@ -40,7 +40,7 @@ métier. Le détail de chaque référence est dans sa fiche de page.
 
 | Gabarit | Page de référence | Ce qui fait référence | Fiche |
 | --- | --- | --- | --- |
-| Liste de gestion | `/membres/repertoire` (décisions des 9 et 10 octobre 2026) | Bandeau `PageIdentityHero`, `DataTableSection` et `directory.module.css`, recherche et filtres compacts de 38 px, lignes alternées, badges à pastille, filtres rapides à compteurs, `ListPagination` | [Liste du répertoire](../pages/membres/repertoire/liste.md) |
+| Liste de gestion | `/personnes/repertoire` (décisions des 9 et 10 octobre 2026) | Bandeau `PageIdentityHero`, `DataTableSection` et `directory.module.css`, recherche et filtres compacts de 38 px, lignes alternées, badges à pastille, filtres rapides à compteurs, `ListPagination` | [Liste du répertoire](../pages/personnes/repertoire/liste.md) |
 | Liste de gestion, complément | `/systeme/utilisateurs` (validée le 17 octobre 2026) | Couleurs aux bons endroits, informations claires, densité satisfaisante ; seuils de colonnes ; fond d’avatar par accès | [Liste des utilisateurs](../pages/systeme/utilisateurs/liste.md) |
 | Fiche à sections et barre d’enregistrement | `/systeme/utilisateurs/[id]` | `EntityHeader` (bandeau compact porteur des états du compte, onglets en pied), `SectionActionBar` de référence pour toutes les pages qui enregistrent | [Utilisateurs](../pages/systeme/utilisateurs/README.md) |
 | Réglages en lignes compactes | Section Autorisations de `/systeme/utilisateurs/[id]` (17 et 18 octobre 2026) | Une carte par réglage, rubriques en petites capitales, aide en popover, conséquences critiques visibles | [Utilisateur — Autorisations](../pages/systeme/utilisateurs/fiche-autorisations.md) |

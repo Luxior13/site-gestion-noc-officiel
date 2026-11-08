@@ -1,16 +1,16 @@
 # Liste du répertoire
 
-[Index des pages](../../../pages/README.md) · [Répertoire](README.md) · [Design](../../../design/README.md) · [Guide général](../../../REFERENCE_GENERALE.md)
+[Index des pages](../../README.md) · [Répertoire](README.md) · [Design](../../../design/README.md) · [Guide général](../../../REFERENCE_GENERALE.md)
 
 ## Identité
 
 | Élément | Valeur |
 | --- | --- |
-| Route | `/membres/repertoire` |
-| Espace | Membres |
+| Route | `/personnes/repertoire` |
+| Espace | Personnes |
 | Gabarit visé | [A. Liste de gestion](../../../design/gabarits.md#a-liste-de-gestion) |
 | État d’harmonisation | **Page de référence visuelle et UX** de l’application (décisions du 9 et 10 octobre 2026) — voir [Harmonisation](../../../design/harmonisation.md#état-par-page) |
-| Point d’entrée | [page.tsx](../../../../apps/web/src/app/membres/repertoire/page.tsx) → [PersonsPageClient](../../../../apps/web/src/features/persons/components/PersonsPageClient.tsx) |
+| Point d’entrée | [page.tsx](../../../../apps/web/src/app/personnes/repertoire/page.tsx) → [PersonsPageClient](../../../../apps/web/src/features/persons/components/PersonsPageClient.tsx) |
 | Contrôle d’accès | `persons:view` (page, `assertPersonFeatureReady`, `GET /api/personnes`) ; création `persons:create` |
 | Chargement / erreur dédiés | oui, `PersonsDirectorySkeleton` / commune à l’application |
 
@@ -197,7 +197,7 @@ les composants à réutiliser.
 
 #### Référence visuelle
 
-Décision utilisateur : `/membres/repertoire` est la **page de référence
+Décision utilisateur : `/personnes/repertoire` est la **page de référence
 visuelle et UX** de l'application, complétée par `/systeme/utilisateurs`
 (2026-10-10) : les deux pages de liste définissent ensemble le standard des
 composants partagés. Toute nouvelle page ou variante réutilise ces styles,
@@ -367,7 +367,7 @@ un contrôle navigateur, lecteur d'écran ou base réelle.
    et le passe au client. Les erreurs serveur sont absorbées : le client
    conserve ses états indisponibles/nouvel essai.
 2. `PersonsPageClient` gère refus d'accès, indisponibilité, squelette, puis le
-   contenu. Le tout dans `AuthenticatedLayout` avec fil d'Ariane « Membres /
+   contenu. Le tout dans `AuthenticatedLayout` avec fil d'Ariane « Personnes /
    Répertoire ».
 3. `PersonsList` porte la recherche, les filtres, l'état de pagination, les
    états vide/erreur et le tableau. Le style est entièrement dans le module CSS

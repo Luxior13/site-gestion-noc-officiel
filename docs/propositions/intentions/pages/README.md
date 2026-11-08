@@ -6,8 +6,8 @@ La référence courante est la [matrice de préparation](MATRICE_PREPARATION.md)
 
 - [Référence générale](../../../REFERENCE_GENERALE.md) : questions de sélection puis fiches utiles au changement ; [suivi courant des pages](../../../pages/README.md).
 - [Feuille de route](../../feuille-de-route.md) : décisions, dix étapes et périmètres.
-- [Registre historique](../../../domaines/registre-historique.md) : rôle du site, passages, listes de référence et où modifier.
-- [Navigation](../../../domaines/navigation.md) : trois pôles actifs, six pôles cibles et règles de placement.
+- [Registre historique](../../../domaines/registre-historique.md) : rôle du site, passages, listes de choix et où modifier.
+- [Navigation](../../../domaines/navigation.md) : trois pôles actifs, sept pôles cibles et règles de placement.
 - [Structure](../../../domaines/structure-juridique.md) : entités juridiques, historique et objets financiers.
 - [Rôles et périmètres](../../../domaines/roles-metier.md) : cible métier et contrôle par ressource.
 - [Permissions actives](../../../domaines/permissions.md) : fonctionnement actuellement livré.

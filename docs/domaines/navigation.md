@@ -9,36 +9,37 @@ Six entrées sont déclarées dans trois pôles. Leur visibilité dépend des ac
 | Pôle actuel | Entrées actives | Placement |
 | --- | --- | --- |
 | Aujourd’hui | Mon travail `/` | Travail personnel |
-| Membres | Répertoire `/membres/repertoire` | Membres et contacts de la structure |
+| Personnes | Répertoire `/personnes/repertoire` | Personnes et contacts de la structure |
 | Système | Section Administration : Utilisateurs `/systeme/utilisateurs`, Journal d’activité `/systeme/journal-activite`, Paramètres système `/systeme/parametres` ; section Projet : Feuille de route `/systeme/feuille-de-route` | Comptes, traçabilité, technique et plan produit |
 
 `/mon-compte` est accessible par les outils globaux. La navigation rapide de l’en-tête parcourt les pages autorisées sans page dédiée ; l’ancienne adresse `/recherche` redirige vers l’accueil. Elle cherche le nom de la page, sa rubrique, sa section (« Administration », « Projet »), sa description et une liste fermée de mots-clés déclarée avec la fonctionnalité dans le registre (`keywords`, jamais affichés : « logs », « historique » pour le journal, « mot de passe » pour Mon compte) ; un mot-clé passe devant une correspondance fortuite, sans recherche approximative (décision du 31 octobre 2026, [RR](../audits/2026-10-31-recherche-rapide.md)). Textes et saisie sont comparés selon la règle commune de recherche du site (`normalizeSearchText`, [comportements](../design/comportements.md#listes-recherche-et-pagination)). Une nouvelle fonctionnalité déclare ses mots-clés. Chaque vue nomme son onglet « Vue · Parente · Noctambule » par `pageTitle` (`$utils/page-title.utils`), « · Dev » en développement. `/login` appartient au parcours de connexion. Les formulaires de création et fiches de personnes ou utilisateurs restent sous leur liste principale.
 
-Le pôle « Membres » regroupe le Répertoire actuel et les futurs espaces Équipes, Tournois, Adhésions, Recrutement, Arrivées, départs et passations. La page actuelle conserve le titre « Répertoire » et l’action « Ajouter une fiche » ; une fiche porte le nom ou le pseudo de la personne. Le fil d’Ariane présente « Membres → Répertoire → fiche » ; le nom du pôle ne crée pas un lien vers une page d’accueil fictive.
+Le pôle « Personnes » (nommé « Membres » jusqu’au 8 novembre 2026) regroupe le Répertoire actuel et les futurs espaces Adhésions, Recrutement, Arrivées, départs et passations, Salariés ; équipes, tournois et jeux vont dans le pôle Esport. La page actuelle conserve le titre « Répertoire » et l’action « Ajouter une fiche » ; une fiche porte le nom ou le pseudo de la personne. Le fil d’Ariane présente « Personnes → Répertoire → fiche » ; le nom du pôle ne crée pas un lien vers une page d’accueil fictive.
 
 `/administration` et `/tableau-de-bord` sont des accès de compatibilité. `/mes-notifications` et `/tableau-de-bord/mes-notifications` redirigent vers la feuille de route, où ces modules sont replanifiés ; `/systeme/journal-activite` est de nouveau servie depuis le 30 octobre 2026 (section Administration, entre Utilisateurs et Paramètres). `/systeme` sert d’entrée au pôle. Les routes non livrées ne sont pas des écrans vides utilisables.
 
 Les anciennes destinations planifiées ont été retirées du catalogue de navigation ; celles des chantiers conservés restent référencées dans le catalogue de projets (`legacyHrefs` de la feuille de route), toutes dans la [matrice](../propositions/intentions/pages/MATRICE_PREPARATION.md). Leur liste réservée côté client et son contrôle d’ouverture, que plus aucun écran n’appelait, sont retirés le 31 octobre 2026 ([audit complet](../audits/2026-10-31-audit-complet.md)) : ces adresses aboutissent à la page introuvable.
 
-## Six pôles cibles
+## Sept pôles cibles
 
-Révision du 7 novembre 2026 : les anciens pôles Esport et Activité disparaissent ([feuille de route](../propositions/feuille-de-route.md#retraits-et-regroupements-du-7-novembre-2026)).
+Révision du 8 novembre 2026, sur décision du propriétaire (« on peut encore tout changer, mais il faut que tout soit logique » ; « ok pour tes reco ») : chaque pôle répond à une question ; « Membres » devient « Personnes », les équipes, tournois et jeux forment le pôle Esport, et aucune liste de choix ne se gère dans Système. La révision du 7 novembre 2026, qui fondait Esport dans Membres, est remplacée ([feuille de route](../propositions/feuille-de-route.md#réorganisation-du-8-novembre-2026)).
 
-| Pôle | Responsabilité | Espaces ou vues prévus |
+| Pôle | Question | Espaces ou vues prévus |
 | --- | --- | --- |
-| Aujourd’hui | Ce qui concerne le compte connecté | Mon travail, tâches, calendrier du bureau |
-| Membres | Identité, engagements et parcours des membres | Répertoire, équipes, tournois, adhésions, recrutement, arrivées, départs et passations |
-| Relations | Relations avec les organisations externes | Organisations, partenariats, communication |
-| Structure | Responsabilité juridique, mémoire et dossiers sensibles | Entités, chronologie, réunions et décisions, documents, contrats, incidents, matériel et abonnements, événements, bilan annuel |
-| Finances | Prévisions, montants dus et mouvements d’argent | Comptes, opérations, factures, frais, subventions et dons, contrôles, budget |
-| Système | Administration technique | Comptes et accès, paramètres, listes de référence, journal, données, rappels, intégrations, feuille de route |
+| Aujourd’hui | Qu’est-ce qui m’attend ? | Mon travail (avec mes rappels), tâches, calendrier du bureau |
+| Personnes | Qui est passé par la structure ? | Répertoire (onglets Fonctions et Étiquettes), fiche personne, adhésions, recrutement, arrivées, départs et passations, salariés |
+| Esport | Quelles équipes, quels tournois ? | Équipes (onglet Jeux), fiche équipe, tournois, entraînement, déplacements |
+| Finances | Où en est l’argent ? | Comptes (onglets Catégories et Moyens de paiement), opérations, factures, frais, subventions et dons, contrôles, budget |
+| Relations | Avec qui à l’extérieur ? | Organisations, partenariats, communication |
+| Structure | Qu’est-ce que l’association, qu’a-t-elle décidé et gardé ? | Identité juridique, chronologie, réunions et décisions, documents, contrats, incidents, matériel et abonnements (onglet Types de matériel), bilan annuel |
+| Système | Comment marche l’outil ? | Comptes et accès, journal, paramètres (dont les règles de rappel), données, intégrations, feuille de route |
 
 Ce tableau décrit les lieux logiques, pas un engagement à créer autant d’entrées. Les vues rares deviennent des onglets ou actions contextuelles. Les pôles Relations, Structure et Finances s’ouvrent seulement avec leurs premiers modules utilisables.
 
 ## Règles de placement
 
 - **Une donnée se modifie là où on la lit** (décision du 7 novembre 2026). Une action que porte déjà une fiche ne reçoit pas de page dédiée : le parcours d’un membre se modifie sur sa fiche, et la même fenêtre s’ouvre depuis la fiche de son équipe ([où modifier](registre-historique.md#où-modifier)). Un manque de place se règle par un onglet ou une fenêtre avant une page.
-- **Une liste de choix qui peut évoluer se gère sur le site**, jamais dans le code ([listes de référence](registre-historique.md#listes-de-référence)).
+- **Une liste de choix qui peut évoluer se gère sur le site**, jamais dans le code, en onglet à côté de ce qu’elle classe et jamais dans Système ([listes de choix](registre-historique.md#listes-de-choix)).
 - Une donnée a un module propriétaire. Les vues personnelles, synthèses et recherches ne créent pas de copies concurrentes.
 - Structure contient les contrats et décisions de gouvernance ; Relations suit les engagements des partenaires. Une fiche partenaire peut afficher ses contrats autorisés.
 - Une fiche Personne garde l’identité ; les mandats, adhésions, contrats et passages sont datés. Personne et Utilisateur ne fusionnent pas.
@@ -199,12 +200,12 @@ Une entrée masquée n’est jamais une protection suffisante : le serveur contr
 
 ## Routes et maintenance
 
-Les routes ont été harmonisées le 24 septembre 2026 : Répertoire sous `/membres/repertoire`, Actualité sous `/activite/actualites`, Utilisateurs sous `/systeme/utilisateurs` et Feuille de route sous `/systeme/feuille-de-route`. Les créations et fiches restent sous leur collection. Les anciennes adresses redirigent directement vers leur destination actuelle, avec leurs paramètres. `/systeme` conserve son entrée dépendante des permissions.
+Les routes ont été harmonisées le 24 septembre 2026 : Répertoire sous `/membres/repertoire`, Actualité sous `/activite/actualites`, Utilisateurs sous `/systeme/utilisateurs` et Feuille de route sous `/systeme/feuille-de-route`. Les créations et fiches restent sous leur collection. Les anciennes adresses redirigent directement vers leur destination actuelle, avec leurs paramètres. `/systeme` conserve son entrée dépendante des permissions. Le 8 novembre 2026, le pôle Membres devient Personnes : le Répertoire passe sous `/personnes/repertoire` et `/membres/repertoire/*` y redirige ; l’ancien alias `/personnes/*`, qui menait au Répertoire, est retiré puisque `/personnes` est désormais le pôle.
 
 Les chemins, constructeurs de fiches et alias sont centralisés dans `apps/web/src/shared/constants/routes.constants.ts`. Les retours de fiches et de créations conservent la liste filtrée ; les retours historiques vers le Répertoire sont également acceptés et traduits. Les liens d’onglets existants sont conservés ; `section=contacts` est accepté comme alias de Coordonnées dans le Répertoire.
 
-La feuille de route partage ses filtres avec `pole`, `phase` et `q` ; ses identifiants de pôles restent ceux du catalogue (par exemple `people` pour Membres). Les changements de filtre participent à l’historique ; la saisie de recherche remplace l’entrée courante pour éviter une étape d’historique à chaque caractère.
+La feuille de route partage sa vue et ses filtres avec `vue` (`pages`, `couverture` ou `ordre`, absent pour Chantiers), `pole` et `q` ; ses identifiants de pôles restent ceux du catalogue (par exemple `people` pour Personnes, `esport` pour Esport). Le paramètre `phase` d’un ancien lien est retiré depuis le 7 novembre 2026. Les changements de vue et de filtre participent à l’historique ; la saisie de recherche remplace l’entrée courante pour éviter une étape d’historique à chaque caractère.
 
-Les anciennes URL planifiées sont des références de conception, pas des liens à exposer. Les préfixes futurs sont `/relations`, `/structure` et `/finances` ; les équipes rejoignent `/membres`. La route précise d’un nouveau module sera fixée à sa livraison, avec ses permissions et ses tests. Les noms de menu peuvent évoluer sans entraîner un nouveau changement de chemin.
+Les anciennes URL planifiées sont des références de conception, pas des liens à exposer. Les préfixes futurs sont `/esport`, `/finances`, `/relations` et `/structure` ; équipes, jeux et tournois vont sous `/esport`. La route précise d’un nouveau module sera fixée à sa livraison, avec ses permissions et ses tests. Les noms de menu peuvent évoluer sans entraîner un nouveau changement de chemin.
 
 Mettre à jour ensemble le registre de fonctionnalités, la navigation active, les permissions, les politiques serveur, les fils d’Ariane et les tests de contrat lors de l’ouverture d’un module. Les libellés historiques internes ne se renomment pas implicitement à partir de la cible produit.

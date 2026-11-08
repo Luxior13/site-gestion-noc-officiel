@@ -24,7 +24,7 @@ export const UsersListRowsSkeleton: FC = () => (
 
 /**
  * Squelette de la liste des comptes, aligné sur la page de référence
- * `/membres/repertoire` : bandeau dégradé et carte de liste avec des lignes
+ * `/personnes/repertoire` : bandeau dégradé et carte de liste avec des lignes
  * lisibles, dans les mêmes surfaces et rayons.
  */
 export const UsersDirectorySkeleton: FC = () => (

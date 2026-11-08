@@ -69,7 +69,7 @@ une séance complète avec un lecteur d’écran humain.
 
 ## Défauts traités
 
-Identifiants propriétaires : [suivi Répertoire](../pages/membres/repertoire/README.md).
+Identifiants propriétaires : [suivi Répertoire](../pages/personnes/repertoire/README.md).
 Les correctifs sont réalisés par cette passe ; aucune nouvelle responsabilité
 d’exploitation n’est attribuée à une personne absente de la conversation.
 

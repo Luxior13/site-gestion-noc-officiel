@@ -11,8 +11,8 @@ Ne les ouvrir que si le travail touche le domaine ; le
 | --- | --- | --- |
 | Permissions | [permissions.md](permissions.md) | Modèle actif : vocabulaire, presets USER/ADMIN et compte racine, droits par page, dépendances, MFA et preuves récentes, cycle `planned` → actif ; source exécutable `permissions.constants.ts` |
 | Rôles métier | [roles-metier.md](roles-metier.md) | Cible : séparer fonctions métier et administration technique, décisions par ressource, ouverture progressive ; pas une protection livrée |
-| Registre historique | [registre-historique.md](registre-historique.md) | Cible : rôle du site, passages datés, conservation, listes de référence, où modifier, reprise depuis le site public |
-| Navigation | [navigation.md](navigation.md) | Navigation actuelle, six pôles cibles, règles de placement, admission, routes et alias |
+| Registre historique | [registre-historique.md](registre-historique.md) | Cible : rôle du site, passages datés, conservation, listes de choix, où modifier, reprise depuis le site public |
+| Navigation | [navigation.md](navigation.md) | Navigation actuelle, sept pôles cibles, règles de placement, admission, routes et alias |
 | Structure juridique | [structure-juridique.md](structure-juridique.md) | Association puis société : entités, relations datées, exercices, objets financiers, gouvernance |
 
 Les règles transversales (formulaires, sécurité, données…) sont dans les

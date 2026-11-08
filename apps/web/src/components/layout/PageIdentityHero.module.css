@@ -1,7 +1,7 @@
 /*
  * Bandeau d'identité de page. Les couleurs reprennent les tokens globaux
  * (`--surface-hero-*`, `--border-hero`, `--text-hero-muted`) afin de rester
- * utilisables hors du module « Membres ».
+ * utilisables hors du module « Personnes ».
  */
 .hero {
   display: flex;
