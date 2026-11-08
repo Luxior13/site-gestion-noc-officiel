@@ -125,7 +125,8 @@ describe('planned pages and tabs', () => {
     const tabsOf = (name: string): string[] => getTabLabels(name);
     // Team functions go with the teams, the bureau's with the structure.
     expect(tabsOf('Équipes')).toEqual(['Équipes', 'Jeux', 'Fonctions']);
-    expect(tabsOf('Identité juridique')).toContain('Fonctions');
+    expect(tabsOf('Bureau & staff')).toEqual(['Effectif', 'Fonctions']);
+    expect(tabsOf('Identité juridique')).not.toContain('Fonctions');
     // Tags were dropped (8 November 2026): the directory stays a single list.
     expect(tabsOf('Répertoire')).toEqual([]);
     expect(tabsOf('Comptes')).toEqual(
@@ -141,6 +142,27 @@ describe('planned pages and tabs', () => {
       page.tabs?.some((tab) => tab.label === 'Suivi'),
     ).map((page) => page.name);
     expect(followUps).toEqual(['Fiche personne', 'Fiche tournoi']);
+  });
+
+  // Owner's decision of 8 November 2026: a team has its roster, the structure
+  // has its own, and the person's journey reads both.
+  it('enters every passage in a roster and reads it on the person', () => {
+    type PlannedTab = NonNullable<
+      (typeof ROADMAP_SITE_PLAN)[number]['tabs']
+    >[number];
+    const tab = (page: string, label: string): PlannedTab | undefined =>
+      ROADMAP_SITE_PLAN.find(
+        (candidate) => candidate.name === page,
+      )?.tabs?.find((candidate) => candidate.label === label);
+    expect(tab('Fiche personne', 'Parcours')?.managedIn).toBeTruthy();
+    for (const page of ['Fiche équipe', 'Bureau & staff']) {
+      expect(tab(page, 'Effectif')).toBeDefined();
+      expect(tab(page, 'Effectif')?.managedIn).toBeUndefined();
+      expect(tab(page, 'Effectif')?.phase).toBe(1);
+    }
+    expect(tab('Fiche personne', 'Identité')?.upcoming).toContain(
+      'anciens pseudos',
+    );
   });
 
   it('gathers the sporting activity in the Esport pole', () => {
@@ -226,7 +248,7 @@ describe('planned pages and tabs', () => {
     expect(managedIn('Matériel')).toBe('Matériel & abonnements');
     expect(managedIn('Documents')).toBe('Documents et Contrats');
     // Edited on the fiche, or mixed: a normal tab.
-    for (const label of ['Identité', 'Coordonnées', 'Parcours', 'Suivi'])
+    for (const label of ['Identité', 'Coordonnées', 'Suivi'])
       expect(managedIn(label)).toBeUndefined();
   });
 

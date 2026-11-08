@@ -16,7 +16,7 @@ export const ROADMAP_COVERAGE: readonly RoadmapCoverageRow[] = [
   },
   {
     chantiers: ['sport-teams'],
-    subject: 'Qui a été où, à quelle fonction, et pourquoi il est parti',
+    subject: 'Qui a été où, à quelle fonction, de quand à quand',
   },
   {
     chantiers: ['sport-teams'],
@@ -65,7 +65,7 @@ export const ROADMAP_COVERAGE: readonly RoadmapCoverageRow[] = [
     subject: 'Bénévolat et valorisation des heures',
   },
   {
-    chantiers: ['legal-entities', 'meetings'],
+    chantiers: ['sport-teams', 'legal-entities', 'meetings'],
     subject: 'Assemblées, bureau, mandats, votes, statuts',
   },
   {

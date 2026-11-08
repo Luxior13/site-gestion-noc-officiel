@@ -21,7 +21,7 @@ migration. Ils demandent des scénarios d’abus et une validation sur base isol
 | Lot | Contenu | Résultat visible |
 | --- | --- | --- |
 | 1 | Listes de choix | Champ « Jeux » sur la fiche, avec ajout direct ; les onglets Jeux et Fonctions de la page Équipes arrivent au lot 2 |
-| 2 | Équipes & parcours | Page Équipes, onglet Parcours, anciens pseudos |
+| 2 | Équipes & parcours | Pages Équipes et Bureau & staff (Effectif, Fonctions), onglet Parcours en lecture, anciens pseudos dans Identité |
 | 3 | Accès manager | Un manager se connecte et ne voit que son équipe |
 
 Confidentialité & conservation et Données, exports & sauvegardes complètent l’étape 2. Le lot 1 introduit TanStack Query, prévu avec son premier consommateur
@@ -38,8 +38,7 @@ qu’une vérification du seul formulaire.
 
 **Écrans** (décision du 8 novembre 2026) : chaque liste en onglet à côté de ce
 qu’elle classe, au [gabarit A](../design/gabarits.md#a-liste-de-gestion) :
-Jeux et Fonctions d’équipe sur `/esport/equipes` (lot 2), fonctions de la structure sur Identité
-juridique (étape 3 ; ajoutées depuis le champ du passage jusque-là). Aucune liste
+Jeux et Fonctions d’équipe sur `/esport/equipes` (lot 2), fonctions de la structure sur Bureau & staff (lot 2). Aucune liste
 dans Système. Deux listes de fonctions : un passage dans une équipe ne propose
 que les fonctions d’équipe, un passage dans la structure que celles de la
 structure, et la base le contrôle. Ajout et renommage en fenêtre. Une colonne indique le
@@ -62,7 +61,7 @@ lecture des valeurs suit la page qui les affiche.
 | --- | --- |
 | `Team` | Nom, anciens noms, jeu (liste Jeux), `archivedAt`, `version` |
 | `PersonPassage` | Fiche, équipe facultative (vide pour une fonction de structure), fonction, début, fin, précision de chaque date, `version` |
-| `PersonFormerNickname` | Ancien pseudo, date du changement ; écrit par le service quand le pseudo change, et cherché par le Répertoire |
+| `PersonFormerNickname` | Ancien pseudo, date du changement ; écrit par le service quand le pseudo change, saisi à la main dans l’onglet Identité pour un pseudo d’avant le site, et cherché par le Répertoire |
 
 **Compléments de la fiche personne** : nationalité, adresse postale, identifiants de jeu (par jeu), contact d’urgence et représentants légaux, ces derniers étant des fiches du Répertoire liées explicitement. Les coordonnées nouvelles suivent `persons:view_contact`.
 
@@ -79,14 +78,15 @@ a un passage ne se supprime pas : la base le refuse et l’interface l’expliqu
 
 **Écrans** :
 
-- `/esport/equipes` : liste au gabarit A, onglets Équipes et Jeux, filtres par jeu et par état. Une équipe
+- `/esport/equipes` : liste au gabarit A, onglets Équipes, Jeux et Fonctions, filtres par jeu et par état. Une équipe
   se crée en fenêtre, sans page dédiée, puisqu’elle a deux champs.
 - `/esport/equipes/[id]` : membres actuels et anciens, sélecteur « À une date ».
-- Onglet Parcours de la fiche personne (`?section=parcours`), sur le modèle de
-  [Coordonnées](../pages/personnes/repertoire/fiche-coordonnees.md).
-- Une seule fenêtre de passage, ouverte depuis la fiche, depuis le roster de
-  l’équipe (Effectif) ou, pour le bureau, depuis les Mandats d’Identité juridique.
-  Début et fin s’y saisissent, sans motif de fin.
+- Page Bureau & staff (pôle Structure) : onglet Effectif, le roster de la
+  structure (bureau, staff, bénévoles, depuis 2014), et onglet Fonctions.
+- Onglet Parcours de la fiche personne (`?section=parcours`), en lecture ↗ :
+  chaque ligne ouvre son équipe ou Bureau & staff ([onglet en lecture](../design/gabarits.md#onglets-dune-fiche)).
+- Une seule fenêtre de passage, ouverte depuis l’Effectif d’une équipe ou de
+  Bureau & staff. Début et fin s’y saisissent, sans motif de fin.
 
 **API** : `/api/equipes`, `/api/equipes/[id]`, `/api/personnes/[id]/passages` et
 `/api/personnes/[id]/passages/[passageId]`, selon le

@@ -3,6 +3,27 @@ import type { RoadmapPlannedPage } from './types/roadmap.types';
 export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   {
     area: 'structure',
+    chantier: 'sport-teams',
+    name: 'Bureau & staff',
+    phase: 1,
+    tabs: [
+      {
+        label: 'Effectif',
+        phase: 1,
+        summary:
+          'Le roster de la structure : qui occupe quelle fonction (bureau, staff, bénévoles), avec début et fin, depuis 2014 ; on y ajoute ou termine un passage, avec la même fenêtre que pour une équipe.',
+      },
+      {
+        chantier: 'reference-lists',
+        label: 'Fonctions',
+        phase: 1,
+        summary:
+          'Fonctions de la structure : président, trésorier, secrétaire, graphiste, bénévole… ; ajouter, renommer, archiver.',
+      },
+    ],
+  },
+  {
+    area: 'structure',
     chantier: 'legal-entities',
     name: 'Identité juridique',
     phase: 3,
@@ -11,18 +32,6 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         label: 'Identité',
         phase: 3,
         summary: 'Dénomination, forme, identifiants, adresse.',
-      },
-      {
-        label: 'Mandats',
-        phase: 3,
-        summary:
-          'Qui occupe quelle fonction de la structure, avec début et fin ; on y ajoute ou termine un mandat, avec la même fenêtre que le parcours.',
-      },
-      {
-        label: 'Fonctions',
-        phase: 3,
-        summary:
-          'Fonctions de la structure : président, trésorier, secrétaire, bénévole… Avant cet onglet, elles s’ajoutent depuis le champ du passage.',
       },
       {
         label: 'Assurances',
@@ -206,7 +215,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
     tabs: [
       {
         label: 'Membres',
-        managedIn: 'Fiches personnes et équipes',
+        managedIn: 'l’Effectif des équipes et de Bureau & staff',
         phase: 9,
         summary: 'Effectifs, arrivées et départs de l’année.',
       },

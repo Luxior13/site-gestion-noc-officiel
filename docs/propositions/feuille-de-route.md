@@ -59,9 +59,11 @@ Sur décision du propriétaire (« on peut encore tout changer, mais il faut que
 | Pôle Membres (`/membres/…`) | Pôle **Personnes** (`/personnes/…`), l’ancienne adresse redirige | Le Répertoire contient aussi candidats, anciens et contacts ; la page s’appelle déjà Fiche personne |
 | Équipes, tournois et jeux dans Membres | Pôle **Esport** | Ce ne sont pas des personnes ; c’est le pôle d’un manager |
 | Page Listes de référence (Système) | **Listes de choix**, chaque liste en onglet à côté de ce qu’elle classe | Les jeux ne se gèrent pas dans Système |
-| Une liste unique de fonctions | **Fonctions d’équipe** (onglet de la page Équipes, Esport) et **fonctions de la structure** (onglet d’Identité juridique, Structure) | Un joueur appartient à une équipe, un trésorier à la structure ; chaque passage ne propose que les fonctions de son rattachement |
-| Motif de fin d’un passage | **Retiré** : début et fin se saisissent dans le roster (Effectif) ou les Mandats | Un changement se voit au passage suivant, une exclusion a son dossier d’incident, une fin de contrat se lit dans le contrat |
-| Mandats en lecture (↗) | **Mandats modifiables**, comme l’Effectif d’une équipe | La fin d’un mandat se saisit à son endroit |
+| Une liste unique de fonctions | **Fonctions d’équipe** (onglet de la page Équipes, Esport) et **fonctions de la structure** (onglet de Bureau & staff, Structure) | Un joueur appartient à une équipe, un trésorier à la structure ; chaque passage ne propose que les fonctions de son rattachement |
+| Motif de fin d’un passage | **Retiré** : début et fin se saisissent dans l’Effectif d’une équipe ou de Bureau & staff | Un changement se voit au passage suivant, une exclusion a son dossier d’incident, une fin de contrat se lit dans le contrat |
+| Mandats et fonctions de la structure dans Identité juridique (étape 3) | Page **Bureau & staff** (Structure, étape 1) : Effectif de la structure et Fonctions ; Identité juridique garde Identité, Assurances, Documents | Une équipe a son effectif, la structure le sien ; le bureau se saisit dès l’étape 1, sans dépendre d’une entité juridique, et un graphiste n’a pas de mandat |
+| Parcours modifiable sur la fiche | **Parcours en lecture ↗** ; anciens pseudos dans Identité | La fiche lit les deux effectifs, chaque passage se saisit à son endroit |
+| Suivi d’une personne, tout sur la fiche | Problèmes et bans d’un tournoi saisis dans **sa fiche tournoi** ; sur la personne : notes, **sanctions de la structure** (tous ses tournois ou un jeu) et bans externes ; une sanction en cours **refuse l’inscription** à un tournoi | Chaque chose se saisit à son endroit, et une sanction agit là où l’on inscrit |
 | Étiquettes des fiches | **Retirées** ; le Répertoire reste une liste sans onglet, et le chantier Listes de choix passe dans Esport | Tout ce qu’on y mettrait a déjà sa place : fonction, statut calculé, jeux pratiqués, adhésion, contact d’organisation, Suivi, tâche |
 | Suivi sportif | **Entraînement** (Esport) | « Suivi » garde un seul sens : notes, problèmes et bans |
 | Événements & déplacements (Structure) | **Déplacements** (Esport) | Surtout LAN et bootcamps ; un événement de l’association est une réunion |
@@ -124,7 +126,7 @@ Garder le dossier de chaque tournoi et le suivi des personnes.
 
 - **Tournois** (Esport) : Liste des tournois avec organisateur, règlement, frais, échéances et classement final ; participants, gains, problèmes et bans. Les rencontres restent sur le site public.
 - **Gains de compétition & primes** (Finances) : Montants annoncés, confirmés et reçus ; parts contractuelles et versements.
-- **Suivi, incidents & sanctions** (Structure) : Onglet Suivi de la fiche : notes, problèmes et bans, par tournoi ou par jeu. Dossiers d’incident : faits, preuves, instruction, décision, recours et durée.
+- **Suivi, incidents & sanctions** (Structure) : Onglet Suivi de la fiche : notes, sanctions de la structure (tous ses tournois ou un jeu) et bans externes ; les problèmes et bans d’un tournoi se saisissent dans sa fiche et se lisent sur la personne ; contrôle à l’inscription des participants. Dossiers d’incident : faits, preuves, instruction, décision, recours et durée.
 
 ## 6. Vie du bureau
 
@@ -180,7 +182,7 @@ Relecture du 7 novembre 2026 : chaque sujet qu’une structure esport rencontre 
 | --- | --- |
 | Identité d’une personne, nationalité, adresse, identifiants de jeu, contact d’urgence | Fiche personne |
 | Mineurs : représentants légaux, autorisations, droit à l’image | Fiche personne, Confidentialité & conservation |
-| Qui a été où, à quelle fonction, et pourquoi il est parti | Parcours |
+| Qui a été où, à quelle fonction, de quand à quand | Effectifs des équipes et de Bureau & staff, lus dans le Parcours |
 | Effectifs et anciens noms d’une équipe | Fiche équipe |
 | Tournois : frais, classement, participants, gains | Tournois, Gains de compétition & primes |
 | Notes, problèmes, bans, sanctions, signalements | Suivi, Incidents |
@@ -191,7 +193,7 @@ Relecture du 7 novembre 2026 : chaque sujet qu’une structure esport rencontre 
 | Contrats de joueurs, de staff, de partenaires | Contrats & obligations |
 | Salariat et paie, si la structure emploie | Salariés & paie, avec un outil de paie |
 | Bénévolat et valorisation des heures | À cadrer avec Subventions & dons |
-| Assemblées, bureau, mandats, votes, statuts | Identité juridique, Réunions & décisions |
+| Assemblées, bureau, mandats, votes, statuts | Bureau & staff, Identité juridique, Réunions & décisions |
 | Assurances, affiliations, licences, marque | Identité juridique |
 | Changement de forme juridique | Identité juridique, relations datées |
 | Matériel, maillots, prêts | Matériel & abonnements |
@@ -231,14 +233,14 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 | Page | Onglet | Contenu | État |
 | --- | --- | --- | --- |
 | **Répertoire** | — | Liste, sans onglet : toutes les fiches, avec recherche et filtres. À venir (étape 1) : filtres par équipe, jeu et anciens membres. | Livré |
-| **Fiche personne** | Identité | Pseudo, nom, naissance, zone dangereuse. À venir (étape 1) : statut calculé depuis le parcours, nationalité et jeux pratiqués. | Livré |
+| **Fiche personne** | Identité | Pseudo, nom, naissance, zone dangereuse. À venir (étape 1) : statut calculé depuis le parcours, nationalité, jeux pratiqués et anciens pseudos, y compris ceux d’avant le site. | Livré |
 |  | Coordonnées | Emails, téléphones, réseaux sociaux. À venir (étape 1) : adresse, identifiants de jeu, contact d’urgence et représentants légaux. | Livré |
-|  | Parcours | Passages datés : équipe ou structure, fonction, début et fin ; tournois joués ; anciens pseudos. | Étape 1 |
+|  | Parcours ↗ | Passages datés : équipe ou structure, fonction, début et fin ; tournois joués. Chaque ligne ouvre son équipe ou Bureau & staff. Lu ici, se modifie dans l’Effectif de chaque équipe et de Bureau & staff. | Étape 1 |
 |  | Adhésions ↗ | Adhésions par campagne et état de cotisation. Lu ici, se modifie dans Adhésions. | Étape 4 |
 |  | Finances ↗ | Cotisations réglées, remboursements et gains versés. Lu ici, se modifie dans Finances. | Étape 4 |
 |  | Documents ↗ | Contrats, autorisations et chartes acceptées. Lu ici, se modifie dans Documents et Contrats. | Étape 7 |
 |  | Matériel ↗ | Prêts et restitutions, taille de maillot. Lu ici, se modifie dans Matériel & abonnements. | Étape 8 |
-|  | Suivi | Notes datées, problèmes et bans, par tournoi ou par jeu, réservés aux personnes habilitées. | Étape 5 |
+|  | Suivi | Notes, sanctions de la structure (tous ses tournois ou un jeu, motif, durée, levée) et bans externes qui dépassent un tournoi ; les problèmes et bans d’un tournoi y figurent aussi, saisis dans sa fiche. Réservé aux personnes habilitées. | Étape 5 |
 | **Adhésions** | Adhérents | Adhésions de la campagne choisie et état de cotisation. | Étape 4 |
 |  | Campagnes | Périodes d’adhésion et leurs conditions. | Étape 4 |
 | **Recrutement** | — | Onglets définis à son cadrage. | Étape 10 |
@@ -258,9 +260,9 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 |  | Informations | Nom, anciens noms, jeu, archivage. | Étape 1 |
 | **Tournois** | — | Liste, sans onglet : les tournois, par jeu et par année. Création en fenêtre. | Étape 5 |
 | **Fiche tournoi** | Informations | Nom, jeu, organisateur, dates, règlement, frais, échéances, classement final. | Étape 5 |
-|  | Participants | Équipes et membres engagés. | Étape 5 |
+|  | Participants | Équipes et membres engagés. Une sanction de la structure en cours refuse l’inscription, avec son motif ; un ban externe sur le même jeu ou organisateur avertit. | Étape 5 |
 |  | Gains | Montants annoncés, confirmés et reçus, et leur répartition. | Étape 5 |
-|  | Suivi | Problèmes et bans liés à ce tournoi, réservés aux personnes habilitées. | Étape 5 |
+|  | Suivi | Problèmes et bans survenus pendant ce tournoi, saisis ici et visibles sur la fiche de chaque personne. Réservé aux personnes habilitées. | Étape 5 |
 | **Entraînement** | — | Onglets définis à son cadrage. | Étape 10 |
 | **Déplacements** | — | Onglets définis à son cadrage. | Étape 10 |
 
@@ -319,9 +321,9 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 
 | Page | Onglet | Contenu | État |
 | --- | --- | --- | --- |
+| **Bureau & staff** | Effectif | Le roster de la structure : qui occupe quelle fonction (bureau, staff, bénévoles), avec début et fin, depuis 2014 ; on y ajoute ou termine un passage, avec la même fenêtre que pour une équipe. | Étape 1 |
+|  | Fonctions | Fonctions de la structure : président, trésorier, secrétaire, graphiste, bénévole… ; ajouter, renommer, archiver. | Étape 1 |
 | **Identité juridique** | Identité | Dénomination, forme, identifiants, adresse. | Étape 3 |
-|  | Mandats | Qui occupe quelle fonction de la structure, avec début et fin ; on y ajoute ou termine un mandat, avec la même fenêtre que le parcours. | Étape 3 |
-|  | Fonctions | Fonctions de la structure : président, trésorier, secrétaire, bénévole… Avant cet onglet, elles s’ajoutent depuis le champ du passage. | Étape 3 |
 |  | Assurances | Assurances, affiliations, licences, marque, et leurs échéances. | Étape 3 |
 |  | Documents | Statuts et pièces officielles. | Étape 7 |
 | **Chronologie** | — | Lecture, sans onglet : les grands faits de la structure depuis ses débuts, saisis ou tirés des modules. | Étape 8 |
@@ -345,7 +347,7 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 |  | Instruction | Preuves et échanges. | Étape 5 |
 |  | Décision | Décision, recours et durée. | Étape 5 |
 |  | Documents | Pièces du dossier. | Étape 7 |
-| **Bilan annuel** | Membres ↗ | Effectifs, arrivées et départs de l’année. Lu ici, se modifie dans Fiches personnes et équipes. | Étape 9 |
+| **Bilan annuel** | Membres ↗ | Effectifs, arrivées et départs de l’année. Lu ici, se modifie dans l’Effectif des équipes et de Bureau & staff. | Étape 9 |
 |  | Activité ↗ | Tournois, gains, décisions et événements. Lu ici, se modifie dans Tournois, Réunions et Déplacements. | Étape 9 |
 |  | Finances ↗ | Recettes, dépenses et résultat de l’exercice. Lu ici, se modifie dans Finances. | Étape 9 |
 | **Matériel & abonnements** | Matériel | Inventaire, prêts, maillots et stock. | Étape 8 |

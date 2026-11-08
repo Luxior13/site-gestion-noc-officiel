@@ -9,10 +9,10 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     doneWhen:
       'Ajouter, renommer ou archiver une valeur ne demande aucun développement et ne réécrit pas l’historique.',
     firstRelease:
-      'Chaque liste à côté de ce qu’elle classe : jeux et fonctions d’équipe en onglets de la page Équipes, jeux pratiqués choisis sur la fiche ; ajout direct depuis un champ et champ à choix multiples réutilisable. Renommer corrige une faute ; une chose qui change vraiment devient une nouvelle valeur.',
+      'Chaque liste à côté de ce qu’elle classe : jeux et fonctions d’équipe en onglets de la page Équipes, fonctions de la structure en onglet de Bureau & staff, jeux pratiqués choisis sur la fiche ; ajout direct depuis un champ et champ à choix multiples réutilisable. Renommer corrige une faute ; une chose qui change vraiment devient une nouvelle valeur.',
     id: 'reference-lists',
     later:
-      'Les autres listes arrivent avec leur module : fonctions de la structure dans Identité juridique, catégories et moyens de paiement dans Comptes, types de matériel dans Matériel & abonnements.',
+      'Les autres listes arrivent avec leur module : catégories et moyens de paiement dans Comptes, types de matériel dans Matériel & abonnements.',
     phase: 1,
     title: 'Listes de choix',
   },
@@ -50,7 +50,7 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     doneWhen:
       'Une décision conserve instance, auteur, date, portée et preuve ; ses actions restent reliées à leurs responsables.',
     firstRelease:
-      'Instances, participants du répertoire, ordre du jour, compte rendu, décisions et tâches liées ; les mandats se lisent dans le parcours.',
+      'Instances, participants du répertoire, ordre du jour, compte rendu, décisions et tâches liées ; les mandats se lisent dans l’Effectif de Bureau & staff.',
     id: 'meetings',
     later:
       'Assemblées, votes, registres adaptés à la forme juridique et export des comptes rendus.',

@@ -31,14 +31,14 @@ Révision du 8 novembre 2026, sur décision du propriétaire (« on peut encore 
 | Esport | Quelles équipes, quels tournois ? | Équipes (onglets Jeux et Fonctions d’équipe), fiche équipe, tournois, entraînement, déplacements |
 | Finances | Où en est l’argent ? | Comptes (onglets Catégories et Moyens de paiement), opérations, factures, frais, subventions et dons, contrôles, budget |
 | Relations | Avec qui à l’extérieur ? | Organisations, partenariats, communication |
-| Structure | Qu’est-ce que l’association, qu’a-t-elle décidé et gardé ? | Identité juridique (onglets Mandats et Fonctions de la structure), chronologie, réunions et décisions, documents, contrats, incidents, matériel et abonnements (onglet Types de matériel), bilan annuel |
+| Structure | Qu’est-ce que l’association, qu’a-t-elle décidé et gardé ? | Bureau & staff (effectif et fonctions de la structure), identité juridique, chronologie, réunions et décisions, documents, contrats, incidents, matériel et abonnements (onglet Types de matériel), bilan annuel |
 | Système | Comment marche l’outil ? | Comptes et accès, journal, paramètres (dont les règles de rappel), données, intégrations, feuille de route |
 
 Ce tableau décrit les lieux logiques, pas un engagement à créer autant d’entrées. Les vues rares deviennent des onglets ou actions contextuelles. Les pôles Relations, Structure et Finances s’ouvrent seulement avec leurs premiers modules utilisables.
 
 ## Règles de placement
 
-- **Une donnée se modifie là où on la lit** (décision du 7 novembre 2026). Une action que porte déjà une fiche ne reçoit pas de page dédiée : le parcours d’un membre se modifie sur sa fiche, et la même fenêtre s’ouvre depuis la fiche de son équipe ([où modifier](registre-historique.md#où-modifier)). Un manque de place se règle par un onglet ou une fenêtre avant une page.
+- **Une donnée se modifie là où on la lit** (décision du 7 novembre 2026). Une action que porte déjà une fiche ne reçoit pas de page dédiée : un passage se saisit dans l’effectif de son équipe ou de Bureau & staff, avec la même fenêtre, et la fiche personne les lit tous dans son onglet Parcours (décision du 8 novembre 2026) ([où modifier](registre-historique.md#où-modifier)). Un manque de place se règle par un onglet ou une fenêtre avant une page.
 - **Une liste de choix qui peut évoluer se gère sur le site**, jamais dans le code, en onglet à côté de ce qu’elle classe et jamais dans Système ([listes de choix](registre-historique.md#listes-de-choix)).
 - Une donnée a un module propriétaire. Les vues personnelles, synthèses et recherches ne créent pas de copies concurrentes.
 - Structure contient les contrats et décisions de gouvernance ; Relations suit les engagements des partenaires. Une fiche partenaire peut afficher ses contrats autorisés.

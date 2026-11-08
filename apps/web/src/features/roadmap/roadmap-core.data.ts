@@ -45,7 +45,7 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     doneWhen:
       'Retrouver qui était dans une équipe à n’importe quelle date ; corriger un passage ne crée pas une nouvelle identité.',
     firstRelease:
-      'Équipes par jeu et leurs anciens noms, passages datés (équipe ou structure, fonction, début, fin, dates approximatives admises) saisis dans le roster de l’équipe ou sur la fiche, onglet Parcours, membres actuels et anciens, anciens pseudos. Fiche complétée : nationalité, adresse, identifiants de jeu, contact d’urgence, représentants légaux.',
+      'Équipes par jeu et leurs anciens noms, page Bureau & staff ; passages datés (équipe ou structure, fonction, début, fin, dates approximatives admises) saisis dans l’Effectif d’une équipe ou de Bureau & staff, et lus dans l’onglet Parcours de la fiche. Fiche complétée : nationalité, anciens pseudos, adresse, identifiants de jeu, contact d’urgence, représentants légaux.',
     id: 'sport-teams',
     later: 'Frises et synthèses de parcours si elles servent.',
     legacyHrefs: [
@@ -179,9 +179,9 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     description:
       'Garder les notes sur une personne et traiter les signalements avec confidentialité et traçabilité.',
     doneWhen:
-      'Notes, signalements, sanctions internes et bans externes sont distingués, datés et signés.',
+      'Notes, problèmes, sanctions de la structure et bans externes sont distingués, datés et signés ; une sanction en cours refuse l’inscription à un tournoi jusqu’à sa levée, elle-même tracée.',
     firstRelease:
-      'Onglet Suivi de la fiche : notes, problèmes et bans, par tournoi ou par jeu. Dossiers d’incident : faits, preuves, instruction, décision, recours et durée.',
+      'Onglet Suivi de la fiche : notes, sanctions de la structure (tous ses tournois ou un jeu) et bans externes ; les problèmes et bans d’un tournoi se saisissent dans sa fiche et se lisent sur la personne ; contrôle à l’inscription des participants. Dossiers d’incident : faits, preuves, instruction, décision, recours et durée.',
     id: 'incidents',
     later: 'Liens restreints vers personnes et équipes.',
     legacyHrefs: ['/bureau-juridique/incidents-sanctions'],

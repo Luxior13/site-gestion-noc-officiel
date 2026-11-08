@@ -49,7 +49,9 @@ structure » dans le journal (AC-32).
 - **Règles métier** : statut `IN_STRUCTURE` / `OUTSIDE_STRUCTURE` ; futures
   relations datées rattachées à la personne, jamais empilées sur `Person`
   ([sujets futurs](../../../propositions/sujets-futurs.md)).
-- **Évolution décidée le 7 novembre 2026** : la fiche recevra un onglet Parcours,
+- **Évolution décidée le 7 novembre 2026** : la fiche recevra un onglet Parcours
+  (en lecture ↗ depuis le 8 novembre : les passages se saisissent dans l’Effectif
+  des équipes et de Bureau & staff ; anciens pseudos dans Identité),
   et une fiche qui a un parcours ne se supprimera plus
   ([registre historique](../../../domaines/registre-historique.md),
   [cadrage](../../../propositions/membres-equipes-parcours.md)). Rien de cela

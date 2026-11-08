@@ -69,7 +69,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         phase: null,
         summary: 'Pseudo, nom, naissance, zone dangereuse.',
         upcoming:
-          'Statut calculé depuis le parcours, nationalité et jeux pratiqués.',
+          'Statut calculé depuis le parcours, nationalité, jeux pratiqués et anciens pseudos, y compris ceux d’avant le site.',
       },
       {
         chantier: 'sport-teams',
@@ -82,9 +82,10 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
       {
         chantier: 'sport-teams',
         label: 'Parcours',
+        managedIn: 'l’Effectif de chaque équipe et de Bureau & staff',
         phase: 1,
         summary:
-          'Passages datés : équipe ou structure, fonction, début et fin ; tournois joués ; anciens pseudos.',
+          'Passages datés : équipe ou structure, fonction, début et fin ; tournois joués. Chaque ligne ouvre son équipe ou Bureau & staff.',
       },
       {
         chantier: 'person-relationships',
@@ -119,7 +120,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         label: 'Suivi',
         phase: 5,
         summary:
-          'Notes datées, problèmes et bans, par tournoi ou par jeu, réservés aux personnes habilitées.',
+          'Notes, sanctions de la structure (tous ses tournois ou un jeu, motif, durée, levée) et bans externes qui dépassent un tournoi ; les problèmes et bans d’un tournoi y figurent aussi, saisis dans sa fiche. Réservé aux personnes habilitées.',
       },
     ],
   },
@@ -217,7 +218,8 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
       {
         label: 'Participants',
         phase: 5,
-        summary: 'Équipes et membres engagés.',
+        summary:
+          'Équipes et membres engagés. Une sanction de la structure en cours refuse l’inscription, avec son motif ; un ban externe sur le même jeu ou organisateur avertit.',
       },
       {
         chantier: 'prizes',
@@ -230,7 +232,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         label: 'Suivi',
         phase: 5,
         summary:
-          'Problèmes et bans liés à ce tournoi, réservés aux personnes habilitées.',
+          'Problèmes et bans survenus pendant ce tournoi, saisis ici et visibles sur la fiche de chaque personne. Réservé aux personnes habilitées.',
       },
     ],
   },

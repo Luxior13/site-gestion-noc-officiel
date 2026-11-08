@@ -115,7 +115,7 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
   « Règlements » pour l’argent lié à l’objet ;
   « Documents » pour les pièces, « Justificatifs » pour celles des Finances.
 - **Pas d’onglet Historique** : le bouton de l’en-tête ouvre le journal, filtré.
-- **Un onglet en lecture le signale** (8 novembre 2026) : quand rien ne s’y modifie et que son contenu se gère sur une autre page (Adhésions ou Finances d’une fiche personne), l’onglet garde le même style, suivi d’une flèche ↗ et du texte accessible « se modifie dans … ». Dedans, une ligne en tête nomme la page source avec un bouton pour l’ouvrir, chaque ligne ouvre son dossier, sans action de modification. Un onglet mixte (Parcours ou Suivi d’une fiche personne, Gains d’une fiche tournoi) reste un onglet normal : ses lignes venues d’ailleurs portent leur source et un lien.
+- **Un onglet en lecture le signale** (8 novembre 2026) : quand rien ne s’y modifie et que son contenu se gère sur une autre page (Adhésions ou Finances d’une fiche personne), l’onglet garde le même style, suivi d’une flèche ↗ et du texte accessible « se modifie dans … ». Dedans, une ligne en tête nomme la page source avec un bouton pour l’ouvrir, chaque ligne ouvre son dossier, sans action de modification. Un onglet mixte (Suivi d’une fiche personne, Gains d’une fiche tournoi) reste un onglet normal : ses lignes venues d’ailleurs portent leur source et un lien.
 - **Créer** : en fenêtre pour quelques champs, sur une page pour un long formulaire.
 
 ## C. Formulaire de création

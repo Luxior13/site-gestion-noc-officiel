@@ -31,11 +31,11 @@ Un seul objet central : le **passage**, une relation datée entre une fiche du
 | Dates approximatives | Année, mois ou jour : une date connue à l’année se saisit à l’année, sans inventer de jour |
 | Entité juridique | Aucune exigée : l’histoire commence en 2014, la structure en 2023 et l’association en octobre 2025 |
 | Roster à une date | Se déduit des passages ; aucune composition d’équipe n’est stockée à part |
-| Anciens pseudos | Conservés, pour retrouver une personne sous le nom qu’elle portait |
+| Anciens pseudos | Conservés, pour retrouver une personne sous le nom qu’elle portait ; affichés et complétés dans l’onglet Identité |
 | Anciens noms d’équipe | Conservés de la même façon : une équipe change de nom sans changer d’histoire |
 
 Un passage n’a pas de motif de fin (décision du 8 novembre 2026) : la fin se
-saisit à son endroit, dans le roster de l’équipe ou les Mandats. Un changement
+saisit à son endroit, dans l’Effectif de l’équipe ou de Bureau & staff. Un changement
 d’équipe ou de fonction se voit au passage suivant, une exclusion a son dossier
 d’incident, une fin de contrat se lit dans le contrat.
 
@@ -52,11 +52,21 @@ ne déclenche aucun encaissement.
 
 Le **suivi** réunit ce que le bureau sait d’une personne : notes, problèmes et bans.
 
-- Chaque entrée est datée, signée et rattachée à une fiche, et si besoin à un tournoi
-  ou à un jeu. Une même entrée se lit sur la fiche personne et sur la fiche tournoi.
-- Un ban est une relation datée (type, jeu ou tournoi, période, motif, source ou
-  preuve, auteur, levée), jamais une case « banni » sur la fiche. Lever un ban ne
-  l’efface pas.
+- Chaque entrée est datée, signée et rattachée à une fiche. Elle se saisit à son
+  endroit (décision du 8 novembre 2026) : un problème ou un ban survenu pendant un
+  tournoi, dans la fiche tournoi, et il se lit aussi sur la fiche personne ; sur la
+  fiche personne, les notes, les sanctions de la structure (par exemple « exclu de
+  tous les futurs tournois ») et les bans externes qui dépassent un tournoi (un
+  éditeur ou un organisateur qui bannit d’un circuit ou d’un jeu).
+- Un ban ou une sanction est une relation datée (type : sanction de la structure ou
+  ban externe ; portée : tous les tournois de la structure, un jeu, un tournoi ou un
+  circuit ; période ou « jusqu’à levée » ; motif ; source ou preuve ; auteur ;
+  lien facultatif vers un dossier d’incident ou une décision du bureau ; levée),
+  jamais une case « banni » sur la fiche. Lever un ban ne l’efface pas.
+- Une sanction de la structure en cours refuse l’inscription de la personne à un
+  tournoi concerné, avec son motif : il faut d’abord la lever, et la levée est
+  tracée. Un ban externe sur le même jeu ou le même organisateur avertit sans
+  bloquer.
 - Le suivi est réservé aux personnes habilitées, par une autorisation dédiée. Un
   manager n’y a pas accès.
 - Une note libre peut contenir trop de choses : s’en tenir aux faits utiles, sans
@@ -96,11 +106,9 @@ développement. Une liste fixée par une règle (statut, rôle) reste dans le co
 
 - Chaque liste se gère en onglet, à côté de ce qu’elle classe, au gabarit des
   listes de gestion (décision du 8 novembre 2026) : Jeux et Fonctions d’équipe
-  dans Équipes (Esport), Fonctions de la structure dans Identité juridique (Structure),
+  dans Équipes (Esport), Fonctions de la structure dans Bureau & staff (Structure),
   Catégories et Moyens de paiement dans Comptes (Finances), Types de matériel
   dans Matériel & abonnements (Structure). Aucune liste ne se gère dans Système.
-  Les fonctions de la structure s’ajoutent depuis le champ du passage tant
-  qu’Identité juridique n’est pas livrée.
 - **Renommer** corrige une faute et met à jour la valeur partout. Quand la
   chose change vraiment (CS:GO devenu Counter-Strike 2, une fonction qui change
   de nature), on crée une nouvelle valeur et on archive l’ancienne, qui reste sur
@@ -120,9 +128,10 @@ Une donnée se modifie là où on la lit.
 
 | Besoin | Où |
 | --- | --- |
-| Changer le parcours d’un membre | Onglet Parcours de sa fiche, en fenêtre, comme les coordonnées |
-| Ajouter ou retirer quelqu’un d’une équipe | Fiche de l’équipe, onglet Effectif (le roster : début et fin), avec la même fenêtre, équipe déjà remplie |
-| Ajouter ou terminer un mandat du bureau | Identité juridique, onglet Mandats, avec la même fenêtre, structure déjà remplie |
+| Ajouter ou terminer un passage dans une équipe | Fiche de l’équipe, onglet Effectif (le roster : début et fin), en fenêtre |
+| Ajouter ou terminer un passage dans la structure (bureau, staff, bénévoles) | Page Bureau & staff, onglet Effectif, avec la même fenêtre |
+| Voir tout le parcours d’une personne | Onglet Parcours de sa fiche, en lecture ↗ : chaque ligne ouvre son équipe ou Bureau & staff |
+| Ajouter un ancien pseudo | Onglet Identité de la fiche, y compris un pseudo d’avant le site |
 | Voir les membres actuels et anciens d’une équipe | Fiche de l’équipe |
 | Changer une liste de choix | Onglet de la liste, à côté de ce qu’elle classe, ou ajout direct depuis le champ |
 
