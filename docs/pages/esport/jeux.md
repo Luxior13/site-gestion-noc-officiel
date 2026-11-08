@@ -79,7 +79,7 @@ Composition, de haut en bas :
 
 Fenêtre « Ajouter un jeu », pour la création seulement (« Une section de la
 structure ; sa fiche s’ouvre ensuite, pour la compléter. ») : Nom, Nom court,
-Première ouverture (précision, puis date, ou mois et année, ou année), Actif. Un
+Première ouverture (calendrier du site, au jour, au mois ou à l’année), Actif. Un
 nom déjà pris s’affiche sous le champ. Une fois ajouté, le jeu ouvre sa
 [fiche](jeu.md), où il se modifie et se supprime ; un jeu qui a des équipes y
 affiche, à la place du bouton de suppression, « Ce jeu a 3 équipes :

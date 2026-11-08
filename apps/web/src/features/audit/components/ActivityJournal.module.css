@@ -170,7 +170,10 @@
 
 @container (min-width: 44rem) {
   .row {
-    grid-template-columns: 12px minmax(0, 1.1fr) minmax(0, 1.2fr) minmax(0, 0.9fr) 112px 16px;
+    grid-template-columns: 12px minmax(0, 1.1fr) minmax(0, 1.2fr) minmax(
+        0,
+        0.9fr
+      ) 112px 16px;
     grid-template-areas: 'dot label subject actor time chevron';
     min-height: 48px;
     padding: 8px 20px;

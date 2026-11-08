@@ -1,5 +1,6 @@
 import React, { type FC } from 'react';
 
+import { DatePicker } from '$ui/date-picker';
 import { Input } from '$ui/input';
 import { Label } from '$ui/label';
 import {
@@ -45,12 +46,18 @@ type PersonIdentityFieldsProps = {
 
 const FieldLabel: FC<{
   htmlFor: string;
+  id?: string;
   label: string;
-}> = ({ htmlFor, label }) => (
+}> = ({ htmlFor, id, label }) => (
   <div className="flex min-h-6 items-center gap-1.5">
-    <Label htmlFor={htmlFor}>{label}</Label>
+    <Label htmlFor={htmlFor} id={id}>
+      {label}
+    </Label>
   </div>
 );
+
+/** Earliest year a birth date's calendar offers. */
+const BIRTH_FIRST_YEAR = 1900;
 
 const FieldError: FC<{ id: string; message?: string }> = ({ id, message }) =>
   message ? (
@@ -166,18 +173,32 @@ export const PersonIdentityFields: FC<PersonIdentityFieldsProps> = ({
       )}
       {showSituation && showBirthDate && (
         <div className="min-w-0 space-y-1.5">
-          <FieldLabel htmlFor={birthDate.id} label="Date de naissance" />
-          <Input
+          <FieldLabel
+            htmlFor={birthDate.id}
+            id={`${birthDate.id}-label`}
+            label="Date de naissance"
+          />
+          {/* The site's calendar, to the day only (9 November 2026). */}
+          <DatePicker
             aria-describedby={
               birthDate.describedBy ??
               (!quiet ? `${birthDate.id}-hint` : undefined)
             }
             aria-invalid={Boolean(birthDate.error)}
+            clearable
             disabled={disabled}
             id={birthDate.id}
-            onChange={(event) => onChange('birthDate', event.target.value)}
-            type="date"
-            value={value.birthDate}
+            labelId={`${birthDate.id}-label`}
+            maxYear={new Date().getFullYear()}
+            minYear={BIRTH_FIRST_YEAR}
+            onChange={(next) => onChange('birthDate', next?.date ?? '')}
+            placeholder="Non renseignée"
+            precisions={['DAY']}
+            value={
+              value.birthDate
+                ? { date: value.birthDate, precision: 'DAY' }
+                : null
+            }
           />
           <FieldError id={`${birthDate.id}-error`} message={birthDate.error} />
           {!quiet && !birthDate.error && (

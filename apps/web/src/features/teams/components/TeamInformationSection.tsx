@@ -334,7 +334,6 @@ export const TeamInformationSection: FC<Props> = ({
                 idPrefix={`${ID}-founded`}
                 label="Création"
                 onChange={(founded) => change({ founded })}
-                subject="création"
                 value={draft.founded}
               />
               <div className="border-border-default bg-surface-inset flex items-center justify-between gap-4 rounded-lg border px-3 py-2.5">

@@ -6,14 +6,8 @@ import { z } from 'zod';
  * approximate date of the site: a game's first opening, a team's creation and,
  * later, the start and end of a passage.
  */
-export const DATE_PRECISIONS = ['DAY', 'MONTH', 'YEAR'] as const;
+const DATE_PRECISIONS = ['DAY', 'MONTH', 'YEAR'] as const;
 export type DatePrecision = (typeof DATE_PRECISIONS)[number];
-
-export const DATE_PRECISION_LABELS: Record<DatePrecision, string> = {
-  DAY: 'Jour précis',
-  MONTH: 'Mois',
-  YEAR: 'Année',
-};
 
 /** A date known to the day, the month or the year (`date` is YYYY-MM-DD). */
 export type ApproximateDate = Readonly<{

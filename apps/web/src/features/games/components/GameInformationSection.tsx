@@ -383,7 +383,6 @@ export const GameInformationSection: FC<Props> = ({
                 idPrefix={`${ID}-first-opened`}
                 label="Première ouverture"
                 onChange={(firstOpened) => change({ firstOpened })}
-                subject="première ouverture"
                 value={draft.firstOpened}
               />
               <div className="border-border-default bg-surface-inset flex items-center justify-between gap-4 self-end rounded-lg border px-3 py-2.5">

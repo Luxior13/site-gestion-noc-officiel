@@ -18,7 +18,10 @@
 ## Rôle et tâches principales
 
 Consulter et corriger l’identité d’une personne : pseudo principal, prénom, nom,
-date de naissance civile facultative et statut dans la structure.
+date de naissance civile facultative et statut dans la structure. La date de
+naissance se choisit dans le calendrier du site (`DatePicker`, au jour, de 1900
+à l’année en cours, avec « Effacer »), plus le sélecteur natif du navigateur
+(9 novembre 2026).
 
 ## Composition actuelle
 
