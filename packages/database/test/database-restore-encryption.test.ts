@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import test from 'node:test';
 
 import {
+  DATABASE_BACKUP_FORMAT_VERSION,
   DATABASE_BACKUP_TABLES,
   stringifyBackupRecord,
 } from '../scripts/database-backup-format.ts';
@@ -93,7 +94,7 @@ const backup = (rows: Rows): string => {
     stringifyBackupRecord({
       backupId: '123e4567-e89b-42d3-a456-426614174000',
       createdAt: '2026-10-13T01:00:00.000Z',
-      formatVersion: 10,
+      formatVersion: DATABASE_BACKUP_FORMAT_VERSION,
       requiredAuditEncryptionKeyVersions: [1],
       tables: DATABASE_BACKUP_TABLES.map(({ property, tableName }) => ({
         property,

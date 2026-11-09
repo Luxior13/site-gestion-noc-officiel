@@ -9,9 +9,9 @@
   responsabilités métier (étapes 1 et 2).
 - **Statut** : en cours. Lots 1 et 2 livrés pour l’essentiel du 8 au
   9 novembre 2026 (jeux, fonctions des jeux et de la structure, équipes,
-  Roster, Parcours, Bureau & staff) ; restent les jeux pratiqués, les anciens
-  pseudos, les compléments de la fiche, le statut calculé et la sauvegarde des
-  nouvelles tables, puis le lot 3. Les choix techniques non livrés restent à
+  Roster, Parcours, Bureau & staff ; sauvegarde v11 du registre) ; restent les
+  jeux pratiqués, les anciens pseudos, les compléments de la fiche et le statut
+  calculé, puis le lot 3. Les choix techniques non livrés restent à
   valider au moment de leur lot.
 - **Décisions déjà données** : [registre historique](../domaines/registre-historique.md)
   et [public du site](../domaines/roles-metier.md#public-du-site--décision-du-7-novembre-2026).
@@ -162,7 +162,7 @@ réglage retiré de la fonction, compte désactivé, recherche rapide, totaux de
 | --- | --- |
 | Statut du Répertoire | Colonne `structureStatus` remplacée par le calcul ; 19 fichiers du code la citent |
 | Suppression d’une fiche | Refus si la fiche a un passage ; [règle du Répertoire](../pages/personnes/repertoire/README.md) à actualiser |
-| Sauvegarde | Nouvelles tables dans le manifeste, format v11 |
+| Sauvegarde | Nouvelles tables dans le manifeste, format v11 (fait le 9 novembre 2026, aller-retour éprouvé ; un test refuse désormais toute table oubliée) |
 | Journal d’activité | Nouvelles actions et nouveau filtre |
 | Registre, navigation, recherche rapide | Entrées et mots-clés de Listes et d’Équipes |
 | Contrôle mobile E2E | Nouvelles pages à ajouter à `mobile-layout.checks.ts` |

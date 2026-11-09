@@ -92,7 +92,7 @@ L’actualité interne redéfinira son stockage à sa reconstruction.
 
 **Regroupement de l’historique — décision du 25 octobre 2026 (REV-19)** : les
 migrations seront regroupées en une migration de base **juste avant la
-première mise en production**, pas avant : chaque module encore à construire
+première mise en production** (point 7 de la [liste d’avant mise en production](../exploitation/operations.md#avant-la-première-mise-en-production)), pas avant : chaque module encore à construire
 ajouterait des migrations et la base de travail devrait être réalignée deux
 fois. À ce moment : générer la base depuis le schéma, y reporter à la main les
 `CHECK`, triggers, fonctions et index partiels ou d’expression absents de `schema.prisma`, comparer le

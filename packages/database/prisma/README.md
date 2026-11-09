@@ -139,7 +139,7 @@ purge convertit explicitement son horloge en UTC.
 
 ## Sauvegardes
 
-Créer une sauvegarde signée v10 :
+Créer une sauvegarde signée v11 :
 
 ```bash
 bun run --filter @repo/database db:backup
@@ -184,8 +184,11 @@ avant de considérer l'opération terminée. Les trois lectures bornées du fich
 (signature, déchiffrement, insertion) comparent son empreinte ; aucune copie
 complète du contenu déchiffré n'est conservée. Le format passe en v10 le
 25 octobre 2026 avec le retrait des tables `InternalAnnouncement` et
-`ArchivedStaffProfile` ; une sauvegarde v9 se restaure avec le code et les
-migrations de son époque.
+`ArchivedStaffProfile`, puis en v11 le 9 novembre 2026 avec le registre
+(`Game`, `Team`, `MemberFunction`, `PersonPassage`), après les fiches et dans
+l'ordre des clés étrangères ; une sauvegarde plus ancienne se restaure avec le
+code et les migrations de son époque. Toute table du schéma doit figurer dans
+`DATABASE_BACKUP_TABLES` : le test `database-backup-format` le vérifie.
 
 ## Performance Personnes
 

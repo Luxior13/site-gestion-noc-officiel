@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { Buffer } from 'node:buffer';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
 import {
@@ -62,12 +63,12 @@ const validateLines = (
   return validator.finish();
 };
 
-test('validates the signed v9 format, ordered tables and exact counts', () => {
+test('validates the signed v11 format, ordered tables and exact counts', () => {
   const summary = validateLines(
     createBackupLines({ users: [{ id: 'user-1' }, { id: 'user-2' }] }),
   );
 
-  assert.equal(summary.manifest.formatVersion, 10);
+  assert.equal(summary.manifest.formatVersion, 11);
   assert.equal(summary.counts.users, 2);
   const tableNames: readonly string[] = DATABASE_BACKUP_TABLES.map(
     ({ tableName }) => tableName,
@@ -79,6 +80,70 @@ test('validates the signed v9 format, ordered tables and exact counts', () => {
   assert.equal(tableNames.includes('PartnerTimelineEvent'), false);
   assert.equal(tableNames.includes('InternalAnnouncement'), false);
   assert.equal(tableNames.includes('ArchivedStaffProfile'), false);
+});
+
+// The registry tables were left out of v10 for a day (9 November 2026): every
+// model of the schema now has to be in the copy, or this test names it.
+test('backs up every table of the schema', () => {
+  // A fixed path inside this package.
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
+  const schema = readFileSync(
+    new URL('../prisma/schema.prisma', import.meta.url),
+    'utf8',
+  );
+  const models = [...schema.matchAll(/^model (\w+) \{/gmu)]
+    .map((match) => match[1] ?? '')
+    .sort();
+  const backedUp = DATABASE_BACKUP_TABLES.map(
+    ({ tableName }) => tableName as string,
+  ).sort();
+  assert.ok(models.length > 0);
+  assert.deepEqual(
+    models.filter((model) => !backedUp.includes(model)),
+    [],
+    'A table of the schema is missing from the backup',
+  );
+  assert.deepEqual(
+    backedUp.filter((table) => !models.includes(table)),
+    [],
+    'The backup names a table the schema no longer has',
+  );
+});
+
+// v11, 9 November 2026: the registry is in the copy, each parent before the
+// rows that reference it, so a restore keeps every foreign key enabled.
+test('keeps the registry, parents first', () => {
+  const tableNames: readonly string[] = DATABASE_BACKUP_TABLES.map(
+    ({ tableName }) => tableName,
+  );
+  const at = (name: string): number => {
+    const index = tableNames.indexOf(name);
+    assert.notEqual(index, -1, `${name} is backed up`);
+
+    return index;
+  };
+  assert.ok(at('Game') < at('Team'));
+  assert.ok(at('Game') < at('MemberFunction'));
+  assert.ok(at('Person') < at('PersonPassage'));
+  assert.ok(at('Team') < at('PersonPassage'));
+  assert.ok(at('MemberFunction') < at('PersonPassage'));
+  const summary = validateLines(
+    createBackupLines({
+      games: [{ id: 'game-1' }],
+      memberFunctions: [{ id: 'function-1' }, { id: 'function-2' }],
+      personPassages: [{ id: 'passage-1' }],
+      teams: [{ id: 'team-1' }],
+    }),
+  );
+  assert.deepEqual(
+    [
+      summary.counts.games,
+      summary.counts.teams,
+      summary.counts.memberFunctions,
+      summary.counts.personPassages,
+    ],
+    [1, 1, 2, 1],
+  );
 });
 
 test('serializes bigint and bytea without loss', () => {
@@ -114,7 +179,9 @@ test('rejects truncated, reordered and count-divergent streams', () => {
 });
 
 test('rejects old manifests and unknown properties', () => {
-  const oldManifest = { ...createManifest(), formatVersion: 6 };
+  // A v10 copy, from before the registry, is refused rather than restored
+  // without it.
+  const oldManifest = { ...createManifest(), formatVersion: 10 };
   assert.throws(
     () =>
       new BackupStreamValidator().consume(

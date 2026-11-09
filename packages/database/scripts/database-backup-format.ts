@@ -1,6 +1,8 @@
 import { Buffer } from 'node:buffer';
 
-export const DATABASE_BACKUP_FORMAT_VERSION = 10;
+// v11 (9 November 2026): the registry joins the copy, games, teams,
+// functions and passages, which v10 left out.
+export const DATABASE_BACKUP_FORMAT_VERSION = 11;
 export const DATABASE_BACKUP_BATCH_SIZE = 500;
 export const MAX_DATABASE_BACKUP_BYTES = 2 * 1024 * 1024 * 1024;
 export const MAX_BACKUP_LINE_BYTES = 16 * 1024 * 1024;
@@ -107,6 +109,33 @@ export const DATABASE_BACKUP_TABLES = [
     cursorKind: 'text',
     property: 'personSocialProfiles',
     tableName: 'PersonSocialProfile',
+  },
+  // The registry (8 and 9 November 2026): who was where, with which function,
+  // from when to when. Games before their teams and functions, those before
+  // the passages that use them, and the persons already above.
+  {
+    cursorColumn: 'id',
+    cursorKind: 'text',
+    property: 'games',
+    tableName: 'Game',
+  },
+  {
+    cursorColumn: 'id',
+    cursorKind: 'text',
+    property: 'teams',
+    tableName: 'Team',
+  },
+  {
+    cursorColumn: 'id',
+    cursorKind: 'text',
+    property: 'memberFunctions',
+    tableName: 'MemberFunction',
+  },
+  {
+    cursorColumn: 'id',
+    cursorKind: 'text',
+    property: 'personPassages',
+    tableName: 'PersonPassage',
   },
   {
     cursorColumn: 'id',
