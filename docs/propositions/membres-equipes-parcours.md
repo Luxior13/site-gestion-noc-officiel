@@ -168,3 +168,4 @@ import, ni traitement différé, ni gouvernance, ni montant). Hors impact : Q18,
 | ID | Question | Recommandation | Bloque |
 | --- | --- | --- | --- |
 | CAD-Q3 | Quel délai avant la purge des coordonnées, et qui le valide ? | À faire valider par une personne compétente | Confidentialité & conservation |
+| CAD-Q4 | Où vont graphistes, monteurs et autres soutiens (question du 9 novembre 2026), et l’Effectif sépare-t-il le bureau du staff ? | Selon pour qui ils travaillent : toute la structure → Effectif de Bureau & staff ; une seule équipe → son Roster, fonction d’encadrement du jeu. Les fonctions de la structure ont deux types, Bureau (mandats élus) et Staff, en deux groupes comme Joueurs et Encadrement | Bureau & staff |
