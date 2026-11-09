@@ -39,6 +39,7 @@ import {
   GAME_FIELD_LABELS,
   JOURNAL_ACTION_LABELS,
   LOGIN_FAILURE_REASONS,
+  PASSAGE_FIELD_LABELS,
   PERSON_FIELD_LABELS,
   PERSON_SECTION_LABELS,
   STEP_UP_FAILURE_REASONS,
@@ -349,6 +350,7 @@ const toneOf = (row: AuditLog): JournalTone => {
 
 const typeLabelOf = (row: AuditLog): string => {
   if (row.category === 'PERSON') return 'Personnes';
+  if (row.category === 'PASSAGE') return 'Parcours';
   if (row.category === 'GAME') return 'Jeux';
   if (row.category === 'TEAM') return 'Équipes';
   if (row.category === 'FUNCTION') return 'Fonctions';
@@ -377,6 +379,16 @@ const subjectOf = (
     typeof metadata.settingKey === 'string'
   )
     return SETTING_JOURNAL_LABELS[metadata.settingKey] ?? 'Paramètre';
+  // « Passage : Joueur, Noctambule Academy (Valorant) »: never the person's
+  // name, which only the line's target shows, to who may read it.
+  if (
+    row.category === 'PASSAGE' &&
+    typeof metadata.functionName === 'string' &&
+    typeof metadata.teamName === 'string'
+  )
+    return typeof metadata.gameName === 'string'
+      ? `Passage : ${metadata.functionName}, ${metadata.teamName} (${metadata.gameName})`
+      : `Passage : ${metadata.functionName}, ${metadata.teamName}`;
   if (row.category === 'GAME' && typeof metadata.gameName === 'string')
     return `Jeu : ${metadata.gameName}`;
   if (row.category === 'TEAM' && typeof metadata.teamName === 'string')
@@ -451,17 +463,23 @@ export const projectJournalEvent = (
               'Compte',
           }
         : null;
-  const changes = isPerson
-    ? row.fieldChanges.map((change) => projectPersonChange(row, change, rights))
-    : row.action === 'SYSTEM_SETTING_UPDATE'
-      ? projectSettingChanges(metadata)
-      : row.category === 'GAME'
-        ? projectReadableChanges(metadata, GAME_FIELD_LABELS)
-        : row.category === 'TEAM'
-          ? projectReadableChanges(metadata, TEAM_FIELD_LABELS)
-          : row.category === 'FUNCTION'
-            ? projectReadableChanges(metadata, FUNCTION_FIELD_LABELS)
-            : projectUserChanges(row, metadata, rights);
+  // A passage concerns a record (its target) but keeps readable values.
+  const changes =
+    row.category === 'PASSAGE'
+      ? projectReadableChanges(metadata, PASSAGE_FIELD_LABELS)
+      : isPerson
+        ? row.fieldChanges.map((change) =>
+            projectPersonChange(row, change, rights),
+          )
+        : row.action === 'SYSTEM_SETTING_UPDATE'
+          ? projectSettingChanges(metadata)
+          : row.category === 'GAME'
+            ? projectReadableChanges(metadata, GAME_FIELD_LABELS)
+            : row.category === 'TEAM'
+              ? projectReadableChanges(metadata, TEAM_FIELD_LABELS)
+              : row.category === 'FUNCTION'
+                ? projectReadableChanges(metadata, FUNCTION_FIELD_LABELS)
+                : projectUserChanges(row, metadata, rights);
 
   return {
     actor:
@@ -497,7 +515,9 @@ export const projectJournalEvent = (
       row.action === 'MFA_ENABLED' && metadata.replacing === true
         ? 'Application d’authentification remplacée'
         : JOURNAL_ACTION_LABELS[row.action],
-    subject: target ? null : subjectOf(row, metadata),
+    // A passage keeps its team and function beside its record.
+    subject:
+      target && row.category !== 'PASSAGE' ? null : subjectOf(row, metadata),
     target,
     tone: toneOf(row),
     typeLabel: typeLabelOf(row),

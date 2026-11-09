@@ -19,9 +19,9 @@ import type { ApproximateDate } from '$utils/approximate-date.utils';
 import { updateTeamRequest } from '../team.api';
 import { TEAM_NAME_MAX_LENGTH } from '../team.constants';
 import type { TeamDetail } from '../types/team.types';
+import { TEAM_ACTION_BAR_SLOT } from './team-record.constants';
 
 /** Where the record page renders the save bar, outside the section. */
-export const TEAM_ACTION_BAR_SLOT = 'team-record-action-bar';
 
 const ID = 'team-detail';
 const FORM_ID = `${ID}-form`;
@@ -72,6 +72,8 @@ const FieldError: FC<{ id: string; message?: string }> = ({ id, message }) =>
 type Props = {
   canUpdate: boolean;
   onChange: (team: TeamDetail) => void;
+  /** Marks the Informations tab while a draft is pending. */
+  onDirtyChange?: (dirty: boolean) => void;
   onReload: () => Promise<TeamDetail>;
   team: TeamDetail;
 };
@@ -84,6 +86,7 @@ type Props = {
 export const TeamInformationSection: FC<Props> = ({
   canUpdate,
   onChange,
+  onDirtyChange,
   onReload,
   team,
 }) => {
@@ -116,6 +119,12 @@ export const TeamInformationSection: FC<Props> = ({
   } = useUnsavedNavigationGuard(isDirty, () => {
     mountedRef.current = false;
   });
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+
+    return (): void => onDirtyChange?.(false);
+  }, [isDirty, onDirtyChange]);
 
   useEffect(() => {
     mountedRef.current = true;

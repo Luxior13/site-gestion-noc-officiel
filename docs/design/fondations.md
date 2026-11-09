@@ -116,6 +116,13 @@ Un jeu a la même vignette qu’un avatar de liste (36 px, `rounded-tile`,
 bordure). Tant qu’il n’a pas d’image, elle porte une manette sur le ton du pôle
 Esport (`GameAvatar`, 8 novembre 2026) ; l’image du jeu la remplacera.
 
+Une personne porte partout l’avatar de sa fiche du Répertoire
+(`PersonAvatarFrame` : 36 px, `rounded-tile`, bordure, dessin tiré de
+l’identifiant de la fiche) : liste du Répertoire, lignes du Roster, fenêtre
+d’un passage, suggestions d’un choix de personne en 28 px (« trop plat, il
+faudrait mettre les avatars des personnes », 9 novembre 2026). La même
+personne a donc le même dessin sur toutes les pages.
+
 ### Portée indigo
 
 `[data-surface-tone='indigo']` : `--radius` 0,5 rem, panneau = sidebar
@@ -279,7 +286,22 @@ gardées par le test `visible-wording-contracts` :
   « rôle » (Utilisateur, Administrateur), « tiret bas » ; aucun mot anglais
   (« scope », « payload ») dans un message ;
 - deux-points précédés d’une espace (« Motif : … »), y compris dans les
-  descriptions enregistrées par l’audit.
+  descriptions enregistrées par l’audit ;
+- une période (9 novembre 2026, sur une capture du Roster où « 3 novembre
+  2026 → 5 novembre 2026 » se coupait en deux lignes) : l’année dite une fois
+  quand elle se répète, « 3 → 5 novembre 2026 », « mars → juin 2024 »,
+  « 3 septembre → 5 novembre 2026 » ; une borne connue à l’année ou deux
+  années différentes gardent leurs deux dates entières (« 2024 → juin 2024 »,
+  « 28 septembre 2024 → 30 novembre 2025 ») ; une période d’un seul mois ou
+  d’une seule année se dit une fois (« mars 2024 ») ; la flèche reste collée
+  au début par une espace insécable, si bien qu’une période coupée ne commence
+  jamais une ligne par elle (`formatApproximateRange`) ;
+- une durée (9 novembre 2026, « le temps entre le début et aujourd’hui, ou la
+  date de fin si passé ») : jamais plus précise que ses dates. Une borne
+  connue à l’année donne des années, « environ 3 ans » (« moins d’un an »
+  sous un an) ; connue au mois, des années et des mois, « 2 ans 8 mois »
+  (« moins d’un mois ») ; au jour, des jours sous un mois, « 3 jours ». Le
+  dernier jour compte ; rien avant le début (`formatApproximateDuration`).
 
 ## Espacements et arrondis
 

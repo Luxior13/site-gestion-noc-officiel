@@ -10,12 +10,29 @@ export const metadata: Metadata = {
   title: pageTitle('Fiche équipe', FEATURES.games.label),
 };
 
-type TeamRouteProps = { params: Promise<{ id: string }> };
+type TeamRouteProps = {
+  params: Promise<{ id: string }>;
+  searchParams?: Promise<{ section?: string | string[] }>;
+};
 
 export default async function TeamRoute({
   params,
+  searchParams,
 }: TeamRouteProps): Promise<React.ReactNode> {
-  const { id } = await params;
+  const [{ id }, query] = await Promise.all([
+    params,
+    searchParams ?? Promise.resolve<{ section?: string | string[] }>({}),
+  ]);
 
-  return <TeamDetailPage teamId={id} />;
+  // The roster first (9 November 2026); any other value opens it too.
+  return (
+    <TeamDetailPage
+      activeSection={
+        query.section === 'informations' || query.section === 'anciens'
+          ? query.section
+          : 'roster'
+      }
+      teamId={id}
+    />
+  );
 }

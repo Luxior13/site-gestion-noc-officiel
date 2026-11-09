@@ -13,19 +13,7 @@ import {
   getPersonDisplayName,
 } from '../person.ui';
 import type { PersonSummary } from '../types/person.types';
-import { PersonAvatar } from './PersonAvatar';
-
-/** Decorative avatar frame shared by the table row and the mobile card. */
-export const PersonAvatarFrame: FC<{ person: PersonSummary }> = ({
-  person,
-}) => (
-  <span
-    aria-hidden="true"
-    className="border-border-default bg-surface-inset rounded-tile relative flex size-9 shrink-0 items-center justify-center overflow-hidden border"
-  >
-    <PersonAvatar className="size-full rounded-[inherit]" person={person} />
-  </span>
-);
+import { PersonAvatarFrame } from './PersonAvatar';
 
 /** Explains why a row matches a search that did not hit the name. */
 export const PersonContactMatchHint: FC<{ className?: string }> = ({

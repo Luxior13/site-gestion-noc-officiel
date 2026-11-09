@@ -177,10 +177,21 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
       'Ouverte par le nom d’une équipe sur la page Jeux, ou juste après son ajout.',
     tabs: [
       {
+        chantier: 'access-scopes',
         label: 'Roster',
-        phase: 1,
+        phase: null,
         summary:
-          'Joueurs et encadrement actuels et anciens, avec début et fin ; composition à une date ; on y ajoute ou termine un passage. Date de fin de contrat affichée seule, lue dans les contrats (étape 7). Seule fiche d’un manager, en lecture.',
+          'Premier onglet : ce qui est là et ce qui arrive, joueurs puis encadrement, dans l’ordre des fonctions, avec statut (Actuel, À venir), début, fin et durée ; un passage s’ajoute, se corrige, se termine ou change de fonction en fenêtre ; la personne se cherche dans le Répertoire.',
+        upcoming:
+          'Le manager lira le Roster de son équipe, sans le modifier ; la date de fin de contrat s’y lira, venue des contrats (étape 7).',
+      },
+      {
+        chantier: 'access-scopes',
+        label: 'Anciens membres',
+        phase: null,
+        summary:
+          'Les passages terminés, jamais mêlés au Roster : par année de fin, la plus récente d’abord, avec début, fin et durée ; recherche et filtre Joueurs ou Encadrement ; un ancien membre s’ajoute ici avec ses deux dates.',
+        upcoming: 'Le manager les lira pour son équipe, sans les modifier.',
       },
       {
         chantier: 'competitions',
@@ -218,12 +229,12 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         label: 'Informations',
         phase: null,
         summary:
-          'Nom, création, active, modifiés sur place ; le jeu, fixé à la création, figure dans l’en-tête ; zone dangereuse. Seul contenu de la fiche pour l’instant, donc sans barre d’onglets.',
+          'Dernier onglet : nom, création, active, modifiés sur place ; le jeu, fixé à la création, figure dans l’en-tête ; zone dangereuse, qui explique « rendez-la inactive » quand le Roster a des passages.',
         upcoming: 'Anciens noms gardés au renommage.',
       },
     ],
     upcoming:
-      'Le Roster, premier onglet : la barre d’onglets apparaît avec lui, puis les autres onglets.',
+      'Le Parcours de chaque membre, lu sur sa fiche, et son statut dans la structure, calculé depuis les passages.',
   },
   {
     area: 'people',

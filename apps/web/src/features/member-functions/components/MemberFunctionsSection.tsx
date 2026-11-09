@@ -312,6 +312,14 @@ export const MemberFunctionsSection: FC<Props> = ({
       <div className="min-w-0 flex-1">
         <FunctionName canManage={canManage} item={item} onOpen={open(item)} />
       </div>
+      {/* How many passages use it: a used function stays (9 November 2026). */}
+      <span className="text-muted-foreground shrink-0 text-xs tabular-nums">
+        {item.passageCount === 0
+          ? 'aucun passage'
+          : item.passageCount > 1
+            ? `${item.passageCount} passages`
+            : '1 passage'}
+      </span>
       <FunctionState item={item} />
     </div>
   );

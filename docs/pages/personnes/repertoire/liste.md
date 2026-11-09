@@ -33,7 +33,8 @@ un retour de fiche qui conservent le contexte.
   tableau puis cartes sous 740 px, `ListPagination` par curseur de 25 lignes.
 - Plus de carte de synthèse ni de rail : ses compteurs sont portés par les
   filtres rapides (décision du 20 octobre 2026).
-- Cellules : `PersonAvatarFrame`, `PersonStatusBadge` (pastille commune
+- Cellules : `PersonAvatarFrame` (dans `PersonAvatar.tsx` depuis le 9 novembre
+  2026, partagé avec le Roster), `PersonStatusBadge` (pastille commune
   `StatusBadge`), détail des coordonnées par type, date avec infobulle
   « Modifiée par ».
 - États : squelette, vide, erreur avec « Première page » et « Réessayer », accès refusé.

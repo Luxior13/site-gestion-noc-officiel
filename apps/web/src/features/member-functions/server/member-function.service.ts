@@ -1,6 +1,6 @@
 import 'server-only';
 
-import type { MemberFunction, Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { AuditAction, AuditCategory } from '@repo/database';
 
 import { FEATURES } from '$constants/feature-registry.constants';
@@ -76,11 +76,18 @@ const functionUsed = (): ServiceError =>
     'Cette fonction a déjà servi : rendez-la inactive plutôt que de la supprimer.',
   );
 
-const toItem = (row: MemberFunction): MemberFunctionItem => ({
+/** Every read counts the passages: a used function says so, and stays. */
+const WITH_USES = { _count: { select: { passages: true } } } as const;
+type MemberFunctionRow = Prisma.MemberFunctionGetPayload<{
+  include: typeof WITH_USES;
+}>;
+
+const toItem = (row: MemberFunctionRow): MemberFunctionItem => ({
   id: row.id,
   isActive: row.isActive,
   kind: row.kind,
   name: row.name,
+  passageCount: row._count.passages,
   position: row.position,
   updatedAt: row.updatedAt.toISOString(),
   version: row.version,
@@ -159,8 +166,11 @@ const findFunction = async (
   client: Prisma.TransactionClient,
   gameId: string,
   id: string,
-): Promise<MemberFunction> => {
-  const row = await client.memberFunction.findFirst({ where: { gameId, id } });
+): Promise<MemberFunctionRow> => {
+  const row = await client.memberFunction.findFirst({
+    include: WITH_USES,
+    where: { gameId, id },
+  });
   if (!row) throw functionMissing();
 
   return row;
@@ -225,6 +235,7 @@ const createOne = async (
         // Last of its group; its managers drag it higher if it matters more.
         position: await nextPosition(transaction, game.id, input.kind),
       },
+      include: WITH_USES,
     }),
   );
   const after = auditValues(item, game);
@@ -248,7 +259,12 @@ export const listGameFunctions = async (
 ): Promise<MemberFunctionItem[]> => {
   await findGame(prisma, gameId);
 
-  return (await prisma.memberFunction.findMany({ where: { gameId } }))
+  return (
+    await prisma.memberFunction.findMany({
+      include: WITH_USES,
+      where: { gameId },
+    })
+  )
     .map(toItem)
     .sort(compareMemberFunctions);
 };
@@ -342,7 +358,10 @@ export const updateGameFunction = async (
       });
       if (result.count !== 1) throw functionChanged();
       const item = toItem(
-        await transaction.memberFunction.findUniqueOrThrow({ where: { id } }),
+        await transaction.memberFunction.findUniqueOrThrow({
+          include: WITH_USES,
+          where: { id },
+        }),
       );
       await audit(transaction, {
         action: 'FUNCTION_UPDATE',
@@ -388,6 +407,7 @@ export const reorderGameFunctions = async (
     const plan = planManualOrder(
       (
         await transaction.memberFunction.findMany({
+          include: WITH_USES,
           where: { gameId, kind: input.kind },
         })
       )
@@ -425,7 +445,12 @@ export const reorderGameFunctions = async (
       );
     }
 
-    return (await transaction.memberFunction.findMany({ where: { gameId } }))
+    return (
+      await transaction.memberFunction.findMany({
+        include: WITH_USES,
+        where: { gameId },
+      })
+    )
       .map(toItem)
       .sort(compareMemberFunctions);
   });

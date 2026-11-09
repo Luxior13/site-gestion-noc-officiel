@@ -244,6 +244,9 @@ enum AuditAction {
   FUNCTION_UPDATE
   FUNCTION_DELETE
   FUNCTION_REORDER
+  PASSAGE_CREATE
+  PASSAGE_UPDATE
+  PASSAGE_DELETE
   /// Historical only. The partner module was removed from the application on
   /// 2026-09-21; these values stay declared so older journal entries remain
   /// readable. No code produces them anymore.
@@ -270,6 +273,7 @@ enum AuditCategory {
   GAME
   TEAM
   FUNCTION
+  PASSAGE
   /// Historical only, kept for the same reason as `AuditAction.PARTNER_*`.
   PARTNER
 }
@@ -412,6 +416,7 @@ model Person {
   emails         PersonEmail[]
   phones         PersonPhone[]
   socialProfiles PersonSocialProfile[]
+  passages       PersonPassage[]
 
   @@index([createdAt, id])
   @@index([structureStatus, createdAt, id])
@@ -563,6 +568,8 @@ model Team {
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
+  passages         PersonPassage[]
+
   @@unique([gameId, normalizedName])
   @@index([gameId, isActive, position])
 }
@@ -596,8 +603,38 @@ model MemberFunction {
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
 
+  passages       PersonPassage[]
+
   @@unique([gameId, normalizedName])
   @@index([gameId, kind, position])
+}
+
+/// A passage (9 November 2026, registre historique): a person of the
+/// Répertoire in a team, or later in the structure (`teamId` empty), with a
+/// function, from a start to an end (none: still there). A start is stored on
+/// the first day of its period, an end on the last: « who was there on a
+/// date » stays a plain comparison. The base checks the function belongs to
+/// the team's game, and that two identical passages never overlap (exclusion
+/// constraint and trigger in the migration, absent from this schema).
+model PersonPassage {
+  id             String         @id @default(cuid())
+  personId       String
+  person         Person         @relation(fields: [personId], references: [id], onDelete: Restrict)
+  teamId         String?
+  team           Team?          @relation(fields: [teamId], references: [id], onDelete: Restrict)
+  functionId     String
+  memberFunction MemberFunction @relation(fields: [functionId], references: [id], onDelete: Restrict)
+  startOn        DateTime       @db.Date
+  startPrecision DatePrecision  @default(DAY)
+  endOn          DateTime?      @db.Date
+  endPrecision   DatePrecision?
+  version        Int            @default(1)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([teamId])
+  @@index([personId])
+  @@index([functionId])
 }
 
 model SystemSetting {

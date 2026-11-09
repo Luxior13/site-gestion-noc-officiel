@@ -36,8 +36,8 @@ import {
   type PersonsListRequest,
 } from '../person-list-state';
 import type { PersonsListResponse } from '../types/person.types';
+import { PersonAvatarFrame } from './PersonAvatar';
 import {
-  PersonAvatarFrame,
   PersonContactMatchHint,
   PersonContacts,
   PersonIdentity,

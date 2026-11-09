@@ -45,6 +45,9 @@ export const JOURNAL_ACTION_LABELS: Record<AuditAction, string> = {
   PARTNER_PERIOD_UPDATE: 'Période partenaire modifiée',
   PARTNER_STATUS_UPDATE: 'Statut partenaire modifié',
   PARTNER_UPDATE: 'Partenaire modifié',
+  PASSAGE_CREATE: 'Passage ajouté',
+  PASSAGE_DELETE: 'Passage supprimé',
+  PASSAGE_UPDATE: 'Passage modifié',
   PASSWORD_CHANGE: 'Mot de passe changé',
   PASSWORD_RESET: 'Mot de passe réinitialisé',
   PERMISSION_UPDATE: 'Autorisations modifiées',
@@ -118,6 +121,14 @@ export const FUNCTION_FIELD_LABELS: ReadonlyArray<readonly [string, string]> = [
   ['isActive', 'Active'],
   // A new order of one group, as its managers dragged it (9 November 2026).
   ['order', 'Ordre'],
+];
+
+/** Passage fields recorded in `before` / `after`, in display order. */
+export const PASSAGE_FIELD_LABELS: ReadonlyArray<readonly [string, string]> = [
+  ['team', 'Équipe'],
+  ['function', 'Fonction'],
+  ['start', 'Début'],
+  ['end', 'Fin'],
 ];
 
 /** Account fields recorded in `before` / `after`, in display order. */

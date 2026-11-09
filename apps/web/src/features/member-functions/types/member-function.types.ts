@@ -6,6 +6,8 @@ export type MemberFunctionItem = Readonly<{
   isActive: boolean;
   kind: MemberFunctionKind;
   name: string;
+  /** Passages that use it, past ones too: a used function stays. */
+  passageCount: number;
   /** Rank within its game and kind, set by dragging. */
   position: number;
   updatedAt: string;

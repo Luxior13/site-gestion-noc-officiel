@@ -18,6 +18,8 @@ const mocks = vi.hoisted(() => {
       create: vi.fn(),
       findUnique: vi.fn(),
     },
+    // A record in a roster stays (9 November 2026).
+    personPassage: { count: vi.fn() },
   };
 
   return {
@@ -80,6 +82,7 @@ describe('synchronous person deletion', () => {
       .mockResolvedValueOnce([{ id: 'person-1', version: 3 }])
       .mockResolvedValueOnce([{ deletedCount: 4n }]);
     mocks.transaction.person.deleteMany.mockResolvedValue({ count: 1 });
+    mocks.transaction.personPassage.count.mockResolvedValue(0);
     mocks.transaction.personDeletionTombstone.create.mockResolvedValue({
       personId: 'person-1',
     });

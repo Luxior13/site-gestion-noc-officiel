@@ -134,6 +134,12 @@ const AUDIT_EVENT_CLASSIFICATIONS = {
     AuditSeverity.CRITICAL,
   ),
   [AuditAction.PERSON_UPDATE]: activity(AuditStream.IDENTITY),
+  [AuditAction.PASSAGE_CREATE]: activity(AuditStream.IDENTITY),
+  [AuditAction.PASSAGE_DELETE]: activity(
+    AuditStream.IDENTITY,
+    AuditSeverity.WARNING,
+  ),
+  [AuditAction.PASSAGE_UPDATE]: activity(AuditStream.IDENTITY),
   [AuditAction.PARTNER_CONTACTS_UPDATE]: activity(AuditStream.SYSTEM),
   [AuditAction.PARTNER_CREATE]: activity(AuditStream.SYSTEM),
   [AuditAction.PARTNER_DELETE]: activity(

@@ -54,6 +54,8 @@ export const handlePersonApiError = async (
         return correlated(
           apiError(ErrorCode.PRIMARY_CONFLICT, error.message, 409),
         );
+      case 'PERSON_HAS_PASSAGES':
+        return correlated(apiError(ErrorCode.CONFLICT, error.message, 409));
       case 'PERSON_FEATURE_NOT_CONFIGURED':
         return correlated(
           apiError(ErrorCode.PERSON_FEATURE_NOT_CONFIGURED, error.message, 503),

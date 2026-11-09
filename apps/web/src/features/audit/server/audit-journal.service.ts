@@ -43,6 +43,7 @@ const TYPE_FILTERS: Record<
   },
   functions: { category: 'FUNCTION' },
   games: { category: 'GAME' },
+  passages: { category: 'PASSAGE' },
   persons: { category: 'PERSON' },
   security: { stream: { in: ['AUTHENTICATION', 'SECURITY'] } },
   settings: { action: 'SYSTEM_SETTING_UPDATE' },

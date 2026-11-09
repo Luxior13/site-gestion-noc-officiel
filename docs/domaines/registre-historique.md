@@ -3,8 +3,10 @@
 [Règles métier](README.md) · [Public du site](roles-metier.md#public-du-site--décision-du-7-novembre-2026) ·
 [Navigation](navigation.md#règles-de-placement) · [Feuille de route](../propositions/feuille-de-route.md)
 
-Décisions du propriétaire du 7 novembre 2026. **Cible, pas encore livrée** : le
-cadrage des premiers chantiers fixera les tables, les routes et les droits.
+Décisions du propriétaire du 7 novembre 2026. **Livré en partie** : les jeux,
+les équipes, les fonctions de chaque jeu et les passages d’une équipe (Roster de
+la [fiche équipe](../pages/esport/equipe.md), 9 novembre 2026) ; restent la
+structure (Bureau & staff), le Parcours d’une fiche et le statut calculé.
 
 ## Rôle du site
 
@@ -33,6 +35,15 @@ Un seul objet central : le **passage**, une relation datée entre une fiche du
 | Roster à une date | Se déduit des passages ; aucune composition d’équipe n’est stockée à part |
 | Anciens pseudos | Conservés, pour retrouver une personne sous le nom qu’elle portait ; affichés et complétés dans l’onglet Identité |
 | Anciens noms d’équipe | Conservés de la même façon : une équipe change de nom sans changer d’histoire |
+
+Le passage d’une équipe est livré le 9 novembre 2026 (table `PersonPassage`) :
+un début se range au premier jour de sa période, une fin au dernier ; la même
+personne ne tient pas deux fois la même fonction dans la même équipe sur une
+même période (contrainte d’exclusion de la base) ; la fonction appartient au
+jeu de l’équipe (déclencheur) ; une fiche, une équipe ou une fonction qui a des
+passages ne se supprime plus. Chaque écriture est tracée sur la fiche de la
+personne (type « Parcours » du journal), sans son nom dans la trace. Droits :
+ceux des équipes.
 
 Un passage n’a pas de motif de fin (décision du 8 novembre 2026) : la fin se
 saisit à son endroit, dans le Roster de l’équipe ou l’Effectif de Bureau & staff. Un changement

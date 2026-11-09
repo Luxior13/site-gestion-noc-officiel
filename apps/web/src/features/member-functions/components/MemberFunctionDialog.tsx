@@ -346,9 +346,19 @@ const MemberFunctionDialogContent: FC<Props> = ({
                   onCheckedChange={(isActive) => change({ isActive })}
                 />
               </div>
+              {item && item.passageCount > 0 && (
+                // Said instead of a deletion the server and the base refuse.
+                <p className="text-muted-foreground text-xs">
+                  Utilisée dans{' '}
+                  {item.passageCount > 1
+                    ? `${item.passageCount} passages`
+                    : 'un passage'}{' '}
+                  : rendez-la inactive plutôt que de la supprimer.
+                </p>
+              )}
             </div>
             <DialogFooter className="border-border-divider bg-surface-inset border-t px-4 py-4 sm:justify-between sm:px-5">
-              {item && (
+              {item && item.passageCount === 0 && (
                 <Button
                   disabled={busy}
                   onClick={() => {

@@ -135,9 +135,11 @@ fonctions retirées avec lui).
   n’ont alors jamais servi : le service les retire explicitement dans la
   transaction tracée ; la clé de la base reste `ON DELETE RESTRICT`, jamais
   `CASCADE`.
-- Reportés : le nombre de passages de chaque fonction (colonne « Utilisations »)
-  arrive avec le Roster, qui crée les passages ; d’ici là toute fonction est
-  inutilisée et la colonne n’afficherait que des zéros. Le réglage « Donne accès
+- Chaque ligne dit combien de passages l’utilisent (« 5 passages », « aucun
+  passage ») depuis l’arrivée du Roster (9 novembre 2026) ; une fonction
+  utilisée ne propose plus « Supprimer » : sa fenêtre dit « Utilisée dans
+  5 passages : rendez-la inactive plutôt que de la supprimer. ».
+- Reportés : le réglage « Donne accès
   à son équipe » arrive avec l’accès des managers (étape 3). L’ancienne fenêtre
   « Modifier le jeu » est retirée : la modification et la suppression vivent
   dans la fiche.

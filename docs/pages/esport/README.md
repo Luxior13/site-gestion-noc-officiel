@@ -15,6 +15,6 @@ les tournois et les déplacements
 | --- | --- | --- |
 | Jeux | [jeux.md](jeux.md) | `/esport/jeux` : les sections de la structure et leurs équipes sous chaque jeu, ajout et modification en fenêtre |
 | Fiche jeu | [jeu.md](jeu.md) | `/esport/jeux/[id]` : onglets Fonctions (les fonctions du jeu, en fenêtre) et Informations (modifiées sur place) |
-| Fiche équipe | [equipe.md](equipe.md) | `/esport/equipes/[id]` : les informations d’une équipe, modifiées sur place ; le Roster viendra en premier onglet |
+| Fiche équipe | [equipe.md](equipe.md) | `/esport/equipes/[id]` : onglets Roster (les passages : qui, quelle fonction, quand) et Informations (modifiées sur place) |
 
 Les autres vues prévues du pôle reçoivent une fiche lors de leur création.

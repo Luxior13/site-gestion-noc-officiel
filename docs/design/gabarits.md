@@ -157,6 +157,25 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
   consigne (« Glissez … par sa poignée … ») se lit sous la liste, dans la carte,
   en petit texte discret avec l’icône de la poignée, pour qui peut réordonner ;
   l’en-tête dit seulement ce que contient la liste (9 novembre 2026).
+- **Liste d’enregistrements dans une fiche** (Roster d’une équipe, 9 novembre
+  2026) : ce qui est en cours et à venir dans un onglet, les anciens dans un
+  autre, jamais mélangés (« sur le très long terme ça fera bordel ; le but est
+  de voir ce qu’il y a actuellement et à venir »). Chacun est la liste du
+  Répertoire sans titre ni phrase, l’onglet la nommant déjà (« le tableau doit
+  plus être comme celui du Répertoire », « l’en-tête ne va pas du tout »).
+  L’onglet du présent n’a ni recherche ni filtre : sa bande dit ce qu’il
+  contient (« 4 membres · 1 à venir ») avec « Ajouter … » au bord droit ;
+  actuels d’abord, à venir ensuite, statut en badge à pastille. L’archive a la
+  bande du Répertoire : recherche, réinitialisation et « Ajouter un ancien … »
+  au bord droit, puis les filtres rapides avec leurs nombres, la recherche
+  comprise, et le nombre de lignes à droite ; elle se range par année de fin,
+  la plus récente d’abord. Des blocs (« Joueurs », « Encadrement », ou
+  « Fin en 2025 ») font un tableau chacun : le premier en-tête nomme le bloc et
+  son nombre, les autres colonnes gardent les mêmes largeurs d’un bloc à
+  l’autre, la dernière donne la durée. Le tableau passe en cartes sous 56 rem
+  de liste, un bandeau par bloc, la période et la durée en toutes lettres. Pas
+  de sélecteur « à une date ». Une liste de choix garde sa carte titrée
+  (PREF-Q11).
 - **Créer** : en fenêtre pour quelques champs, sur une page pour un long formulaire.
   Un élément qui a sa fiche s’ouvre sur elle, jamais dans une fenêtre : la fenêtre
   ne sert qu’à le créer, puis sa fiche s’ouvre (équipe, 8 novembre 2026).

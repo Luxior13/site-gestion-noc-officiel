@@ -332,8 +332,8 @@ dans la page Jeux de l’éditeur, en deux groupes (Jeux, Équipes) ; voir les
 | --- | --- | --- | --- | --- |
 | `games:view` | consulter la liste des jeux et leur première ouverture | — | défaut | Non |
 | `games:manage` | ajouter, modifier, rendre actif ou non, ranger les jeux par glisser-déposer, actifs ou non, supprimer un jeu qui n’a jamais servi (un jeu qui a des équipes est refusé par le service et par la base) ; ajouter, modifier, rendre active ou non, ordonner par glisser-déposer, supprimer une fonction du jeu jamais utilisée (9 novembre 2026, sans permission nouvelle) | `games:view` | sensible | Non |
-| `teams:view` | voir les équipes sous chaque jeu, actives ou non | `games:view` | défaut | Non |
-| `teams:manage` | ajouter une équipe à un jeu, la modifier, la rendre active ou non, ranger les équipes de chaque jeu par glisser-déposer, actives ou non (9 novembre 2026), supprimer une équipe qui n’a jamais servi | `teams:view` | sensible | Non |
+| `teams:view` | voir les équipes sous chaque jeu, actives ou non, et leur Roster (personnes, fonctions, dates ; le lien vers une fiche suit `persons:view`) | `games:view` | défaut | Non |
+| `teams:manage` | ajouter une équipe à un jeu, la modifier, la rendre active ou non, ranger les équipes de chaque jeu par glisser-déposer, actives ou non (9 novembre 2026), supprimer une équipe qui n’a jamais servi ; ajouter, corriger, terminer et supprimer les passages de son Roster, et chercher pour cela une fiche du Répertoire par son nom (9 novembre 2026, sans droit de parcours séparé) | `teams:view` | sensible | Non |
 
 ### Page Sponsors & partenaires (planifiée)
 

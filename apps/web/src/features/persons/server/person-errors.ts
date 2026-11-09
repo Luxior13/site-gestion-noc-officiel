@@ -2,6 +2,7 @@ import 'server-only';
 
 export type PersonDomainErrorCode =
   | 'PERSON_FEATURE_NOT_CONFIGURED'
+  | 'PERSON_HAS_PASSAGES'
   | 'PERSON_NOT_FOUND'
   | 'PERSON_VERSION_CONFLICT'
   | 'PRIMARY_CONFLICT';
@@ -22,6 +23,12 @@ export const personErrors = {
     new PersonDomainError(
       'PERSON_FEATURE_NOT_CONFIGURED',
       'La protection des données du répertoire n’est pas configurée',
+    ),
+  /** A record in a roster stays: the registre keeps who was there. */
+  hasPassages: (count: number): PersonDomainError =>
+    new PersonDomainError(
+      'PERSON_HAS_PASSAGES',
+      `Cette fiche figure dans ${count > 1 ? `${count} passages` : 'un passage'} d’un Roster : elle reste dans le registre et ne se supprime pas.`,
     ),
   notFound: (): PersonDomainError =>
     new PersonDomainError('PERSON_NOT_FOUND', 'Fiche introuvable'),

@@ -95,6 +95,11 @@ export const deletePerson = async (input: {
       throw personErrors.notFound();
     }
     if (person.version !== input.version) throw personErrors.versionConflict();
+    // A record in a roster stays (`PersonPassage_personId_fkey` refuses it too).
+    const passages = await transaction.personPassage.count({
+      where: { personId: input.personId },
+    });
+    if (passages > 0) throw personErrors.hasPassages(passages);
 
     await transaction.$queryRaw<Array<{ deletedCount: bigint }>>`
       SELECT "public"."purge_person_audit_field_changes"(${input.personId}) AS "deletedCount"

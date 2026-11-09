@@ -62,7 +62,7 @@ lecture des valeurs suit la page qui les affiche.
 | Modèle | Contenu |
 | --- | --- |
 | `Team` | Livré le 8 novembre 2026 : jeu (`ON DELETE RESTRICT`, fixé à la création, déclencheur `Team_gameId_immutable`), nom unique dans son jeu, création avec sa précision, active, `version` ; anciens noms à venir avec la fiche équipe |
-| `PersonPassage` | Fiche, équipe facultative (vide pour une fonction de structure), fonction, début, fin, précision de chaque date, `version` |
+| `PersonPassage` | Livré le 9 novembre 2026 pour les équipes : fiche, équipe facultative (vide pour une fonction de structure, à venir), fonction, début au premier jour de sa période, fin au dernier, précision de chaque date, `version` ; exclusion des passages identiques qui se chevauchent, fonction du jeu de l’équipe vérifiée par la base |
 | `PersonFormerNickname` | Ancien pseudo, date du changement ; écrit par le service quand le pseudo change, saisi à la main dans l’onglet Identité pour un pseudo d’avant le site, et cherché par le Répertoire |
 
 **Compléments de la fiche personne** : nationalité, adresse postale, identifiants de jeu (par jeu), contact d’urgence et représentants légaux, ces derniers étant des fiches du Répertoire liées explicitement. Les coordonnées nouvelles suivent `persons:view_contact`.
@@ -93,7 +93,9 @@ identifiants de jeu, finances) le fait en `ON DELETE RESTRICT`, jamais en
   8 novembre 2026, les équipes s’affichent et s’ajoutent sous chaque jeu de la
   page Jeux.
 - `/esport/equipes/[id]` (ouverte le 8 novembre 2026 avec ses informations seules, sans barre d’onglets) : fiche équipe, sous son jeu, onglets Roster (membres
-  actuels et anciens, sélecteur « À une date »), Tournois ↗, Entraînements,
+  actuels et à venir), Anciens membres (passages terminés, par année de fin ;
+  séparés le 9 novembre 2026, sans sélecteur « À une date »), Tournois ↗,
+  Entraînements,
   Finances ↗ (invisible pour un manager), Partenaires ↗ et Informations (nom, anciens noms,
   archivage).
 - Page Bureau & staff (pôle Structure) : onglet Effectif, le roster de la
@@ -103,12 +105,15 @@ identifiants de jeu, finances) le fait en `ON DELETE RESTRICT`, jamais en
 - Une seule fenêtre de passage, ouverte depuis le Roster d’une équipe ou
   l’Effectif de Bureau & staff. Début et fin s’y saisissent, sans motif de fin.
 
-**API** : `/api/jeux`, `/api/jeux/[id]`, `/api/equipes`, `/api/equipes/[id]`, `/api/personnes/[id]/passages` et
-`/api/personnes/[id]/passages/[passageId]`, selon le
+**API** : `/api/jeux`, `/api/jeux/[id]`, `/api/equipes`, `/api/equipes/[id]`,
+`/api/equipes/[id]/passages` (et `/[passageId]`, `/[passageId]/changement`),
+`/api/passages/personnes` (livrés le 9 novembre 2026), selon le
 [contrat d’une fonctionnalité](../references/architecture-fonctionnalite.md).
 
-**Droits** : `teams:view`, `teams:manage` (livrés le 8 novembre 2026), `persons:view_journey`,
-`persons:update_journey`, délégables, fournis aux Administrateurs.
+**Droits** : `teams:view`, `teams:manage` (livrés le 8 novembre 2026) couvrent
+aussi le Roster depuis le 9 novembre 2026 (décision du propriétaire, « ok go ») :
+`persons:view_journey` et `persons:update_journey` ne sont pas créés. Le
+Parcours d’une fiche suivra `persons:view` ; Bureau & staff aura ses droits.
 
 **Journal** : chaque écriture suit la
 [liste de contrôle Q15](../references/audit-historique.md#règle--toute-action-est-lisible-dans-le-journal-dactivité) :

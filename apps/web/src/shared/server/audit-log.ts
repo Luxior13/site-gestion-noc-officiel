@@ -17,6 +17,13 @@ export type AuditLogInput = {
   action: AuditAction;
   category: AuditCategory;
   description: string;
+  /**
+   * The record of the Répertoire the event concerns (a passage, 9 November
+   * 2026): it then shows in the record's history and the journal names the
+   * record only to who may read it.
+   */
+  entityId?: string | null;
+  entityType?: 'PERSON' | null;
   ipAddress?: string | null;
   metadata?: Record<string, unknown>;
   requestId?: string | null;
@@ -179,6 +186,8 @@ export const createAuditLog = async (
       actorRoleSnapshot: snapshots.actor?.role ?? null,
       category: data.category,
       description,
+      entityId: data.entityId ?? null,
+      entityType: data.entityType ?? null,
       eventKind: classification.eventKind,
       eventVersion: AUDIT_EVENT_VERSION,
       ipAddress: data.ipAddress?.slice(0, AUDIT_IP_ADDRESS_MAX_LENGTH) ?? null,

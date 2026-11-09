@@ -82,6 +82,123 @@ export const formatApproximateDate = (value: ApproximateDate): string => {
   return `${parts.day === 1 ? '1er' : parts.day} ${month} ${parts.year}`;
 };
 
+const DAY_MS = 86_400_000;
+
+const nextDay = (value: string): string =>
+  new Date(Date.parse(`${value}T00:00:00.000Z`) + DAY_MS)
+    .toISOString()
+    .slice(0, 10);
+
+/** « 2 ans 8 mois », « 1 an », « 8 mois ». */
+const yearsAndMonths = (months: number): string => {
+  const years = Math.floor(months / 12);
+  const rest = months % 12;
+
+  return [
+    years > 0 ? `${years} an${years > 1 ? 's' : ''}` : '',
+    rest > 0 ? `${rest} mois` : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+};
+
+/**
+ * How long a period lasted, or has lasted until today (owner, 9 November
+ * 2026: « le temps entre le début et aujourd'hui, ou la date de fin si
+ * passé »), never more precisely than its bounds: in years, « environ 3
+ * ans », when one is known to the year; in years and months when one is
+ * known to the month; in days under a month when both are known to the day.
+ * The last day counts: « 3 → 5 novembre » lasted 3 days. Null before it
+ * begins.
+ */
+export const formatApproximateDuration = (
+  start: ApproximateDate,
+  end: ApproximateDate | null,
+  today: string,
+): string | null => {
+  if (start.date > today) return null;
+  const last = end ? approximateDateEnd(end) : today;
+  const first = parseDateOnly(start.date);
+  const after = parseDateOnly(nextDay(last));
+  if (!first || !after) return null;
+  if (start.precision === 'YEAR' || end?.precision === 'YEAR') {
+    const years = Number(last.slice(0, 4)) - first.year;
+
+    return years < 1
+      ? 'moins d’un an'
+      : `environ ${years} an${years > 1 ? 's' : ''}`;
+  }
+  const months =
+    (after.year - first.year) * 12 +
+    (after.month - first.month) -
+    (after.day < first.day ? 1 : 0);
+  if (months >= 1) return yearsAndMonths(months);
+  if (start.precision === 'MONTH' || end?.precision === 'MONTH')
+    return 'moins d’un mois';
+  const days = Math.round(
+    (Date.parse(`${nextDay(last)}T00:00:00.000Z`) -
+      Date.parse(`${start.date}T00:00:00.000Z`)) /
+      DAY_MS,
+  );
+
+  return `${days} jour${days > 1 ? 's' : ''}`;
+};
+
+/**
+ * A period written once, as French does (owner, 9 November 2026: a period
+ * cut on two lines): the year said once when it repeats, « 3 → 5 novembre
+ * 2026 », « mars → juin 2024 », « 3 septembre → 5 novembre 2026 »; a period
+ * of one month or one year, « mars 2024 ». A bound known to the year, or two
+ * years, keeps both dates whole: « 2024 → juin 2024 » stays clear.
+ */
+export const formatApproximateRange = (
+  start: ApproximateDate,
+  end: ApproximateDate,
+): string => {
+  const from = formatApproximateDate(start);
+  const to = formatApproximateDate(end);
+  if (from === to) return to;
+  // The arrow stays with the start: a wrapped period never opens a line on it.
+  const first = parseDateOnly(start.date);
+  const last = parseDateOnly(end.date);
+  if (
+    !first ||
+    !last ||
+    first.year !== last.year ||
+    start.precision === 'YEAR' ||
+    end.precision === 'YEAR'
+  )
+    return `${from}\u00a0→ ${to}`;
+  const day = first.day === 1 ? '1er' : String(first.day);
+  const month = MONTHS[first.month - 1] ?? '';
+  const head =
+    start.precision === 'MONTH'
+      ? month
+      : end.precision === 'DAY' && first.month === last.month
+        ? day
+        : `${day} ${month}`;
+
+  return `${head}\u00a0→ ${to}`;
+};
+
+/**
+ * The last day of a date's period: « 2024 » ends on 31 December, « mars 2024 »
+ * on 31 March. An end of passage is stored there (registre historique), so
+ * « who was there on a date » stays a plain comparison.
+ */
+export const approximateDateEnd = (value: ApproximateDate): string => {
+  const parts = parseDateOnly(value.date);
+  if (!parts) return value.date;
+  if (value.precision === 'YEAR') return `${parts.year}-12-31`;
+  if (value.precision === 'MONTH') {
+    const lastDay = new Date(Date.UTC(parts.year, parts.month, 0)).getUTCDate();
+
+    return `${parts.year}-${pad(parts.month)}-${pad(lastDay)}`;
+  }
+
+  return value.date;
+};
+
 /** Today in the browser's calendar, as YYYY-MM-DD: the prefilled date of a new record. */
 export const getLocalToday = (now: Date = new Date()): string =>
   `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;

@@ -16,7 +16,13 @@ export type TeamItem = Readonly<{
 /** A team with its game, as its record shows it. */
 export type TeamDetail = TeamItem &
   Readonly<{
+    formerCount: number;
+    /** People with an ended passage: the former members tab's count. */
     game: Readonly<{ id: string; isActive: boolean; name: string }>;
+    /** People in its roster today: the Roster tab's count. */
+    memberCount: number;
+    /** Passages of its roster, past ones too: a team that has some stays. */
+    passageCount: number;
   }>;
 
 export type TeamInput = Readonly<{

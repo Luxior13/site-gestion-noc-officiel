@@ -170,8 +170,10 @@ describe('planned pages and tabs', () => {
     ] as const) {
       expect(tab(page, label)).toBeDefined();
       expect(tab(page, label)?.managedIn).toBeUndefined();
-      expect(tab(page, label)?.phase).toBe(1);
     }
+    // The team's roster is in place since 9 November 2026; the structure's next.
+    expect(tab('Fiche équipe', 'Roster')?.phase).toBeNull();
+    expect(tab('Bureau & staff', 'Effectif')?.phase).toBe(1);
     expect(tab('Fiche personne', 'Identité')?.upcoming).toContain(
       'anciens pseudos',
     );

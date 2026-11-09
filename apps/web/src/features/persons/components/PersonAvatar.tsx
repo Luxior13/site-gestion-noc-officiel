@@ -18,6 +18,8 @@ type PersonAvatarProps = {
   person: AvatarPerson;
 };
 
+export type { AvatarPerson };
+
 const DIRECTORY_BACKGROUND_COLORS = [
   '8fd3cf',
   '9ad9c4',
@@ -45,4 +47,23 @@ export const PersonAvatar: FC<PersonAvatarProps> = ({ className, person }) => (
     label={`Avatar de la fiche ${getPersonDisplayName(person)}`}
     seed={`person:${person.id}`}
   />
+);
+
+/**
+ * Decorative 36 px frame of the Répertoire (`rounded-tile`, border): the
+ * list, the mobile card, a roster line, a person picker (smaller there).
+ */
+export const PersonAvatarFrame: FC<PersonAvatarProps> = ({
+  className,
+  person,
+}) => (
+  <span
+    aria-hidden="true"
+    className={cn(
+      'border-border-default bg-surface-inset rounded-tile relative flex size-9 shrink-0 items-center justify-center overflow-hidden border',
+      className,
+    )}
+  >
+    <PersonAvatar className="size-full rounded-[inherit]" person={person} />
+  </span>
 );
