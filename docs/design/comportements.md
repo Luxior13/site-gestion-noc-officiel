@@ -318,12 +318,15 @@ composants partagés : une page qui les utilise est conforme sans réglage.
   visite chaque page sur un téléphone émulé (tactile, barres de défilement
   superposées) à 320, 390 et 768 px. Il échoue sur un défilement horizontal,
   un élément hors de l’écran, une cible sous 44 px ou en partie rognée par un
-  parent qui coupe son contenu. Chaque axe est jugé seul : contrôlé tant que
+  parent qui coupe son contenu. Un nom étiré sur sa ligne (`::after` en
+  `inset-0` sur la ligne positionnée, Roster et Effectif) compte la ligne
+  entière (9 novembre 2026). Chaque axe est jugé seul : contrôlé tant que
   ses parents le coupent (`hidden`, `clip`), arrêté au premier qui défile
   (`auto`, `scroll`) ; une cible entièrement cachée, comme un dépliant fermé,
   est volontaire (29 et 30 octobre 2026). Il échoue aussi si une page vivante
   du registre des fonctionnalités n’est pas dans sa liste. **Une nouvelle page
-  s’y ajoute en même temps qu’elle est créée.** `MOBILE_TOUR_DIR` garde une
+  s’y ajoute en même temps qu’elle est créée.** Jeux et Bureau & staff, oubliés
+  à leur création, y sont ajoutés le 9 novembre 2026. `MOBILE_TOUR_DIR` garde une
   capture de chaque écran.
 - La barre d’enregistrement reste dans le flux en faible largeur ou hauteur,
   sauf placement `docked` (écran d’interrupteurs sans clavier, comme

@@ -64,7 +64,6 @@ describe('person schemas and stable normalisation', () => {
         },
       ],
       nickname: 'Ada',
-      structureStatus: 'IN_STRUCTURE',
     });
     expect(preservedEmail.emails[0]?.email).toBe('USER+Club@Example.COM');
   });
@@ -78,11 +77,9 @@ describe('person schemas and stable normalisation', () => {
       nickname: null,
       phones: [],
       socialProfiles: [],
-      structureStatus: 'OUTSIDE_STRUCTURE',
     });
     const nicknameOnly = createPersonSchema.safeParse({
       nickname: 'Ada',
-      structureStatus: 'IN_STRUCTURE',
     });
 
     expect(missingIdentity.success).toBe(false);
@@ -118,8 +115,8 @@ describe('person schemas and stable normalisation', () => {
     },
   );
 
-  it('defaults a new person outside the structure and accepts both status transitions', () => {
-    const created = createPersonSchema.parse({ nickname: 'Ada' });
+  // 9 November 2026: the status is computed from the passages, never sent.
+  it('refuses a status in a creation or an identity update, and still filters the list by it', () => {
     const baseUpdate = {
       birthDate: null,
       firstName: null,
@@ -128,19 +125,21 @@ describe('person schemas and stable normalisation', () => {
       version: 1,
     };
 
-    expect(created.structureStatus).toBe('OUTSIDE_STRUCTURE');
+    expect(createPersonSchema.parse({ nickname: 'Ada' })).not.toHaveProperty(
+      'structureStatus',
+    );
     expect(
-      updatePersonSchema.parse({
+      createPersonSchema.safeParse({
+        nickname: 'Ada',
+        structureStatus: 'IN_STRUCTURE',
+      }).success,
+    ).toBe(false);
+    expect(
+      updatePersonSchema.safeParse({
         ...baseUpdate,
         structureStatus: 'IN_STRUCTURE',
-      }).structureStatus,
-    ).toBe('IN_STRUCTURE');
-    expect(
-      updatePersonSchema.parse({
-        ...baseUpdate,
-        structureStatus: 'OUTSIDE_STRUCTURE',
-      }).structureStatus,
-    ).toBe('OUTSIDE_STRUCTURE');
+      }).success,
+    ).toBe(false);
     expect(
       personsListQuerySchema.parse({ structureStatus: 'IN_STRUCTURE' }),
     ).toMatchObject({ limit: 25, q: '', structureStatus: 'IN_STRUCTURE' });
@@ -197,7 +196,6 @@ describe('person schemas and stable normalisation', () => {
           networkKey: 'discord',
         },
       ],
-      structureStatus: 'OUTSIDE_STRUCTURE',
     });
 
     expect(parsed.success).toBe(false);
@@ -277,7 +275,6 @@ describe('person schemas and stable normalisation', () => {
       firstName: 'Ada',
       lastName: 'Lovelace',
       nickname: null,
-      structureStatus: 'OUTSIDE_STRUCTURE' as const,
       version: 1,
     };
 

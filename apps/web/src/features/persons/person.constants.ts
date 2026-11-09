@@ -1,3 +1,9 @@
+/**
+ * Whether a record is in the structure: computed from its passages, never
+ * chosen nor stored (owner's decision of 7 November 2026, built on
+ * 9 November): « Dans la structure » while one of them, in a team or in the
+ * structure, has begun and not ended.
+ */
 export const PERSON_STRUCTURE_STATUSES = [
   'IN_STRUCTURE',
   'OUTSIDE_STRUCTURE',
@@ -60,7 +66,6 @@ export const PERSON_AUDIT_KEYS = {
     contacts: 'contacts',
     identity: 'identity',
     social: 'social',
-    structure: 'structure',
   },
 } as const;
 

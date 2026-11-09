@@ -29,7 +29,6 @@ type PersonIdentityData = {
   normalizedLastName: string | null;
   normalizedNickname: string | null;
   sortName: string;
-  structureStatus: 'IN_STRUCTURE' | 'OUTSIDE_STRUCTURE';
 };
 
 export const personIdentityData = (input: {
@@ -37,7 +36,6 @@ export const personIdentityData = (input: {
   firstName?: string | null;
   lastName?: string | null;
   nickname?: string | null;
-  structureStatus: 'IN_STRUCTURE' | 'OUTSIDE_STRUCTURE';
 }): PersonIdentityData => {
   const normalizedFirstName = input.firstName
     ? normalizePersonSearchValue(input.firstName)
@@ -59,6 +57,5 @@ export const personIdentityData = (input: {
     normalizedNickname,
     sortName:
       normalizedNickname ?? `${normalizedFirstName} ${normalizedLastName}`,
-    structureStatus: input.structureStatus,
   };
 };

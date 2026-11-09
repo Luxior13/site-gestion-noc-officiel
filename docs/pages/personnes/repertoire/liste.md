@@ -66,6 +66,10 @@ un retour de fiche qui conservent le contexte.
 - Le bouton enfoncé tient lieu de filtre actif : pas d’étiquette retirable en
   plus (REP-23).
 - « Hors structure » est une catégorie neutre (ton `muted`), pas une alerte.
+- Statut calculé depuis les passages en cours, d’équipe ou de la structure
+  (9 novembre 2026, [registre](../../../domaines/registre-historique.md#le-passage)) :
+  le filtre et ses compteurs le calculent dans la même requête que la liste,
+  rien n’est stocké sur la fiche.
 - Coordonnées : seulement le détail email / téléphone / réseau, zéros atténués,
   « — » et « Aucune coordonnée » pour les lecteurs d’écran quand il n’y en a pas.
 - Indication « Trouvée par email, téléphone ou réseau » en gris discret.

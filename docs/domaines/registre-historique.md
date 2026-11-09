@@ -7,7 +7,8 @@ Décisions du propriétaire du 7 novembre 2026. **Livré en partie** : les jeux,
 les équipes, les fonctions de chaque jeu et les passages d’une équipe (Roster de
 la [fiche équipe](../pages/esport/equipe.md), 9 novembre 2026), le Parcours
 d’une fiche, puis la structure ([Bureau & staff](../pages/structure/bureau-staff.md) :
-Effectif, anciens membres et fonctions, même jour) ; reste le statut calculé.
+Effectif, anciens membres et fonctions, même jour), puis le statut calculé
+(même jour).
 
 ## Rôle du site
 
@@ -31,7 +32,7 @@ Un seul objet central : le **passage**, une relation datée entre une fiche du
 | Fonction | Valeur d’une liste de choix selon le rattachement (8 novembre 2026) : fonctions du jeu pour une équipe (Joueur, Coach, Manager… ou postes propres au jeu, gérées dans sa fiche), fonctions de la structure pour la structure (Président, Trésorier, Secrétaire, bénévole…, gérées dans Bureau & staff). Chaque liste a deux types (9 novembre 2026, « ok go ») : Joueur et Encadrement pour un jeu, **Bureau** (mandats élus) et **Staff** pour la structure, que la base garde séparés (`MemberFunction_kind_scope_check`). Le mot « rôle » reste réservé à Utilisateur et Administrateur |
 | Graphiste, monteur, soutien | Selon pour qui il travaille (9 novembre 2026) : toute la structure, dans l’Effectif de Bureau & staff, type Staff ; une seule équipe, dans son Roster, avec une fonction d’encadrement du jeu. Une même personne peut avoir les deux ; son Parcours les lit ensemble |
 | Début et fin | Une fin vide signifie « en cours ». Plusieurs passages simultanés sont possibles |
-| Statut dans la structure | Calculé, jamais saisi : une fiche est dans la structure si un passage est en cours à la date du jour. Sans date de fin, il reste en cours ; une date de fin atteinte le clôt toute seule |
+| Statut dans la structure | Calculé, jamais saisi : une fiche est dans la structure si un passage est en cours à la date du jour. Sans date de fin, il reste en cours ; une date de fin atteinte le clôt toute seule. Livré le 9 novembre 2026 : un passage d’équipe ou de la structure compte, le jour se lit dans le fuseau du site (Europe/Paris) et une fin datée du jour compte encore ; rien n’est stocké sur la fiche |
 | Dates approximatives | Année, mois ou jour : une date connue à l’année se saisit à l’année, sans inventer de jour |
 | Entité juridique | Aucune : l’histoire commence en 2014, la structure en 2023 et l’association en octobre 2025 ; le registre ne porte jamais d’entité, seuls les actes (comptes, factures, contrats, adhésions) en portent une ([décisions du 9 novembre 2026](structure-juridique.md#décisions-du-9-novembre-2026)) |
 | Roster à une date | Se déduit des passages ; aucune composition d’équipe n’est stockée à part |

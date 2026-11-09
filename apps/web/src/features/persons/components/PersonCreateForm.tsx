@@ -1,6 +1,6 @@
 'use client';
 
-import { ExternalLink, UserRound, Users } from 'lucide-react';
+import { ExternalLink, UserRound } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { type FC, useEffect, useRef, useState } from 'react';
@@ -41,7 +41,6 @@ const INITIAL_FORM: PersonIdentityFormValue = {
   firstName: '',
   lastName: '',
   nickname: '',
-  structureStatus: 'OUTSIDE_STRUCTURE',
 };
 
 // The identity schema alone keeps the phone library out of this page
@@ -53,7 +52,6 @@ const validateIdentity = (form: PersonIdentityFormValue) =>
     firstName: form.firstName || null,
     lastName: form.lastName || null,
     nickname: form.nickname || null,
-    structureStatus: form.structureStatus,
   });
 
 export const PersonCreateForm: FC<PersonCreateFormProps> = ({ returnHref }) => {
@@ -72,10 +70,9 @@ export const PersonCreateForm: FC<PersonCreateFormProps> = ({ returnHref }) => {
   const formRef = useRef<HTMLFormElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
   const confirmationRef = useRef<HTMLHeadingElement>(null);
-  const isDirty =
-    Boolean(
-      form.nickname.trim() || form.firstName.trim() || form.lastName.trim(),
-    ) || form.structureStatus !== INITIAL_FORM.structureStatus;
+  const isDirty = Boolean(
+    form.nickname.trim() || form.firstName.trim() || form.lastName.trim(),
+  );
 
   useEffect(() => {
     mountedRef.current = true;
@@ -325,21 +322,6 @@ export const PersonCreateForm: FC<PersonCreateFormProps> = ({ returnHref }) => {
             idPrefix="create-person"
             onChange={handleChange}
             part="names"
-            value={form}
-          />
-        </RubricCard>
-        <RubricCard
-          icon={<Users />}
-          id="create-person-status-title"
-          title="Statut"
-        >
-          <PersonIdentityFields
-            disabled={isSubmitting || uncertain}
-            errors={errors}
-            idPrefix="create-person"
-            onChange={handleChange}
-            part="situation"
-            showBirthDate={false}
             value={form}
           />
         </RubricCard>

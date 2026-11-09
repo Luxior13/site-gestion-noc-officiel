@@ -87,11 +87,9 @@ export const isPersonIdentityEqual = (
     firstName: string;
     lastName: string;
     nickname: string;
-    structureStatus: PersonStructureStatus;
   },
 ): boolean =>
   (person.birthDate ?? '') === form.birthDate &&
   (person.firstName ?? '') === form.firstName.trim() &&
   (person.lastName ?? '') === form.lastName.trim() &&
-  (person.nickname ?? '') === form.nickname.trim() &&
-  person.structureStatus === form.structureStatus;
+  (person.nickname ?? '') === form.nickname.trim();

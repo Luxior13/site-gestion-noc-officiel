@@ -292,8 +292,8 @@ possède implicitement.
 | Clé canonique | Action couverte | Dépend de | Risque | Step-up à l'usage |
 | --- | --- | --- | --- | --- |
 | `persons:view` | consulter liste, identité, date de naissance et statut | — | sensible | Non |
-| `persons:create` | créer une fiche avec identité et statut | `persons:view` | sensible | Non |
-| `persons:update` | modifier identité et statut | `persons:view` | sensible | Non |
+| `persons:create` | créer une fiche avec son identité | `persons:view` | sensible | Non |
+| `persons:update` | modifier l’identité et la date de naissance | `persons:view` | sensible | Non |
 | `persons:view_contact` | consulter et rechercher emails, téléphones et profils sociaux | `persons:view` | sensible | Non |
 | `persons:update_contact` | ajouter, modifier ou retirer ces coordonnées | `persons:view`, `persons:view_contact` | sensible | Non |
 | `persons:delete` | supprimer définitivement une fiche et ses coordonnées | `persons:view` | critique | Oui (mot de passe de 30 minutes au plus) |
@@ -312,7 +312,8 @@ Le détail conserve la date
 de naissance dans l'identité ; aucun droit supplémentaire n'a été créé pour ce
 champ. Les listes n'exposent ni cette date ni les valeurs de contact.
 
-Le formulaire de création actuel ne renseigne que l'identité et le statut.
+Le formulaire de création actuel ne renseigne que l'identité ; le statut se
+calcule depuis les passages (9 novembre 2026) et ne se choisit nulle part.
 Une création par API contenant des coordonnées exige aussi
 `persons:update_contact`. La suppression complète reste distincte des droits
 d'édition et exige confirmation explicite, version courante et mot de passe

@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-import { PERSON_STRUCTURE_STATUSES } from '../person.constants';
 import {
   getApplicationCivilDateParts,
   normalizePersonSearchValue,
@@ -85,9 +84,6 @@ export const identityShape = {
   ),
   lastName: optionalTrimmed(100, 'Le nom ne peut pas dépasser 100 caractères'),
   nickname: optionalTrimmed(80, 'Le pseudo ne peut pas dépasser 80 caractères'),
-  structureStatus: z
-    .enum(PERSON_STRUCTURE_STATUSES)
-    .default('OUTSIDE_STRUCTURE'),
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Preserve the generic Zod object shape.

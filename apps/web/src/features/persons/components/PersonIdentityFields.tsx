@@ -3,27 +3,13 @@ import React, { type FC } from 'react';
 import { DatePicker } from '$ui/date-picker';
 import { Input } from '$ui/input';
 import { Label } from '$ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '$ui/select';
 import { cn } from '$utils/css.utils';
-
-import {
-  PERSON_STRUCTURE_STATUS_LABELS,
-  PERSON_STRUCTURE_STATUSES,
-} from '../person.constants';
-import type { PersonStructureStatus } from '../types/person.types';
 
 export type PersonIdentityFormValue = {
   birthDate: string;
   firstName: string;
   lastName: string;
   nickname: string;
-  structureStatus: PersonStructureStatus;
 };
 
 type PersonIdentityFieldsProps = {
@@ -32,14 +18,14 @@ type PersonIdentityFieldsProps = {
   idPrefix: string;
   /**
    * Record view (27 October 2026): `names` (pseudo, first and last name) and
-   * `situation` (birth date, structure status) go in their own rubric cards.
+   * `situation` (the birth date; the status is computed from the passages
+   * since 9 November 2026) go in their own rubric cards.
    */
   onChange: <TKey extends keyof PersonIdentityFormValue>(
     key: TKey,
     value: PersonIdentityFormValue[TKey],
   ) => void;
   part?: 'all' | 'names' | 'situation';
-  showBirthDate?: boolean;
   value: PersonIdentityFormValue;
   variant?: 'default' | 'quiet';
 };
@@ -72,7 +58,6 @@ export const PersonIdentityFields: FC<PersonIdentityFieldsProps> = ({
   idPrefix,
   onChange,
   part = 'all',
-  showBirthDate = true,
   value,
   variant = 'default',
 }) => {
@@ -95,7 +80,6 @@ export const PersonIdentityFields: FC<PersonIdentityFieldsProps> = ({
   const firstName = field('firstName');
   const lastName = field('lastName');
   const birthDate = field('birthDate');
-  const structureStatus = field('structureStatus');
   const showNames = part !== 'situation';
   const showSituation = part !== 'names';
 
@@ -171,7 +155,7 @@ export const PersonIdentityFields: FC<PersonIdentityFieldsProps> = ({
           </div>
         </>
       )}
-      {showSituation && showBirthDate && (
+      {showSituation && (
         <div className="min-w-0 space-y-1.5">
           <FieldLabel
             htmlFor={birthDate.id}
@@ -209,48 +193,6 @@ export const PersonIdentityFields: FC<PersonIdentityFieldsProps> = ({
               Facultative, utile pour l’âge légal et les anniversaires.
             </p>
           )}
-        </div>
-      )}
-      {showSituation && (
-        <div
-          className={cn(
-            'min-w-0 space-y-1.5',
-            !showBirthDate && 'sm:col-span-2 sm:max-w-sm',
-          )}
-        >
-          <FieldLabel
-            htmlFor={structureStatus.id}
-            label="Statut dans la structure"
-          />
-          <Select
-            disabled={disabled}
-            onValueChange={(nextValue) =>
-              onChange('structureStatus', nextValue as PersonStructureStatus)
-            }
-            value={value.structureStatus}
-          >
-            <SelectTrigger
-              aria-describedby={structureStatus.describedBy}
-              aria-invalid={Boolean(structureStatus.error)}
-              className="w-full min-w-0"
-              id={structureStatus.id}
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {PERSON_STRUCTURE_STATUSES.map((status) => (
-                <SelectItem key={status} value={status}>
-                  {status === 'IN_STRUCTURE'
-                    ? PERSON_STRUCTURE_STATUS_LABELS.IN_STRUCTURE
-                    : PERSON_STRUCTURE_STATUS_LABELS.OUTSIDE_STRUCTURE}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <FieldError
-            id={`${structureStatus.id}-error`}
-            message={structureStatus.error}
-          />
         </div>
       )}
     </div>

@@ -2,6 +2,7 @@ import 'server-only';
 
 import { Prisma } from '@prisma/client';
 
+import { passageToday } from '$features/passages/server/passage-today';
 import {
   buildCursorPaginationMeta,
   decodeKeysetCursor,
@@ -28,6 +29,7 @@ type PersonListRow = {
   emailCount: number;
   firstName: string | null;
   id: string;
+  inStructure: boolean;
   inStructureCount: number;
   lastModifiedByDisplayName: string | null;
   lastModifiedById: string | null;
@@ -41,7 +43,6 @@ type PersonListRow = {
   phoneCount: number;
   socialProfileCount: number;
   sortName: string;
-  structureStatus: 'IN_STRUCTURE' | 'OUTSIDE_STRUCTURE';
   totalCount: bigint;
   updatedAt: Date;
   version: number;
@@ -80,7 +81,7 @@ const toPersonSummary = (
   lastName: person.lastName,
   matchedByContact: person.matchedByContact,
   nickname: person.nickname,
-  structureStatus: person.structureStatus,
+  structureStatus: person.inStructure ? 'IN_STRUCTURE' : 'OUTSIDE_STRUCTURE',
   updatedAt: person.updatedAt.toISOString(),
   version: person.version,
 });
@@ -122,9 +123,21 @@ export const listPersons = async (
     throw new RangeError('INVALID_CURSOR');
   }
 
-  const statusClause = input.structureStatus
-    ? Prisma.sql`AND p."structureStatus" = ${input.structureStatus}::"PersonStructureStatus"`
-    : Prisma.empty;
+  // In the structure: a passage under way today, in a team or in the
+  // structure itself (computed, 9 November 2026).
+  const today = passageToday();
+  const inStructureCondition = Prisma.sql`EXISTS (
+        SELECT 1 FROM "PersonPassage" passage
+        WHERE passage."personId" = p."id"
+          AND passage."startOn" <= ${today}::date
+          AND (passage."endOn" IS NULL OR passage."endOn" >= ${today}::date)
+      )`;
+  const statusClause =
+    input.structureStatus === 'IN_STRUCTURE'
+      ? Prisma.sql`AND p."inStructure"`
+      : input.structureStatus === 'OUTSIDE_STRUCTURE'
+        ? Prisma.sql`AND NOT p."inStructure"`
+        : Prisma.empty;
   const noContactsCondition = Prisma.sql`NOT EXISTS (SELECT 1 FROM "PersonEmail" e WHERE e."personId" = p."id")
         AND NOT EXISTS (SELECT 1 FROM "PersonPhone" ph WHERE ph."personId" = p."id")
         AND NOT EXISTS (SELECT 1 FROM "PersonSocialProfile" sp WHERE sp."personId" = p."id")`;
@@ -139,7 +152,7 @@ export const listPersons = async (
     status: 'IN_STRUCTURE' | 'OUTSIDE_STRUCTURE',
   ): Prisma.Sql =>
     Prisma.sql`COUNT(*) FILTER (
-      WHERE p."structureStatus" = ${status}::"PersonStructureStatus" ${contactsClause}
+      WHERE ${status === 'IN_STRUCTURE' ? Prisma.sql`p."inStructure"` : Prisma.sql`NOT p."inStructure"`} ${contactsClause}
     )::integer`;
   const noContactsCount = canViewContact
     ? Prisma.sql`COUNT(*) FILTER (WHERE ${noContactsCondition} ${statusClause})::integer`
@@ -181,7 +194,7 @@ export const listPersons = async (
     { [Key in keyof PersonListRow]: PersonListRow[Key] | null }[]
   >(Prisma.sql`
     WITH scope AS NOT MATERIALIZED (
-      SELECT p.* FROM "Person" p
+      SELECT p.*, ${inStructureCondition} AS "inStructure" FROM "Person" p
       WHERE ${snapshotClause}
         ${searchClause}
     ), filtered AS NOT MATERIALIZED (
@@ -209,7 +222,7 @@ export const listPersons = async (
       p."firstName",
       p."lastName",
       p."sortName",
-      p."structureStatus",
+      p."inStructure",
       p."version",
       p."createdAt",
       p."updatedAt",

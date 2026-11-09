@@ -3,10 +3,11 @@ import 'server-only';
 import type { Prisma } from '@prisma/client';
 
 import type { TeamPeopleCounts } from '../passage.ui';
-
-/** Today, in the calendar the dates of a passage are kept in. */
-const todayDate = (): Date =>
-  new Date(`${new Date().toISOString().slice(0, 10)}T00:00:00.000Z`);
+import {
+  asPassageDay,
+  currentPassageWhere,
+  passageToday,
+} from './passage-today';
 
 /**
  * The counts of a place's tabs, each person once whatever their functions:
@@ -17,7 +18,7 @@ export const countPlacePeople = async (
   client: Prisma.TransactionClient,
   teamId: string | null,
 ): Promise<TeamPeopleCounts> => {
-  const today = todayDate();
+  const today = passageToday();
   const people = async (
     where: Prisma.PersonPassageWhereInput,
   ): Promise<number> =>
@@ -30,10 +31,7 @@ export const countPlacePeople = async (
     ).length;
 
   return {
-    formerCount: await people({ endOn: { lt: today } }),
-    memberCount: await people({
-      OR: [{ endOn: null }, { endOn: { gte: today } }],
-      startOn: { lte: today },
-    }),
+    formerCount: await people({ endOn: { lt: asPassageDay(today) } }),
+    memberCount: await people(currentPassageWhere(today)),
   };
 };

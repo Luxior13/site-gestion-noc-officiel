@@ -248,7 +248,6 @@ describe.skipIf(!target)('person detail on fully migrated PostgreSQL', () => {
     firstName: person.firstName,
     lastName: person.lastName,
     nickname: person.nickname,
-    structureStatus: person.structureStatus,
     version: person.version,
     ...extra,
   });

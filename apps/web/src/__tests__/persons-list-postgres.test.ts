@@ -28,6 +28,7 @@ vi.mock('$features/persons/server/person-audit', () => ({
   createPersonAudit: vi.fn(),
 }));
 
+import { passageToday } from '$features/passages/server/passage-today';
 import { normalizePersonSearchValue } from '$features/persons/person.utils';
 import { listPersons } from '$features/persons/server/person-list.service';
 
@@ -62,14 +63,16 @@ describe.skipIf(!target)('directory pagination on PostgreSQL', () => {
     await db.$executeRaw`SET TIME ZONE 'Europe/Paris'`;
     // Minimal schema for the real list query and relation counts; this suite
     // does not replace migration or mutation/integrity tests.
-    await db.$executeRaw`CREATE TYPE "PersonStructureStatus" AS ENUM ('IN_STRUCTURE', 'OUTSIDE_STRUCTURE')`;
     await db.$executeRaw`CREATE TABLE "Person" (
       "id" text PRIMARY KEY, "nickname" text, "firstName" text, "lastName" text,
       "normalizedNickname" text, "normalizedFirstName" text, "normalizedLastName" text,
-      "sortName" text NOT NULL, "structureStatus" "PersonStructureStatus" NOT NULL,
+      "sortName" text NOT NULL,
       "version" integer NOT NULL DEFAULT 1, "createdAt" timestamp(3) NOT NULL,
       "updatedAt" timestamp(3) NOT NULL
     )`;
+    // The status is computed from the passages (9 November 2026).
+    await db.$executeRaw`CREATE TABLE "PersonPassage" ("id" text, "personId" text,
+      "startOn" date NOT NULL, "endOn" date)`;
     await db.$executeRaw`CREATE TABLE "PersonEmail" ("id" text, "personId" text, "normalizedEmail" text)`;
     await db.$executeRaw`CREATE TABLE "PersonPhone" ("id" text, "personId" text, "normalizedPhone" text)`;
     await db.$executeRaw`CREATE TABLE "PersonSocialProfile" ("id" text, "personId" text,
@@ -94,14 +97,28 @@ describe.skipIf(!target)('directory pagination on PostgreSQL', () => {
     await db.$executeRaw`DELETE FROM "PersonPhone"`;
     await db.$executeRaw`DELETE FROM "PersonSocialProfile"`;
     await db.$executeRaw`DELETE FROM "AuditLog"`;
+    await db.$executeRaw`DELETE FROM "PersonPassage"`;
     await db.$executeRaw`DELETE FROM "Person"`;
     await db.$executeRaw`INSERT INTO "Person" ("id", "nickname", "normalizedNickname",
-      "sortName", "structureStatus", "createdAt", "updatedAt")
+      "sortName", "createdAt", "updatedAt")
       SELECT 'person-' || lpad(n::text, 3, '0'), 'Membre ' || lpad(n::text, 3, '0'),
         'membre ' || lpad(n::text, 3, '0'), 'membre ' || lpad(n::text, 3, '0'),
-        CASE WHEN n % 3 = 0 THEN 'OUTSIDE_STRUCTURE' ELSE 'IN_STRUCTURE' END::"PersonStructureStatus",
         timestamp '2026-01-01' + n * interval '1 second',
         timestamp '2026-01-01' + n * interval '1 second'
+      FROM generate_series(1, 60) n`;
+    // Two in three are in the structure: a passage under way, one of them
+    // ending today. The others are not: their passage ended yesterday, or
+    // starts tomorrow. « Today » is the service's (Europe/Paris).
+    const today = passageToday();
+    await db.$executeRaw`INSERT INTO "PersonPassage" ("id", "personId", "startOn", "endOn")
+      SELECT 'passage-' || n, 'person-' || lpad(n::text, 3, '0'),
+        CASE WHEN n % 3 <> 0 THEN DATE '2020-01-01'
+          WHEN n % 2 = 0 THEN DATE '2020-01-01'
+          ELSE ${today}::date + 1 END,
+        CASE WHEN n % 3 <> 0 AND n % 2 = 0 THEN NULL
+          WHEN n % 3 <> 0 THEN ${today}::date
+          WHEN n % 2 = 0 THEN ${today}::date - 1
+          ELSE NULL END
       FROM generate_series(1, 60) n`;
   });
 

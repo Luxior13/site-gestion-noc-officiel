@@ -48,7 +48,9 @@ structure » dans le journal (AC-32).
   compose `EntityDetailLayout` (bandeau compact avec statut, dates de création
   et de dernière modification ; onglets en pied, total des coordonnées sur leur
   onglet) et charge chaque section à la demande ([reprise du 22 octobre 2026](fiche-identite.md#reprise--22-octobre-2026)).
-- **Règles métier** : statut `IN_STRUCTURE` / `OUTSIDE_STRUCTURE` ; futures
+- **Règles métier** : statut « Dans la structure » / « Hors structure »
+  calculé depuis les passages en cours, jamais saisi ni stocké (9 novembre
+  2026, [registre](../../../domaines/registre-historique.md#le-passage)) ; futures
   relations datées rattachées à la personne, jamais empilées sur `Person`
   ([sujets futurs](../../../propositions/sujets-futurs.md)).
 - **Évolution décidée le 7 novembre 2026** : l’onglet Parcours, en lecture ↗,
@@ -58,8 +60,8 @@ structure » dans le journal (AC-32).
   ([registre historique](../../../domaines/registre-historique.md),
   [cadrage](../../../propositions/membres-equipes-parcours.md)). Les anciens
   pseudos dans Identité restent à construire.
-- **Points ouverts** : [registre REP](#points-ouverts) ; REP-02 (évolution du
-  statut de structure) est décidé, à construire ; les autres sont clos.
+- **Points ouverts** : [registre REP](#points-ouverts) ; tous sont clos, REP-02
+  (statut de structure calculé) depuis le 9 novembre 2026.
 
 ## Revues communes à la fiche
 
@@ -73,7 +75,8 @@ Les champs des fiches et créations, y compris date de naissance et coordonnées
 reprennent le rendu adouci validé sur le site Noctambule : police système,
 arrondis de 8 px, valeurs à 16 px sous 1024 px puis 13 px, hauteur de 40/44 px.
 Les champs en édition directe gardent leur fond opaque et un contour visible.
-Le statut et les sélecteurs de coordonnées utilisent la variante par défaut ;
+Les sélecteurs de coordonnées utilisent la variante par défaut (le statut ne se
+choisit plus depuis le 9 novembre 2026) ;
 la variante compacte reste celle des filtres de liste. La recherche et les
 tableaux conservent leur densité et Geist. Cette décision remplace les anciennes
 prescriptions de champs discrets et de sélecteurs compacts dans les formulaires.
@@ -347,15 +350,15 @@ confidentialité, même sans mutation. Couverture et limites dans le rapport.
 ## Points ouverts
 
 État courant après l’audit du 11 octobre. REP-01 et REP-03 sont clos dans la portée
-désormais mesurée ; leurs limites et déclencheurs restent ci-dessous. REP-02 est
-décidé le 7 novembre 2026, à construire avec Équipes & parcours. Les lignes closes restent
+désormais mesurée ; leurs limites et déclencheurs restent ci-dessous. REP-02,
+décidé le 7 novembre 2026, est livré le 9 novembre. Les lignes closes restent
 identifiables pour rouvrir leur scénario en cas de changement. Les rapports
 conservent les preuves datées, cette table porte les états courants.
 
 | Point | Nature / priorité et impact | Prochaine étape / déclencheur |
 | --- | --- | --- |
 | REP-01 — Validation visuelle réelle | Clos pour la liste après neuf parcours Next/session/MFA/PostgreSQL réels, six largeurs et captures relues ; clavier et cas limites complétés par 41 scénarios simulés | Rouvrir si cadre/navigation/composants changent ; appareils physiques, autres navigateurs et tous les dialogues restent hors de cette preuve |
-| REP-02 — Évolution du statut de structure | **Décidé le 7 novembre 2026** : statut calculé depuis les passages, sans saisie ([registre](../../../domaines/registre-historique.md#le-passage)) | À construire avec Équipes & parcours ; personnes et relations datées restent séparées |
+| REP-02 — Évolution du statut de structure | **Clos le 9 novembre 2026** (décidé le 7) : statut calculé depuis les passages en cours, d’équipe ou de la structure, sans saisie ; choix retiré de la création et d’Identité, colonne supprimée par `20261109235800_person_status_from_passages` ([registre](../../../domaines/registre-historique.md#le-passage)) ; tests unitaires, SQL et parcours E2E du filtre | Rouvrir si la règle du passage en cours change ; personnes et relations datées restent séparées |
 | REP-03 — Recherche à volume | Clos à 10 000 fiches / 100 000 audits : 38 scénarios du service réel, quatre requêtes par appel, p95 maximal 22,47 ms ; migrations déployées sur la base d’intégration séparée | Rouvrir au dépassement de ce volume ou en cas de latence mesurée ; charge concurrente, budget 100k et coût de migration sur base de production non validés |
 | REP-04 — Total après curseur | Clos après vérification SQL ; total stable sur trois pages, filtres et page devenue vide | Rouvrir si comptage, recherche, ordre ou périmètre de lecture change |
 | REP-05 — Maintenabilité et tests | Clos sur le module ; liste sous 800 lignes, contrôles et reprise séparés, 112 tests du périmètre réussis | Conserver les régressions et le budget ; les échecs globaux hors module sont décrits dans le rapport |

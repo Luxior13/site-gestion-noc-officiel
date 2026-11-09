@@ -303,11 +303,23 @@ async function expectPersonsListFilteringAndPagination(
       sortName: `${listPrefix} ${String(index).padStart(2, '0')}`
         .toLocaleLowerCase('fr-FR')
         .normalize('NFKC'),
-      structureStatus:
-        index % 2 === 0
-          ? ('IN_STRUCTURE' as const)
-          : ('OUTSIDE_STRUCTURE' as const),
       updatedAt: new Date(createdAt + index * 1_000),
+    })),
+  });
+  // In the structure: a passage under way, here in Bureau & staff (computed
+  // since 9 November 2026). Half of the records have one.
+  const staffFunction = await prisma.memberFunction.create({
+    data: {
+      kind: 'STAFF',
+      name: `E2E statut ${uniqueSuffix}`,
+      normalizedName: `e2e statut ${uniqueSuffix}`,
+    },
+  });
+  await prisma.personPassage.createMany({
+    data: Array.from({ length: 13 }, (_, half) => ({
+      functionId: staffFunction.id,
+      personId: `e2e-list-${uniqueSuffix}-${String(half * 2).padStart(2, '0')}`,
+      startOn: new Date('2020-01-01T00:00:00.000Z'),
     })),
   });
 
@@ -454,7 +466,6 @@ async function expectPersonIdentityLifecycle(page: Page): Promise<void> {
       nickname: duplicateSourceNickname,
       phones: [],
       socialProfiles: [],
-      structureStatus: 'OUTSIDE_STRUCTURE',
     },
     headers: mutationHeaders,
     method: 'POST',
@@ -770,11 +781,8 @@ async function expectPersonIdentityLifecycle(page: Page): Promise<void> {
         birthDate: currentPerson.birthDate,
         firstName: currentPerson.firstName,
         lastName: currentPerson.lastName,
-        nickname: currentPerson.nickname,
-        structureStatus:
-          currentPerson.structureStatus === 'IN_STRUCTURE'
-            ? 'OUTSIDE_STRUCTURE'
-            : 'IN_STRUCTURE',
+        // Another session changes the record meanwhile.
+        nickname: `${currentPerson.nickname ?? ''} (autre session)`,
         version: currentPerson.version,
       },
       headers: mutationHeaders,

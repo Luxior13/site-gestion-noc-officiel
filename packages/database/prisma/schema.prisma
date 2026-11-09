@@ -22,11 +22,6 @@ enum MfaAuthenticationMethod {
   RECOVERY_CODE
 }
 
-enum PersonStructureStatus {
-  IN_STRUCTURE
-  OUTSIDE_STRUCTURE
-}
-
 enum AuditFieldChangeType {
   CREATE
   UPDATE
@@ -73,6 +68,9 @@ model User {
   mfaRecoveryCodes      MfaRecoveryCode[]
   mfaLoginChallenge     MfaLoginChallenge?
   updatedSystemSettings SystemSetting[]        @relation("SystemSettingUpdater")
+  // Search: trigram indexes on public.search_text(identity) and
+  // public.search_text(contactEmail), expression indexes kept in the
+  // 20261031140000_shared_search_text migration.
 
   @@index([contactEmail])
   @@index([role])
@@ -83,9 +81,6 @@ model User {
   @@index([deletedAt, mustChangePassword])
   @@index([deletedAt, role])
   @@index([mfaEnabledAt])
-  // Search: trigram indexes on public.search_text(identity) and
-  // public.search_text(contactEmail), expression indexes kept in the
-  // 20261031140000_shared_search_text migration.
 }
 
 /// Permanent ownership history for authentication identifiers. A login name
@@ -395,23 +390,22 @@ model AuditFieldChange {
   @@index([valueKeyVersion])
 }
 
-/// Durable identity, independent from a login account. structureStatus is the
-/// current directory marker, not a dated membership, contract or team relation.
+/// Durable identity, independent from a login account. Whether a person is in
+/// the structure is computed from its passages, never stored (9 November 2026).
 /// SQL migrations additionally enforce identity pairs and positive versions.
 model Person {
-  id                  String                @id @default(cuid())
-  nickname            String?               @db.VarChar(80)
-  normalizedNickname  String?               @db.VarChar(160)
-  firstName           String?               @db.VarChar(100)
-  normalizedFirstName String?               @db.VarChar(200)
-  lastName            String?               @db.VarChar(100)
-  normalizedLastName  String?               @db.VarChar(200)
-  sortName            String                @db.VarChar(401)
-  birthDate           DateTime?             @db.Date
-  structureStatus     PersonStructureStatus @default(OUTSIDE_STRUCTURE)
-  version             Int                   @default(1)
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
+  id                  String    @id @default(cuid())
+  nickname            String?   @db.VarChar(80)
+  normalizedNickname  String?   @db.VarChar(160)
+  firstName           String?   @db.VarChar(100)
+  normalizedFirstName String?   @db.VarChar(200)
+  lastName            String?   @db.VarChar(100)
+  normalizedLastName  String?   @db.VarChar(200)
+  sortName            String    @db.VarChar(401)
+  birthDate           DateTime? @db.Date
+  version             Int       @default(1)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
   emails         PersonEmail[]
   phones         PersonPhone[]
@@ -419,11 +413,8 @@ model Person {
   passages       PersonPassage[]
 
   @@index([createdAt, id])
-  @@index([structureStatus, createdAt, id])
   @@index([updatedAt, id])
-  @@index([structureStatus, updatedAt, id])
   @@index([sortName, id])
-  @@index([structureStatus, sortName, id])
   @@index([normalizedNickname(ops: raw("gin_trgm_ops"))], type: Gin, map: "Person_normalizedNickname_trgm_idx")
   @@index([normalizedFirstName(ops: raw("gin_trgm_ops"))], type: Gin, map: "Person_normalizedFirstName_trgm_idx")
   @@index([normalizedLastName(ops: raw("gin_trgm_ops"))], type: Gin, map: "Person_normalizedLastName_trgm_idx")
@@ -568,7 +559,7 @@ model Team {
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
-  passages         PersonPassage[]
+  passages PersonPassage[]
 
   @@unique([gameId, normalizedName])
   @@index([gameId, isActive, position])
@@ -608,7 +599,7 @@ model MemberFunction {
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
 
-  passages       PersonPassage[]
+  passages PersonPassage[]
 
   @@unique([gameId, normalizedName])
   @@index([gameId, kind, position])

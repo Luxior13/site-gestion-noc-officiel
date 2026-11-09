@@ -208,7 +208,7 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
 `PageShell` en largeur `form` (52 rem), `PageIdentityHero` compact, titre
 `h2` réservé aux lecteurs d’écran, puis **une carte de rubrique par groupe,
 comme sur la fiche que la création ouvre** (`RubricCard` : Nouvelle fiche
-« Pseudo et nom » et « Statut », Nouvel utilisateur « Identité », « Connexion
+« Pseudo et nom », Nouvel utilisateur « Identité », « Connexion
 et contact » et « Rôle »), `SectionActionBar` **en ligne sous les cartes**
 (`placement="inline"`, alignée sur leur largeur) en soumission native,
 confirmation après succès (secret à copier une seule fois pour un compte),

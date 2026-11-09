@@ -52,6 +52,5 @@ export {
   AuditValueStorageMode,
   MfaAuthenticationMethod,
   MfaChallengePurpose,
-  PersonStructureStatus,
   UserRole,
 } from '@prisma/client';

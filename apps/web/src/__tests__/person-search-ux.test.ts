@@ -238,10 +238,14 @@ describe('person indexed search', () => {
     );
     const sql = getLastSql();
 
-    expect(sql.text).toContain(
-      'p."structureStatus" = ?::"PersonStructureStatus"',
+    // The status is computed from a passage under way today (9 November 2026).
+    expect(sql.text).toContain('FROM "PersonPassage" passage');
+    expect(sql.text).toContain('AS "inStructure"');
+    expect(sql.text).toContain('AND p."inStructure"');
+    expect(sql.text).not.toContain('"structureStatus"');
+    expect(sql.values).toContainEqual(
+      expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/u),
     );
-    expect(sql.values).toContain('IN_STRUCTURE');
     expect(sql.text).toContain('FROM "PersonEmail" email');
     expect(sql.text).toContain('FROM "PersonPhone" phone');
     expect(sql.text).toContain('FROM "PersonSocialProfile" social');
@@ -319,13 +323,13 @@ describe('person indexed search', () => {
         emailCount: 0,
         firstName: 'Ada',
         id: 'person-1',
+        inStructure: false,
         lastName: 'Lovelace',
         matchedByContact: false,
         nickname: null,
         phoneCount: 0,
         socialProfileCount: 0,
         sortName: 'ada lovelace',
-        structureStatus: 'OUTSIDE_STRUCTURE',
         updatedAt: new Date('2026-07-20T10:00:00.000Z'),
         version: 1,
       },
@@ -334,13 +338,13 @@ describe('person indexed search', () => {
         emailCount: 0,
         firstName: 'Grace',
         id: 'person-2',
+        inStructure: true,
         lastName: 'Hopper',
         matchedByContact: false,
         nickname: null,
         phoneCount: 0,
         socialProfileCount: 0,
         sortName: 'grace hopper',
-        structureStatus: 'IN_STRUCTURE',
         updatedAt: new Date('2026-07-19T10:00:00.000Z'),
         version: 1,
       },
@@ -373,6 +377,7 @@ describe('person indexed search', () => {
         emailCount: 1,
         firstName: 'Ada',
         id: 'person-1',
+        inStructure: false,
         lastModifiedByDisplayName: 'Marie Curie',
         lastModifiedByLoginName: 'mcurie',
         lastName: 'Lovelace',
@@ -383,7 +388,6 @@ describe('person indexed search', () => {
         socialProfileCount: 1,
         socialProfiles: [{ identifier: 'private' }],
         sortName: 'ada lovelace',
-        structureStatus: 'OUTSIDE_STRUCTURE',
         updatedAt: new Date('2026-07-20T10:00:00.000Z'),
         version: 1,
       },
@@ -392,13 +396,13 @@ describe('person indexed search', () => {
         emailCount: 0,
         firstName: 'Grace',
         id: 'person-2',
+        inStructure: true,
         lastName: 'Hopper',
         matchedByContact: false,
         nickname: null,
         phoneCount: 0,
         socialProfileCount: 0,
         sortName: 'grace hopper',
-        structureStatus: 'IN_STRUCTURE',
         updatedAt: new Date('2026-07-19T10:00:00.000Z'),
         version: 1,
       },
@@ -601,7 +605,9 @@ describe('person short-lived sensitive UX contracts', () => {
   });
 
   it('keeps initial creation minimal and completes the fiche after redirect', () => {
-    expect(createFormSource).toContain('showBirthDate={false}');
+    // No status to choose: it comes from the passages (9 November 2026).
+    expect(createFormSource).not.toContain('structureStatus');
+    expect(createFormSource).not.toContain('title="Statut"');
     // Identity only, through its own schema: the phone library stays out
     // of the creation page (AC-49); the server defaults the contact lists.
     expect(createFormSource).toContain('personIdentitySchema');
@@ -634,7 +640,8 @@ describe('person short-lived sensitive UX contracts', () => {
     expect(identitySectionSource).not.toContain('<CardHeader');
     // Rubrics are named after their fields, never « Identité » (27 October 2026).
     expect(identitySectionSource).toContain('title="Pseudo et nom"');
-    expect(identitySectionSource).toContain('title="Naissance et statut"');
+    expect(identitySectionSource).toContain('title="Naissance"');
+    expect(identitySectionSource).not.toContain('structureStatus');
     expect(identitySectionSource).not.toContain('title="Identité"');
     expect(identitySectionSource).toContain(
       '<h2 className="sr-only" id="person-identity-title" tabIndex={-1}>',

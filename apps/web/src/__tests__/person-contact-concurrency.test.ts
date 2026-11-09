@@ -36,6 +36,8 @@ const mocks = vi.hoisted(() => {
       findFirst: vi.fn(),
       updateMany: vi.fn(),
     },
+    // The status is read from the passages (9 November 2026).
+    personPassage: { findFirst: vi.fn() },
     personPhone: {
       create: vi.fn(),
       deleteMany: vi.fn(),
@@ -150,7 +152,6 @@ const personRecord = (
   options: {
     phones?: ReturnType<typeof phoneRecord>[];
     socialProfiles?: ReturnType<typeof socialRecord>[];
-    structureStatus?: 'IN_STRUCTURE' | 'OUTSIDE_STRUCTURE';
   } = {},
 ) => ({
   birthDate: null,
@@ -165,7 +166,6 @@ const personRecord = (
   normalizedNickname: null,
   phones: options.phones ?? [],
   socialProfiles: options.socialProfiles ?? [],
-  structureStatus: options.structureStatus ?? ('IN_STRUCTURE' as const),
   updatedAt: DATE,
   version,
 });
@@ -173,6 +173,7 @@ const personRecord = (
 describe('person contact optimistic concurrency and primary invariants', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mocks.transaction.personPassage.findFirst.mockResolvedValue(null);
     mocks.transaction.person.findUnique.mockReset();
     mocks.prisma.$transaction.mockImplementation(
       (callback: (client: typeof mocks.transaction) => Promise<unknown>) =>
@@ -364,7 +365,6 @@ describe('person contact optimistic concurrency and primary invariants', () => {
             firstName: 'Ada',
             lastName: 'Lovelace',
             nickname: null,
-            structureStatus: 'IN_STRUCTURE',
             version: 5,
           },
           actor as never,
@@ -527,7 +527,6 @@ describe('person contact optimistic concurrency and primary invariants', () => {
         firstName: 'Ada',
         lastName: 'Lovelace',
         nickname: null,
-        structureStatus: 'IN_STRUCTURE',
         version: 5,
       },
       actor as never,
@@ -539,63 +538,54 @@ describe('person contact optimistic concurrency and primary invariants', () => {
     expect(mocks.createPersonAudit).not.toHaveBeenCalled();
   });
 
-  it('audits an exact structure-status transition', async () => {
-    const current = personRecord([], 5, {
-      structureStatus: 'OUTSIDE_STRUCTURE',
+  // 9 November 2026: in the structure while a passage is under way today,
+  // in a team or in the structure; never stored on the record.
+  it('computes the status from a passage under way today', async () => {
+    mocks.transaction.auditLog.findFirst.mockResolvedValue(null);
+    mocks.transaction.personPassage.findFirst.mockResolvedValueOnce({
+      id: 'passage-1',
     });
-    const updated = personRecord([], 6, { structureStatus: 'IN_STRUCTURE' });
-    mocks.transaction.person.findUnique
-      .mockResolvedValueOnce(current)
-      .mockResolvedValueOnce(updated);
-
-    const result = await updatePerson(
-      'person-1',
-      {
-        birthDate: null,
-        firstName: 'Ada',
-        lastName: 'Lovelace',
-        nickname: null,
-        structureStatus: 'IN_STRUCTURE',
-        version: 5,
-      },
+    const inside = await mapPersonDetail(
+      mocks.transaction as never,
+      { ...personRecord([], 5), sortName: 'ada lovelace' },
       actor as never,
     );
-
-    expect(result.structureStatus).toBe('IN_STRUCTURE');
-    expect(mocks.createPersonAudit).toHaveBeenCalledWith(mocks.transaction, {
-      action: 'PERSON_UPDATE',
-      actor,
-      changes: [
-        {
-          after: 'IN_STRUCTURE',
-          before: 'OUTSIDE_STRUCTURE',
-          changeType: 'UPDATE',
-          fieldKey: 'structureStatus',
-          sectionKey: 'structure',
-          sensitive: false,
-        },
-      ],
-      description: 'Identité de la fiche modifiée',
-      entityId: 'person-1',
-    });
+    expect(inside.structureStatus).toBe('IN_STRUCTURE');
+    const query = mocks.transaction.personPassage.findFirst.mock
+      .calls[0]?.[0] as {
+      where: {
+        OR: unknown[];
+        personId: string;
+        startOn: { lte: Date };
+      };
+    };
+    expect(query.where.personId).toBe('person-1');
+    expect(query.where.startOn.lte).toBeInstanceOf(Date);
+    expect(query.where.OR).toEqual([
+      { endOn: null },
+      { endOn: { gte: query.where.startOn.lte } },
+    ]);
+    const outside = await mapPersonDetail(
+      mocks.transaction as never,
+      { ...personRecord([], 5), sortName: 'ada lovelace' },
+      actor as never,
+    );
+    expect(outside.structureStatus).toBe('OUTSIDE_STRUCTURE');
   });
 
   it('does not complete an ordinary mutation when its mandatory audit fails', async () => {
-    let stored: {
-      structureStatus: 'IN_STRUCTURE' | 'OUTSIDE_STRUCTURE';
-      version: number;
-    } = {
-      structureStatus: 'OUTSIDE_STRUCTURE',
+    let stored: { nickname: string | null; version: number } = {
+      nickname: null,
       version: 5,
     };
     const transactionUpdate = vi.fn(
       async (input: {
-        data: { structureStatus: 'IN_STRUCTURE' | 'OUTSIDE_STRUCTURE' };
+        data: { nickname: string | null };
         where: { version: number };
       }) => {
         if (stored.version !== input.where.version) return { count: 0 };
         stored = {
-          structureStatus: input.data.structureStatus,
+          nickname: input.data.nickname,
           version: stored.version + 1,
         };
 
@@ -611,11 +601,10 @@ describe('person contact optimistic concurrency and primary invariants', () => {
           ...mocks.transaction,
           person: {
             ...mocks.transaction.person,
-            findUnique: vi.fn(async () =>
-              personRecord([], stored.version, {
-                structureStatus: stored.structureStatus,
-              }),
-            ),
+            findUnique: vi.fn(async () => ({
+              ...personRecord([], stored.version),
+              nickname: stored.nickname,
+            })),
             updateMany: transactionUpdate,
           },
         };
@@ -638,18 +627,14 @@ describe('person contact optimistic concurrency and primary invariants', () => {
           birthDate: null,
           firstName: 'Ada',
           lastName: 'Lovelace',
-          nickname: null,
-          structureStatus: 'IN_STRUCTURE',
+          nickname: 'Ada',
           version: 5,
         },
         actor as never,
       ),
     ).rejects.toThrow('audit unavailable');
     expect(transactionUpdate).toHaveBeenCalledOnce();
-    expect(stored).toEqual({
-      structureStatus: 'OUTSIDE_STRUCTURE',
-      version: 5,
-    });
+    expect(stored).toEqual({ nickname: null, version: 5 });
   });
 
   it('forces the first email to primary even when the client sends false', async () => {

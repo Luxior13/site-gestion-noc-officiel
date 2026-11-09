@@ -25,7 +25,6 @@ type CountRow = {
 };
 
 type IdentitySampleRow = { value: string };
-type StatusSampleRow = { value: 'IN_STRUCTURE' | 'OUTSIDE_STRUCTURE' };
 type EmailSampleRow = { value: string };
 type PhoneSampleRow = { value: string };
 type SocialSampleRow = { networkKey: string; value: string };
@@ -45,7 +44,6 @@ type PerformanceSamples = Readonly<{
   identity: string;
   phone: string;
   social: SocialSampleRow;
-  status: StatusSampleRow['value'];
   url: UrlSampleRow;
 }>;
 
@@ -84,16 +82,6 @@ const escapeLikePattern = (value: string): string =>
 const getPerformanceSamples = async (
   transaction: Prisma.TransactionClient,
 ): Promise<PerformanceSamples> => {
-  const status = requireSample(
-    await transaction.$queryRaw<StatusSampleRow[]>`
-      SELECT "structureStatus" AS "value"
-      FROM "Person"
-      GROUP BY "structureStatus"
-      ORDER BY COUNT(*) DESC
-      LIMIT 1
-    `,
-    'structure status',
-  );
   const identity = requireSample(
     await transaction.$queryRaw<IdentitySampleRow[]>`
       SELECT COALESCE(
@@ -175,7 +163,6 @@ const getPerformanceSamples = async (
     identity: identity.value,
     phone: phone.value,
     social,
-    status: status.value,
     url,
   };
 };
@@ -243,7 +230,12 @@ const buildPerformanceQueries = (
         indexRequirements: [
           {
             description: 'filtered Person alphabetical keyset order',
-            oneOf: ['Person_structureStatus_sortName_id_idx'],
+            oneOf: ['Person_sortName_id_idx'],
+          },
+          {
+            // The status is computed from the passages (9 November 2026).
+            description: 'current passage of each Person',
+            oneOf: ['PersonPassage_personId_idx'],
           },
           {
             description: 'email count by Person',
@@ -263,7 +255,7 @@ const buildPerformanceQueries = (
         ],
         name: 'persons-filtered-list',
       },
-      parameters: [samples.status],
+      parameters: [],
       sql: `
         SELECT p."id", p."nickname", p."firstName", p."lastName",
           (SELECT COUNT(*) FROM "PersonEmail" email_count
@@ -273,7 +265,12 @@ const buildPerformanceQueries = (
           (SELECT COUNT(*) FROM "PersonSocialProfile" social_count
             WHERE social_count."personId" = p."id") AS "socialProfileCount"
         FROM "Person" p
-        WHERE p."structureStatus" = $1::"PersonStructureStatus"
+        WHERE EXISTS (
+          SELECT 1 FROM "PersonPassage" passage
+          WHERE passage."personId" = p."id"
+            AND passage."startOn" <= CURRENT_DATE
+            AND (passage."endOn" IS NULL OR passage."endOn" >= CURRENT_DATE)
+        )
         ORDER BY p."sortName" ASC, p."id" ASC
         LIMIT 26
       `,

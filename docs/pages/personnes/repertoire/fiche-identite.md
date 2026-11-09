@@ -17,8 +17,10 @@
 
 ## Rôle et tâches principales
 
-Consulter et corriger l’identité d’une personne : pseudo principal, prénom, nom,
-date de naissance civile facultative et statut dans la structure. La date de
+Consulter et corriger l’identité d’une personne : pseudo principal, prénom, nom
+et date de naissance civile facultative. Le statut dans la structure se lit dans
+le bandeau sans se choisir : il se calcule depuis les passages (9 novembre
+2026). La date de
 naissance se choisit dans le calendrier du site (`DatePicker`, au jour, de 1900
 à l’année en cours, avec « Effacer »), plus le sélecteur natif du navigateur
 (9 novembre 2026).
@@ -27,7 +29,7 @@ naissance se choisit dans le calendrier du site (`DatePicker`, au jour, de 1900
 
 Titre « Identité » réservé aux lecteurs d’écran, puis deux cartes titrées
 (`RubricCard`) : « Pseudo et nom » (pseudo, prénom, nom sur une ligne en grand
-écran) et « Naissance et statut » ; champs partagés `PersonIdentityFields`
+écran) et « Naissance » ; champs partagés `PersonIdentityFields`
 (option `part`), sans icône d’historique de champ (retirée le 27 octobre 2026), `SectionActionBar` avec
 soumission native et reprise de conflit ; puis « Zone dangereuse »
 (`PersonDangerZone` sur `EntityDangerZone`). Les dates de la fiche sont dans
@@ -43,6 +45,10 @@ le bandeau, pas en pied de carte.
   plus, comme celle d’un compte. Sans preuve, la zone dangereuse ouvre
   « Confirmer la suppression » puis reprend la même demande, sans nouvelle
   confirmation ([DRT-06](../../../audits/2026-10-25-coherence-des-droits.md)).
+- 9 novembre 2026 : le choix du statut quitte l’onglet et la carte
+  « Naissance et statut » devient « Naissance » ; le statut se calcule depuis
+  les passages en cours ([registre](../../../domaines/registre-historique.md#le-passage)).
+  L’API refuse un statut envoyé et le journal n’en trace plus.
 
 - 27 octobre 2026 : le propriétaire demande une revue de l’onglet, puis « ok
   go » sur quatre points. Deux cartes titrées nommées d’après leurs champs

@@ -107,8 +107,9 @@ Nom, Type (Bureau, Staff), Active ; « Ordre des fonctions modifié », sujet
 
 ## Points ouverts
 
-- Le statut « Dans la structure » sera calculé depuis les passages des équipes
-  et de la structure, une fois les membres actuels saisis.
+- Les membres actuels restent à saisir dans l’Effectif et les Rosters : d’ici
+  là, leur fiche affiche « Hors structure » (statut calculé depuis les passages,
+  9 novembre 2026).
 - Une passation du bureau (accès, comptes, dossiers) et les décisions
   d’assemblée qui élisent le bureau viendront avec leurs chantiers ; les
   mandats se lisent ici.

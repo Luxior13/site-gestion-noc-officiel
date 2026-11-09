@@ -33,7 +33,6 @@ const toForm = (person: PersonDetail): PersonIdentityFormValue => ({
   firstName: person.firstName ?? '',
   lastName: person.lastName ?? '',
   nickname: person.nickname ?? '',
-  structureStatus: person.structureStatus,
 });
 
 /**
@@ -150,7 +149,6 @@ export const PersonIdentitySection: FC<PersonIdentitySectionProps> = ({
       firstName: form.firstName || null,
       lastName: form.lastName || null,
       nickname: form.nickname || null,
-      structureStatus: form.structureStatus,
       version,
     };
     const validation = updatePersonSchema.safeParse(payload);
@@ -287,10 +285,6 @@ export const PersonIdentitySection: FC<PersonIdentitySectionProps> = ({
           form.nickname.trim() !== previous.nickname
             ? form.nickname
             : latest.nickname,
-        structureStatus:
-          form.structureStatus !== previous.structureStatus
-            ? form.structureStatus
-            : latest.structureStatus,
       });
       basePersonRef.current = fresh;
       latestPersonRef.current = fresh;
@@ -369,7 +363,7 @@ export const PersonIdentitySection: FC<PersonIdentitySectionProps> = ({
           <RubricCard
             icon={<CalendarDays />}
             id="person-identity-situation-title"
-            title="Naissance et statut"
+            title="Naissance"
           >
             <PersonIdentityFields
               disabled={!canUpdate || isBusy}

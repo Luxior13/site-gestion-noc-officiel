@@ -9,9 +9,9 @@
   responsabilités métier (étapes 1 et 2).
 - **Statut** : en cours. Lots 1 et 2 livrés pour l’essentiel du 8 au
   9 novembre 2026 (jeux, fonctions des jeux et de la structure, équipes,
-  Roster, Parcours, Bureau & staff ; sauvegarde v11 du registre) ; restent les
-  jeux pratiqués, les anciens pseudos, les compléments de la fiche et le statut
-  calculé, puis le lot 3. Les choix techniques non livrés restent à
+  Roster, Parcours, Bureau & staff, statut calculé ; sauvegarde v11 du
+  registre) ; restent les jeux pratiqués, les anciens pseudos et les compléments
+  de la fiche, puis le lot 3. Les choix techniques non livrés restent à
   valider au moment de leur lot.
 - **Décisions déjà données** : [registre historique](../domaines/registre-historique.md)
   et [public du site](../domaines/roles-metier.md#public-du-site--décision-du-7-novembre-2026).
@@ -76,7 +76,7 @@ jour). Un début se range au premier jour de la période et une fin au dernier :
 « 2024 » couvre toute l’année, et « qui était là à telle date » reste une simple
 comparaison. L’affichage suit la précision, sans inventer de jour.
 
-**Statut dans la structure** : calculé à la lecture, jamais saisi ni stocké (décision du 7 novembre 2026). Un passage est en cours si son début est passé et s’il n’a pas de fin, ou une fin à venir. Aucune tâche planifiée : une date de fin atteinte le clôt toute seule. Le choix du statut disparaît de la création et de l’onglet Identité, et le filtre du Répertoire lit ce calcul. Une fiche sans passage en cours est « Hors structure » : le bureau saisit les passages des membres actuels à la livraison.
+**Statut dans la structure** : calculé à la lecture, jamais saisi ni stocké (décision du 7 novembre 2026). Un passage est en cours si son début est passé et s’il n’a pas de fin, ou une fin à venir. Aucune tâche planifiée : une date de fin atteinte le clôt toute seule. Le choix du statut disparaît de la création et de l’onglet Identité, et le filtre du Répertoire lit ce calcul. Une fiche sans passage en cours est « Hors structure » : le bureau saisit les passages des membres actuels à la livraison. **Livré le 9 novembre 2026** : un passage d’équipe ou de la structure compte, le jour se lit dans le fuseau du site (Europe/Paris), une fin datée du jour compte encore ; la colonne, son type et ses trois index sont supprimés par `20261109235800_person_status_from_passages`, et le journal ne trace plus de statut (les événements passés gardent leur libellé).
 
 **Règles serveur** : la fin ne précède pas le début (contrainte en base). Deux
 passages identiques (fiche, équipe, fonction) ne se chevauchent pas. Une fiche qui
@@ -160,7 +160,7 @@ réglage retiré de la fonction, compte désactivé, recherche rapide, totaux de
 
 | Élément | Effet |
 | --- | --- |
-| Statut du Répertoire | Colonne `structureStatus` remplacée par le calcul ; 19 fichiers du code la citent |
+| Statut du Répertoire | Colonne `structureStatus` remplacée par le calcul (fait le 9 novembre 2026 : la liste, son filtre et la fiche le calculent) |
 | Suppression d’une fiche | Refus si la fiche a un passage ; [règle du Répertoire](../pages/personnes/repertoire/README.md) à actualiser |
 | Sauvegarde | Nouvelles tables dans le manifeste, format v11 (fait le 9 novembre 2026, aller-retour éprouvé ; un test refuse désormais toute table oubliée) |
 | Journal d’activité | Nouvelles actions et nouveau filtre |

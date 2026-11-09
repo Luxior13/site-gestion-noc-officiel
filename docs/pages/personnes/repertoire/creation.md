@@ -17,15 +17,17 @@
 ## Rôle et tâches principales
 
 Créer une fiche personne avec le minimum utile : pseudo principal, ou prénom et
-nom, et statut dans la structure. Critère de réussite : une seule fiche créée,
+nom. Le statut dans la structure ne se choisit pas : il se calcule depuis les
+passages (9 novembre 2026), et une fiche neuve est « Hors structure » jusqu’à son
+premier passage en cours. Critère de réussite : une seule fiche créée,
 sans doublon involontaire, avec un retour vers la liste ou la fiche.
 
 ## Composition actuelle
 
-Bandeau compact ; titre `h2` réservé aux lecteurs d’écran ; cartes de rubrique
-(`RubricCard`) « Pseudo et nom » et « Statut », aux champs partagés avec la fiche
+Bandeau compact ; titre `h2` réservé aux lecteurs d’écran ; une carte de rubrique
+(`RubricCard`) « Pseudo et nom », aux champs partagés avec la fiche
 (`PersonIdentityFields`), la règle « un pseudo, ou le prénom et le nom » écrite
-une seule fois sous le pseudo ; `SectionActionBar` en ligne sous les cartes, avec
+une seule fois sous le pseudo ; `SectionActionBar` en ligne sous la carte, avec
 soumission native, sans message sauf résultat à vérifier ; alerte de doublon ;
 reprise manuelle après réponse perdue.
 
@@ -33,6 +35,9 @@ reprise manuelle après réponse perdue.
 
 - Un pseudo suffit ; sans pseudo, prénom et nom sont nécessaires.
 - Brouillon conservé après erreur ; navigation protégée jusque dans le chargement.
+- 9 novembre 2026 : la carte « Statut » disparaît ; l’API refuse un statut
+  envoyé, calculé depuis les passages ([registre](../../../domaines/registre-historique.md#le-passage)).
+  La création ne trace plus de statut dans le journal.
 - Détails : [Création de fiche — décisions du 12 octobre 2026](#création-de-fiche--décisions-du-12-octobre-2026).
 
 ## Points ouverts
@@ -77,11 +82,12 @@ preuves ; la synthèse ci-dessus porte l’état courant.
 
 ### Création de fiche — décisions du 12 octobre 2026
 
-La page conserve quatre champs : pseudo principal, prénom, nom et statut dans
-la structure. Un pseudo suffit ; sans pseudo, prénom et nom sont nécessaires.
+La page conservait quatre champs : pseudo principal, prénom, nom et statut dans
+la structure ; trois depuis le 9 novembre 2026, le statut se calculant depuis
+les passages. Un pseudo suffit ; sans pseudo, prénom et nom sont nécessaires.
 Une fiche personne n'est ni un compte utilisateur, ni une adhésion, ni un rôle
 daté. La date de naissance et les coordonnées se complètent dans la fiche.
-Le statut proposé reste « Hors structure ». Aucun nouvel assistant ou champ
+Le statut proposé restait « Hors structure ». Aucun nouvel assistant ou champ
 métier n'est ajouté par la revue.
 
 - Après succès confirmé, la fiche reste créée même si son ouverture échoue :

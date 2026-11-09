@@ -71,7 +71,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         phase: null,
         summary: 'Pseudo, nom, naissance, zone dangereuse.',
         upcoming:
-          'Statut calculé depuis le parcours, nationalité et anciens pseudos, y compris ceux d’avant le site.',
+          'Nationalité et anciens pseudos, y compris ceux d’avant le site.',
       },
       {
         chantier: 'sport-teams',
@@ -175,7 +175,9 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'esport',
-    chantier: 'sport-teams',
+    // Its manager reaches it, limited to his team (step 3); the status of
+    // each member is computed since 9 November 2026.
+    chantier: 'access-scopes',
     name: 'Fiche équipe',
     phase: null,
     summary:
@@ -239,7 +241,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
       },
     ],
     upcoming:
-      'Le statut de chaque membre dans la structure, calculé depuis les passages.',
+      'Le manager de l’équipe y accède, limité à elle : Roster en lecture.',
   },
   {
     area: 'people',

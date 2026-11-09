@@ -255,13 +255,16 @@ describe.skipIf(!target)('person creation on fully migrated PostgreSQL', () => {
       nickname,
       // Site-wide search form: the identifier's dashes become spaces (RL-03).
       normalizedNickname: normalizeSearchText(nickname),
-      structureStatus: 'OUTSIDE_STRUCTURE',
       version: 1,
     });
+    // The status is computed from the passages (9 November 2026): a new
+    // record has none, so it is outside the structure, and nothing stores it.
+    expect(person).not.toHaveProperty('structureStatus');
     expect(body.data.person).toMatchObject({
       emails: [],
       phones: [],
       socialProfiles: [],
+      structureStatus: 'OUTSIDE_STRUCTURE',
       version: 1,
     });
     expect(body.data.person).not.toHaveProperty('normalizedNickname');
@@ -279,7 +282,7 @@ describe.skipIf(!target)('person creation on fully migrated PostgreSQL', () => {
     const changes = await db.auditFieldChange.findMany({
       where: { auditLogId: audit.id },
     });
-    expect(changes).toHaveLength(2);
+    expect(changes).toHaveLength(1);
     const identity = changes.find((change) => change.fieldKey === 'nickname');
     if (
       !identity?.valuesAuthTag ||
@@ -302,9 +305,6 @@ describe.skipIf(!target)('person creation on fully migrated PostgreSQL', () => {
         valuesIv: identity.valuesIv,
       }),
     ).toEqual({ after: nickname, before: null });
-    expect(
-      changes.find((change) => change.fieldKey === 'structureStatus'),
-    ).toMatchObject({ afterValue: '"OUTSIDE_STRUCTURE"', valueMode: 'PLAIN' });
   });
 
   it('accepts civil identity without a nickname and preserves its civil birth date', async () => {
@@ -314,7 +314,6 @@ describe.skipIf(!target)('person creation on fully migrated PostgreSQL', () => {
         birthDate: '2000-02-29',
         firstName: '  Élise  ',
         lastName: '  Martin  ',
-        structureStatus: 'IN_STRUCTURE',
       }),
     );
     expect(response.status).toBe(201);
@@ -324,7 +323,7 @@ describe.skipIf(!target)('person creation on fully migrated PostgreSQL', () => {
       firstName: 'Élise',
       lastName: 'Martin',
       nickname: null,
-      structureStatus: 'IN_STRUCTURE',
+      structureStatus: 'OUTSIDE_STRUCTURE',
     });
     const stored = await db.person.findUniqueOrThrow({
       where: { id: body.data.person.id },
@@ -343,6 +342,8 @@ describe.skipIf(!target)('person creation on fully migrated PostgreSQL', () => {
       { birthDate: '2026-02-30', nickname: uniqueNickname() },
       { birthDate: '2999-01-01', nickname: uniqueNickname() },
       { isProtected: true, nickname: uniqueNickname() },
+      // Computed from the passages, never chosen (9 November 2026).
+      { nickname: uniqueNickname(), structureStatus: 'IN_STRUCTURE' },
       {
         emails: Array.from({ length: 11 }, (_, index) => ({
           email: `contact${index}@example.test`,

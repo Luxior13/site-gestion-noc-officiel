@@ -82,15 +82,16 @@ Après accord utilisateur, AUT-S01/S03/S04 sont corrigés et vérifiés ; AUT-S0
 est adopté. Ces décisions remplacent les anciennes descriptions couplant
 identité et contacts ou mentionnant deux valeurs de provenance.
 
-- `persons:view` permet identité, date de naissance et statut ;
-  `persons:update` permet leur modification.
+- `persons:view` permet identité, date de naissance et statut (calculé depuis
+  les passages, 9 novembre 2026) ; `persons:update` permet de modifier
+  l’identité et la date de naissance.
 - `persons:view_contact`, dépendant de la lecture du Répertoire, ouvre emails,
   téléphones et profils sociaux. Sans lui : onglet/résumé absents, collections
   vides dans les réponses, compteurs masqués, recherche limitée à l'identité,
   filtre « sans coordonnées » et provenance des coordonnées refusés.
 - `persons:update_contact` exige ces deux lectures et autorise ajout,
   modification et retrait des contacts. Une création API avec contacts initiaux
-  l'exige aussi ; le formulaire actuel reste identité/statut.
+  l'exige aussi ; le formulaire actuel reste l’identité.
 - La provenance appartient au Répertoire, dépend de sa lecture et ne renvoie
   que le dernier auteur autorisé, l'action, la date et l'id de trace, sans valeurs.
 - L'auteur racine est présenté comme « Superadmin », sans identifiant,

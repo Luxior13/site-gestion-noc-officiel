@@ -176,8 +176,9 @@ seul un lecteur du Répertoire voit, par la fiche.
   de ces mêmes onglets pour les passages de la structure. Un graphiste ou un
   monteur qui travaille pour une seule équipe va dans son Roster, avec une
   fonction d’encadrement du jeu ; pour toute la structure, dans l’Effectif.
-- Reportés : le statut « Dans la structure » calculé depuis les passages (une fois les
-  membres actuels saisis), le manager qui lit le Roster de son équipe
+- Le statut « Dans la structure » du Répertoire se calcule depuis ces passages
+  depuis le 9 novembre 2026.
+- Reportés : le manager qui lit le Roster de son équipe
   (étape 3), la date de fin de contrat lue dans les contrats (étape 7), le
   poste en jeu.
 

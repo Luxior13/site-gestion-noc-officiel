@@ -52,7 +52,9 @@ Régression SQL du répertoire : depuis `apps/web`, lancer
 `PERSONS_LIST_TEST_DATABASE_URL` pointant vers une base locale jetable nommée
 `repertoire_pagination_test`. Ce groupe est ignoré sans cette variable ; il crée
 et supprime un schéma unique et n'utilise pas `DATABASE_URL`. Le schéma minimal
-teste la liste et ses comptages, pas les migrations ni les mutations métier.
+teste la liste et ses comptages, avec une table de passages réduite pour le
+statut calculé (passage en cours, fini la veille, fini le jour même, à venir),
+pas les migrations ni les mutations métier.
 Lancer directement la commande pour une preuve nouvelle, sans cache Turbo.
 
 Régression SQL de la recherche Utilisateurs : depuis `apps/web`, lancer

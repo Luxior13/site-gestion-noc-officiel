@@ -4,6 +4,10 @@ import type { Prisma, PrismaClient } from '@prisma/client';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 import { PERMISSIONS } from '$constants/permissions.constants';
+import {
+  currentPassageWhere,
+  passageToday,
+} from '$features/passages/server/passage-today';
 import { prisma } from '$server/prisma';
 
 import { PERSON_AUDIT_KEYS } from '../person.constants';
@@ -125,6 +129,21 @@ const getLastPersonChange = async (
   };
 };
 
+/**
+ * In the structure while a passage is under way today, in a team or in the
+ * structure itself: computed on each read, never stored (9 November 2026).
+ */
+const readStructureStatus = async (
+  client: PersonClient,
+  personId: string,
+): Promise<PersonDetail['structureStatus']> =>
+  (await client.personPassage.findFirst({
+    select: { id: true },
+    where: { personId, ...currentPassageWhere(passageToday()) },
+  }))
+    ? 'IN_STRUCTURE'
+    : 'OUTSIDE_STRUCTURE';
+
 export const mapPersonDetail = async (
   client: PersonClient,
   person: PersonDetailRecord,
@@ -150,7 +169,7 @@ export const mapPersonDetail = async (
     socialProfiles: canViewContact
       ? person.socialProfiles.map(toSocialProfileItem)
       : [],
-    structureStatus: person.structureStatus,
+    structureStatus: await readStructureStatus(client, person.id),
     updatedAt: person.updatedAt.toISOString(),
     version: person.version,
   };
@@ -405,14 +424,6 @@ export const createPerson = async (
             : [];
         },
       ),
-      {
-        after: input.structureStatus,
-        before: null,
-        changeType: 'CREATE',
-        fieldKey: 'structureStatus',
-        sectionKey: PERSON_AUDIT_KEYS.sections.structure,
-        sensitive: false,
-      },
       ...person.emails.flatMap((email) => [
         {
           after: email.email,
@@ -562,13 +573,6 @@ export const updatePerson = async (
         input.birthDate,
         true,
         PERSON_AUDIT_KEYS.sections.identity,
-      ],
-      [
-        'structureStatus',
-        current.structureStatus,
-        input.structureStatus,
-        false,
-        PERSON_AUDIT_KEYS.sections.structure,
       ],
     ] as const;
     const changes = fields.flatMap(

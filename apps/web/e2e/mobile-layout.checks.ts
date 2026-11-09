@@ -111,8 +111,23 @@ async function measure(page: Page, width: number): Promise<Violation[]> {
         after.position === 'absolute' && after.content !== 'none'
           ? Math.max(0, -parseFloat(value) || 0)
           : 0;
-      const height = rect.height + grow(after.top) + grow(after.bottom);
-      const targetWidth = rect.width + grow(after.left) + grow(after.right);
+      // A name stretched over its whole line (::after at inset 0 on the
+      // positioned line, Roster and Effectif) is touched anywhere on it.
+      const line =
+        after.position === 'absolute' &&
+        after.content !== 'none' &&
+        getComputedStyle(element).position === 'static' &&
+        [after.top, after.right, after.bottom, after.left].every(
+          (value) => value === '0px',
+        )
+          ? (element as HTMLElement).offsetParent?.getBoundingClientRect()
+          : undefined;
+      const height = line
+        ? line.height
+        : rect.height + grow(after.top) + grow(after.bottom);
+      const targetWidth = line
+        ? line.width
+        : rect.width + grow(after.left) + grow(after.right);
       if (height < 43.5 || targetWidth < 24)
         violations.push(
           `cible ${Math.round(targetWidth)}×${Math.round(height)} : ${describe(element)}`,
@@ -230,7 +245,6 @@ export async function expectMobileLayouts(
         nickname: 'MaxLaFontaineOfficiel',
         phones: [],
         socialProfiles: [],
-        structureStatus: 'IN_STRUCTURE',
       },
       headers: { 'x-csrf-token': csrf ?? '' },
       method: 'POST',
@@ -251,6 +265,8 @@ export async function expectMobileLayouts(
       'personne-coordonnees',
       `/personnes/repertoire/${personId}?section=coordonnees`,
     ],
+    ['jeux', '/esport/jeux'],
+    ['bureau-staff', '/structure/bureau-staff'],
     ['utilisateurs', '/systeme/utilisateurs'],
     ['utilisateurs-nouveau', '/systeme/utilisateurs/nouveau'],
     ['utilisateur', `/systeme/utilisateurs/${otherUserId}`],
