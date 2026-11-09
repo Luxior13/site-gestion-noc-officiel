@@ -4,7 +4,8 @@
 
 Pôle Structure de la navigation (`/structure/*`), ouvert le 9 novembre 2026
 avec sa première page, Bureau & staff : l’effectif de la structure hors des
-équipes. Suivront l’identité juridique, la chronologie, les réunions et
+équipes. Suivront les entités juridiques (page Entités et fiche de chaque
+entité, décision du 9 novembre 2026), la chronologie, les réunions et
 décisions, les documents, les contrats, les incidents, le matériel et le bilan
 annuel ([feuille de route](../../propositions/feuille-de-route.md)). Couleur
 jaune (thème `legal`, `--nav-legal`, [fondations](../../design/fondations.md#pôles-et-avatars)),

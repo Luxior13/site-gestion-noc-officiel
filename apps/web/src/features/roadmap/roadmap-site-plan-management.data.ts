@@ -28,16 +28,34 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
       },
     ],
   },
+  // The legal forms over time (owner, 9 November 2026: « ok pour moi »):
+  // the association today, maybe a company tomorrow, each act keeping its own.
   {
     area: 'structure',
     chantier: 'legal-entities',
-    name: 'Identité juridique',
+    name: 'Entités',
+    phase: 3,
+    summary:
+      'Liste, sans onglet : la suite des formes juridiques de la structure, dans le temps : « Avant l’association » (depuis 2014, sans entité), l’association, demain peut-être une société ; chacune avec sa forme, ses dates, son état et la pastille « Principale ».',
+  },
+  {
+    area: 'structure',
+    chantier: 'legal-entities',
+    name: 'Fiche entité',
     phase: 3,
     tabs: [
       {
         label: 'Identité',
         phase: 3,
-        summary: 'Dénomination, forme, identifiants, adresse.',
+        summary:
+          'Dénomination, forme, dates, identifiants, siège, entité principale ; paramètres fiscaux datés (TVA, reçus de dons), appliqués d’office à ses actes.',
+      },
+      {
+        label: 'Dirigeants',
+        managedIn: 'Bureau & staff',
+        phase: 3,
+        summary:
+          'Les mandats de son bureau ou de sa direction, avec leurs dates.',
       },
       {
         label: 'Assurances',
@@ -50,6 +68,14 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         label: 'Documents',
         phase: 7,
         summary: 'Statuts et pièces officielles.',
+      },
+      {
+        chantier: 'accounts',
+        label: 'Finances',
+        managedIn: 'Finances',
+        phase: 3,
+        summary:
+          'Ses comptes et ses exercices, jamais mêlés à ceux d’une autre entité.',
       },
     ],
   },

@@ -33,7 +33,7 @@ Révision du 8 novembre 2026, sur décision du propriétaire (« on peut encore 
 | Esport | Quelles équipes, quels tournois ? | Jeux, page d’accueil du pôle, avec les équipes sous chaque jeu ; fiche jeu (Finances, Fonctions ; les équipes restent sous chaque jeu de la page Jeux) ; fiche équipe (Roster, Tournois, Entraînements, Finances, Partenaires, Informations) ; tournois ; déplacements |
 | Finances | Où en est l’argent ? | Comptes (onglets Catégories et Moyens de paiement), opérations, factures, frais, subventions et dons, contrôles, budget |
 | Relations | Avec qui à l’extérieur ? | Organisations, partenariats, communication |
-| Structure | Qu’est-ce que l’association, qu’a-t-elle décidé et gardé ? | Bureau & staff (effectif et fonctions de la structure), identité juridique, chronologie, réunions et décisions, documents, contrats, incidents, matériel et abonnements (onglet Types de matériel), bilan annuel |
+| Structure | Qu’est-ce que l’association, qu’a-t-elle décidé et gardé ? | Bureau & staff (effectif et fonctions de la structure), entités juridiques (leur suite dans le temps et la fiche de chacune, 9 novembre 2026), chronologie, réunions et décisions, documents, contrats, incidents, matériel et abonnements (onglet Types de matériel), bilan annuel |
 | Système | Comment marche l’outil ? | Comptes et accès, journal, paramètres (dont les règles de rappel), données, intégrations, feuille de route |
 
 Ce tableau décrit les lieux logiques, pas un engagement à créer autant d’entrées. Les vues rares deviennent des onglets ou actions contextuelles. Les pôles Relations et Finances s’ouvrent seulement avec leurs premiers modules utilisables ; Structure s’est ouvert le 9 novembre 2026 avec Bureau & staff.

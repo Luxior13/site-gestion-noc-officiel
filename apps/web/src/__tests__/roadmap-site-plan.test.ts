@@ -138,7 +138,7 @@ describe('planned pages and tabs', () => {
       'Anciens membres',
       'Fonctions',
     ]);
-    expect(tabsOf('Identité juridique')).not.toContain('Fonctions');
+    expect(tabsOf('Fiche entité')).not.toContain('Fonctions');
     // Tags were dropped (8 November 2026): the directory stays a single list.
     expect(tabsOf('Répertoire')).toEqual([]);
     expect(tabsOf('Comptes')).toEqual(

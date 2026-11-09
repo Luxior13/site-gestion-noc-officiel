@@ -20,7 +20,8 @@ concernées.
 
 | Document | Périmètre | Statut au 19 octobre 2026 |
 | --- | --- | --- |
-| [Listes, équipes, parcours et accès manager](membres-equipes-parcours.md) | Étapes 1 et 2 de la feuille de route | Proposée le 7 novembre 2026 ; rien n’est construit |
+| [Listes, équipes, parcours et accès manager](membres-equipes-parcours.md) | Étapes 1 et 2 de la feuille de route | Proposée le 7 novembre 2026 ; lots 1 et 2 livrés pour l’essentiel les 8 et 9 novembre 2026, lot 3 à venir |
+| [Entités juridiques](structure-entites-juridiques.md) | Association aujourd’hui, société peut-être demain : ce qui porte une entité, principe de déduction pour la trésorerie, page Entités (étape 3) | Adopté le 9 novembre 2026 ; rien n’est construit (étape 3) |
 | [Personnes et identité](membres-personnes-identite.md) | Répertoire, identité, relations | Plan d’origine ; confronter chaque reste à faire aux [fiches du Répertoire](../pages/personnes/repertoire/README.md) et au modèle actuel |
 | [Réunions](vie-interne-reunions.md) | Pôle Activité | Conception future ; aucun module livré déduit de ce plan |
 | [Sponsors et partenaires](relations-sponsors-partenaires.md) | Pôle Relations | Conception historique ; module retiré le 21 septembre 2026, reconstruction à cadrer |

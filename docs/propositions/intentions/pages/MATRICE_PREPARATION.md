@@ -40,11 +40,11 @@ Les anciennes routes prévues ne sont pas des « squelettes disponibles » : ell
 | `access-scopes` | Accès & responsabilités métier | Système | 2 | Équipes & parcours |
 | `compliance` | Confidentialité & conservation | Structure | 2 | Équipes & parcours |
 | `data` | Données, exports & sauvegardes | Système | 2 | Équipes & parcours |
-| `legal-entities` | Identité juridique & périmètres | Structure | 3 | — |
+| `legal-entities` | Entités juridiques & périmètres | Structure | 3 | — |
 | `organizations` | Organisations & contacts | Relations | 3 | — |
-| `accounts` | Comptes & rapprochement | Finances | 3 | Identité juridique & périmètres |
+| `accounts` | Comptes & rapprochement | Finances | 3 | Entités juridiques & périmètres |
 | `payments` | Opérations & règlements | Finances | 3 | Comptes & rapprochement ; Organisations & contacts |
-| `person-relationships` | Adhésions & cotisations | Personnes | 4 | Identité juridique & périmètres ; Équipes & parcours |
+| `person-relationships` | Adhésions & cotisations | Personnes | 4 | Entités juridiques & périmètres ; Équipes & parcours |
 | `invoices` | Facturation & achats | Finances | 4 | Opérations & règlements |
 | `expenses` | Notes de frais & remboursements | Finances | 4 | Opérations & règlements |
 | `finance-controls` | Contrôles & clôtures | Finances | 4 | Opérations & règlements |
@@ -53,11 +53,11 @@ Les anciennes routes prévues ne sont pas des « squelettes disponibles » : ell
 | `incidents` | Suivi, incidents & sanctions | Structure | 5 | Équipes & parcours ; Confidentialité & conservation ; Tournois |
 | `prizes` | Gains de compétition & primes | Finances | 5 | Tournois ; Opérations & règlements |
 | `tasks` | Projets & tâches | Aujourd’hui | 6 | — |
-| `meetings` | Réunions & décisions | Structure | 6 | Identité juridique & périmètres ; Projets & tâches |
+| `meetings` | Réunions & décisions | Structure | 6 | Entités juridiques & périmètres ; Projets & tâches |
 | `calendar` | Calendrier du bureau | Aujourd’hui | 6 | Projets & tâches |
 | `personal-work` | Mon travail & espace personnel | Aujourd’hui | 7 | Projets & tâches ; Documents & acceptations |
-| `documents` | Documents & acceptations | Structure | 7 | Identité juridique & périmètres |
-| `contracts` | Contrats & obligations | Structure | 7 | Documents & acceptations ; Identité juridique & périmètres |
+| `documents` | Documents & acceptations | Structure | 7 | Entités juridiques & périmètres |
+| `contracts` | Contrats & obligations | Structure | 7 | Documents & acceptations ; Entités juridiques & périmètres |
 | `activity-journal` | Export du journal d’activité | Système | 7 | — |
 | `partnerships` | Partenariats & opportunités | Relations | 7 | Organisations & contacts ; Contrats & obligations ; Projets & tâches |
 | `onboarding` | Arrivées, départs & passations | Personnes | 8 | Équipes & parcours ; Documents & acceptations ; Projets & tâches |

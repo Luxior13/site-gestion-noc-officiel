@@ -33,7 +33,7 @@ Un seul objet central : le **passage**, une relation datée entre une fiche du
 | Début et fin | Une fin vide signifie « en cours ». Plusieurs passages simultanés sont possibles |
 | Statut dans la structure | Calculé, jamais saisi : une fiche est dans la structure si un passage est en cours à la date du jour. Sans date de fin, il reste en cours ; une date de fin atteinte le clôt toute seule |
 | Dates approximatives | Année, mois ou jour : une date connue à l’année se saisit à l’année, sans inventer de jour |
-| Entité juridique | Aucune exigée : l’histoire commence en 2014, la structure en 2023 et l’association en octobre 2025 |
+| Entité juridique | Aucune : l’histoire commence en 2014, la structure en 2023 et l’association en octobre 2025 ; le registre ne porte jamais d’entité, seuls les actes (comptes, factures, contrats, adhésions) en portent une ([décisions du 9 novembre 2026](structure-juridique.md#décisions-du-9-novembre-2026)) |
 | Roster à une date | Se déduit des passages ; aucune composition d’équipe n’est stockée à part |
 | Anciens pseudos | Conservés, pour retrouver une personne sous le nom qu’elle portait ; affichés et complétés dans l’onglet Identité |
 | Anciens noms d’équipe | Conservés de la même façon : une équipe change de nom sans changer d’histoire |

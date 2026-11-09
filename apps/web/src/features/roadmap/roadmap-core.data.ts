@@ -143,16 +143,16 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     area: 'structure',
     dependsOn: [],
     description:
-      'Préparer l’évolution de l’association et une éventuelle société.',
+      'Savoir quelle entité porte chaque acte, de l’association à une éventuelle société, sans jamais le demander quand le site peut le déduire.',
     doneWhen:
-      'Chaque futur contrat et compte financier a une entité porteuse ; l’historique reste inchangé.',
+      'Chaque compte, exercice, facture et contrat a une entité, trouvée sans saisie tant qu’une seule existe ; changer de forme ne réécrit rien.',
     firstRelease:
-      'Entité porteuse, identifiants, règles datées, assurances et responsabilités.',
+      'Page Entités (la période avant l’association, l’association, l’entité principale) et fiche de chaque entité : identité, identifiants, paramètres fiscaux datés, dirigeants, assurances ; règle de déduction de l’entité pour toute la trésorerie, avant les comptes.',
     id: 'legal-entities',
     later:
-      'Coexistence association/société et transferts documentés quand nécessaires.',
+      'À la deuxième entité : entité porteuse de chaque équipe, entité des fonctions du Bureau, filtre Entité des Finances ; remplacement ou coexistence et transferts documentés.',
     phase: 3,
-    title: 'Identité juridique & périmètres',
+    title: 'Entités juridiques & périmètres',
   },
   {
     area: 'structure',

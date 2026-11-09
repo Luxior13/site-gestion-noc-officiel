@@ -29,7 +29,7 @@ Les comptes et leur sécurité, le répertoire, les paramètres techniques, le j
 4. **La portée par équipe ne sert qu’aux managers.** Les modules du bureau utilisent les autorisations actuelles et n’attendent pas ce chantier.
 5. **Une page seulement si elle sert** : une donnée se modifie là où on la lit, sans page dédiée inutile ([règles de placement](../domaines/navigation.md#règles-de-placement)).
 6. **Les listes de choix se gèrent sur le site, à côté de ce qu’elles classent** : jeux, fonctions et autres valeurs évoluent sans développement, jamais depuis Système ([listes de choix](../domaines/registre-historique.md#listes-de-choix)).
-7. **Préparer plusieurs entités juridiques**, avec leurs dossiers et historiques propres, tout en commençant par l’association réellement utilisée. Une évolution vers une société ne renomme pas les anciens engagements. Un passage n’exige pas d’entité : l’histoire de la structure précède l’association.
+7. **Préparer plusieurs entités juridiques**, avec leurs dossiers et historiques propres, tout en commençant par l’association réellement utilisée. Une évolution vers une société ne renomme pas les anciens engagements. Un passage n’exige pas d’entité : l’histoire de la structure précède l’association. **On ne choisit jamais l’entité quand le site peut la déduire** : une seule entité active, elle s’applique d’office ; sinon l’objet dont l’acte dépend la donne (compte, équipe, campagne) ; sinon l’entité principale est proposée (décision du 9 novembre 2026, [cadrage](structure-entites-juridiques.md)).
 8. **Distinguer facture, paiement, note de frais et budget** : ils ont leurs propres états et liens. Un PDF ne remplace pas le cycle de vie d’une facture.
 9. **Une source par donnée, plusieurs vues possibles** : les vues personnelles consultent les données du module d’origine.
 10. **Livrer le contrôle d’accès avec chaque module** : politique serveur, confidentialité, audit, états d’erreur et tests pertinents.
@@ -61,7 +61,7 @@ Sur décision du propriétaire (« on peut encore tout changer, mais il faut que
 | Page Listes de référence (Système) | **Listes de choix**, chaque liste en onglet à côté de ce qu’elle classe | Les jeux ne se gèrent pas dans Système |
 | Une liste unique de fonctions | **Fonctions de chaque jeu** (onglet de sa fiche jeu, Esport) et **fonctions de la structure** (onglet de Bureau & staff, Structure) | Un joueur appartient à une équipe, un trésorier à la structure ; chaque passage ne propose que les fonctions de son rattachement |
 | Motif de fin d’un passage | **Retiré** : début et fin se saisissent dans le Roster d’une équipe ou l’Effectif de Bureau & staff | Un changement se voit au passage suivant, une exclusion a son dossier d’incident, une fin de contrat se lit dans le contrat |
-| Mandats et fonctions de la structure dans Identité juridique (étape 3) | Page **Bureau & staff** (Structure, étape 1) : Effectif de la structure et Fonctions ; Identité juridique garde Identité, Assurances, Documents | Une équipe a son effectif, la structure le sien ; le bureau se saisit dès l’étape 1, sans dépendre d’une entité juridique, et un graphiste n’a pas de mandat |
+| Mandats et fonctions de la structure dans Identité juridique (étape 3) | Page **Bureau & staff** (Structure, étape 1) : Effectif de la structure et Fonctions ; Identité juridique garde Identité, Assurances, Documents (devenue page Entités et fiche entité le 9 novembre 2026) | Une équipe a son effectif, la structure le sien ; le bureau se saisit dès l’étape 1, sans dépendre d’une entité juridique, et un graphiste n’a pas de mandat |
 | Parcours modifiable sur la fiche | **Parcours en lecture ↗** ; anciens pseudos dans Identité | La fiche lit les deux effectifs, chaque passage se saisit à son endroit |
 | Page Équipes et fiche équipe | Page **Jeux**, accueil d’Esport, avec les équipes sous chaque jeu ; **fiche jeu** : Finances ↗, Fonctions (celles de ce jeu), sans onglet Équipes qui ferait doublon (précisé le même jour) ; **fiche équipe**, sous son jeu : Roster, Tournois ↗, Informations | Une structure esport s’organise par jeu, puis par équipe ; le roster vit dans son équipe, sans doublon au niveau du jeu |
 | Fiche équipe sans partenaires ni contrats | Onglet **Partenaires ↗** (partenaires de l’équipe et ce qu’elle leur doit ; le manager les voit sans les montants) ; **date de fin de contrat** affichée seule dans le Roster | Une équipe honore ses livrables ; les départs se préparent avant la fin des contrats, dont les conditions restent confidentielles |
@@ -111,7 +111,7 @@ Ouvrir le site aux managers et garder le registre dans la durée.
 
 Suivre les comptes et l’argent réellement reçu ou versé.
 
-- **Identité juridique & périmètres** (Structure) : Entité porteuse, identifiants, règles datées, assurances et responsabilités.
+- **Entités juridiques & périmètres** (Structure) : Page Entités (la période avant l’association, l’association, l’entité principale) et fiche de chaque entité : identité, identifiants, paramètres fiscaux datés, dirigeants, assurances ; règle de déduction de l’entité pour toute la trésorerie, avant les comptes.
 - **Comptes & rapprochement** (Finances) : Exercices, comptes bancaires et caisses, titulaire, devise, soldes initiaux et relevés.
 - **Organisations & contacts** (Relations) : Identité de l’organisation, interlocuteurs du répertoire et relations datées.
 - **Opérations & règlements** (Finances) : Encaissements, décaissements, virements, catégories, moyens de paiement, justificatifs et affectations aux sommes dues ; lien vers une personne, une organisation, un tournoi ou une adhésion.
@@ -199,9 +199,9 @@ Relecture du 7 novembre 2026 : chaque sujet qu’une structure esport rencontre 
 | Contrats de joueurs, de staff, de partenaires | Contrats & obligations |
 | Salariat et paie, si la structure emploie | Salariés & paie, avec un outil de paie |
 | Bénévolat et valorisation des heures | À cadrer avec Subventions & dons |
-| Assemblées, bureau, mandats, votes, statuts | Bureau & staff, Identité juridique, Réunions & décisions |
-| Assurances, affiliations, licences, marque | Identité juridique |
-| Changement de forme juridique | Identité juridique, relations datées |
+| Assemblées, bureau, mandats, votes, statuts | Bureau & staff, Entités, Réunions & décisions |
+| Assurances, affiliations, licences, marque | Fiche entité |
+| Changement de forme juridique | Entités : événement daté, sans réécriture des actes ([cadrage](structure-entites-juridiques.md)) |
 | Matériel, maillots, prêts | Matériel & abonnements |
 | Comptes, domaines et abonnements de la structure | Matériel & abonnements |
 | Changement de bureau, passation | Arrivées, départs & passations |
@@ -343,9 +343,12 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 |  | Effectif | Le roster de la structure : qui est là et qui arrive, le bureau élu puis le staff (graphistes, monteurs, bénévoles…), dans l’ordre des fonctions, avec statut, début, fin et durée ; un passage s’ajoute, se corrige, se termine ou change de fonction avec la même fenêtre que dans le Roster d’une équipe. | Livré |
 |  | Anciens membres | Les passages terminés, jamais mêlés à l’Effectif : par année de fin, la plus récente d’abord ; recherche et filtre Bureau ou Staff ; un ancien membre s’ajoute ici avec ses deux dates, depuis 2014. | Livré |
 |  | Fonctions | Fonctions de la structure, type Bureau (mandats élus : président, trésorier, secrétaire) ou Staff (graphiste, monteur, community manager, bénévole) ; rangées par glisser-déposer ; ajouter, renommer, rendre inactive, comme les fonctions d’un jeu ; fonctions courantes en un clic quand la liste est vide. | Livré |
-| **Identité juridique** | Identité | Dénomination, forme, identifiants, adresse. | Étape 3 |
+| **Entités** | — | Liste, sans onglet : la suite des formes juridiques de la structure, dans le temps : « Avant l’association » (depuis 2014, sans entité), l’association, demain peut-être une société ; chacune avec sa forme, ses dates, son état et la pastille « Principale ». | Étape 3 |
+| **Fiche entité** | Identité | Dénomination, forme, dates, identifiants, siège, entité principale ; paramètres fiscaux datés (TVA, reçus de dons), appliqués d’office à ses actes. | Étape 3 |
+|  | Dirigeants ↗ | Les mandats de son bureau ou de sa direction, avec leurs dates. Lu ici, se modifie dans Bureau & staff. | Étape 3 |
 |  | Assurances | Assurances, affiliations, licences, marque, et leurs échéances. | Étape 3 |
 |  | Documents | Statuts et pièces officielles. | Étape 7 |
+|  | Finances ↗ | Ses comptes et ses exercices, jamais mêlés à ceux d’une autre entité. Lu ici, se modifie dans Finances. | Étape 3 |
 | **Chronologie** | — | Lecture, sans onglet : les grands faits de la structure depuis ses débuts, saisis ou tirés des modules. | Étape 8 |
 | **Réunions** | Réunions | Réunions passées et à venir. | Étape 6 |
 |  | Décisions ↗ | Toutes les décisions, retrouvables sans ouvrir chaque réunion. Lu ici, se modifie dans Fiche réunion. | Étape 6 |

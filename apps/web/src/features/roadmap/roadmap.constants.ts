@@ -54,7 +54,7 @@ export const ROADMAP_AREAS: readonly RoadmapArea[] = [
   },
   {
     description:
-      'L’association et sa mémoire : identité juridique, réunions et décisions, documents, contrats, incidents, matériel.',
+      'L’association et sa mémoire : Bureau & staff, entités juridiques, réunions et décisions, documents, contrats, incidents, matériel.',
     icon: 'ShieldCheck',
     id: 'structure',
     label: 'Structure',

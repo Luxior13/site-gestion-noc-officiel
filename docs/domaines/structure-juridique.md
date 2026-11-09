@@ -2,6 +2,33 @@
 
 Conception cible révisée le 22 septembre 2026. Les modules décrits ici sont prévus ; cette refonte ne crée ni tables métier ni transition juridique. Le but est de conserver une application commune et des historiques exacts.
 
+## Décisions du 9 novembre 2026
+
+Adoptées par le propriétaire (« ok pour moi ; de toute façon on met des dates, donc on saura toujours quand on était quelle entité »), détail dans le
+[cadrage des entités juridiques](../propositions/structure-entites-juridiques.md) :
+
+1. **Le registre n’a pas d’entité** : personnes, jeux, équipes, fonctions,
+   passages, tournois, suivi et chronologie n’en portent jamais ; un
+   changement de forme ne les touche pas.
+2. **Les actes en ont une, pour toujours** : comptes, exercices, factures,
+   notes de frais, subventions et dons, adhésions, contrats, instances,
+   assurances, pièces officielles, emplois. Une opération tient la sienne de
+   son compte.
+3. **On ne choisit jamais l’entité quand le site peut la déduire** : une seule
+   entité active à la date du fait, elle s’applique d’office et aucun champ
+   n’apparaît ; sinon, l’objet dont l’acte dépend la donne (compte, facture,
+   entité porteuse de l’équipe à la date, campagne, instance) ; sinon
+   seulement, l’entité principale est proposée d’avance. L’entité se calcule à
+   la date du fait.
+4. **L’entité porteuse d’une équipe** (relation datée) et l’entité d’une
+   fonction du Bureau n’existent qu’à partir de la deuxième entité.
+5. **Un changement de forme est un événement daté** (création, remplacement,
+   coexistence, dissolution) : il ne réécrit aucun acte enregistré.
+6. **Écrans** : page Entités (la suite des formes dans le temps, depuis la
+   période « Avant l’association ») et fiche de chaque entité, à la place de
+   la page « Identité juridique » ; chaque module de trésorerie naît avec son
+   entité, remplie d’office, la page Entités venant avant les comptes.
+
 ## Entité juridique et structure esport
 
 La marque ou la structure esport peut être portée par une association puis une société, éventuellement simultanément. Le modèle cible doit pouvoir identifier l’entité responsable d’un engagement, d’un compte, d’une facture ou d’un document.
