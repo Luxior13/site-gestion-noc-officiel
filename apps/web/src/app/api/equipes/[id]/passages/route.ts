@@ -4,7 +4,7 @@ import { PERMISSIONS } from '$constants/permissions.constants';
 import { createPassageSchema } from '$features/passages/schemas/passage.schemas';
 import {
   createPassage,
-  getTeamRoster,
+  getRoster,
 } from '$features/passages/server/passage.service';
 import { teamIdSchema } from '$features/teams/schemas/team.schemas';
 import { requireAuth, requirePermission } from '$server/api-auth';
@@ -31,7 +31,7 @@ export async function GET(
   if (!teamId.success) return apiErrors.notFound('Équipe introuvable');
 
   try {
-    return apiSuccess(await getTeamRoster(teamId.data));
+    return apiSuccess(await getRoster({ teamId: teamId.data, type: 'team' }));
   } catch (error) {
     return serviceErrorResponse(error, { action: 'PASSAGE_LIST', request });
   }
@@ -59,7 +59,7 @@ export async function POST(
 
   try {
     return apiSuccess(
-      await createPassage(teamId.data, parsed.data, {
+      await createPassage({ teamId: teamId.data, type: 'team' }, parsed.data, {
         actor: auth.user,
         session: auth.session,
       }),

@@ -153,15 +153,16 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
   propose « Ajouter les … courantes » en un clic à côté de l’ajout simple. Un
   lecteur voit les mêmes lignes, sans action. Quand l’ordre compte (fonctions,
   par importance, 9 novembre 2026), un bloc par groupe (« Joueurs »,
-  « Encadrement », avec son nombre) remplace la colonne du groupe, et chaque
+  « Encadrement » pour un jeu, « Bureau », « Staff » pour la structure, avec
+  son nombre) remplace la colonne du groupe, et chaque
   ligne commence par une poignée ⠿ pour la glisser dans son bloc, active ou
   non, un seul ordre par bloc
   ([comportements](comportements.md#listes-recherche-et-pagination)). La
   consigne (« Glissez … par sa poignée … ») se lit sous la liste, dans la carte,
   en petit texte discret avec l’icône de la poignée, pour qui peut réordonner ;
   l’en-tête dit seulement ce que contient la liste (9 novembre 2026).
-- **Liste d’enregistrements dans une fiche** (Roster d’une équipe, 9 novembre
-  2026) : ce qui est en cours et à venir dans un onglet, les anciens dans un
+- **Liste d’enregistrements dans une fiche** (Roster d’une équipe, puis
+  Effectif de Bureau & staff, 9 novembre 2026) : ce qui est en cours et à venir dans un onglet, les anciens dans un
   autre, jamais mélangés (« sur le très long terme ça fera bordel ; le but est
   de voir ce qu’il y a actuellement et à venir »). Chacun est la liste du
   Répertoire sans titre ni phrase, l’onglet la nommant déjà (« le tableau doit
@@ -172,8 +173,8 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
   bande du Répertoire : recherche, réinitialisation et « Ajouter un ancien … »
   au bord droit, puis les filtres rapides avec leurs nombres, la recherche
   comprise, et le nombre de lignes à droite ; elle se range par année de fin,
-  la plus récente d’abord. Des blocs (« Joueurs », « Encadrement », ou
-  « Fin en 2025 ») font un tableau chacun : le premier en-tête nomme le bloc et
+  la plus récente d’abord. Des blocs (« Joueurs », « Encadrement »,
+  « Bureau », « Staff », ou « Fin en 2025 ») font un tableau chacun : le premier en-tête nomme le bloc et
   son nombre, les autres colonnes gardent les mêmes largeurs d’un bloc à
   l’autre, la dernière donne la durée. Le tableau passe en cartes sous 56 rem
   de liste, un bandeau par bloc, la période et la durée en toutes lettres. Pas

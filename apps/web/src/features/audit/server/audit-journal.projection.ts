@@ -379,8 +379,9 @@ const subjectOf = (
     typeof metadata.settingKey === 'string'
   )
     return SETTING_JOURNAL_LABELS[metadata.settingKey] ?? 'Paramètre';
-  // « Passage : Joueur, Noctambule Academy (Valorant) »: never the person's
-  // name, which only the line's target shows, to who may read it.
+  // « Passage : Joueur, Noctambule Academy (Valorant) », « Passage :
+  // Trésorier, Bureau & staff »: never the person's name, which only the
+  // line's target shows, to who may read it.
   if (
     row.category === 'PASSAGE' &&
     typeof metadata.functionName === 'string' &&
@@ -389,6 +390,12 @@ const subjectOf = (
     return typeof metadata.gameName === 'string'
       ? `Passage : ${metadata.functionName}, ${metadata.teamName} (${metadata.gameName})`
       : `Passage : ${metadata.functionName}, ${metadata.teamName}`;
+  if (
+    row.category === 'PASSAGE' &&
+    typeof metadata.functionName === 'string' &&
+    typeof metadata.scopeName === 'string'
+  )
+    return `Passage : ${metadata.functionName}, ${metadata.scopeName}`;
   if (row.category === 'GAME' && typeof metadata.gameName === 'string')
     return `Jeu : ${metadata.gameName}`;
   if (row.category === 'TEAM' && typeof metadata.teamName === 'string')
@@ -402,9 +409,16 @@ const subjectOf = (
       : `Équipes : ${metadata.gameName}`;
   if (row.action === 'GAME_REORDER' && metadata.active === false)
     return 'Jeux inactifs';
+  // A function of a game, or of the structure (« Bureau & staff »).
+  const functionList =
+    typeof metadata.gameName === 'string'
+      ? metadata.gameName
+      : typeof metadata.scopeName === 'string'
+        ? metadata.scopeName
+        : null;
   if (row.category === 'FUNCTION' && typeof metadata.functionName === 'string')
-    return typeof metadata.gameName === 'string'
-      ? `Fonction : ${metadata.functionName} (${metadata.gameName})`
+    return functionList
+      ? `Fonction : ${metadata.functionName} (${functionList})`
       : `Fonction : ${metadata.functionName}`;
   // A new order concerns a whole group: « Fonctions : Encadrement (Valorant) »,
   // or its inactive ones (9 November 2026).
@@ -412,8 +426,8 @@ const subjectOf = (
     const group =
       metadata.active === false ? 'Fonctions inactives' : 'Fonctions';
 
-    return typeof metadata.gameName === 'string'
-      ? `${group} : ${metadata.kindLabel} (${metadata.gameName})`
+    return functionList
+      ? `${group} : ${metadata.kindLabel} (${functionList})`
       : `${group} : ${metadata.kindLabel}`;
   }
   if (

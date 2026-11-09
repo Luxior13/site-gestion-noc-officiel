@@ -21,6 +21,7 @@ import { FEATURES } from '$constants/feature-registry.constants';
 import { gameDetailPath, teamDetailPath } from '$constants/routes.constants';
 import { useUser } from '$context/UserContext';
 import { getGameCapabilities } from '$features/games/game.permissions';
+import type { PassagePlaceView } from '$features/passages/components/PassageLines';
 import type { TeamPeopleCounts } from '$features/passages/passage.ui';
 import { getPersonCapabilities } from '$features/persons/person.permissions';
 import { PageCanvas, PageShell } from '$ui/page-shell';
@@ -34,14 +35,14 @@ import { TEAM_ACTION_BAR_SLOT } from './team-record.constants';
 import { TeamAvatar } from './TeamAvatar';
 
 // Each tab loads with its own code.
-const TeamRosterSection = dynamic(() =>
-  import('$features/passages/components/TeamRosterSection').then(
-    (module) => module.TeamRosterSection,
+const RosterSection = dynamic(() =>
+  import('$features/passages/components/RosterSection').then(
+    (module) => module.RosterSection,
   ),
 );
-const TeamFormerSection = dynamic(() =>
-  import('$features/passages/components/TeamFormerSection').then(
-    (module) => module.TeamFormerSection,
+const FormerMembersSection = dynamic(() =>
+  import('$features/passages/components/FormerMembersSection').then(
+    (module) => module.FormerMembersSection,
   ),
 );
 const TeamInformationSection = dynamic(() =>
@@ -200,6 +201,14 @@ const TeamDetailContent: FC<ContentProps> = ({ activeSection, teamId }) => {
         />
       );
 
+    // The roster of this team, its functions those of its game.
+    const place: PassagePlaceView = {
+      formerHref: sectionHrefOf(team.id)('anciens'),
+      functionsHref: gameDetailPath(team.gameId),
+      name: team.name,
+      scope: { teamId: team.id, type: 'team' },
+    };
+
     return (
       <EntityDetailLayout
         activeSection={activeSection}
@@ -223,24 +232,24 @@ const TeamDetailContent: FC<ContentProps> = ({ activeSection, teamId }) => {
       >
         {activeSection === 'roster' ? (
           <section aria-label="Roster">
-            <TeamRosterSection
+            <RosterSection
               key={team.id}
               canCreatePerson={persons.canCreate}
               canManage={canManageTeams}
               canViewPersons={persons.canView}
               onCountsChange={setPeopleCounts}
-              team={team}
+              place={place}
             />
           </section>
         ) : activeSection === 'anciens' ? (
           <section aria-label="Anciens membres">
-            <TeamFormerSection
+            <FormerMembersSection
               key={team.id}
               canCreatePerson={persons.canCreate}
               canManage={canManageTeams}
               canViewPersons={persons.canView}
               onCountsChange={setPeopleCounts}
-              team={team}
+              place={place}
             />
           </section>
         ) : (

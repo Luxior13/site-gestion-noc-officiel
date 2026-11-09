@@ -6,6 +6,7 @@ import React, {
   type ReactNode,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -22,16 +23,19 @@ import { ApiClientError } from '$utils/api.utils';
 import { cn } from '$utils/css.utils';
 
 import {
-  addCommonGameFunctionsRequest,
-  fetchGameFunctions,
-  reorderGameFunctionsRequest,
+  addCommonFunctionsRequest,
+  fetchFunctions,
+  reorderFunctionsRequest,
 } from '../member-function.api';
 import {
-  COMMON_GAME_FUNCTIONS,
+  commonFunctionsOf,
   compareMemberFunctions,
-  MEMBER_FUNCTION_KINDS,
+  functionKindsOf,
+  type FunctionScope,
+  memberFunctionEmptyGroupLabel,
   memberFunctionGroupLabel,
   type MemberFunctionKind,
+  STRUCTURE_SCOPE,
 } from '../member-function.constants';
 import type { MemberFunctionItem } from '../types/member-function.types';
 import { MemberFunctionDialog } from './MemberFunctionDialog';
@@ -46,14 +50,6 @@ const LINE_FOCUS =
  */
 const NAME_BUTTON =
   'text-foreground hover:text-primary-emphasis block min-w-0 text-left font-medium [overflow-wrap:anywhere] after:absolute after:inset-0 hover:underline hover:underline-offset-[3px] focus-visible:border-transparent focus-visible:ring-0 max-sm:min-h-0';
-
-const COMMON_NAMES = COMMON_GAME_FUNCTIONS.map(({ name }) => name);
-
-/** « Aucune fonction d’encadrement » under an empty group. */
-const EMPTY_GROUP: ReadonlyMap<MemberFunctionKind, string> = new Map([
-  ['PLAYER', 'Aucune fonction de joueur'],
-  ['STAFF', 'Aucune fonction d’encadrement'],
-]);
 
 const FunctionState: FC<{ item: MemberFunctionItem }> = ({ item }) =>
   item.isActive ? (
@@ -93,22 +89,32 @@ type Editor = { item: MemberFunctionItem | null } | null;
 
 type Props = {
   canManage: boolean;
-  game: Readonly<{ id: string; name: string }>;
   /** Keeps the tab's count in step with the list. */
   onCountChange: (count: number) => void;
+  scope: FunctionScope;
+  /** Whose functions: « d’une équipe de Valorant », « de la structure… ». */
+  subject: string;
 };
 
 /**
- * The functions of a game (9 November 2026), first tab of its record: the
- * players, then the staff, each in the order its managers set by dragging
- * (the same on every page); added and edited in a window. While the list is
- * empty, the common functions come in one click.
+ * The functions of a game (9 November 2026), first tab of its record, or of
+ * the structure, tab of Bureau & staff: the players or the board, then the
+ * staff, each in the order its managers set by dragging (the same on every
+ * page); added and edited in a window. While the list is empty, the common
+ * functions come in one click.
  */
 export const MemberFunctionsSection: FC<Props> = ({
   canManage,
-  game,
   onCountChange,
+  scope: requested,
+  subject,
 }) => {
+  // One list per mount, whatever object the parent passes on each render.
+  const gameId = requested.type === 'game' ? requested.gameId : null;
+  const scope = useMemo<FunctionScope>(
+    () => (gameId === null ? STRUCTURE_SCOPE : { gameId, type: 'game' }),
+    [gameId],
+  );
   const [items, setItems] = useState<MemberFunctionItem[] | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [editor, setEditor] = useState<Editor>(null);
@@ -134,12 +140,12 @@ export const MemberFunctionsSection: FC<Props> = ({
   );
 
   const load = useCallback(async (): Promise<void> => {
-    const fresh = await fetchGameFunctions(game.id);
+    const fresh = await fetchFunctions(scope);
     if (mountedRef.current) {
       accept(fresh);
       setError(null);
     }
-  }, [accept, game.id]);
+  }, [accept, scope]);
 
   const retry = useCallback(async (): Promise<void> => {
     setError(null);
@@ -164,7 +170,7 @@ export const MemberFunctionsSection: FC<Props> = ({
     if (addingCommon) return;
     setAddingCommon(true);
     try {
-      accept(await addCommonGameFunctionsRequest(game.id));
+      accept(await addCommonFunctionsRequest(scope));
       toast.success('Fonctions courantes ajoutées');
     } catch (caught) {
       toast.error(
@@ -197,7 +203,7 @@ export const MemberFunctionsSection: FC<Props> = ({
     ]);
     setSavingOrder(true);
     try {
-      const saved = await reorderGameFunctionsRequest(game.id, {
+      const saved = await reorderFunctionsRequest(scope, {
         ids: group.map((item) => item.id),
         kind,
       });
@@ -279,7 +285,9 @@ export const MemberFunctionsSection: FC<Props> = ({
       className="min-h-0 border-0 bg-transparent p-0"
       description={
         canManage
-          ? `Les fonctions courantes : ${COMMON_NAMES.join(', ')}. Elles se modifient ensuite comme les autres.`
+          ? `Les fonctions courantes : ${commonFunctionsOf(scope.type)
+              .map(({ name }) => name)
+              .join(', ')}. Elles se modifient ensuite comme les autres.`
           : undefined
       }
       icon={<UserCog aria-hidden="true" className="size-5" />}
@@ -324,10 +332,11 @@ export const MemberFunctionsSection: FC<Props> = ({
     </div>
   );
 
-  // Players, then the staff: a heading per group, each group in its order,
-  // active or not: an inactive item never blocks (owner, 9 November 2026).
+  // Players or board, then the staff: a heading per group, each group in its
+  // order, active or not: an inactive item never blocks (owner, 9 November
+  // 2026).
   const groups = (list: MemberFunctionItem[]): ReactNode =>
-    MEMBER_FUNCTION_KINDS.map((kind) => {
+    functionKindsOf(scope.type).map((kind) => {
       const group = list.filter((item) => item.kind === kind);
       const headingId = `member-functions-${kind.toLowerCase()}`;
 
@@ -340,12 +349,12 @@ export const MemberFunctionsSection: FC<Props> = ({
             className="bg-surface-table-head border-border-divider text-muted-foreground flex items-center justify-between border-b px-4 py-2 text-xs font-semibold"
             id={headingId}
           >
-            {memberFunctionGroupLabel(kind)}
+            {memberFunctionGroupLabel(kind, scope.type)}
             <span className="tabular-nums">{group.length}</span>
           </h3>
           {group.length === 0 ? (
             <p className="text-muted-foreground px-4 py-3 text-xs">
-              {EMPTY_GROUP.get(kind)}
+              {memberFunctionEmptyGroupLabel(kind, scope.type)}
             </p>
           ) : (
             <SortableList
@@ -371,8 +380,8 @@ export const MemberFunctionsSection: FC<Props> = ({
         className="border-border-content bg-surface-content rounded-panel"
         description={
           canManage
-            ? `Ce que fait chaque membre d’une équipe de ${game.name}.`
-            : `Ce que fait chaque membre d’une équipe de ${game.name}, dans l’ordre de leur importance.`
+            ? `Ce que fait chaque membre ${subject}.`
+            : `Ce que fait chaque membre ${subject}, dans l’ordre de leur importance.`
         }
         headerClassName="bg-surface-content-header"
         headerLayout="inline"
@@ -406,7 +415,6 @@ export const MemberFunctionsSection: FC<Props> = ({
         )}
       </DataTableSection>
       <MemberFunctionDialog
-        game={game}
         item={editor?.item ?? null}
         onClose={() => setEditor(null)}
         onDeleted={(id) => {
@@ -422,6 +430,8 @@ export const MemberFunctionsSection: FC<Props> = ({
           setEditor(null);
         }}
         open={editor !== null}
+        scope={scope}
+        subject={subject}
       />
     </div>
   );

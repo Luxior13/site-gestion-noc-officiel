@@ -20,6 +20,11 @@ import { personDetailPath } from '$constants/routes.constants';
 import { useUser } from '$context/UserContext';
 import { JournalHistoryLink } from '$features/audit/components/JournalHistoryLink';
 import { getGameCapabilities } from '$features/games/game.permissions';
+import {
+  type JourneyReach,
+  journeySourcesOf,
+} from '$features/passages/journey-sources';
+import { getStaffCapabilities } from '$features/staff/staff.permissions';
 import { PageCanvas, PageShell } from '$ui/page-shell';
 import { ApiClientError } from '$utils/api.utils';
 
@@ -72,13 +77,9 @@ const PERSON_DETAIL_SECTIONS: readonly PageSection<PersonDetailSection>[] = [
     id: 'coordonnees',
     label: 'Coordonnées',
   },
-  // Read here, kept in each team's Roster (9 November 2026).
-  {
-    icon: <Route className="size-4" />,
-    id: 'parcours',
-    label: 'Parcours',
-    managedIn: 'le Roster de chaque équipe',
-  },
+  // Read here, kept in each team's Roster and the structure's Effectif
+  // (9 November 2026); its sources follow the reader's rights.
+  { icon: <Route className="size-4" />, id: 'parcours', label: 'Parcours' },
 ];
 
 const DetailSkeleton: FC = () => (
@@ -125,11 +126,17 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
   const [identityDirty, setIdentityDirty] = useState(false);
   const { canDelete, canUpdate, canUpdateContact, canView, canViewContact } =
     getPersonCapabilities(userData);
-  // The journey is read from the rosters: it follows the right to see them.
-  const { canViewTeams } = getGameCapabilities(userData);
+  // The journey is read from the rosters: it follows the right to see them,
+  // a team's or the structure's.
+  const reach: JourneyReach = {
+    structure: getStaffCapabilities(userData).canView,
+    teams: getGameCapabilities(userData).canViewTeams,
+  };
   const allowed = (section: PersonDetailSection): boolean =>
     section === 'identite' ||
-    (section === 'coordonnees' ? canViewContact : canViewTeams);
+    (section === 'coordonnees'
+      ? canViewContact
+      : reach.teams || reach.structure);
   const activeSection = allowed(requestedSection)
     ? requestedSection
     : 'identite';
@@ -300,16 +307,18 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
         sections={PERSON_DETAIL_SECTIONS.filter((section) =>
           allowed(section.id),
         ).map((section) =>
-          // The tab says how many contacts there are (27 October 2026).
-          section.id === 'coordonnees'
-            ? {
-                ...section,
-                count:
-                  person.emails.length +
-                  person.phones.length +
-                  person.socialProfiles.length,
-              }
-            : section,
+          section.id === 'parcours'
+            ? { ...section, managedIn: journeySourcesOf(reach) }
+            : // The tab says how many contacts there are (27 October 2026).
+              section.id === 'coordonnees'
+              ? {
+                  ...section,
+                  count:
+                    person.emails.length +
+                    person.phones.length +
+                    person.socialProfiles.length,
+                }
+              : section,
         )}
       >
         {activeSection === 'identite' ? (
@@ -332,7 +341,11 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
           </section>
         ) : activeSection === 'parcours' ? (
           <section aria-label="Parcours">
-            <PersonJourneySection key={person.id} personId={person.id} />
+            <PersonJourneySection
+              key={person.id}
+              personId={person.id}
+              reach={reach}
+            />
           </section>
         ) : (
           <section aria-label="Coordonnées" className="space-y-5">

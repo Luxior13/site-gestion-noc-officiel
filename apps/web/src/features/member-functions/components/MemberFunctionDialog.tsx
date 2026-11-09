@@ -35,12 +35,14 @@ import { Switch } from '$ui/switch';
 import { ApiClientError } from '$utils/api.utils';
 
 import {
-  createGameFunctionRequest,
-  deleteGameFunctionRequest,
-  updateGameFunctionRequest,
+  createFunctionRequest,
+  deleteFunctionRequest,
+  updateFunctionRequest,
 } from '../member-function.api';
 import {
-  MEMBER_FUNCTION_KINDS,
+  functionKindsOf,
+  type FunctionScope,
+  type FunctionScopeType,
   MEMBER_FUNCTION_NAME_MAX_LENGTH,
   type MemberFunctionKind,
   memberFunctionKindLabel,
@@ -52,11 +54,28 @@ type FieldErrors = Partial<Record<'kind' | 'name', string>>;
 
 const ID = 'member-function-dialog';
 
-const KIND_HINT =
-  'Joueur : sur la feuille de match. Encadrement : coach, manager, analyste…';
+/** What each kind holds, under the choice, and an example of a name. */
+const KIND_HINTS: ReadonlyMap<
+  FunctionScopeType,
+  Readonly<{ example: string; hint: string }>
+> = new Map([
+  [
+    'game',
+    {
+      example: 'Ex. Coach',
+      hint: 'Joueur : sur la feuille de match. Encadrement : coach, manager, analyste…',
+    },
+  ],
+  [
+    'structure',
+    {
+      example: 'Ex. Graphiste',
+      hint: 'Bureau : les mandats élus (président, trésorier, secrétaire…). Staff : graphiste, monteur, community manager, bénévole…',
+    },
+  ],
+]);
 
 type Props = {
-  game: Readonly<{ id: string; name: string }>;
   /** Null to add a function, the function to edit it. */
   item: MemberFunctionItem | null;
   onClose: () => void;
@@ -64,16 +83,21 @@ type Props = {
   /** Reloads the list after a conflict; the window then closes. */
   onReload: () => Promise<unknown>;
   onSaved: (item: MemberFunctionItem) => void;
+  scope: FunctionScope;
+  /** Whose functions: « d’une équipe de Valorant », « de la structure… ». */
+  subject: string;
 };
 
 const MemberFunctionDialogContent: FC<Props> = ({
-  game,
   item,
   onClose,
   onDeleted,
   onReload,
   onSaved,
+  scope,
+  subject,
 }) => {
+  const texts = KIND_HINTS.get(scope.type);
   const [draft, setDraft] = useState<Draft>(() =>
     item
       ? { isActive: item.isActive, kind: item.kind, name: item.name }
@@ -138,11 +162,11 @@ const MemberFunctionDialogContent: FC<Props> = ({
     };
     try {
       const saved = item
-        ? await updateGameFunctionRequest(game.id, item.id, {
+        ? await updateFunctionRequest(scope, item.id, {
             ...input,
             expectedVersion: item.version,
           })
-        : await createGameFunctionRequest(game.id, input);
+        : await createFunctionRequest(scope, input);
       toast.success(item ? 'Fonction modifiée' : 'Fonction ajoutée');
       onSaved(saved);
     } catch (error) {
@@ -159,7 +183,7 @@ const MemberFunctionDialogContent: FC<Props> = ({
     setBusy(true);
     setDeleteError(null);
     try {
-      await deleteGameFunctionRequest(game.id, item.id, item.version);
+      await deleteFunctionRequest(scope, item.id, item.version);
       toast.success('Fonction supprimée');
       onDeleted(item.id);
     } catch (error) {
@@ -219,7 +243,7 @@ const MemberFunctionDialogContent: FC<Props> = ({
                 {item ? 'Modifier la fonction' : 'Ajouter une fonction'}
               </DialogTitle>
               <DialogDescription>
-                Ce que fait un membre d’une équipe de {game.name}.
+                Ce que fait un membre {subject}.
               </DialogDescription>
             </DialogHeader>
             <div className="min-h-0 space-y-4 overflow-y-auto px-4 py-4 sm:px-5">
@@ -258,7 +282,7 @@ const MemberFunctionDialogContent: FC<Props> = ({
                     change({ name: event.target.value });
                     setErrors((current) => ({ ...current, name: undefined }));
                   }}
-                  placeholder="Ex. Coach"
+                  placeholder={texts?.example}
                   value={draft.name}
                 />
                 {item && (
@@ -302,9 +326,9 @@ const MemberFunctionDialogContent: FC<Props> = ({
                     <SelectValue placeholder="Choisir un type" />
                   </SelectTrigger>
                   <SelectContent>
-                    {MEMBER_FUNCTION_KINDS.map((kind) => (
+                    {functionKindsOf(scope.type).map((kind) => (
                       <SelectItem key={kind} value={kind}>
-                        {memberFunctionKindLabel(kind)}
+                        {memberFunctionKindLabel(kind, scope.type)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -313,7 +337,7 @@ const MemberFunctionDialogContent: FC<Props> = ({
                   className="text-muted-foreground text-xs"
                   id={`${ID}-kind-hint`}
                 >
-                  {KIND_HINT}
+                  {texts?.hint}
                 </p>
                 {errors.kind && (
                   <p
@@ -456,8 +480,9 @@ const MemberFunctionDialogContent: FC<Props> = ({
 };
 
 /**
- * Adds or edits a function of a game in a window: a function has no record
- * (owner, 9 November 2026). Deleting it is offered here, confirmed apart.
+ * Adds or edits a function of a game or of the structure in a window: a
+ * function has no record (owner, 9 November 2026). Deleting it is offered
+ * here, confirmed apart.
  */
 export const MemberFunctionDialog: FC<Props & { open: boolean }> = ({
   open,

@@ -105,6 +105,26 @@ export const NAV_SPACES: NavigationSpace[] = [
     tone: 'esport',
   },
   {
+    // Opened with its first page, Bureau & staff (9 November 2026).
+    description:
+      'L’association et sa mémoire : son effectif, puis son identité, ses décisions et ses documents.',
+    href: PAGE_PATHS.staff,
+    icon: 'ShieldCheck',
+    id: 'structure',
+    label: 'Structure',
+    matchHrefs: ['/structure'],
+    sections: [
+      {
+        id: 'organisation',
+        items: [featureNavigation(FEATURES.staff)],
+        label: 'Organisation',
+        position: 'top',
+      },
+    ],
+    summary: 'L’association et sa mémoire',
+    tone: 'legal',
+  },
+  {
     description: 'Comptes, sécurité, configuration et projet.',
     href: '/systeme',
     icon: 'Settings',

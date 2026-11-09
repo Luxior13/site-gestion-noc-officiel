@@ -45,7 +45,7 @@ export async function POST(
   try {
     return apiSuccess(
       await changePassageFunction(
-        teamId.data,
+        { teamId: teamId.data, type: 'team' },
         parsedPassageId.data,
         parsed.data,
         { actor: auth.user, session: auth.session },

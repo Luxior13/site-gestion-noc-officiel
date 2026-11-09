@@ -4,13 +4,14 @@ Référence actualisée pendant la revue du 12 octobre 2026. Le catalogue des pr
 
 ## Navigation actuelle
 
-Sept entrées sont déclarées dans quatre pôles. Leur visibilité dépend des accès de l’utilisateur. Les noms et routes actifs proviennent du registre des fonctionnalités.
+Huit entrées sont déclarées dans cinq pôles. Leur visibilité dépend des accès de l’utilisateur. Les noms et routes actifs proviennent du registre des fonctionnalités.
 
 | Pôle actuel | Entrées actives | Placement |
 | --- | --- | --- |
 | Aujourd’hui | Mon travail `/` | Travail personnel |
 | Personnes | Répertoire `/personnes/repertoire` | Personnes et contacts de la structure |
 | Esport | Section Sections : Jeux `/esport/jeux` (8 novembre 2026) | Les jeux de la structure, une section par jeu, et leurs équipes sous chaque jeu ; la fiche équipe `/esport/equipes/[id]` garde « Jeux » comme entrée courante (`matchHrefs` de la fonctionnalité) |
+| Structure | Section Organisation : Bureau & staff `/structure/bureau-staff` (9 novembre 2026) | L’effectif de la structure hors des équipes (bureau, staff, bénévoles), ses anciens membres et ses fonctions ; pôle ouvert avec cette première page, entre Esport et Système |
 | Système | Section Administration : Utilisateurs `/systeme/utilisateurs`, Journal d’activité `/systeme/journal-activite`, Paramètres système `/systeme/parametres` ; section Projet : Feuille de route `/systeme/feuille-de-route` | Comptes, traçabilité, technique et plan produit |
 
 `/mon-compte` est accessible par les outils globaux. La navigation rapide de l’en-tête parcourt les pages autorisées sans page dédiée ; l’ancienne adresse `/recherche` redirige vers l’accueil. Elle cherche le nom de la page, sa rubrique, sa section (« Administration », « Projet »), sa description et une liste fermée de mots-clés déclarée avec la fonctionnalité dans le registre (`keywords`, jamais affichés : « logs », « historique » pour le journal, « mot de passe » pour Mon compte) ; un mot-clé passe devant une correspondance fortuite, sans recherche approximative (décision du 31 octobre 2026, [RR](../audits/2026-10-31-recherche-rapide.md)). Textes et saisie sont comparés selon la règle commune de recherche du site (`normalizeSearchText`, [comportements](../design/comportements.md#listes-recherche-et-pagination)). Une nouvelle fonctionnalité déclare ses mots-clés. Chaque vue nomme son onglet « Vue · Parente · Noctambule » par `pageTitle` (`$utils/page-title.utils`), « · Dev » en développement. `/login` appartient au parcours de connexion. Les formulaires de création et fiches de personnes ou utilisateurs restent sous leur liste principale.
@@ -35,7 +36,7 @@ Révision du 8 novembre 2026, sur décision du propriétaire (« on peut encore 
 | Structure | Qu’est-ce que l’association, qu’a-t-elle décidé et gardé ? | Bureau & staff (effectif et fonctions de la structure), identité juridique, chronologie, réunions et décisions, documents, contrats, incidents, matériel et abonnements (onglet Types de matériel), bilan annuel |
 | Système | Comment marche l’outil ? | Comptes et accès, journal, paramètres (dont les règles de rappel), données, intégrations, feuille de route |
 
-Ce tableau décrit les lieux logiques, pas un engagement à créer autant d’entrées. Les vues rares deviennent des onglets ou actions contextuelles. Les pôles Relations, Structure et Finances s’ouvrent seulement avec leurs premiers modules utilisables.
+Ce tableau décrit les lieux logiques, pas un engagement à créer autant d’entrées. Les vues rares deviennent des onglets ou actions contextuelles. Les pôles Relations et Finances s’ouvrent seulement avec leurs premiers modules utilisables ; Structure s’est ouvert le 9 novembre 2026 avec Bureau & staff.
 
 ## Règles de placement
 

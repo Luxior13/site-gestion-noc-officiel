@@ -4,12 +4,12 @@ import { PERMISSIONS } from '$constants/permissions.constants';
 import { gameIdSchema } from '$features/games/schemas/game.schemas';
 import {
   deleteMemberFunctionSchema,
+  gameFunctionSchemas,
   memberFunctionIdSchema,
-  updateMemberFunctionSchema,
 } from '$features/member-functions/schemas/member-function.schemas';
 import {
-  deleteGameFunction,
-  updateGameFunction,
+  deleteFunction,
+  updateFunction,
 } from '$features/member-functions/server/member-function.service';
 import { requireAuth, requirePermission } from '$server/api-auth';
 import {
@@ -46,7 +46,7 @@ export async function PATCH(
   if (!ids) return apiErrors.notFound('Fonction introuvable');
   const body = await parseJsonBody(request);
   if (!body.success) return body.response;
-  const parsed = updateMemberFunctionSchema.safeParse(body.data);
+  const parsed = gameFunctionSchemas.update.safeParse(body.data);
   if (!parsed.success) {
     return apiErrors.validation(
       'Informations de la fonction invalides',
@@ -56,10 +56,12 @@ export async function PATCH(
 
   try {
     return apiSuccess(
-      await updateGameFunction(ids.gameId, ids.functionId, parsed.data, {
-        actor: auth.user,
-        session: auth.session,
-      }),
+      await updateFunction(
+        { gameId: ids.gameId, type: 'game' },
+        ids.functionId,
+        parsed.data,
+        { actor: auth.user, session: auth.session },
+      ),
     );
   } catch (error) {
     return serviceErrorResponse(error, { action: 'FUNCTION_UPDATE', request });
@@ -85,8 +87,8 @@ export async function DELETE(
 
   try {
     return apiSuccess(
-      await deleteGameFunction(
-        ids.gameId,
+      await deleteFunction(
+        { gameId: ids.gameId, type: 'game' },
         ids.functionId,
         parsed.data.expectedVersion,
         { actor: auth.user, session: auth.session },

@@ -10,7 +10,7 @@
 | Espace | Esport ; « Jeux » reste l’entrée courante de la navigation (`matchHrefs` de la fonctionnalité `games`) |
 | Gabarit visé | [B. Fiche à sections](../../design/gabarits.md#b-fiche-à-sections), onglets Roster, Anciens membres et Informations depuis le 9 novembre 2026 |
 | État d’harmonisation | Aligné — voir [Harmonisation](../../design/harmonisation.md#état-par-page) |
-| Point d’entrée | [page.tsx](../../../apps/web/src/app/esport/equipes/%5Bid%5D/page.tsx) → [TeamDetailPage](../../../apps/web/src/features/teams/components/TeamDetailPage.tsx) → [TeamRosterSection](../../../apps/web/src/features/passages/components/TeamRosterSection.tsx), [TeamFormerSection](../../../apps/web/src/features/passages/components/TeamFormerSection.tsx), tous deux sur [PassageLines](../../../apps/web/src/features/passages/components/PassageLines.tsx) et `useTeamRoster`, [PassageDialog](../../../apps/web/src/features/passages/components/PassageDialog.tsx) ; [TeamInformationSection](../../../apps/web/src/features/teams/components/TeamInformationSection.tsx) |
+| Point d’entrée | [page.tsx](../../../apps/web/src/app/esport/equipes/%5Bid%5D/page.tsx) → [TeamDetailPage](../../../apps/web/src/features/teams/components/TeamDetailPage.tsx) → [RosterSection](../../../apps/web/src/features/passages/components/RosterSection.tsx), [FormerMembersSection](../../../apps/web/src/features/passages/components/FormerMembersSection.tsx), tous deux sur [PassageLines](../../../apps/web/src/features/passages/components/PassageLines.tsx) et `useRoster`, [PassageDialog](../../../apps/web/src/features/passages/components/PassageDialog.tsx), partagés avec l’Effectif de [Bureau & staff](../structure/bureau-staff.md) depuis le 9 novembre 2026 (le lieu, équipe ou structure, est un paramètre) ; [TeamInformationSection](../../../apps/web/src/features/teams/components/TeamInformationSection.tsx) |
 | Contrôle d’accès | `teams:view` pour voir l’équipe et son Roster ; `teams:manage` pour la modifier, la supprimer, ajouter, corriger et supprimer des passages et chercher une fiche du Répertoire à y ajouter ; le lien vers la fiche d’une personne suit `persons:view`, celui de création d’une fiche `persons:create` ; l’API refait le contrôle dans la transaction ([permissions](../../domaines/permissions.md#page-jeux)) |
 | Chargement / erreur dédiés | `loading.tsx` (squelette de fiche) ; « Équipe introuvable » ; « Chargement impossible » avec « Réessayer » ; « Accès refusé » avec retour aux jeux ; Roster et Anciens membres : trois lignes squelettes, puis « Le Roster ne peut pas être chargé » (« Les anciens membres ne peuvent pas être chargés ») avec « Réessayer » ; titre d’onglet « Fiche équipe · Jeux · Noctambule » |
 
@@ -34,7 +34,7 @@ Composition, de haut en bas :
    passage terminé) et **Informations**. Roster garde l’adresse simple ; les
    autres ajoutent `?section=anciens` ou `?section=informations`. Chaque onglet charge son code
    à la demande.
-3. **Roster** (`TeamRosterSection`) : ce qui est là et ce qui arrive, jamais
+3. **Roster** (`RosterSection`) : ce qui est là et ce qui arrive, jamais
    les anciens (« je ne veux pas mélanger les anciens avec les en cours et à
    venir, car sur le très long terme ça fera bordel ; le but est de voir ce
    qu’il y a actuellement et à venir », 9 novembre 2026). La liste du
@@ -66,7 +66,7 @@ Composition, de haut en bas :
      passages terminés sont dans les anciens membres » avec le lien.
      Jeu sans fonction : une ligne dit « Ce jeu n’a pas encore de fonctions »
      avec un lien vers la fiche du jeu.
-3. bis **Anciens membres** (`TeamFormerSection`, 9 novembre 2026, « Onglet à
+3. bis **Anciens membres** (`FormerMembersSection`, 9 novembre 2026, « Onglet à
    part » sur la question posée) : chaque passage terminé, y compris une
    fonction quittée pour une autre ; une personne revenue figure aux deux
    onglets, chacun pour son passage.
@@ -166,7 +166,11 @@ seul un lecteur du Répertoire voit, par la fiche.
 - Ordre prévu des onglets : Roster, Anciens membres, Tournois ↗,
   Entraînements, Finances ↗, Partenaires ↗, Informations ([feuille de route](../../propositions/feuille-de-route.md)).
 - Livré le 9 novembre 2026 : l’onglet Parcours de la fiche personne, qui lit
-  ces passages ([fiche](../personnes/repertoire/fiche-parcours.md)).
+  ces passages ([fiche](../personnes/repertoire/fiche-parcours.md)) ; le même
+  jour, l’Effectif de [Bureau & staff](../structure/bureau-staff.md), composé
+  de ces mêmes onglets pour les passages de la structure. Un graphiste ou un
+  monteur qui travaille pour une seule équipe va dans son Roster, avec une
+  fonction d’encadrement du jeu ; pour toute la structure, dans l’Effectif.
 - Reportés : le statut « Dans la structure » calculé depuis les passages (une fois les
   membres actuels saisis), le manager qui lit le Roster de son équipe
   (étape 3), la date de fin de contrat lue dans les contrats (étape 7), le

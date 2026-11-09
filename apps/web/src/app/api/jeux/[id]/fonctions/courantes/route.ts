@@ -3,7 +3,7 @@ import type { NextRequest, NextResponse } from 'next/server';
 import { PERMISSIONS } from '$constants/permissions.constants';
 import { gameIdSchema } from '$features/games/schemas/game.schemas';
 import { addCommonMemberFunctionsSchema } from '$features/member-functions/schemas/member-function.schemas';
-import { addCommonGameFunctions } from '$features/member-functions/server/member-function.service';
+import { addCommonFunctions } from '$features/member-functions/server/member-function.service';
 import { requireAuth, requirePermission } from '$server/api-auth';
 import { apiErrors, apiSuccess, parseJsonBody } from '$server/api-response';
 import { serviceErrorResponse } from '$server/service-error';
@@ -28,10 +28,13 @@ export async function POST(
 
   try {
     return apiSuccess(
-      await addCommonGameFunctions(gameId.data, {
-        actor: auth.user,
-        session: auth.session,
-      }),
+      await addCommonFunctions(
+        { gameId: gameId.data, type: 'game' },
+        {
+          actor: auth.user,
+          session: auth.session,
+        },
+      ),
       201,
     );
   } catch (error) {

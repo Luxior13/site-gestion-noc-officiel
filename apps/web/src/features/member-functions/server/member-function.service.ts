@@ -1,6 +1,6 @@
 import 'server-only';
 
-import type { Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { AuditAction, AuditCategory } from '@repo/database';
 
 import { FEATURES } from '$constants/feature-registry.constants';
@@ -19,8 +19,11 @@ import type { SessionType, UserType } from '$types/auth.types';
 import { normalizeSearchText } from '$utils/search-text.utils';
 
 import {
-  COMMON_GAME_FUNCTIONS,
+  commonFunctionsOf,
   compareMemberFunctions,
+  functionKindsOf,
+  type FunctionScope,
+  type FunctionScopeType,
   type MemberFunctionKind,
   memberFunctionKindLabel,
 } from '../member-function.constants';
@@ -34,20 +37,43 @@ export type MemberFunctionActor = Readonly<{
   session: SessionType | null;
 }>;
 
+/** The game is said for a game's function only. */
 type AuditValues = Readonly<{
-  game: string;
+  game?: string;
   isActive: boolean;
   kind: string;
   name: string;
 }>;
 
-type GameRef = Readonly<{ id: string; name: string }>;
+/**
+ * The list a function belongs to, as the journal names it: a game, or the
+ * structure, kept in Bureau & staff (9 November 2026).
+ */
+type ScopeRef = Readonly<{
+  gameId: string | null;
+  name: string;
+  type: FunctionScopeType;
+}>;
 
-const DUPLICATE_NAME = 'Ce jeu a déjà une fonction de ce nom.';
+const STRUCTURE_REF: ScopeRef = {
+  gameId: null,
+  name: FEATURES.staff.label,
+  type: 'structure',
+};
 
-const duplicateName = (): ServiceError =>
-  new ServiceError(ErrorCode.CONFLICT, DUPLICATE_NAME, 409, {
-    details: { name: [DUPLICATE_NAME] },
+const duplicateName = (scope: FunctionScopeType): ServiceError => {
+  const message =
+    scope === 'game'
+      ? 'Ce jeu a déjà une fonction de ce nom.'
+      : 'La structure a déjà une fonction de ce nom.';
+
+  return new ServiceError(ErrorCode.CONFLICT, message, 409, {
+    details: { name: [message] },
+  });
+};
+const kindOutside = (): ServiceError =>
+  new ServiceError(ErrorCode.VALIDATION_ERROR, 'Choisissez un type', 400, {
+    details: { kind: ['Choisissez un type'] },
   });
 const functionChanged = (): ServiceError =>
   serviceErrors.conflict(
@@ -69,7 +95,7 @@ const functionsArrived = (): ServiceError =>
   );
 /**
  * A function used by a passage stays in the history: it is made inactive.
- * The roster's passages will reference it with `ON DELETE RESTRICT`.
+ * The passages reference it with `ON DELETE RESTRICT`.
  */
 const functionUsed = (): ServiceError =>
   serviceErrors.conflict(
@@ -96,11 +122,11 @@ const toItem = (row: MemberFunctionRow): MemberFunctionItem => ({
 /** What the journal shows: the game by its name, the kind by its label. */
 const auditValues = (
   item: MemberFunctionInput | MemberFunctionItem,
-  game: GameRef,
+  scope: ScopeRef,
 ): AuditValues => ({
-  game: game.name,
+  ...(scope.type === 'game' ? { game: scope.name } : {}),
   isActive: item.isActive,
-  kind: memberFunctionKindLabel(item.kind),
+  kind: memberFunctionKindLabel(item.kind, scope.type),
   name: item.name,
 });
 
@@ -135,46 +161,74 @@ const editableData = (
   normalizedName: normalizeSearchText(input.name),
 });
 
-const findGame = async (
+const resolveScope = async (
   client: Prisma.TransactionClient,
-  id: string,
-): Promise<GameRef> => {
+  scope: FunctionScope,
+): Promise<ScopeRef> => {
+  if (scope.type === 'structure') return STRUCTURE_REF;
   const game = await client.game.findUnique({
     select: { id: true, name: true },
-    where: { id },
+    where: { id: scope.gameId },
   });
   if (!game) throw gameMissing();
 
-  return game;
+  return { gameId: game.id, name: game.name, type: 'game' };
+};
+
+/** No board in a game, no players in the structure: the base refuses it too. */
+const assertKind = (scope: ScopeRef, kind: MemberFunctionKind): void => {
+  if (!functionKindsOf(scope.type).includes(kind)) throw kindOutside();
 };
 
 /** The place after the last function of a group: a new one goes there. */
 const nextPosition = async (
   client: Prisma.TransactionClient,
-  gameId: string,
+  scope: ScopeRef,
   kind: MemberFunctionKind,
 ): Promise<number> =>
   ((
     await client.memberFunction.aggregate({
       _max: { position: true },
-      where: { gameId, kind },
+      where: { gameId: scope.gameId, kind },
     })
   )._max.position ?? -1) + 1;
 
-/** A function of this game: another game's function is « not found » here. */
+/** A function of this list: another list's function is « not found » here. */
 const findFunction = async (
   client: Prisma.TransactionClient,
-  gameId: string,
+  scope: ScopeRef,
   id: string,
 ): Promise<MemberFunctionRow> => {
   const row = await client.memberFunction.findFirst({
     include: WITH_USES,
-    where: { gameId, id },
+    where: { gameId: scope.gameId, id },
   });
   if (!row) throw functionMissing();
 
   return row;
 };
+
+const readList = async (
+  client: Prisma.TransactionClient,
+  scope: ScopeRef,
+): Promise<MemberFunctionItem[]> =>
+  (
+    await client.memberFunction.findMany({
+      include: WITH_USES,
+      where: { gameId: scope.gameId },
+    })
+  )
+    .map(toItem)
+    .sort(compareMemberFunctions);
+
+/**
+ * Where the journal files a function: the game's record, or Bureau & staff
+ * for the structure's.
+ */
+const locationOf = (scope: ScopeRef): Record<string, string> =>
+  scope.type === 'game' && scope.gameId
+    ? { gameId: scope.gameId, gameName: scope.name, ...FEATURES.games.audit }
+    : { scopeName: scope.name, ...FEATURES.staff.audit };
 
 const audit = async (
   transaction: Prisma.TransactionClient,
@@ -185,8 +239,8 @@ const audit = async (
     before: Partial<AuditValues> | null;
     changes: readonly string[];
     description: string;
-    game: GameRef;
     item: Pick<MemberFunctionItem, 'id' | 'name'>;
+    scope: ScopeRef;
   },
 ): Promise<void> =>
   createAuditLogWithHeaders(
@@ -200,10 +254,7 @@ const audit = async (
         changes: input.changes,
         functionId: input.item.id,
         functionName: input.item.name,
-        gameId: input.game.id,
-        gameName: input.game.name,
-        // The functions of a game are managed in its record.
-        ...FEATURES.games.audit,
+        ...locationOf(input.scope),
       },
       targetUserId: null,
       userId: input.actorId,
@@ -211,103 +262,104 @@ const audit = async (
     { client: transaction, required: true },
   );
 
+/** A game's functions follow the game, the structure's Bureau & staff. */
 const authorize = (
   transaction: Prisma.TransactionClient,
+  scope: FunctionScope,
   { actor, session }: MemberFunctionActor,
 ): Promise<unknown> =>
   authorizeUserAction(
     transaction,
     { actorId: actor.id, session },
-    PERMISSIONS.GAMES.MANAGE,
+    scope.type === 'game' ? PERMISSIONS.GAMES.MANAGE : PERMISSIONS.STAFF.MANAGE,
   );
 
 const createOne = async (
   transaction: Prisma.TransactionClient,
-  game: GameRef,
+  scope: ScopeRef,
   input: MemberFunctionInput,
   actorId: string,
 ): Promise<MemberFunctionItem> => {
+  assertKind(scope, input.kind);
   const item = toItem(
     await transaction.memberFunction.create({
       data: {
         ...editableData(input),
-        gameId: game.id,
+        gameId: scope.gameId,
         // Last of its group; its managers drag it higher if it matters more.
-        position: await nextPosition(transaction, game.id, input.kind),
+        position: await nextPosition(transaction, scope, input.kind),
       },
       include: WITH_USES,
     }),
   );
-  const after = auditValues(item, game);
+  const after = auditValues(item, scope);
   await audit(transaction, {
     action: 'FUNCTION_CREATE',
     actorId,
     after,
     before: null,
     changes: Object.keys(after),
-    description: `Fonction ajoutée : ${item.name} (${game.name})`,
-    game,
+    description: `Fonction ajoutée : ${item.name} (${scope.name})`,
     item,
+    scope,
   });
 
   return item;
 };
 
-/** The functions of a game: players first, then the staff, each in its order. */
-export const listGameFunctions = async (
-  gameId: string,
-): Promise<MemberFunctionItem[]> => {
-  await findGame(prisma, gameId);
+/**
+ * The functions of a list: the players or the board first, then the staff,
+ * each in its order.
+ */
+export const listFunctions = async (
+  scope: FunctionScope,
+): Promise<MemberFunctionItem[]> =>
+  readList(prisma, await resolveScope(prisma, scope));
 
-  return (
-    await prisma.memberFunction.findMany({
-      include: WITH_USES,
-      where: { gameId },
-    })
-  )
-    .map(toItem)
-    .sort(compareMemberFunctions);
-};
-
-/** Adds a function to a game; its name is unique within the game. */
-export const createGameFunction = async (
-  gameId: string,
+/** Adds a function to a list; its name is unique within the list. */
+export const createFunction = async (
+  scope: FunctionScope,
   input: MemberFunctionInput,
   actor: MemberFunctionActor,
 ): Promise<MemberFunctionItem> => {
   try {
     return await prisma.$transaction(async (transaction) => {
-      await authorize(transaction, actor);
-      const game = await findGame(transaction, gameId);
+      await authorize(transaction, scope, actor);
+      const ref = await resolveScope(transaction, scope);
 
-      return createOne(transaction, game, input, actor.actor.id);
+      return createOne(transaction, ref, input, actor.actor.id);
     });
   } catch (error) {
-    if (isPrismaUniqueConstraintError(error)) throw duplicateName();
+    if (isPrismaUniqueConstraintError(error)) throw duplicateName(scope.type);
     throw error;
   }
 };
 
 /**
- * Adds Joueur, Remplaçant, Coach, Manager and Analyste to a game that has no
- * function yet, each traced like a single addition, in one transaction.
+ * Adds the common functions to a list that has none yet (Joueur, Coach… for
+ * a game; Président, Graphiste… for the structure), each traced like a single
+ * addition, in one transaction.
  */
-export const addCommonGameFunctions = async (
-  gameId: string,
+export const addCommonFunctions = async (
+  scope: FunctionScope,
   actor: MemberFunctionActor,
 ): Promise<MemberFunctionItem[]> => {
   try {
     return await prisma.$transaction(async (transaction) => {
-      await authorize(transaction, actor);
-      const game = await findGame(transaction, gameId);
-      if ((await transaction.memberFunction.count({ where: { gameId } })) > 0)
+      await authorize(transaction, scope, actor);
+      const ref = await resolveScope(transaction, scope);
+      if (
+        (await transaction.memberFunction.count({
+          where: { gameId: ref.gameId },
+        })) > 0
+      )
         throw functionsArrived();
       const items: MemberFunctionItem[] = [];
-      for (const common of COMMON_GAME_FUNCTIONS)
+      for (const common of commonFunctionsOf(ref.type))
         items.push(
           await createOne(
             transaction,
-            game,
+            ref,
             { ...common, isActive: true },
             actor.actor.id,
           ),
@@ -327,20 +379,21 @@ export const addCommonGameFunctions = async (
  * function that changes becomes a new one, and the old one turns inactive
  * (registre historique). An unchanged form answers the current state.
  */
-export const updateGameFunction = async (
-  gameId: string,
+export const updateFunction = async (
+  scope: FunctionScope,
   id: string,
   input: MemberFunctionInput & { expectedVersion: number },
   actor: MemberFunctionActor,
 ): Promise<MemberFunctionItem> => {
   try {
     return await prisma.$transaction(async (transaction) => {
-      await authorize(transaction, actor);
-      const game = await findGame(transaction, gameId);
-      const previous = toItem(await findFunction(transaction, gameId, id));
+      await authorize(transaction, scope, actor);
+      const current = await resolveScope(transaction, scope);
+      assertKind(current, input.kind);
+      const previous = toItem(await findFunction(transaction, current, id));
       if (previous.version !== input.expectedVersion) throw functionChanged();
-      const before = auditValues(previous, game);
-      const after = auditValues(input, game);
+      const before = auditValues(previous, current);
+      const after = auditValues(input, current);
       const changes = changedKeys(before, after);
       if (changes.length === 0) return previous;
       const result = await transaction.memberFunction.updateMany({
@@ -350,11 +403,11 @@ export const updateGameFunction = async (
           ...(input.kind === previous.kind
             ? {}
             : {
-                position: await nextPosition(transaction, gameId, input.kind),
+                position: await nextPosition(transaction, current, input.kind),
               }),
           version: { increment: 1 },
         },
-        where: { gameId, id, version: input.expectedVersion },
+        where: { gameId: current.gameId, id, version: input.expectedVersion },
       });
       if (result.count !== 1) throw functionChanged();
       const item = toItem(
@@ -369,46 +422,51 @@ export const updateGameFunction = async (
         after: pick(after, changes),
         before: pick(before, changes),
         changes,
-        description: `Fonction modifiée : ${item.name} (${game.name})`,
-        game,
+        description: `Fonction modifiée : ${item.name} (${current.name})`,
         item,
+        scope: current,
       });
 
       return item;
     });
   } catch (error) {
-    if (isPrismaUniqueConstraintError(error)) throw duplicateName();
+    if (isPrismaUniqueConstraintError(error)) throw duplicateName(scope.type);
     throw error;
   }
 };
 
 /**
- * Sets the order of the functions of one group of a game (players or staff),
- * as its managers dragged it (owner, 9 November 2026). The request names
- * every function of the group: one added, deleted or moved to the other
- * group in between refuses it.
+ * Sets the order of the functions of one group of a list (players, board or
+ * staff), as its managers dragged it (owner, 9 November 2026). The request
+ * names every function of the group: one added, deleted or moved to the
+ * other group in between refuses it.
  * One order for every item of the list, active or not: an inactive item
  * never blocks (owner, 9 November 2026).
  * The order is not part of a function's version, so an edit window left open
  * stays valid; one trace holds the order before and after. Answers every
- * function of the game, in its new order.
+ * function of the list, in its new order.
  */
-export const reorderGameFunctions = async (
-  gameId: string,
+export const reorderFunctions = async (
+  scope: FunctionScope,
   input: Readonly<{ ids: readonly string[]; kind: MemberFunctionKind }>,
   actor: MemberFunctionActor,
 ): Promise<MemberFunctionItem[]> =>
   prisma.$transaction(async (transaction) => {
-    await authorize(transaction, actor);
-    const game = await findGame(transaction, gameId);
+    await authorize(transaction, scope, actor);
+    const ref = await resolveScope(transaction, scope);
+    assertKind(ref, input.kind);
     // One reorder of a group at a time: the second waits for the first to
     // commit, then reads its order as « before ».
-    await transaction.$queryRaw`SELECT "id" FROM "MemberFunction" WHERE "gameId" = ${gameId} AND "kind" = ${input.kind}::"MemberFunctionKind" ORDER BY "id" FOR UPDATE`;
+    const ofList =
+      ref.gameId === null
+        ? Prisma.sql`"gameId" IS NULL`
+        : Prisma.sql`"gameId" = ${ref.gameId}`;
+    await transaction.$queryRaw`SELECT "id" FROM "MemberFunction" WHERE ${ofList} AND "kind" = ${input.kind}::"MemberFunctionKind" ORDER BY "id" FOR UPDATE`;
     const plan = planManualOrder(
       (
         await transaction.memberFunction.findMany({
           include: WITH_USES,
-          where: { gameId, kind: input.kind },
+          where: { gameId: ref.gameId, kind: input.kind },
         })
       )
         .map(toItem)
@@ -422,21 +480,19 @@ export const reorderGameFunctions = async (
           data: { position },
           where: { id },
         });
-      const kind = memberFunctionKindLabel(input.kind);
+      const kind = memberFunctionKindLabel(input.kind, ref.type);
       await createAuditLogWithHeaders(
         {
           action: AuditAction.FUNCTION_REORDER,
           category: AuditCategory.FUNCTION,
-          description: `Ordre des fonctions modifié : ${kind} (${game.name})`,
+          description: `Ordre des fonctions modifié : ${kind} (${ref.name})`,
           metadata: {
             after: { order: plan.after },
             before: { order: plan.before },
             changes: ['order'],
-            gameId: game.id,
-            gameName: game.name,
             kind: input.kind,
             kindLabel: kind,
-            ...FEATURES.games.audit,
+            ...locationOf(ref),
           },
           targetUserId: null,
           userId: actor.actor.id,
@@ -445,47 +501,40 @@ export const reorderGameFunctions = async (
       );
     }
 
-    return (
-      await transaction.memberFunction.findMany({
-        include: WITH_USES,
-        where: { gameId },
-      })
-    )
-      .map(toItem)
-      .sort(compareMemberFunctions);
+    return readList(transaction, ref);
   });
 
 /**
- * Deletes a function created by mistake. Nothing uses a function yet; the
- * roster's passages will, with `ON DELETE RESTRICT`, and a used function is
- * then refused here: it is made inactive instead.
+ * Deletes a function created by mistake. A function used by a passage is
+ * refused, by the service and the base (`ON DELETE RESTRICT`): it is made
+ * inactive instead.
  */
-export const deleteGameFunction = async (
-  gameId: string,
+export const deleteFunction = async (
+  scope: FunctionScope,
   id: string,
   expectedVersion: number,
   actor: MemberFunctionActor,
 ): Promise<{ id: string }> => {
   try {
     return await prisma.$transaction(async (transaction) => {
-      await authorize(transaction, actor);
-      const game = await findGame(transaction, gameId);
-      const previous = toItem(await findFunction(transaction, gameId, id));
+      await authorize(transaction, scope, actor);
+      const ref = await resolveScope(transaction, scope);
+      const previous = toItem(await findFunction(transaction, ref, id));
       if (previous.version !== expectedVersion) throw functionChanged();
       const result = await transaction.memberFunction.deleteMany({
-        where: { gameId, id, version: expectedVersion },
+        where: { gameId: ref.gameId, id, version: expectedVersion },
       });
       if (result.count !== 1) throw functionChanged();
-      const before = auditValues(previous, game);
+      const before = auditValues(previous, ref);
       await audit(transaction, {
         action: 'FUNCTION_DELETE',
         actorId: actor.actor.id,
         after: null,
         before,
         changes: Object.keys(before),
-        description: `Fonction supprimée : ${previous.name} (${game.name})`,
-        game,
+        description: `Fonction supprimée : ${previous.name} (${ref.name})`,
         item: previous,
+        scope: ref,
       });
 
       return { id };

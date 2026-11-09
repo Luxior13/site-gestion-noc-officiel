@@ -574,20 +574,25 @@ model Team {
   @@index([gameId, isActive, position])
 }
 
-/// What a function is about: playing, or supervising the players (coach,
-/// manager, analyst). A fixed list, in the code (9 November 2026).
+/// What a function is about (9 November 2026), a fixed list in the code: in a
+/// game, playing or supervising the players (coach, manager, analyst); in the
+/// structure, the board (elected mandates) or its staff (graphiste, monteur,
+/// bénévole). `MemberFunction_kind_scope_check` keeps the board out of the
+/// games and the players out of the structure.
 enum MemberFunctionKind {
+  BOARD
   PLAYER
   STAFF
 }
 
 /// A function held in a team of a game (Joueur, Coach…), managed in the game's
-/// record (9 November 2026). An empty `gameId` is kept for the functions of the
-/// structure (Bureau & staff, later), unique among themselves (partial index in
-/// the migration). Renaming corrects a typo; a function that changes becomes a
-/// new one and the old one turns inactive, still chosen for old passages.
-/// Within a game, each kind keeps the order its managers set by dragging
-/// (`position`, 9 November 2026), the same on every page.
+/// record (9 November 2026), or in the structure itself (`gameId` empty:
+/// Président, Graphiste…), managed in Bureau & staff, unique among themselves
+/// (partial index in the migration). Renaming corrects a typo; a function that
+/// changes becomes a new one and the old one turns inactive, still chosen for
+/// old passages. Within its game or the structure, each kind keeps the order
+/// its managers set by dragging (`position`, 9 November 2026), the same on
+/// every page.
 model MemberFunction {
   id             String             @id @default(cuid())
   gameId         String?
@@ -610,7 +615,7 @@ model MemberFunction {
 }
 
 /// A passage (9 November 2026, registre historique): a person of the
-/// Répertoire in a team, or later in the structure (`teamId` empty), with a
+/// Répertoire in a team, or in the structure (`teamId` empty, Bureau & staff), with a
 /// function, from a start to an end (none: still there). A start is stored on
 /// the first day of its period, an end on the last: « who was there on a
 /// date » stays a plain comparison. The base checks the function belongs to

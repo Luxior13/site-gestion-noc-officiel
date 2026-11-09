@@ -107,6 +107,7 @@ Ses mots-clés (`keywords`) alimentent la recherche rapide de l’en-tête.
 | `dashboard` | Mon travail | Aujourd’hui | `/` | `live` |
 | `persons` | Répertoire | Personnes | `/personnes/repertoire` | `live` |
 | `games` | Jeux | Esport | `/esport/jeux` | `live` (8 novembre 2026) ; les équipes de chaque jeu (`features/teams`, sans entrée de registre propre) s’y affichent ; leur fiche `/esport/equipes/[id]` lui reste rattachée par `matchHrefs` ; les fonctions de chaque jeu (`features/member-functions`, 9 novembre 2026, sans entrée de registre propre) vivent dans la fiche jeu, sous `games:manage` ; les passages (`features/passages`, même jour) forment le Roster de la fiche équipe, sous `teams:view` et `teams:manage` |
+| `staff` | Bureau & staff | Structure | `/structure/bureau-staff` | `live` (9 novembre 2026), première page du pôle Structure ; `features/staff` compose la page et son résumé, l’Effectif et les anciens membres viennent de `features/passages` (lieu « structure », `teamId` vide), les fonctions de `features/member-functions` (liste « structure », `gameId` vide) ; sous `staff:view` et `staff:manage` |
 | `users` | Utilisateurs | Système | `/systeme/utilisateurs` | `live` |
 | `systemSettings` | Paramètres système | Système | `/systeme/parametres` | `live` |
 | `roadmap` | Feuille de route | Système | `/systeme/feuille-de-route` | `live` |

@@ -104,6 +104,36 @@ export const FEATURES = {
     permissionMode: 'all',
     requiredPermissions: [],
   }),
+  // First page of the Structure pole (9 November 2026).
+  staff: defineFeature({
+    audit: {
+      pageKey: 'staff',
+      pageLabel: 'Bureau & staff',
+      poleKey: 'structure',
+      poleLabel: 'Structure',
+    },
+    availability: 'live',
+    description:
+      'L’effectif de la structure : le bureau, le staff et les bénévoles.',
+    href: PAGE_PATHS.staff,
+    icon: 'BriefcaseBusiness',
+    id: 'staff',
+    keywords: [
+      'bureau',
+      'staff',
+      'effectif',
+      'mandats',
+      'président',
+      'trésorier',
+      'secrétaire',
+      'bénévoles',
+      'graphiste',
+      'monteur',
+    ],
+    label: 'Bureau & staff',
+    permissionMode: 'all',
+    requiredPermissions: [PERMISSIONS.STAFF.VIEW],
+  }),
   systemActivity: defineFeature({
     audit: {
       pageKey: 'system-activity',

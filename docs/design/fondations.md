@@ -104,7 +104,7 @@ Valeurs de `:root` (portée par défaut).
 | Pôle Aujourd’hui | `--nav-dashboard` `#2dd4bf` (icône `#5eead4`) |
 | Pôle Personnes | `--nav-internal` `#38bdf8` (icône `#7dd3fc`) |
 | Pôle Esport | `--nav-esport` `#a78bfa` (icône `#c4b5fd`), violet fixé avec la page Jeux le 8 novembre 2026 |
-| Pôle Structure (thème `legal`) | `--nav-legal` `#facc15` (icône `#fde047`) |
+| Pôle Structure (thème `legal`) | `--nav-legal` `#facc15` (icône `#fde047`), ouvert le 9 novembre 2026 avec Bureau & staff ; la structure a pour vignette une mallette à ce ton (`StructureAvatar`), comme une équipe son écusson au ton Esport |
 | Pôle Système | `--nav-system` `#94a3b8` (icône `#cbd5e1`) |
 | Pôle Finances (thème `treasury`) | `--nav-treasury` `#4ade80` (icône `#86efac`) |
 

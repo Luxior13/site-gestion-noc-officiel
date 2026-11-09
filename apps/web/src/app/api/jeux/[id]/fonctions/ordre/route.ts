@@ -2,8 +2,8 @@ import type { NextRequest, NextResponse } from 'next/server';
 
 import { PERMISSIONS } from '$constants/permissions.constants';
 import { gameIdSchema } from '$features/games/schemas/game.schemas';
-import { reorderMemberFunctionsSchema } from '$features/member-functions/schemas/member-function.schemas';
-import { reorderGameFunctions } from '$features/member-functions/server/member-function.service';
+import { gameFunctionSchemas } from '$features/member-functions/schemas/member-function.schemas';
+import { reorderFunctions } from '$features/member-functions/server/member-function.service';
 import { requireAuth, requirePermission } from '$server/api-auth';
 import {
   apiErrors,
@@ -28,7 +28,7 @@ export async function PUT(
   if (!gameId.success) return apiErrors.notFound('Jeu introuvable');
   const body = await parseJsonBody(request);
   if (!body.success) return body.response;
-  const parsed = reorderMemberFunctionsSchema.safeParse(body.data);
+  const parsed = gameFunctionSchemas.reorder.safeParse(body.data);
   if (!parsed.success) {
     return apiErrors.validation(
       'Ordre des fonctions invalide',
@@ -38,10 +38,14 @@ export async function PUT(
 
   try {
     return apiSuccess(
-      await reorderGameFunctions(gameId.data, parsed.data, {
-        actor: auth.user,
-        session: auth.session,
-      }),
+      await reorderFunctions(
+        { gameId: gameId.data, type: 'game' },
+        parsed.data,
+        {
+          actor: auth.user,
+          session: auth.session,
+        },
+      ),
     );
   } catch (error) {
     return serviceErrorResponse(error, {

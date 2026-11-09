@@ -44,13 +44,20 @@ export type PassageItem = Readonly<{
   version: number;
 }>;
 
+/**
+ * Where passages are kept (9 November 2026): the Roster of a team, or the
+ * Effectif of the structure, on Bureau & staff (no team).
+ */
+export type PassageScope =
+  Readonly<{ teamId: string; type: 'team' }> | Readonly<{ type: 'structure' }>;
+
 /** A passage as a person's journey shows it: in which team, of which game. */
 export type JourneyItem = Readonly<{
   end: ApproximateDate | null;
   function: PassageFunction;
   id: string;
   start: ApproximateDate;
-  /** Null for a function of the structure (Bureau & staff, to come). */
+  /** Null for a function of the structure, kept in Bureau & staff. */
   team: Readonly<{
     game: Readonly<{ id: string; name: string }>;
     id: string;
@@ -62,8 +69,11 @@ export type JourneyItem = Readonly<{
 /** Every passage of a person, the earliest start first. */
 export type PersonJourney = Readonly<{ passages: readonly JourneyItem[] }>;
 
-/** The roster of a team, with the functions of its game to choose from. */
-export type TeamRoster = Readonly<{
+/**
+ * The passages of a place, with its functions to choose from: a team's
+ * roster and its game's functions, or the structure's and its own.
+ */
+export type PassageRoster = Readonly<{
   functions: readonly PassageFunction[];
   passages: readonly PassageItem[];
 }>;

@@ -5,7 +5,7 @@ import React, { type FC, useEffect, useRef, useState } from 'react';
 
 import { ContentState } from '$components/layout/ContentState';
 import {
-  MEMBER_FUNCTION_KINDS,
+  functionKindsOf,
   memberFunctionGroupLabel,
   type MemberFunctionKind,
 } from '$features/member-functions/member-function.constants';
@@ -22,6 +22,7 @@ import {
   matchesRosterSearch,
   passageEndYear,
   peopleCountsOf,
+  placeWordsOf,
 } from '../passage.ui';
 import type { PassageItem } from '../types/passage.types';
 import { PassageDialog } from './PassageDialog';
@@ -29,16 +30,14 @@ import {
   type PassageGroup,
   PassageLines,
   PassageLinesSkeleton,
+  type PassagePlaceProps,
   PassagesLoadError,
-  type TeamPassagesProps,
 } from './PassageLines';
-import { useTeamRoster } from './useTeamRoster';
+import { useRoster } from './useRoster';
 
 const PASSAGE_NOUN = ['passage', 'passages'] as const;
 
 type KindFilter = 'all' | MemberFunctionKind;
-
-const KIND_FILTERS: readonly KindFilter[] = ['all', ...MEMBER_FUNCTION_KINDS];
 
 /** The archive by the year its passages ended, the latest first. */
 const byEndYear = (lines: readonly PassageItem[]): PassageGroup[] => {
@@ -59,20 +58,26 @@ const byEndYear = (lines: readonly PassageItem[]): PassageGroup[] => {
 };
 
 /**
- * The former members of a team, its own tab (owner, 9 November 2026: « je ne
- * veux pas mélanger les anciens avec les en cours et à venir, car sur le très
- * long terme ça fera bordel »): every ended passage, by the year it ended,
- * the latest first; a search and the players or the staff, as the
- * Répertoire's bar. A former member is added here, with both dates.
+ * The former members of a team or of the structure, their own tab (owner,
+ * 9 November 2026: « je ne veux pas mélanger les anciens avec les en cours et
+ * à venir, car sur le très long terme ça fera bordel »): every ended passage,
+ * by the year it ended, the latest first; a search and the groups of its
+ * functions, as the Répertoire's bar. A former member is added here, with
+ * both dates.
  */
-export const TeamFormerSection: FC<TeamPassagesProps> = ({
+export const FormerMembersSection: FC<PassagePlaceProps> = ({
   canCreatePerson,
   canManage,
   canViewPersons,
   onCountsChange,
-  team,
+  place,
 }) => {
-  const { accept, error, load, retry, roster } = useTeamRoster(team.id);
+  const { accept, error, load, retry, roster } = useRoster(place.scope);
+  const { functionScope } = placeWordsOf(place.scope.type);
+  const kindFilters: readonly KindFilter[] = [
+    'all',
+    ...functionKindsOf(functionScope),
+  ];
   const [query, setQuery] = useState('');
   const [kind, setKind] = useState<KindFilter>('all');
   const [editor, setEditor] = useState<{ item: PassageItem | null } | null>(
@@ -156,14 +161,16 @@ export const TeamFormerSection: FC<TeamPassagesProps> = ({
       <div className={directoryStyles.filterBar}>
         <div className={directoryStyles.quickFilterSets}>
           <QuickFilterGroup caption="Fonction" label="Filtrer par fonction">
-            {KIND_FILTERS.map((entry) => (
+            {kindFilters.map((entry) => (
               <QuickFilter
                 count={
                   roster === null ? null : found.filter(ofKind(entry)).length
                 }
                 key={entry}
                 label={
-                  entry === 'all' ? 'Tous' : memberFunctionGroupLabel(entry)
+                  entry === 'all'
+                    ? 'Tous'
+                    : memberFunctionGroupLabel(entry, functionScope)
                 }
                 noun={PASSAGE_NOUN}
                 onClick={() => setKind(entry)}
@@ -217,8 +224,8 @@ export const TeamFormerSection: FC<TeamPassagesProps> = ({
             canViewPersons={canViewPersons}
             groups={byEndYear(shown)}
             onOpen={(item) => setEditor({ item })}
+            placeName={place.name}
             showStatus={false}
-            teamName={team.name}
             today={today}
           />
         )}
@@ -236,7 +243,7 @@ export const TeamFormerSection: FC<TeamPassagesProps> = ({
           setEditor(null);
         }}
         open={editor !== null}
-        team={team}
+        place={place}
       />
     </div>
   );

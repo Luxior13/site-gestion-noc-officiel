@@ -9,6 +9,7 @@ export const PAGE_PATHS = {
   newUser: '/systeme/utilisateurs/nouveau',
   persons: '/personnes/repertoire',
   roadmap: '/systeme/feuille-de-route',
+  staff: '/structure/bureau-staff',
   system: '/systeme',
   systemActivity: '/systeme/journal-activite',
   systemSettings: '/systeme/parametres',

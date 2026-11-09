@@ -7,8 +7,12 @@
 - **Date** : 7 novembre 2026. **Demandeur** : le propriétaire.
 - **Périmètre** : chantiers Listes de choix, Équipes & parcours, Accès &
   responsabilités métier (étapes 1 et 2).
-- **Statut** : proposée. Rien n’est construit ; les choix techniques ci-dessous
-  restent à valider au moment de chaque lot.
+- **Statut** : en cours. Lots 1 et 2 livrés pour l’essentiel du 8 au
+  9 novembre 2026 (jeux, fonctions des jeux et de la structure, équipes,
+  Roster, Parcours, Bureau & staff) ; restent les jeux pratiqués, les anciens
+  pseudos, les compléments de la fiche, le statut calculé et la sauvegarde des
+  nouvelles tables, puis le lot 3. Les choix techniques non livrés restent à
+  valider au moment de leur lot.
 - **Décisions déjà données** : [registre historique](../domaines/registre-historique.md)
   et [public du site](../domaines/roles-metier.md#public-du-site--décision-du-7-novembre-2026).
   Ce document ne les répète pas.
@@ -21,7 +25,7 @@ migration. Ils demandent des scénarios d’abus et une validation sur base isol
 | Lot | Contenu | Résultat visible |
 | --- | --- | --- |
 | 1 | Listes de choix | Champ « Jeux » sur la fiche, avec ajout direct ; la page Jeux (8 novembre 2026) et l’onglet Fonctions de chaque fiche jeu (9 novembre 2026) sont livrés |
-| 2 | Équipes & parcours | Page Jeux, fiches jeu et équipe, page Bureau & staff (Effectif, Fonctions), onglet Parcours en lecture, anciens pseudos dans Identité |
+| 2 | Équipes & parcours | Page Jeux, fiches jeu et équipe, page Bureau & staff (Effectif, Anciens membres, Fonctions ; livrée le 9 novembre 2026), onglet Parcours en lecture (livré le même jour), anciens pseudos dans Identité |
 | 3 | Accès manager | Un manager se connecte et ne voit que son équipe |
 
 Confidentialité & conservation et Données, exports & sauvegardes complètent l’étape 2. Le lot 1 introduit TanStack Query, prévu avec son premier consommateur
@@ -30,7 +34,7 @@ Confidentialité & conservation et Données, exports & sauvegardes complètent l
 ## Lot 1 — Listes de choix
 
 **Données** : les jeux ont leur table `Game`, livrée le 8 novembre 2026 avec la page Jeux (nom unique, nom court, première ouverture et sa précision, actif) ; une table `ReferenceValue` pour les autres listes (`list`, `label`,
-libellé normalisé, actif, `version`) ; les fonctions ont leur table `MemberFunction`, livrée le 9 novembre 2026 (nom unique par jeu, type Joueur ou Encadrement, position posée par glisser-déposer dans chaque type, active, `version`, `gameId` vide réservé aux fonctions de la structure, unique entre elles par un index partiel),
+libellé normalisé, actif, `version`) ; les fonctions ont leur table `MemberFunction`, livrée le 9 novembre 2026 (nom unique par jeu, type Joueur ou Encadrement, position posée par glisser-déposer dans chaque type, active, `version`, `gameId` vide pour les fonctions de la structure, uniques entre elles par un index partiel, de type Bureau ou Staff depuis le même jour avec Bureau & staff),
 unique par liste (et jeu) et libellé normalisé,
 et une table de liaison `PersonGame`. Une table commune évite une page, une API et
 une migration par liste. Pour qu’une fonction ne puisse pas remplir un champ
@@ -98,8 +102,11 @@ identifiants de jeu, finances) le fait en `ON DELETE RESTRICT`, jamais en
   Entraînements,
   Finances ↗ (invisible pour un manager), Partenaires ↗ et Informations (nom, anciens noms,
   archivage).
-- Page Bureau & staff (pôle Structure) : onglet Effectif, le roster de la
-  structure (bureau, staff, bénévoles, depuis 2014), et onglet Fonctions.
+- Page Bureau & staff (pôle Structure, `/structure/bureau-staff`, livrée le
+  9 novembre 2026, [fiche](../pages/structure/bureau-staff.md)) : onglet
+  Effectif, le roster de la structure (bureau, staff, bénévoles, depuis 2014),
+  onglet Anciens membres, à part comme pour une équipe, et onglet Fonctions,
+  de type Bureau ou Staff (CAD-Q4).
 - Onglet Parcours de la fiche personne (`?section=parcours`), en lecture ↗ :
   chaque ligne ouvre son équipe ou Bureau & staff ([onglet en lecture](../design/gabarits.md#onglets-dune-fiche)) ;
   livré le 9 novembre 2026 pour les équipes ([fiche](../pages/personnes/repertoire/fiche-parcours.md)).
@@ -108,15 +115,17 @@ identifiants de jeu, finances) le fait en `ON DELETE RESTRICT`, jamais en
 
 **API** : `/api/jeux`, `/api/jeux/[id]`, `/api/equipes`, `/api/equipes/[id]`,
 `/api/equipes/[id]/passages` (et `/[passageId]`, `/[passageId]/changement`),
-`/api/passages/personnes`, `/api/personnes/[id]/parcours` (livrés le
-9 novembre 2026), selon le
+`/api/passages/personnes`, `/api/personnes/[id]/parcours`, `/api/structure`
+et ses routes `effectif` et `fonctions` (livrés le 9 novembre 2026), selon le
 [contrat d’une fonctionnalité](../references/architecture-fonctionnalite.md).
 
 **Droits** : `teams:view`, `teams:manage` (livrés le 8 novembre 2026) couvrent
 aussi le Roster depuis le 9 novembre 2026 (décision du propriétaire, « ok go ») :
 `persons:view_journey` et `persons:update_journey` ne sont pas créés. Le
-Parcours d’une fiche demande `persons:view` et `teams:view` (9 novembre 2026 :
-il montre les Rosters d’où il se lit) ; Bureau & staff aura ses droits.
+Parcours d’une fiche demande `persons:view` et le droit de chaque liste qu’il
+lit (9 novembre 2026 : `teams:view` pour les Rosters, `staff:view` pour
+l’Effectif, au moins l’un des deux) ; Bureau & staff a ses droits propres,
+`staff:view` et `staff:manage` (même jour, « ok go »).
 
 **Journal** : chaque écriture suit la
 [liste de contrôle Q15](../references/audit-historique.md#règle--toute-action-est-lisible-dans-le-journal-dactivité) :
@@ -163,9 +172,14 @@ réglage retiré de la fonction, compte désactivé, recherche rapide, totaux de
 Non applicables : Q08, Q20, Q21, Q23, Q24, Q26 (ni notification, ni fichier, ni
 import, ni traitement différé, ni gouvernance, ni montant). Hors impact : Q18, Q28.
 
+## Questions tranchées
+
+| ID | Question | Décision | Date |
+| --- | --- | --- | --- |
+| CAD-Q4 | Où vont graphistes, monteurs et autres soutiens, et l’Effectif sépare-t-il le bureau du staff ? | « ok go » sur la recommandation : selon pour qui ils travaillent, toute la structure dans l’Effectif de Bureau & staff, une seule équipe dans son Roster avec une fonction d’encadrement du jeu ; les fonctions de la structure ont deux types, Bureau (mandats élus) et Staff, en deux groupes comme Joueurs et Encadrement ; droits propres à Bureau & staff ([fiche](../pages/structure/bureau-staff.md)) | 9 novembre 2026 |
+
 ## Questions au propriétaire
 
 | ID | Question | Recommandation | Bloque |
 | --- | --- | --- | --- |
 | CAD-Q3 | Quel délai avant la purge des coordonnées, et qui le valide ? | À faire valider par une personne compétente | Confidentialité & conservation |
-| CAD-Q4 | Où vont graphistes, monteurs et autres soutiens (question du 9 novembre 2026), et l’Effectif sépare-t-il le bureau du staff ? | Selon pour qui ils travaillent : toute la structure → Effectif de Bureau & staff ; une seule équipe → son Roster, fonction d’encadrement du jeu. Les fonctions de la structure ont deux types, Bureau (mandats élus) et Staff, en deux groupes comme Joueurs et Encadrement | Bureau & staff |

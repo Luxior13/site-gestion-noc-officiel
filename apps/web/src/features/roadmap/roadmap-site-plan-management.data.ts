@@ -3,22 +3,28 @@ import type { RoadmapPlannedPage } from './types/roadmap.types';
 export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   {
     area: 'structure',
-    chantier: 'sport-teams',
     name: 'Bureau & staff',
-    phase: 1,
+    phase: null,
+    summary:
+      'Première page du pôle Structure (9 novembre 2026), comme la fiche d’une équipe : l’effectif de la structure hors des équipes.',
     tabs: [
       {
         label: 'Effectif',
-        phase: 1,
+        phase: null,
         summary:
-          'Le roster de la structure : qui occupe quelle fonction (bureau, staff, bénévoles), avec début et fin, depuis 2014 ; on y ajoute ou termine un passage, avec la même fenêtre que dans le Roster d’une équipe.',
+          'Le roster de la structure : qui est là et qui arrive, le bureau élu puis le staff (graphistes, monteurs, bénévoles…), dans l’ordre des fonctions, avec statut, début, fin et durée ; un passage s’ajoute, se corrige, se termine ou change de fonction avec la même fenêtre que dans le Roster d’une équipe.',
       },
       {
-        chantier: 'reference-lists',
-        label: 'Fonctions',
-        phase: 1,
+        label: 'Anciens membres',
+        phase: null,
         summary:
-          'Fonctions de la structure : président, trésorier, secrétaire, graphiste, bénévole… ; ajouter, renommer, rendre inactive, comme les fonctions d’un jeu.',
+          'Les passages terminés, jamais mêlés à l’Effectif : par année de fin, la plus récente d’abord ; recherche et filtre Bureau ou Staff ; un ancien membre s’ajoute ici avec ses deux dates, depuis 2014.',
+      },
+      {
+        label: 'Fonctions',
+        phase: null,
+        summary:
+          'Fonctions de la structure, type Bureau (mandats élus : président, trésorier, secrétaire) ou Staff (graphiste, monteur, community manager, bénévole) ; rangées par glisser-déposer ; ajouter, renommer, rendre inactive, comme les fonctions d’un jeu ; fonctions courantes en un clic quand la liste est vide.',
       },
     ],
   },

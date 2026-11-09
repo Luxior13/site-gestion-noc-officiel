@@ -99,6 +99,7 @@ describe('permission editor configured and effective access', () => {
     ).toEqual([
       'persons',
       'games',
+      'staff',
       'users',
       'system-activity',
       'system-settings',
@@ -109,7 +110,7 @@ describe('permission editor configured and effective access', () => {
       ),
     ).toBe(false);
   });
-  it('ignores the retired field history key and presents 32 current capabilities', () => {
+  it('ignores the retired field history key and presents 34 current capabilities', () => {
     // Field history left the catalogue on 27 October 2026.
     const state = buildPermissionEditorState(UserRole.USER, {
       'audit:view_field_history': true,
@@ -118,6 +119,7 @@ describe('permission editor configured and effective access', () => {
     expect(state.effective.has('audit:view_field_history')).toBe(false);
     expect(
       PERMISSION_EDITOR_CATEGORIES.flatMap((category) => category.permissions),
-    ).toHaveLength(32);
+      // Bureau & staff brought two (9 November 2026).
+    ).toHaveLength(34);
   });
 });

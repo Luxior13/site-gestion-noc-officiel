@@ -5,9 +5,8 @@ import Link from 'next/link';
 import React, { type FC, useEffect, useRef, useState } from 'react';
 
 import { ContentState } from '$components/layout/ContentState';
-import { gameDetailPath, teamDetailPath } from '$constants/routes.constants';
 import {
-  MEMBER_FUNCTION_KINDS,
+  functionKindsOf,
   memberFunctionGroupLabel,
 } from '$features/member-functions/member-function.constants';
 import { Button } from '$ui/button';
@@ -15,37 +14,44 @@ import { DataTableSection } from '$ui/data-table-section';
 import directoryStyles from '$ui/directory.module.css';
 import { getLocalToday } from '$utils/approximate-date.utils';
 
-import { countPeopleOn, peopleCountsOf, rosterLines } from '../passage.ui';
+import {
+  countPeopleOn,
+  peopleCountsOf,
+  placeWordsOf,
+  rosterLines,
+} from '../passage.ui';
 import type { PassageItem } from '../types/passage.types';
 import { PassageDialog } from './PassageDialog';
 import {
   type PassageGroup,
   PassageLines,
   PassageLinesSkeleton,
+  type PassagePlaceProps,
   PassagesLoadError,
-  type TeamPassagesProps,
 } from './PassageLines';
-import { useTeamRoster } from './useTeamRoster';
+import { useRoster } from './useRoster';
 
 /**
- * The roster of a team, first tab of its record: who is there and who is
- * coming (owner, 9 November 2026: « le but est de voir ce qu'il y a
- * actuellement et à venir »). The players, then the staff, in the order of
- * the functions, the arrivals after the members; the former passages have
- * their own tab. A passage is added and corrected in a window.
+ * What is there and coming in a place (owner, 9 November 2026: « le but est
+ * de voir ce qu'il y a actuellement et à venir »): the Roster of a team, first
+ * tab of its record, or the Effectif of the structure, first tab of Bureau &
+ * staff. The players or the board, then the staff, in the order of the
+ * functions, the arrivals after the members; the former passages have their
+ * own tab. A passage is added and corrected in a window.
  */
-export const TeamRosterSection: FC<TeamPassagesProps> = ({
+export const RosterSection: FC<PassagePlaceProps> = ({
   canCreatePerson,
   canManage,
   canViewPersons,
   onCountsChange,
-  team,
+  place,
 }) => {
-  const { accept, error, load, retry, roster } = useTeamRoster(team.id);
+  const { accept, error, load, retry, roster } = useRoster(place.scope);
   const [editor, setEditor] = useState<{ item: PassageItem | null } | null>(
     null,
   );
   const today = useRef(getLocalToday()).current;
+  const words = placeWordsOf(place.scope.type);
 
   useEffect(() => {
     if (roster) onCountsChange(peopleCountsOf(roster.passages, today));
@@ -56,7 +62,7 @@ export const TeamRosterSection: FC<TeamPassagesProps> = ({
       <PassagesLoadError
         error={error}
         onRetry={() => void retry()}
-        title="Le Roster ne peut pas être chargé"
+        title={words.loadError}
       />
     );
 
@@ -64,19 +70,21 @@ export const TeamRosterSection: FC<TeamPassagesProps> = ({
   const lines = rosterLines(passages, today);
   const members = countPeopleOn(passages, today, 'current');
   const coming = countPeopleOn(passages, today, 'upcoming');
-  const groups: PassageGroup[] = MEMBER_FUNCTION_KINDS.flatMap((kind) => {
-    const items = lines.filter((passage) => passage.function.kind === kind);
+  const groups: PassageGroup[] = functionKindsOf(words.functionScope).flatMap(
+    (kind) => {
+      const items = lines.filter((passage) => passage.function.kind === kind);
 
-    return items.length === 0
-      ? []
-      : [
-          {
-            id: kind.toLowerCase(),
-            items,
-            label: memberFunctionGroupLabel(kind),
-          },
-        ];
-  });
+      return items.length === 0
+        ? []
+        : [
+            {
+              id: kind.toLowerCase(),
+              items,
+              label: memberFunctionGroupLabel(kind, words.functionScope),
+            },
+          ];
+    },
+  );
 
   const addButton = canManage ? (
     <Button
@@ -90,7 +98,7 @@ export const TeamRosterSection: FC<TeamPassagesProps> = ({
   ) : undefined;
 
   // What the list holds, then the addition flush right: nothing to filter in
-  // a team's composition of the day.
+  // the composition of the day.
   const toolbar = (
     <div className="flex w-full flex-wrap items-center justify-between gap-3">
       <div className={directoryStyles.listCaption}>
@@ -104,8 +112,6 @@ export const TeamRosterSection: FC<TeamPassagesProps> = ({
     </div>
   );
 
-  const formerHref = `${teamDetailPath(team.id)}?section=anciens`;
-
   return (
     <div className={directoryStyles.directory}>
       <DataTableSection
@@ -114,19 +120,19 @@ export const TeamRosterSection: FC<TeamPassagesProps> = ({
         toolbar={toolbar}
       >
         {roster !== null && roster.functions.length === 0 && canManage && (
-          // A passage needs a function of the game: said, never blocked.
+          // A passage needs a function of its list: said, never blocked.
           <p className="border-border-divider text-muted-foreground border-b px-4 py-3 text-sm">
-            Ce jeu n’a pas encore de fonctions (Joueur, Coach…).{' '}
+            {words.noFunctions}{' '}
             <Link
               className="text-primary-emphasis underline-offset-4 hover:underline"
-              href={gameDetailPath(team.gameId)}
+              href={place.functionsHref}
             >
-              Les ajouter dans la fiche du jeu
+              {words.addFunctions}
             </Link>
           </p>
         )}
         {roster === null ? (
-          <PassageLinesSkeleton label="Chargement du Roster" />
+          <PassageLinesSkeleton label={`Chargement ${words.ofList}`} />
         ) : lines.length === 0 ? (
           <div className="px-4 py-8">
             <ContentState
@@ -135,14 +141,14 @@ export const TeamRosterSection: FC<TeamPassagesProps> = ({
               description={
                 passages.length === 0 ? (
                   canManage ? (
-                    'Ajoutez les joueurs et l’encadrement, actuels ou passés, avec leurs dates : le registre se construit tout seul.'
+                    `Ajoutez ${words.members}, actuels ou passés, avec leurs dates : le registre se construit tout seul.`
                   ) : undefined
                 ) : (
                   <>
                     Les passages terminés sont dans les{' '}
                     <Link
                       className="text-primary-emphasis underline-offset-4 hover:underline"
-                      href={formerHref}
+                      href={place.formerHref}
                     >
                       anciens membres
                     </Link>
@@ -165,8 +171,8 @@ export const TeamRosterSection: FC<TeamPassagesProps> = ({
             canViewPersons={canViewPersons}
             groups={groups}
             onOpen={(item) => setEditor({ item })}
+            placeName={place.name}
             showStatus
-            teamName={team.name}
             today={today}
           />
         )}
@@ -183,7 +189,7 @@ export const TeamRosterSection: FC<TeamPassagesProps> = ({
           setEditor(null);
         }}
         open={editor !== null}
-        team={team}
+        place={place}
       />
     </div>
   );

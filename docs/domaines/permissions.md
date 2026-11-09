@@ -299,8 +299,10 @@ possède implicitement.
 | `persons:delete` | supprimer définitivement une fiche et ses coordonnées | `persons:view` | critique | Oui (mot de passe de 30 minutes au plus) |
 
 L’onglet Parcours (9 novembre 2026) n’a pas de droit propre : il demande
-`persons:view` et `teams:view`, car il montre les Rosters d’où il se lit ; sans
-`teams:view`, il n’apparaît pas et son API répond 403.
+`persons:view` et au moins un des deux droits des listes d’où il se lit,
+`teams:view` (les Rosters des équipes) ou `staff:view` (l’Effectif de Bureau &
+staff), et ne montre que les passages de ces listes. Sans l’un ni l’autre, il
+n’apparaît pas et son API répond 403.
 
 Sans lecture des coordonnées, la fiche et les retours de mutation contiennent
 des collections vides ; leurs compteurs sont masqués, la recherche ne porte que
@@ -338,6 +340,21 @@ dans la page Jeux de l’éditeur, en deux groupes (Jeux, Équipes) ; voir les
 | `games:manage` | ajouter, modifier, rendre actif ou non, ranger les jeux par glisser-déposer, actifs ou non, supprimer un jeu qui n’a jamais servi (un jeu qui a des équipes est refusé par le service et par la base) ; ajouter, modifier, rendre active ou non, ordonner par glisser-déposer, supprimer une fonction du jeu jamais utilisée (9 novembre 2026, sans permission nouvelle) | `games:view` | sensible | Non |
 | `teams:view` | voir les équipes sous chaque jeu, actives ou non, et leur Roster (personnes, fonctions, dates ; le lien vers une fiche suit `persons:view`) | `games:view` | défaut | Non |
 | `teams:manage` | ajouter une équipe à un jeu, la modifier, la rendre active ou non, ranger les équipes de chaque jeu par glisser-déposer, actives ou non (9 novembre 2026), supprimer une équipe qui n’a jamais servi ; ajouter, corriger, terminer et supprimer les passages de son Roster, et chercher pour cela une fiche du Répertoire par son nom (9 novembre 2026, sans droit de parcours séparé) | `teams:view` | sensible | Non |
+
+### Page Bureau & staff
+
+Première page du pôle Structure (9 novembre 2026). Ses deux permissions sont
+propres, distinctes de celles des équipes (« ok go » du propriétaire) : un
+manager ne voit pas le bureau, et gérer les équipes ne donne pas les mandats.
+Elles peuvent être accordées individuellement à un USER ; preset `false` pour
+USER et `true` pour ADMIN, sans retrait possible ; le compte racine les possède
+implicitement. Elles sont rangées dans la page Bureau & staff de l’éditeur, pôle
+Structure.
+
+| Clé canonique | Action couverte | Dépend de | Risque | Step-up à l'usage |
+| --- | --- | --- | --- | --- |
+| `staff:view` | voir l’Effectif de la structure (personnes, fonctions, dates ; le lien vers une fiche suit `persons:view`), ses anciens membres et ses fonctions | — | défaut | Non |
+| `staff:manage` | ajouter, corriger, terminer, changer de fonction et supprimer un passage de la structure, et chercher pour cela une fiche du Répertoire par son nom ; ajouter, modifier, rendre active ou non, ordonner par glisser-déposer et supprimer une fonction de la structure jamais utilisée | `staff:view` | sensible | Non |
 
 ### Page Sponsors & partenaires (planifiée)
 
@@ -387,11 +404,12 @@ pas en droits délégables individuellement.
 | `/recherche`                                         | redirection vers `/` ; la navigation rapide de l’en-tête reste sans permission supplémentaire et filtre chaque destination autorisée                       |
 | `/personnes/repertoire`                            | `persons:view` pour consulter et rechercher le répertoire                                                                                                  |
 | `/personnes/repertoire/nouveau`                    | `persons:create`, donc aussi `persons:view`                                                                                                                |
-| `/personnes/repertoire/[id]`                       | `persons:view` pour l'identité ; coordonnées via `persons:view_contact` ; parcours via `teams:view` en plus (`GET /api/personnes/[id]/parcours`, 9 novembre 2026) ; mutations via `persons:update`, `persons:update_contact` ou `persons:delete`                                                                  |
+| `/personnes/repertoire/[id]`                       | `persons:view` pour l'identité ; coordonnées via `persons:view_contact` ; parcours via `teams:view` ou `staff:view` en plus, chacun pour ses passages (`GET /api/personnes/[id]/parcours`, 9 novembre 2026) ; mutations via `persons:update`, `persons:update_contact` ou `persons:delete`                                                                  |
 | `/tableau-de-bord`                                   | alias de support redirigeant vers `/` ; aucune permission supplémentaire                                                                                   |
 | `/administration`                                    | route de support redirigeant vers les utilisateurs                                                                                                         |
 | `/esport/jeux`                                       | `games:view` pour lire ; `games:manage` pour ajouter, modifier et supprimer un jeu ; `teams:view` et `teams:manage` pour les équipes (`/api/equipes`) ; l’API refait le contrôle dans sa transaction |
 | `/esport/jeux/[id]`                                  | `games:view` pour lire le jeu et ses fonctions ; `games:manage` pour les modifier (`/api/jeux/[id]/fonctions`) ; le nombre d’équipes avec `teams:view` |
+| `/structure/bureau-staff`                            | `staff:view` pour lire l’Effectif, les anciens membres et les fonctions (`/api/structure`) ; `staff:manage` pour les modifier ; la recherche d’une fiche (`/api/passages/personnes`) accepte `teams:manage` ou `staff:manage` ; l’API refait le contrôle dans sa transaction |
 | `/systeme/utilisateurs`                       | `users:view`                                                                                                                                               |
 | `/systeme/utilisateurs/nouveau`               | `users:create`, donc aussi `users:view`                                                                                                                    |
 | `/systeme/utilisateurs/[id]?section=profile`  | lecture de fiche, contact, profil et identifiant via les clés `users:*` correspondantes                                                                    |

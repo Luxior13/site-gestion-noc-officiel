@@ -37,7 +37,9 @@ Composition, de haut en bas :
    son code à la demande (`next/dynamic`, comme la fiche personne) : le
    glisser-déposer ne pèse que sur Fonctions, et la page passe de 318 à
    276 Kio compressés au budget de performance (9 novembre 2026).
-3. **Fonctions** (`MemberFunctionsSection`) : une carte « Fonctions », avec la
+3. **Fonctions** (`MemberFunctionsSection`, partagée avec l’onglet Fonctions
+   de [Bureau & staff](../structure/bureau-staff.md) depuis le 9 novembre 2026 :
+   la liste, jeu ou structure, est un paramètre) : une carte « Fonctions », avec la
    phrase « Ce que fait chaque membre d’une équipe de Valorant. » (pour un
    lecteur : « …, dans l’ordre de leur importance. ») et, pour qui a
    `games:manage`, « Ajouter une fonction » à droite. Sous la liste, pour qui

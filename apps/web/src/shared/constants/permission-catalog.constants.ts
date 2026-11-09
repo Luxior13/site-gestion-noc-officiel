@@ -3,6 +3,7 @@ import type { NavigationIconName } from '$constants/navigation-icon.constants';
 import type { NavigationSpaceTone } from '$constants/navigation-theme.constants';
 import { createPersonsPermissionCategory } from '$constants/persons-permission-category.constants';
 import { PAGE_PATHS } from '$constants/routes.constants';
+import { createStaffPermissionCategory } from '$constants/staff-permission-category.constants';
 
 // Permission catalogue: keys, poles, items and editor categories. The rules
 // that evaluate them live in permissions.constants.ts, which re-exports this
@@ -46,6 +47,10 @@ export const PERMISSIONS = {
   SETTINGS: {
     UPDATE: 'settings:update',
     VIEW: 'settings:view',
+  },
+  STAFF: {
+    MANAGE: 'staff:manage',
+    VIEW: 'staff:view',
   },
   TEAMS: {
     MANAGE: 'teams:manage',
@@ -204,6 +209,12 @@ export const PERMISSION_POLES = [
     icon: 'Handshake',
     key: 'legal',
     label: 'Relations',
+    tone: 'legal',
+  },
+  {
+    icon: 'ShieldCheck',
+    key: 'structure',
+    label: 'Structure',
     tone: 'legal',
   },
   {
@@ -419,6 +430,7 @@ export const ACCOUNT_PERMISSION_CATEGORIES: AccountPermissionCategory[] = [
 export const PERMISSION_CATEGORIES: PermissionCategory[] = [
   createPersonsPermissionCategory(PERMISSIONS.PERSONS),
   createGamesPermissionCategory(PERMISSIONS.GAMES, PERMISSIONS.TEAMS),
+  createStaffPermissionCategory(PERMISSIONS.STAFF),
   {
     accessPermissionKey: PERMISSIONS.USERS.VIEW,
     assignment: 'delegable',

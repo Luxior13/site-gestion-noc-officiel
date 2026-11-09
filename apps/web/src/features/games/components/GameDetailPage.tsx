@@ -219,8 +219,9 @@ const GameDetailContent: FC<ContentProps> = ({ activeSection, gameId }) => {
             <MemberFunctionsSection
               key={game.id}
               canManage={canManage}
-              game={game}
               onCountChange={setFunctionCount}
+              scope={{ gameId: game.id, type: 'game' }}
+              subject={`d’une équipe de ${game.name}`}
             />
           </section>
         ) : (

@@ -32,16 +32,30 @@ import {
   passageStateOn,
   type TeamPeopleCounts,
 } from '../passage.ui';
-import type { PassageItem } from '../types/passage.types';
+import type { PassageItem, PassageScope } from '../types/passage.types';
 
-/** What the Roster and the former members' tabs receive from the record. */
-export type TeamPassagesProps = {
+/**
+ * A place of passages as its page shows it: a team, or the structure on
+ * Bureau & staff (9 November 2026).
+ */
+export type PassagePlaceView = Readonly<{
+  /** Its former members' tab. */
+  formerHref: string;
+  /** Where its functions are managed: the game's record, or its own tab. */
+  functionsHref: string;
+  /** « Noctambule Academy », « la structure »: said in the window. */
+  name: string;
+  scope: PassageScope;
+}>;
+
+/** What the present and the former members' tabs receive from their page. */
+export type PassagePlaceProps = {
   canCreatePerson: boolean;
   canManage: boolean;
   canViewPersons: boolean;
   /** Keeps the counts of the tabs in step with the passages. */
   onCountsChange: (counts: TeamPeopleCounts) => void;
-  team: Readonly<{ gameId: string; id: string; name: string }>;
+  place: PassagePlaceView;
 };
 
 /** One focus ring per line, lit by the stretched name. */
@@ -65,9 +79,10 @@ type Props = {
   groups: readonly PassageGroup[];
   /** Opens the window of a passage, for who manages the roster. */
   onOpen: (passage: PassageItem) => void;
+  /** Named in each table's caption, for the assistive technologies. */
+  placeName: string;
   /** The Roster says whether each line is current or to come; the archive's are all former. */
   showStatus: boolean;
-  teamName: string;
   today: string;
 };
 
@@ -82,8 +97,8 @@ export const PassageLines: FC<Props> = ({
   canViewPersons,
   groups,
   onOpen,
+  placeName,
   showStatus,
-  teamName,
   today,
 }) => {
   const interactive = canManage || canViewPersons;
@@ -222,7 +237,7 @@ export const PassageLines: FC<Props> = ({
         {groups.map((group) => (
           <Table className={directoryStyles.table} key={group.id}>
             <TableCaption className="sr-only">
-              {`${group.label}, ${teamName} : fonction${showStatus ? ', statut' : ''}, début, fin et durée`}
+              {`${group.label}, ${placeName} : fonction${showStatus ? ', statut' : ''}, début, fin et durée`}
             </TableCaption>
             <TableHeader>
               <TableRow>

@@ -8,6 +8,7 @@ import {
   type JournalRow,
   projectJournalEvent,
 } from '$features/audit/server/audit-journal.projection';
+import { journeySourcesOf } from '$features/passages/journey-sources';
 import {
   countPeopleOn,
   formerLines,
@@ -18,6 +19,7 @@ import {
   passageStateBadge,
   passageStateOn,
   peopleCountsOf,
+  placeWordsOf,
   rosterLines,
 } from '$features/passages/passage.ui';
 import {
@@ -404,6 +406,36 @@ describe('a passage in the activity journal', () => {
     expect(JSON.stringify(projected)).not.toContain('Kaiz');
   });
 
+  it('names a passage of the structure by Bureau & staff, without team', () => {
+    const admin = {
+      id: 'admin',
+      isProtected: false,
+      permissions: null,
+      role: 'ADMIN' as const,
+    };
+    const projected = projectJournalEvent(
+      event({
+        metadata: {
+          after: { function: 'Trésorier' },
+          before: { function: 'Secrétaire' },
+          changes: ['function'],
+          functionName: 'Trésorier',
+          pageKey: 'staff',
+          poleKey: 'structure',
+          scopeName: 'Bureau & staff',
+        },
+        pageKey: 'staff',
+        poleKey: 'structure',
+      }),
+      getReaderRights(admin),
+      new Map(),
+    );
+    expect(projected.subject).toBe('Passage : Trésorier, Bureau & staff');
+    expect(projected.changes).toEqual([
+      { after: 'Trésorier', before: 'Secrétaire', label: 'Fonction' },
+    ]);
+  });
+
   it('labels the addition and the deletion of a passage', () => {
     const admin = {
       id: 'admin',
@@ -422,5 +454,38 @@ describe('a passage in the activity journal', () => {
           new Map(),
         ).label,
       ).toBe(label);
+  });
+});
+
+// Owner, 9 November 2026 (« ok go »): the structure keeps its own roster.
+describe('the Effectif of the structure', () => {
+  it('speaks of the Effectif, the board and the staff, where a team speaks of its Roster', () => {
+    const team = placeWordsOf('team');
+    const structure = placeWordsOf('structure');
+    expect([team.theList, team.toList, team.functionScope]).toEqual([
+      'le Roster',
+      'au Roster',
+      'game',
+    ]);
+    expect([
+      structure.theList,
+      structure.toList,
+      structure.ofList,
+      structure.functionScope,
+    ]).toEqual(['l’Effectif', 'à l’Effectif', 'de l’Effectif', 'structure']);
+    expect(structure.members).toBe('le bureau et le staff');
+    expect(structure.loadError).toBe('L’Effectif ne peut pas être chargé');
+  });
+
+  it('names the lists a reader of the Parcours may open, and only those', () => {
+    expect(journeySourcesOf({ structure: true, teams: true })).toBe(
+      'le Roster de chaque équipe et l’Effectif de Bureau & staff',
+    );
+    expect(journeySourcesOf({ structure: false, teams: true })).toBe(
+      'le Roster de chaque équipe',
+    );
+    expect(journeySourcesOf({ structure: true, teams: false })).toBe(
+      'l’Effectif de Bureau & staff',
+    );
   });
 });

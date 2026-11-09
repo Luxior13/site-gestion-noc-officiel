@@ -1,3 +1,4 @@
+import type { FunctionScopeType } from '$features/member-functions/member-function.constants';
 import type { StatusBadgeTone } from '$ui/status-badge';
 import {
   type ApproximateDate,
@@ -7,9 +8,60 @@ import {
 } from '$utils/approximate-date.utils';
 import { normalizeSearchText } from '$utils/search-text.utils';
 
-import type { JourneyItem, PassageItem } from './types/passage.types';
+import type {
+  JourneyItem,
+  PassageItem,
+  PassageScope,
+} from './types/passage.types';
 
 type Dated = Readonly<{ end: ApproximateDate | null; start: ApproximateDate }>;
+
+/** How a place says itself on screen: a team's Roster, the structure's Effectif. */
+export type PlaceWords = Readonly<{
+  /** The list of functions it chooses from. */
+  addFunctions: string;
+  /** « Ce jeu n’a pas encore de fonctions (Joueur, Coach…). » */
+  functionScope: FunctionScopeType;
+  /** « Les ajouter dans la fiche du jeu ». */
+  loadError: string;
+  /** « Le Roster ne peut pas être chargé ». */
+  members: string;
+  /** What an empty list invites to add. */
+  noFunctions: string;
+  /** « du Roster », « de l’Effectif ». */
+  ofList: string;
+  /** « le Roster », « l’Effectif ». */
+  theList: string;
+  /** « au Roster », « à l’Effectif ». */
+  toList: string;
+}>;
+
+const TEAM_WORDS: PlaceWords = {
+  addFunctions: 'Les ajouter dans la fiche du jeu',
+  functionScope: 'game',
+  loadError: 'Le Roster ne peut pas être chargé',
+  members: 'les joueurs et l’encadrement',
+  noFunctions: 'Ce jeu n’a pas encore de fonctions (Joueur, Coach…).',
+  ofList: 'du Roster',
+  theList: 'le Roster',
+  toList: 'au Roster',
+};
+
+/** « Effectif » for Bureau & staff, where « roster » would sound wrong. */
+const STRUCTURE_WORDS: PlaceWords = {
+  addFunctions: 'Les ajouter dans l’onglet Fonctions',
+  functionScope: 'structure',
+  loadError: 'L’Effectif ne peut pas être chargé',
+  members: 'le bureau et le staff',
+  noFunctions:
+    'La structure n’a pas encore de fonctions (Président, Graphiste…).',
+  ofList: 'de l’Effectif',
+  theList: 'l’Effectif',
+  toList: 'à l’Effectif',
+};
+
+export const placeWordsOf = (type: PassageScope['type']): PlaceWords =>
+  type === 'team' ? TEAM_WORDS : STRUCTURE_WORDS;
 
 export type PassageState = 'current' | 'former' | 'upcoming';
 

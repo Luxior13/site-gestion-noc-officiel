@@ -133,7 +133,11 @@ describe('planned pages and tabs', () => {
     expect(tabsOf('Fiche jeu')).toContain('Finances');
     expect(tabsOf('Fiche équipe')).toContain('Finances');
     expect(tabsOf('Fiche équipe')).toContain('Partenaires');
-    expect(tabsOf('Bureau & staff')).toEqual(['Effectif', 'Fonctions']);
+    expect(tabsOf('Bureau & staff')).toEqual([
+      'Effectif',
+      'Anciens membres',
+      'Fonctions',
+    ]);
     expect(tabsOf('Identité juridique')).not.toContain('Fonctions');
     // Tags were dropped (8 November 2026): the directory stays a single list.
     expect(tabsOf('Répertoire')).toEqual([]);
@@ -171,9 +175,9 @@ describe('planned pages and tabs', () => {
       expect(tab(page, label)).toBeDefined();
       expect(tab(page, label)?.managedIn).toBeUndefined();
     }
-    // The team's roster is in place since 9 November 2026; the structure's next.
+    // Both in place since 9 November 2026: the team's roster, then the structure's.
     expect(tab('Fiche équipe', 'Roster')?.phase).toBeNull();
-    expect(tab('Bureau & staff', 'Effectif')?.phase).toBe(1);
+    expect(tab('Bureau & staff', 'Effectif')?.phase).toBeNull();
     expect(tab('Fiche personne', 'Identité')?.upcoming).toContain(
       'anciens pseudos',
     );

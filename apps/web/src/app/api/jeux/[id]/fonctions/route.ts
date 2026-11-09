@@ -2,10 +2,10 @@ import type { NextRequest, NextResponse } from 'next/server';
 
 import { PERMISSIONS } from '$constants/permissions.constants';
 import { gameIdSchema } from '$features/games/schemas/game.schemas';
-import { createMemberFunctionSchema } from '$features/member-functions/schemas/member-function.schemas';
+import { gameFunctionSchemas } from '$features/member-functions/schemas/member-function.schemas';
 import {
-  createGameFunction,
-  listGameFunctions,
+  createFunction,
+  listFunctions,
 } from '$features/member-functions/server/member-function.service';
 import { requireAuth, requirePermission } from '$server/api-auth';
 import {
@@ -30,7 +30,9 @@ export async function GET(
   if (!gameId.success) return apiErrors.notFound('Jeu introuvable');
 
   try {
-    return apiSuccess(await listGameFunctions(gameId.data));
+    return apiSuccess(
+      await listFunctions({ gameId: gameId.data, type: 'game' }),
+    );
   } catch (error) {
     return serviceErrorResponse(error, { action: 'FUNCTION_LIST', request });
   }
@@ -48,7 +50,7 @@ export async function POST(
   if (!gameId.success) return apiErrors.notFound('Jeu introuvable');
   const body = await parseJsonBody(request);
   if (!body.success) return body.response;
-  const parsed = createMemberFunctionSchema.safeParse(body.data);
+  const parsed = gameFunctionSchemas.create.safeParse(body.data);
   if (!parsed.success) {
     return apiErrors.validation(
       'Informations de la fonction invalides',
@@ -58,7 +60,7 @@ export async function POST(
 
   try {
     return apiSuccess(
-      await createGameFunction(gameId.data, parsed.data, {
+      await createFunction({ gameId: gameId.data, type: 'game' }, parsed.data, {
         actor: auth.user,
         session: auth.session,
       }),

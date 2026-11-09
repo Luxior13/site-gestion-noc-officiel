@@ -12,7 +12,7 @@
 | Gabarit visé | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections), [onglet en lecture](../../../design/gabarits.md#onglets-dune-fiche) |
 | État d’harmonisation | Aligné à sa création le 9 novembre 2026 — voir [Harmonisation](../../../design/harmonisation.md#état-par-page) |
 | Point d’entrée | [PersonDetailPage](../../../../apps/web/src/features/persons/components/PersonDetailPage.tsx) → [PersonJourneySection](../../../../apps/web/src/features/passages/components/PersonJourneySection.tsx), sur `GET /api/personnes/[id]/parcours` ([service](../../../../apps/web/src/features/passages/server/person-journey.service.ts)) |
-| Contrôle d’accès | `persons:view` (la fiche) et `teams:view` (les Rosters d’où il se lit) : sans `teams:view`, l’onglet n’apparaît pas et l’API répond 403 ; aucun droit propre au parcours ([permissions](../../../domaines/permissions.md#page-répertoire)) |
+| Contrôle d’accès | `persons:view` (la fiche) et au moins un droit des listes d’où il se lit : `teams:view` (les Rosters des équipes), `staff:view` (l’Effectif de Bureau & staff, 9 novembre 2026) ; seuls les passages de ces listes sont rendus ; sans l’un ni l’autre, l’onglet n’apparaît pas et l’API répond 403 ; aucun droit propre au parcours ([permissions](../../../domaines/permissions.md#page-répertoire)) |
 | Chargement / erreur dédiés | section chargée à la demande ; trois lignes squelettes, puis « Le parcours ne peut pas être chargé » avec « Réessayer » ; fiche absente : 404 |
 
 ## Rôle et tâches principales
@@ -27,10 +27,13 @@ un passage se tient dans le Roster de son équipe.
 
 - Troisième onglet de la fiche, après Identité et Coordonnées, avec la flèche
   ↗ (icône `ArrowUpRight`) des onglets en lecture et, pour les technologies
-  d’assistance, « se modifie dans le Roster de chaque équipe » (`managedIn`
-  de `PageSection`). Premier onglet en lecture du site.
-- Bande en tête : « Le parcours se tient dans le Roster de chaque équipe :
-  chaque ligne ouvre son équipe. » et « Ouvrir les jeux » au bord droit.
+  d’assistance, « se modifie dans le Roster de chaque équipe et l’Effectif de
+  Bureau & staff » (`managedIn` de `PageSection`, selon les listes que le
+  lecteur voit). Premier onglet en lecture du site.
+- Bande en tête : « Le parcours se tient dans le Roster de chaque équipe et
+  l’Effectif de Bureau & staff : chaque ligne ouvre sa page. », puis « Ouvrir
+  les jeux » et « Ouvrir Bureau & staff » au bord droit, chacun pour qui voit
+  sa liste.
 - Deux blocs, jamais mélangés, comme le Roster et ses anciens membres :
   **En cours et à venir** (les passages en cours par leur début, puis ceux à
   venir), puis **Terminés** (la fin la plus récente d’abord). Un tableau du
@@ -38,32 +41,36 @@ un passage se tient dans le Roster de son équipe.
   son jeu, « · équipe inactive » au besoin), Fonction, Statut (Actuel, À
   venir, Ancien), Début, Fin, Durée (règle des
   [fondations](../../../design/fondations.md#rédaction-des-textes-visibles)).
-- Chaque ligne ouvre son équipe : le Roster pour un passage en cours ou à
-  venir, ses anciens membres (`?section=anciens`) pour un passage terminé.
-  Un passage de la structure (Bureau & staff, à venir) s’affichera « La
-  structure », sans lien.
+- Chaque ligne ouvre sa page : le Roster de l’équipe, ou l’Effectif de
+  Bureau & staff, pour un passage en cours ou à venir ; leurs anciens membres
+  (`?section=anciens`) pour un passage terminé. Une ligne de la structure
+  porte la vignette de la structure (`StructureAvatar`), « Bureau & staff » et
+  dessous « La structure » (9 novembre 2026).
 - Sous 56 rem de liste, les cartes du Répertoire, un bandeau par bloc, la
   période et la durée en toutes lettres.
 - Vide : « Aucun passage pour l’instant » (« Un passage s’ajoute dans le
-  Roster d’une équipe ; il s’affiche ici. »).
+  Roster de chaque équipe et l’Effectif de Bureau & staff ; il s’affiche
+  ici. », selon les listes que le lecteur voit).
 
 ## Décisions retenues
 
 - 9 novembre 2026 : le parcours se lit ici et se modifie dans le Roster de
   chaque équipe (onglet en lecture ↗, règle du 8 novembre 2026) ; pas de page
   « Parcours » séparée ([registre historique](../../../domaines/registre-historique.md)).
-- Droits : `persons:view` et `teams:view`, sans droit nouveau. Le parcours
-  montre les Rosters d’où il vient : un lecteur du Répertoire qui ne voit pas
-  les équipes ne le voit pas (choix du 9 novembre 2026, qui précise
-  « le Parcours suivra `persons:view` » du cadrage).
+- Droits : `persons:view` et le droit de chaque liste lue, sans droit
+  nouveau. Le parcours montre les Rosters et l’Effectif d’où il vient : un
+  lecteur du Répertoire ne voit que les passages des listes qu’il voit
+  (`teams:view`, `staff:view`), et pas d’onglet s’il n’en voit aucune (choix
+  du 9 novembre 2026, qui précise « le Parcours suivra `persons:view` » du
+  cadrage).
 - En cours et à venir d’un côté, terminés de l’autre, comme la fiche équipe
   (« je ne veux pas mélanger les anciens avec les en cours et à venir »,
   9 novembre 2026).
 
 ## Points ouverts
 
-- Les tournois joués (étape 5) et les passages de Bureau & staff (étape 1,
-  page à venir) s’y ajouteront.
+- Les tournois joués (étape 5) s’y ajouteront ; les passages de Bureau &
+  staff y sont depuis le 9 novembre 2026.
 - Le statut « Dans la structure » sera calculé depuis ces passages, une fois
   les membres actuels saisis.
 
@@ -87,5 +94,16 @@ inactive), liens vers le Roster ou les anciens membres, colonnes alignées
 entre les blocs, cartes en dessous ; sans `teams:view`, ni onglet ni contenu ;
 fiche sans passage ; aucun débordement, aucune erreur JavaScript ; fiche
 personne à 270 399 octets compressés.
+
+Le 9 novembre 2026, lignes de la structure : `passages` (sources nommées
+selon les droits) ; `staff-postgres` : un administrateur lit les deux
+passages, un lecteur du Répertoire et de Bureau & staff la seule ligne de la
+structure, un lecteur des équipes la seule ligne d’équipe, `staff:view` sans
+`persons:view` refusé ; banc client à 1 440, 1 024, 768, 390 et 320 px :
+ligne « Bureau & staff · La structure » vers `/structure/bureau-staff`,
+« Ouvrir les jeux » et « Ouvrir Bureau & staff », texte accessible de
+l’onglet ; lecteur de la seule structure : une ligne, un bouton ; aucun
+débordement, aucune erreur JavaScript ; fiche personne à 271 182 octets
+compressés.
 
 Limites : E2E non rejoués ; base de développement non migrée par moi.

@@ -5,6 +5,8 @@ import { AuditAction, AuditCategory } from '@repo/database';
 
 import { FEATURES } from '$constants/feature-registry.constants';
 import { PERMISSIONS } from '$constants/permissions.constants';
+import type { TeamPeopleCounts } from '$features/passages/passage.ui';
+import { countPlacePeople } from '$features/passages/server/passage-counts';
 import {
   isPrismaForeignKeyError,
   isPrismaUniqueConstraintError,
@@ -73,42 +75,6 @@ const WITH_GAME = {
 } as const;
 type TeamRow = Prisma.TeamGetPayload<{ include: typeof WITH_GAME }>;
 
-/** Today, in the calendar the dates of a passage are kept in. */
-const todayDate = (): Date =>
-  new Date(`${new Date().toISOString().slice(0, 10)}T00:00:00.000Z`);
-
-/** The people in a team's roster today, each once whatever their functions. */
-type PeopleCounts = Readonly<{ formerCount: number; memberCount: number }>;
-
-/**
- * The counts of the record's tabs, each person once: there today (Roster),
- * with an ended passage (former members, 9 November 2026).
- */
-const countPeople = async (
-  client: Prisma.TransactionClient,
-  teamId: string,
-): Promise<PeopleCounts> => {
-  const today = todayDate();
-  const people = async (
-    where: Prisma.PersonPassageWhereInput,
-  ): Promise<number> =>
-    (
-      await client.personPassage.findMany({
-        distinct: ['personId'],
-        select: { personId: true },
-        where: { ...where, teamId },
-      })
-    ).length;
-
-  return {
-    formerCount: await people({ endOn: { lt: today } }),
-    memberCount: await people({
-      OR: [{ endOn: null }, { endOn: { gte: today } }],
-      startOn: { lte: today },
-    }),
-  };
-};
-
 const toTeamItem = (team: Omit<TeamRow, '_count' | 'game'>): TeamItem => ({
   founded: {
     date: team.foundedOn.toISOString().slice(0, 10),
@@ -123,7 +89,7 @@ const toTeamItem = (team: Omit<TeamRow, '_count' | 'game'>): TeamItem => ({
   version: team.version,
 });
 
-const toTeamDetail = (team: TeamRow, counts: PeopleCounts): TeamDetail => ({
+const toTeamDetail = (team: TeamRow, counts: TeamPeopleCounts): TeamDetail => ({
   ...toTeamItem(team),
   ...counts,
   game: team.game,
@@ -230,7 +196,7 @@ export const getTeam = async (id: string): Promise<TeamDetail> => {
   });
   if (!team) throw teamMissing();
 
-  return toTeamDetail(team, await countPeople(prisma, team.id));
+  return toTeamDetail(team, await countPlacePeople(prisma, team.id));
 };
 
 /** Adds a team to a game; its name is unique within the game only. */
@@ -318,7 +284,7 @@ export const updateTeam = async (
       // The formatted date differs whenever the date or its precision does.
       const changes = changedKeys(before, after);
       if (changes.length === 0)
-        return toTeamDetail(previous, await countPeople(transaction, id));
+        return toTeamDetail(previous, await countPlacePeople(transaction, id));
       const result = await transaction.team.updateMany({
         data: { ...editableData(input), version: { increment: 1 } },
         where: { id, version: input.expectedVersion },
@@ -329,7 +295,7 @@ export const updateTeam = async (
           include: WITH_GAME,
           where: { id },
         }),
-        await countPeople(transaction, id),
+        await countPlacePeople(transaction, id),
       );
       await audit(transaction, {
         action: 'TEAM_UPDATE',

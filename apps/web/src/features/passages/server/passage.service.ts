@@ -3,15 +3,11 @@ import 'server-only';
 import type { Prisma } from '@prisma/client';
 import { AuditAction, AuditCategory } from '@repo/database';
 
-import { FEATURES } from '$constants/feature-registry.constants';
-import { PERMISSIONS } from '$constants/permissions.constants';
 import { compareMemberFunctions } from '$features/member-functions/member-function.constants';
 import { normalizePersonSearchValue } from '$features/persons/person.utils';
 import { createAuditLogWithHeaders } from '$server/audit-log';
 import { prisma } from '$server/prisma';
-import { ServiceError, serviceErrors } from '$server/service-error';
 import { authorizeUserAction } from '$server/user-action-authorization';
-import { ErrorCode } from '$types/api.types';
 import type { SessionType, UserType } from '$types/auth.types';
 import {
   type ApproximateDate,
@@ -28,26 +24,29 @@ import type {
   PassageItem,
   PassagePerson,
   PassagePersonResults,
-  TeamRoster,
+  PassageRoster,
+  PassageScope,
 } from '../types/passage.types';
+import {
+  managePermissionOf,
+  type PassagePlace,
+  placeAuditMetadata,
+  placeErrors,
+  resolvePlace,
+  teamIdOf,
+} from './passage-place';
 
 export type PassageActor = Readonly<{
   actor: Pick<UserType, 'id'>;
   session: SessionType | null;
 }>;
 
+/** The team is said for a team's passage only. */
 type AuditValues = Readonly<{
   end: string;
   function: string;
   start: string;
-  team: string;
-}>;
-
-type TeamRef = Readonly<{
-  gameId: string;
-  gameName: string;
-  id: string;
-  name: string;
+  team?: string;
 }>;
 
 const PERSON_REF = {
@@ -76,39 +75,20 @@ type FunctionRow = Prisma.MemberFunctionGetPayload<{
 /** Suggestions shown under the person field (owner: « en afficher moins »). */
 const PICKER_LIMIT = 6;
 
-const fieldError = (
-  status: 400 | 409,
-  field: string,
-  message: string,
-): ServiceError =>
-  new ServiceError(
-    status === 409 ? ErrorCode.CONFLICT : ErrorCode.VALIDATION_ERROR,
-    message,
-    status,
-    { details: { [field]: [message] } },
-  );
-const teamMissing = (): ServiceError =>
-  serviceErrors.notFound('Cette équipe n’existe plus. Rechargez la page.');
-const personMissing = (): ServiceError =>
-  fieldError(400, 'personId', 'Cette fiche n’existe plus dans le Répertoire.');
-const functionOutside = (): ServiceError =>
-  fieldError(400, 'functionId', 'Choisissez une fonction du jeu de l’équipe.');
-const passageMissing = (): ServiceError =>
-  serviceErrors.notFound('Ce passage n’existe plus. Rechargez le Roster.');
-const passageChanged = (): ServiceError =>
-  serviceErrors.conflict(
-    'Ce passage a été modifié entre-temps. Rechargez le Roster avant de recommencer.',
-  );
-/** The base refuses two identical passages at once (`PersonPassage_no_overlap`). */
-const overlapping = (field: 'at' | 'start'): ServiceError =>
-  fieldError(
-    409,
-    field,
-    'Cette personne a déjà cette fonction dans l’équipe sur cette période.',
-  );
-
 const violates = (error: unknown, name: string): boolean =>
   error instanceof Error && error.message.includes(name);
+
+/** A refusal of the base, said in the words of the place. */
+const baseRefusal = (
+  scope: PassageScope,
+  error: unknown,
+  field: 'at' | 'start',
+): unknown =>
+  violates(error, 'PersonPassage_no_overlap')
+    ? placeErrors(scope.type).overlapping(field)
+    : violates(error, 'PersonPassage_function_scope')
+      ? placeErrors(scope.type).functionOutside()
+      : error;
 
 const dateOnly = (value: Date): string => value.toISOString().slice(0, 10);
 const asDate = (value: string): Date => new Date(`${value}T00:00:00.000Z`);
@@ -170,8 +150,8 @@ const toItem = (row: PassageRow): PassageItem => ({
 });
 
 /**
- * Players first, then the staff, each in the order of the functions; then
- * the earliest start; then the name.
+ * Players (or the board) first, then the staff, each in the order of the
+ * functions; then the earliest start; then the name.
  */
 const comparePassages = (left: PassageItem, right: PassageItem): number =>
   compareMemberFunctions(left.function, right.function) ||
@@ -199,12 +179,12 @@ const auditValues = (
     functionName: string;
     start: ApproximateDate;
   }>,
-  team: TeamRef,
+  place: PassagePlace,
 ): AuditValues => ({
   end: passage.end ? formatApproximateDate(passage.end) : 'En cours',
   function: passage.functionName,
   start: formatApproximateDate(passage.start),
-  team: `${team.name} (${team.gameName})`,
+  ...(place.team ? { team: place.label } : {}),
 });
 
 const changedKeys = (
@@ -228,7 +208,7 @@ const pick = (
 
 /**
  * A passage is traced on the record it concerns (its history shows it), by
- * its function and team, never by the person's name: the journal names the
+ * its function and place, never by the person's name: the journal names the
  * record only to who may read it.
  */
 const audit = (
@@ -243,7 +223,7 @@ const audit = (
     functionName: string;
     passageId: string;
     personId: string;
-    team: TeamRef;
+    place: PassagePlace;
   },
 ): Promise<void> =>
   createAuditLogWithHeaders(
@@ -258,13 +238,8 @@ const audit = (
         before: input.before,
         changes: input.changes,
         functionName: input.functionName,
-        gameId: input.team.gameId,
-        gameName: input.team.gameName,
         passageId: input.passageId,
-        teamId: input.team.id,
-        teamName: input.team.name,
-        // The roster lives in the team's record, under the Jeux page.
-        ...FEATURES.games.audit,
+        ...placeAuditMetadata(input.place),
       },
       targetUserId: null,
       userId: input.actorId,
@@ -272,70 +247,52 @@ const audit = (
     { client: transaction, required: true },
   );
 
-const findTeam = async (
-  client: Prisma.TransactionClient,
-  id: string,
-): Promise<TeamRef> => {
-  const team = await client.team.findUnique({
-    select: {
-      game: { select: { name: true } },
-      gameId: true,
-      id: true,
-      name: true,
-    },
-    where: { id },
-  });
-  if (!team) throw teamMissing();
-
-  return {
-    gameId: team.gameId,
-    gameName: team.game.name,
-    id: team.id,
-    name: team.name,
-  };
-};
-
-/** A function of the team's game, active or not (an inactive one never blocks). */
+/**
+ * A function of the place's list, active or not (an inactive one never
+ * blocks): the team's game, or the structure.
+ */
 const findFunction = async (
   client: Prisma.TransactionClient,
-  team: TeamRef,
+  scope: PassageScope,
+  place: PassagePlace,
   id: string,
 ): Promise<FunctionRow> => {
   const row = await client.memberFunction.findFirst({
     select: FUNCTION_REF,
-    where: { gameId: team.gameId, id },
+    where: { gameId: place.gameId, id },
   });
-  if (!row) throw functionOutside();
+  if (!row) throw placeErrors(scope.type).functionOutside();
 
   return row;
 };
 
 const findPassage = async (
   client: Prisma.TransactionClient,
-  team: TeamRef,
+  scope: PassageScope,
+  place: PassagePlace,
   id: string,
 ): Promise<PassageRow> => {
   const row = await client.personPassage.findFirst({
     include: WITH_REFS,
-    where: { id, teamId: team.id },
+    where: { id, teamId: teamIdOf(place) },
   });
-  if (!row) throw passageMissing();
+  if (!row) throw placeErrors(scope.type).missing();
 
   return row;
 };
 
 const readRoster = async (
   client: Prisma.TransactionClient,
-  team: TeamRef,
-): Promise<TeamRoster> => {
+  place: PassagePlace,
+): Promise<PassageRoster> => {
   const [functions, passages] = await Promise.all([
     client.memberFunction.findMany({
       select: FUNCTION_REF,
-      where: { gameId: team.gameId },
+      where: { gameId: place.gameId },
     }),
     client.personPassage.findMany({
       include: WITH_REFS,
-      where: { teamId: team.id },
+      where: { teamId: teamIdOf(place) },
     }),
   ]);
 
@@ -345,19 +302,27 @@ const readRoster = async (
   };
 };
 
-const authorize = (
+/**
+ * The place, once its right is checked: a team's roster follows the teams,
+ * the structure's Bureau & staff (9 November 2026).
+ */
+const openPlace = async (
   transaction: Prisma.TransactionClient,
+  scope: PassageScope,
   { actor, session }: PassageActor,
-): Promise<unknown> =>
-  authorizeUserAction(
+): Promise<PassagePlace> => {
+  await authorizeUserAction(
     transaction,
     { actorId: actor.id, session },
-    PERMISSIONS.TEAMS.MANAGE,
+    managePermissionOf(scope),
   );
 
-/** The roster of a team, every passage, and the functions of its game. */
-export const getTeamRoster = async (teamId: string): Promise<TeamRoster> =>
-  readRoster(prisma, await findTeam(prisma, teamId));
+  return resolvePlace(transaction, scope);
+};
+
+/** The passages of a place, every one, and its functions. */
+export const getRoster = async (scope: PassageScope): Promise<PassageRoster> =>
+  readRoster(prisma, await resolvePlace(prisma, scope));
 
 /**
  * Records of the Répertoire whose pseudo, first name or last name contain
@@ -390,24 +355,29 @@ export const searchPassagePersons = async (
   };
 };
 
-/** Adds a passage to a team: a person, a function of its game, two dates. */
+/** Adds a passage: a person, a function of the place, two dates. */
 export const createPassage = async (
-  teamId: string,
+  scope: PassageScope,
   input: PassageCreateInput,
   actor: PassageActor,
-): Promise<TeamRoster> => {
+): Promise<PassageRoster> => {
   try {
     return await prisma.$transaction(async (transaction) => {
-      await authorize(transaction, actor);
-      const team = await findTeam(transaction, teamId);
+      const place = await openPlace(transaction, scope, actor);
       const person = await transaction.person.findUnique({
         select: { id: true },
         where: { id: input.personId },
       });
-      if (!person) throw personMissing();
+      if (!person)
+        throw placeErrors(scope.type).field(
+          400,
+          'personId',
+          'Cette fiche n’existe plus dans le Répertoire.',
+        );
       const memberFunction = await findFunction(
         transaction,
-        team,
+        scope,
+        place,
         input.functionId,
       );
       const created = await transaction.personPassage.create({
@@ -415,12 +385,12 @@ export const createPassage = async (
           ...writeDates(input),
           functionId: memberFunction.id,
           personId: person.id,
-          teamId: team.id,
+          teamId: teamIdOf(place),
         },
       });
       const after = auditValues(
         { ...input, functionName: memberFunction.name },
-        team,
+        place,
       );
       await audit(transaction, {
         action: 'PASSAGE_CREATE',
@@ -428,20 +398,17 @@ export const createPassage = async (
         after,
         before: null,
         changes: Object.keys(after),
-        description: `Passage ajouté : ${memberFunction.name}, ${team.name} (${team.gameName})`,
+        description: `Passage ajouté : ${memberFunction.name}, ${place.label}`,
         functionName: memberFunction.name,
         passageId: created.id,
         personId: person.id,
-        team,
+        place,
       });
 
-      return readRoster(transaction, team);
+      return readRoster(transaction, place);
     });
   } catch (error) {
-    if (violates(error, 'PersonPassage_no_overlap')) throw overlapping('start');
-    if (violates(error, 'PersonPassage_function_scope'))
-      throw functionOutside();
-    throw error;
+    throw baseRefusal(scope, error, 'start');
   }
 };
 
@@ -451,32 +418,35 @@ export const createPassage = async (
  * unchanged form answers the roster without writing.
  */
 export const updatePassage = async (
-  teamId: string,
+  scope: PassageScope,
   passageId: string,
   input: PassageInput & { expectedVersion: number },
   actor: PassageActor,
-): Promise<TeamRoster> => {
+): Promise<PassageRoster> => {
+  const errors = placeErrors(scope.type);
   try {
     return await prisma.$transaction(async (transaction) => {
-      await authorize(transaction, actor);
-      const team = await findTeam(transaction, teamId);
-      const previous = toItem(await findPassage(transaction, team, passageId));
-      if (previous.version !== input.expectedVersion) throw passageChanged();
+      const place = await openPlace(transaction, scope, actor);
+      const previous = toItem(
+        await findPassage(transaction, scope, place, passageId),
+      );
+      if (previous.version !== input.expectedVersion) throw errors.changed();
       const memberFunction = await findFunction(
         transaction,
-        team,
+        scope,
+        place,
         input.functionId,
       );
       const before = auditValues(
         { ...previous, functionName: previous.function.name },
-        team,
+        place,
       );
       const after = auditValues(
         { ...input, functionName: memberFunction.name },
-        team,
+        place,
       );
       const changes = changedKeys(before, after);
-      if (changes.length === 0) return readRoster(transaction, team);
+      if (changes.length === 0) return readRoster(transaction, place);
       const result = await transaction.personPassage.updateMany({
         data: {
           ...writeDates(input),
@@ -485,31 +455,28 @@ export const updatePassage = async (
         },
         where: {
           id: passageId,
-          teamId: team.id,
+          teamId: teamIdOf(place),
           version: input.expectedVersion,
         },
       });
-      if (result.count !== 1) throw passageChanged();
+      if (result.count !== 1) throw errors.changed();
       await audit(transaction, {
         action: 'PASSAGE_UPDATE',
         actorId: actor.actor.id,
         after: pick(after, changes),
         before: pick(before, changes),
         changes,
-        description: `Passage modifié : ${memberFunction.name}, ${team.name} (${team.gameName})`,
+        description: `Passage modifié : ${memberFunction.name}, ${place.label}`,
         functionName: memberFunction.name,
         passageId,
         personId: previous.person.id,
-        team,
+        place,
       });
 
-      return readRoster(transaction, team);
+      return readRoster(transaction, place);
     });
   } catch (error) {
-    if (violates(error, 'PersonPassage_no_overlap')) throw overlapping('start');
-    if (violates(error, 'PersonPassage_function_scope'))
-      throw functionOutside();
-    throw error;
+    throw baseRefusal(scope, error, 'start');
   }
 };
 
@@ -519,34 +486,37 @@ export const updatePassage = async (
  * transaction and two traces. A planned end moves to the new passage.
  */
 export const changePassageFunction = async (
-  teamId: string,
+  scope: PassageScope,
   passageId: string,
   input: PassageChangeInput,
   actor: PassageActor,
-): Promise<TeamRoster> => {
+): Promise<PassageRoster> => {
+  const errors = placeErrors(scope.type);
   try {
     return await prisma.$transaction(async (transaction) => {
-      await authorize(transaction, actor);
-      const team = await findTeam(transaction, teamId);
-      const previous = toItem(await findPassage(transaction, team, passageId));
-      if (previous.version !== input.expectedVersion) throw passageChanged();
+      const place = await openPlace(transaction, scope, actor);
+      const previous = toItem(
+        await findPassage(transaction, scope, place, passageId),
+      );
+      if (previous.version !== input.expectedVersion) throw errors.changed();
       if (input.functionId === previous.function.id)
-        throw fieldError(400, 'functionId', 'Choisissez une autre fonction.');
+        throw errors.field(400, 'functionId', 'Choisissez une autre fonction.');
       if (input.at.date < previous.start.date)
-        throw fieldError(
+        throw errors.field(
           400,
           'at',
           'Le changement ne peut pas précéder le début du passage.',
         );
       if (previous.end && input.at.date > approximateDateEnd(previous.end))
-        throw fieldError(
+        throw errors.field(
           400,
           'at',
           'Ce passage est terminé avant cette date : ajoutez plutôt un nouveau passage.',
         );
       const memberFunction = await findFunction(
         transaction,
-        team,
+        scope,
+        place,
         input.functionId,
       );
       const result = await transaction.personPassage.updateMany({
@@ -557,14 +527,14 @@ export const changePassageFunction = async (
         },
         where: {
           id: passageId,
-          teamId: team.id,
+          teamId: teamIdOf(place),
           version: input.expectedVersion,
         },
       });
-      if (result.count !== 1) throw passageChanged();
+      if (result.count !== 1) throw errors.changed();
       const before = auditValues(
         { ...previous, functionName: previous.function.name },
-        team,
+        place,
       );
       const ended = auditValues(
         {
@@ -572,7 +542,7 @@ export const changePassageFunction = async (
           end: input.at,
           functionName: previous.function.name,
         },
-        team,
+        place,
       );
       await audit(transaction, {
         action: 'PASSAGE_UPDATE',
@@ -580,11 +550,11 @@ export const changePassageFunction = async (
         after: pick(ended, ['end']),
         before: pick(before, ['end']),
         changes: ['end'],
-        description: `Passage terminé (changement de fonction) : ${previous.function.name}, ${team.name} (${team.gameName})`,
+        description: `Passage terminé (changement de fonction) : ${previous.function.name}, ${place.label}`,
         functionName: previous.function.name,
         passageId,
         personId: previous.person.id,
-        team,
+        place,
       });
       const next = { end: previous.end, start: input.at };
       const created = await transaction.personPassage.create({
@@ -592,12 +562,12 @@ export const changePassageFunction = async (
           ...writeDates(next),
           functionId: memberFunction.id,
           personId: previous.person.id,
-          teamId: team.id,
+          teamId: teamIdOf(place),
         },
       });
       const after = auditValues(
         { ...next, functionName: memberFunction.name },
-        team,
+        place,
       );
       await audit(transaction, {
         action: 'PASSAGE_CREATE',
@@ -605,42 +575,45 @@ export const changePassageFunction = async (
         after,
         before: null,
         changes: Object.keys(after),
-        description: `Passage ajouté (changement de fonction) : ${memberFunction.name}, ${team.name} (${team.gameName})`,
+        description: `Passage ajouté (changement de fonction) : ${memberFunction.name}, ${place.label}`,
         functionName: memberFunction.name,
         passageId: created.id,
         personId: previous.person.id,
-        team,
+        place,
       });
 
-      return readRoster(transaction, team);
+      return readRoster(transaction, place);
     });
   } catch (error) {
-    if (violates(error, 'PersonPassage_no_overlap')) throw overlapping('at');
-    if (violates(error, 'PersonPassage_function_scope'))
-      throw functionOutside();
-    throw error;
+    throw baseRefusal(scope, error, 'at');
   }
 };
 
 /** Deletes a passage entered by mistake; the journal keeps its trace. */
 export const deletePassage = async (
-  teamId: string,
+  scope: PassageScope,
   passageId: string,
   expectedVersion: number,
   actor: PassageActor,
-): Promise<TeamRoster> =>
+): Promise<PassageRoster> =>
   prisma.$transaction(async (transaction) => {
-    await authorize(transaction, actor);
-    const team = await findTeam(transaction, teamId);
-    const previous = toItem(await findPassage(transaction, team, passageId));
-    if (previous.version !== expectedVersion) throw passageChanged();
+    const errors = placeErrors(scope.type);
+    const place = await openPlace(transaction, scope, actor);
+    const previous = toItem(
+      await findPassage(transaction, scope, place, passageId),
+    );
+    if (previous.version !== expectedVersion) throw errors.changed();
     const result = await transaction.personPassage.deleteMany({
-      where: { id: passageId, teamId: team.id, version: expectedVersion },
+      where: {
+        id: passageId,
+        teamId: teamIdOf(place),
+        version: expectedVersion,
+      },
     });
-    if (result.count !== 1) throw passageChanged();
+    if (result.count !== 1) throw errors.changed();
     const before = auditValues(
       { ...previous, functionName: previous.function.name },
-      team,
+      place,
     );
     await audit(transaction, {
       action: 'PASSAGE_DELETE',
@@ -648,12 +621,12 @@ export const deletePassage = async (
       after: null,
       before,
       changes: Object.keys(before),
-      description: `Passage supprimé : ${previous.function.name}, ${team.name} (${team.gameName})`,
+      description: `Passage supprimé : ${previous.function.name}, ${place.label}`,
       functionName: previous.function.name,
       passageId,
       personId: previous.person.id,
-      team,
+      place,
     });
 
-    return readRoster(transaction, team);
+    return readRoster(transaction, place);
   });

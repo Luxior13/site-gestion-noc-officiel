@@ -60,6 +60,8 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'people',
+    // The games a person plays: a list of choices, picked on the record.
+    chantier: 'reference-lists',
     name: 'Fiche personne',
     phase: null,
     tabs: [
@@ -69,7 +71,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         phase: null,
         summary: 'Pseudo, nom, naissance, zone dangereuse.',
         upcoming:
-          'Statut calculé depuis le parcours, nationalité, jeux pratiqués et anciens pseudos, y compris ceux d’avant le site.',
+          'Statut calculé depuis le parcours, nationalité et anciens pseudos, y compris ceux d’avant le site.',
       },
       {
         chantier: 'sport-teams',
@@ -80,14 +82,13 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'Adresse, identifiants de jeu, contact d’urgence et représentants légaux.',
       },
       {
-        chantier: 'sport-teams',
+        chantier: 'competitions',
         label: 'Parcours',
         managedIn: 'le Roster de chaque équipe et l’Effectif de Bureau & staff',
         phase: null,
         summary:
-          'En lecture : chaque passage dans une équipe, en cours et à venir puis terminés, avec le jeu, la fonction, le statut, le début, la fin et la durée. Chaque ligne ouvre son équipe, ses anciens membres pour un passage terminé.',
-        upcoming:
-          'Les passages de Bureau & staff, avec leur page ; puis les tournois joués (étape 5).',
+          'En lecture : chaque passage dans une équipe ou dans la structure (Bureau & staff), en cours et à venir puis terminés, avec la fonction, le statut, le début, la fin et la durée. Chaque ligne ouvre sa page, ses anciens membres pour un passage terminé ; seules les listes que le lecteur peut voir.',
+        upcoming: 'Les tournois joués.',
       },
       {
         chantier: 'person-relationships',
@@ -125,6 +126,8 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'Notes, sanctions de la structure (tous ses tournois ou un jeu, motif, durée, levée) et bans externes qui dépassent un tournoi ; les problèmes et bans d’un tournoi y figurent aussi, saisis dans sa fiche. Réservé aux personnes habilitées.',
       },
     ],
+    upcoming:
+      'Les jeux pratiqués, choisis dans Identité avec un champ à choix multiples, le jeu manquant ajouté sans quitter la fiche.',
   },
   {
     area: 'esport',
@@ -137,20 +140,21 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'esport',
-    chantier: 'sport-teams',
+    // What it still gains is its Finances tab, with the treasury.
+    chantier: 'payments',
     name: 'Fiche jeu',
     phase: null,
     summary:
       'Ouverte par le nom d’un jeu sur la page Jeux, ou juste après son ajout.',
     tabs: [
       {
-        chantier: 'sport-teams',
+        chantier: 'access-scopes',
         label: 'Fonctions',
         phase: null,
         summary:
-          'Premier onglet : les fonctions de ce jeu (Joueur, Remplaçant, Coach…), type Joueur ou Encadrement, active ou non ; rangées par glisser-déposer selon leur importance, actives ou non, ordre repris partout ; ajout et modification en fenêtre, fonctions courantes en un clic quand la liste est vide ; une fonction inactive reste choisissable pour un passage ancien.',
+          'Premier onglet : les fonctions de ce jeu (Joueur, Remplaçant, Coach…), type Joueur ou Encadrement, active ou non, avec leur nombre de passages ; rangées par glisser-déposer selon leur importance, actives ou non, ordre repris partout ; ajout et modification en fenêtre, fonctions courantes en un clic quand la liste est vide ; une fonction inactive reste choisissable pour un passage ancien.',
         upcoming:
-          'Le nombre de passages de chaque fonction avec le Roster ; le réglage « Donne accès à son équipe » viendra avec l’accès des managers.',
+          'Le réglage « Donne accès à son équipe » viendra avec l’accès des managers.',
       },
       {
         chantier: 'payments',
@@ -167,8 +171,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'Dernier onglet : nom, nom court, première ouverture, actif, modifiés sur place ; zone dangereuse, qui explique « rendez-le inactif » quand le jeu a des équipes.',
       },
     ],
-    upcoming:
-      'Avec le Roster, le nombre de passages de chaque fonction ; puis l’onglet Finances ↗, entre Fonctions et Informations.',
+    upcoming: 'L’onglet Finances ↗, entre Fonctions et Informations.',
   },
   {
     area: 'esport',

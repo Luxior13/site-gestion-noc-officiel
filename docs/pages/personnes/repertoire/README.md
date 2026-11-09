@@ -41,7 +41,7 @@ structure » dans le journal (AC-32).
 
 - **Accès** : lecture `persons:view`, création `persons:create`, identité
   `persons:update`, coordonnées `persons:update_contact`, suppression
-  `persons:delete`, parcours `persons:view` et `teams:view` ; contrôles
+  `persons:delete`, parcours `persons:view` et `teams:view` ou `staff:view` ; contrôles
   serveur sous `/api/personnes`. Référence :
   [page Répertoire](../../../domaines/permissions.md#page-répertoire).
 - **Cadre de la fiche** : [PersonDetailPage](../../../../apps/web/src/features/persons/components/PersonDetailPage.tsx)

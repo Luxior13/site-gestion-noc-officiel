@@ -14,6 +14,7 @@ import React, {
 import { ContentState } from '$components/layout/ContentState';
 import { FEATURES } from '$constants/feature-registry.constants';
 import { teamDetailPath } from '$constants/routes.constants';
+import { StructureAvatar } from '$features/staff/components/StructureAvatar';
 import { TeamAvatar } from '$features/teams/components/TeamAvatar';
 import { Button } from '$ui/button';
 import { DataTableSection } from '$ui/data-table-section';
@@ -35,6 +36,7 @@ import {
 } from '$utils/approximate-date.utils';
 import { cn } from '$utils/css.utils';
 
+import { type JourneyReach, journeySourcesOf } from '../journey-sources';
 import { fetchPersonJourney } from '../passage.api';
 import {
   journeyBlocks,
@@ -61,13 +63,15 @@ type Block = Readonly<{
 /**
  * The Parcours tab of a person's record (owner, 9 November 2026: « il faut
  * ajouter l'onglet Parcours, du coup, maintenant, par rapport au Roster »):
- * every passage, read from the Roster of each team, where it is kept. What is
- * there and coming, then what ended, never mixed; each line opens its team,
- * the former ones its former members. Nothing is changed here.
+ * every passage the reader may see, read from the Roster of each team or the
+ * Effectif of Bureau & staff, where it is kept. What is there and coming,
+ * then what ended, never mixed; each line opens its page, the former ones its
+ * former members. Nothing is changed here.
  */
-export const PersonJourneySection: FC<{ personId: string }> = ({
-  personId,
-}) => {
+export const PersonJourneySection: FC<{
+  personId: string;
+  reach: JourneyReach;
+}> = ({ personId, reach }) => {
   const [journey, setJourney] = useState<PersonJourney | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const today = useRef(getLocalToday()).current;
@@ -113,43 +117,48 @@ export const PersonJourneySection: FC<{ personId: string }> = ({
     { id: 'termine', items: former, label: 'Terminés' },
   ].filter((block) => block.items.length > 0);
 
-  /** The team, its game under it; a former passage opens the former members. */
+  /**
+   * The team and its game under it, or Bureau & staff and « La structure »;
+   * a former passage opens the former members.
+   */
   const identity = (
     passage: JourneyItem,
     layout: 'card' | 'cell',
   ): ReactNode => {
     const gone = passageStateOn(passage, today) === 'former';
-    const name = passage.team ? (
-      <Link
-        className={NAME_TARGET}
-        href={`${teamDetailPath(passage.team.id)}${gone ? '?section=anciens' : ''}`}
-        title={passage.team.name}
-      >
-        <span
-          className={
-            layout === 'cell'
-              ? 'block truncate'
-              : 'block [overflow-wrap:anywhere]'
-          }
-        >
-          {passage.team.name}
-        </span>
-      </Link>
-    ) : (
-      <span className="block font-semibold">La structure</span>
-    );
+    const name = passage.team?.name ?? FEATURES.staff.label;
+    const page = passage.team
+      ? teamDetailPath(passage.team.id)
+      : FEATURES.staff.href;
 
     return (
       <div className="flex min-w-0 items-center gap-2.5">
-        <TeamAvatar className="rounded-tile size-9 shrink-0" />
+        {passage.team ? (
+          <TeamAvatar className="rounded-tile size-9 shrink-0" />
+        ) : (
+          <StructureAvatar className="rounded-tile size-9 shrink-0" />
+        )}
         <div className="min-w-0 flex-1">
-          {name}
-          {passage.team && (
-            <p className="text-muted-foreground truncate text-xs">
-              {passage.team.game.name}
-              {!passage.team.isActive && ' · équipe inactive'}
-            </p>
-          )}
+          <Link
+            className={NAME_TARGET}
+            href={`${page}${gone ? '?section=anciens' : ''}`}
+            title={name}
+          >
+            <span
+              className={
+                layout === 'cell'
+                  ? 'block truncate'
+                  : 'block [overflow-wrap:anywhere]'
+              }
+            >
+              {name}
+            </span>
+          </Link>
+          <p className="text-muted-foreground truncate text-xs">
+            {passage.team
+              ? `${passage.team.game.name}${passage.team.isActive ? '' : ' · équipe inactive'}`
+              : 'La structure'}
+          </p>
         </div>
       </div>
     );
@@ -172,11 +181,7 @@ export const PersonJourneySection: FC<{ personId: string }> = ({
   );
 
   const line = (passage: JourneyItem): ReactNode => (
-    <TableRow
-      className={cn(passage.team && LINE_FOCUS)}
-      data-journey-line=""
-      key={passage.id}
-    >
+    <TableRow className={LINE_FOCUS} data-journey-line="" key={passage.id}>
       <TableCell>{identity(passage, 'cell')}</TableCell>
       <TableCell className="pointer-events-none [overflow-wrap:anywhere]">
         {passage.function.name}
@@ -196,10 +201,7 @@ export const PersonJourneySection: FC<{ personId: string }> = ({
 
   const card = (passage: JourneyItem): ReactNode => (
     <div
-      className={cn(
-        'px-4 py-3',
-        passage.team && cn(LINE_FOCUS, 'hover:bg-surface-row-hover'),
-      )}
+      className={cn('px-4 py-3', LINE_FOCUS, 'hover:bg-surface-row-hover')}
       data-journey-line=""
       key={passage.id}
     >
@@ -220,20 +222,32 @@ export const PersonJourneySection: FC<{ personId: string }> = ({
     </div>
   );
 
-  // The page where it is kept, named first, with the way there (rule of
+  const sources = journeySourcesOf(reach);
+  // The pages where it is kept, named first, with the way there (rule of
   // 8 November 2026 for a tab that only reads).
   const toolbar = (
     <div className="flex w-full flex-wrap items-center justify-between gap-3">
       <p className="text-muted-foreground text-xs">
-        Le parcours se tient dans le Roster de chaque équipe : chaque ligne
-        ouvre son équipe.
+        Le parcours se tient dans {sources} : chaque ligne ouvre sa page.
       </p>
-      <Button asChild size="sm" variant="outline">
-        <Link href={FEATURES.games.href}>
-          <ArrowUpRight aria-hidden="true" className="size-4" />
-          Ouvrir les jeux
-        </Link>
-      </Button>
+      <div className="flex flex-wrap gap-2">
+        {reach.teams && (
+          <Button asChild size="sm" variant="outline">
+            <Link href={FEATURES.games.href}>
+              <ArrowUpRight aria-hidden="true" className="size-4" />
+              Ouvrir les jeux
+            </Link>
+          </Button>
+        )}
+        {reach.structure && (
+          <Button asChild size="sm" variant="outline">
+            <Link href={FEATURES.staff.href}>
+              <ArrowUpRight aria-hidden="true" className="size-4" />
+              Ouvrir {FEATURES.staff.label}
+            </Link>
+          </Button>
+        )}
+      </div>
     </div>
   );
 
@@ -250,7 +264,7 @@ export const PersonJourneySection: FC<{ personId: string }> = ({
           <div className="px-4 py-8">
             <ContentState
               className="min-h-0 border-0 bg-transparent p-0"
-              description="Un passage s’ajoute dans le Roster d’une équipe ; il s’affiche ici."
+              description={`Un passage s’ajoute dans ${sources} ; il s’affiche ici.`}
               icon={<Route aria-hidden="true" className="size-5" />}
               layout="panel"
               title="Aucun passage pour l’instant"
@@ -263,7 +277,7 @@ export const PersonJourneySection: FC<{ personId: string }> = ({
               {blocks.map((block) => (
                 <Table className={directoryStyles.table} key={block.id}>
                   <TableCaption className="sr-only">
-                    {`${block.label} : équipe, fonction, statut, début, fin et durée`}
+                    {`${block.label} : ${reach.structure ? 'équipe ou structure' : 'équipe'}, fonction, statut, début, fin et durée`}
                   </TableCaption>
                   <TableHeader>
                     <TableRow>

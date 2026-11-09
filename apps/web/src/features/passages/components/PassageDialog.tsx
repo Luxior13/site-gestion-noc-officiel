@@ -40,14 +40,15 @@ import {
   deletePassageRequest,
   updatePassageRequest,
 } from '../passage.api';
-import { passageStateOn } from '../passage.ui';
+import { passageStateOn, placeWordsOf } from '../passage.ui';
 import type {
   PassageFunction,
   PassageItem,
   PassagePerson,
-  TeamRoster,
+  PassageRoster,
 } from '../types/passage.types';
 import { FunctionSelect, PersonPicker } from './PassageFields';
+import type { PassagePlaceView } from './PassageLines';
 
 const ID = 'passage-dialog';
 
@@ -66,8 +67,9 @@ type Props = {
   item: PassageItem | null;
   onClose: () => void;
   onReload: () => Promise<unknown>;
-  onSaved: (roster: TeamRoster) => void;
-  team: Readonly<{ id: string; name: string }>;
+  onSaved: (roster: PassageRoster) => void;
+  /** A team, or the structure: its words and its list of functions. */
+  place: Pick<PassagePlaceView, 'name' | 'scope'>;
 };
 
 const today = (): ApproximateDate => ({
@@ -100,8 +102,9 @@ const PassageDialogContent: FC<Props> = ({
   onClose,
   onReload,
   onSaved,
-  team,
+  place,
 }) => {
+  const words = placeWordsOf(place.scope.type);
   const [mode, setMode] = useState<'change' | 'edit'>('edit');
   const [person, setPerson] = useState<PassagePerson | null>(
     item?.person ?? null,
@@ -131,7 +134,7 @@ const PassageDialogContent: FC<Props> = ({
       (end.date !== item.end?.date || end.precision !== item.end?.precision));
 
   const run = async (
-    request: () => Promise<TeamRoster>,
+    request: () => Promise<PassageRoster>,
     done: string,
   ): Promise<void> => {
     if (operationRef.current) return;
@@ -177,11 +180,11 @@ const PassageDialogContent: FC<Props> = ({
     void run(
       () =>
         item
-          ? updatePassageRequest(team.id, item.id, {
+          ? updatePassageRequest(place.scope, item.id, {
               ...input,
               expectedVersion: item.version,
             })
-          : createPassageRequest(team.id, {
+          : createPassageRequest(place.scope, {
               ...input,
               personId: person?.id ?? '',
             }),
@@ -191,7 +194,7 @@ const PassageDialogContent: FC<Props> = ({
           : 'Passage modifié'
         : gone
           ? 'Ancien membre ajouté'
-          : 'Membre ajouté au Roster',
+          : `Membre ajouté ${words.toList}`,
     );
   };
 
@@ -204,7 +207,7 @@ const PassageDialogContent: FC<Props> = ({
     }
     void run(
       () =>
-        changePassageFunctionRequest(team.id, item.id, {
+        changePassageFunctionRequest(place.scope, item.id, {
           at,
           expectedVersion: item.version,
           functionId: nextFunctionId,
@@ -216,7 +219,7 @@ const PassageDialogContent: FC<Props> = ({
   const remove = (): void => {
     if (!item) return;
     void run(
-      () => deletePassageRequest(team.id, item.id, item.version),
+      () => deletePassageRequest(place.scope, item.id, item.version),
       'Passage supprimé',
     ).finally(() => setConfirmDelete(false));
   };
@@ -248,7 +251,7 @@ const PassageDialogContent: FC<Props> = ({
           variant="outline"
         >
           <RotateCcw className="size-4" />
-          Recharger le Roster
+          Recharger {words.theList}
         </Button>
       )}
     </div>
@@ -293,8 +296,8 @@ const PassageDialogContent: FC<Props> = ({
                 {changing
                   ? `${item.person.displayName} quitte la fonction ${item.function.name} à cette date et commence la nouvelle.`
                   : former && !item
-                    ? `Une personne passée par ${team.name}, avec sa fonction et ses dates.`
-                    : `Une personne dans ${team.name}, avec une fonction, depuis une date.`}
+                    ? `Une personne passée par ${place.name}, avec sa fonction et ses dates.`
+                    : `Une personne dans ${place.name}, avec une fonction, depuis une date.`}
               </DialogDescription>
             </DialogHeader>
             <div className="min-h-0 space-y-4 overflow-y-auto px-4 py-4 sm:px-5">
@@ -306,6 +309,7 @@ const PassageDialogContent: FC<Props> = ({
                     error={errors.functionId}
                     exclude={item.function.id}
                     functions={functions}
+                    functionScope={words.functionScope}
                     id={`${ID}-next-function`}
                     label="Nouvelle fonction"
                     onChange={(value) => {
@@ -370,6 +374,7 @@ const PassageDialogContent: FC<Props> = ({
                     disabled={busy}
                     error={errors.functionId}
                     functions={functions}
+                    functionScope={words.functionScope}
                     id={`${ID}-function`}
                     label="Fonction"
                     onChange={(value) => {
@@ -537,9 +542,9 @@ const PassageDialogContent: FC<Props> = ({
 };
 
 /**
- * Adds a member to a team's roster, or corrects a passage, in a window: a
- * passage has no record (owner, 9 November 2026). « Changer de fonction »
- * ends it and begins another in one step.
+ * Adds a member to a team's roster or the structure's Effectif, or corrects a
+ * passage, in a window: a passage has no record (owner, 9 November 2026).
+ * « Changer de fonction » ends it and begins another in one step.
  */
 export const PassageDialog: FC<Props & { open: boolean }> = ({
   open,

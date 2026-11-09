@@ -475,6 +475,8 @@ describe('permission catalogue', () => {
       'games:manage',
       'teams:view',
       'teams:manage',
+      'staff:view',
+      'staff:manage',
       'users:view',
       'users:create',
       'users:view_contact',
@@ -509,13 +511,14 @@ describe('permission catalogue', () => {
     expect(PERMISSION_CATEGORIES.map((category) => category.key)).toEqual([
       'persons',
       'games',
+      'staff',
       'users',
       'system-activity',
       'system-settings',
     ]);
     expect(
       DELEGABLE_PERMISSION_CATEGORIES.map((category) => category.key),
-    ).toEqual(['persons', 'games', 'users', 'system-activity']);
+    ).toEqual(['persons', 'games', 'staff', 'users', 'system-activity']);
     expect(getAccessPermissionKeys()).toEqual(
       DELEGABLE_PERMISSION_CATEGORIES.flatMap((category) =>
         category.permissions.map((permission) => permission.key),
@@ -575,11 +578,13 @@ describe('permission catalogue', () => {
       { key: 'internal', label: 'Personnes' },
       { key: 'esport', label: 'Esport' },
       { key: 'legal', label: 'Relations' },
+      { key: 'structure', label: 'Structure' },
       { key: 'system', label: 'Système' },
     ]);
     expect(PERMISSION_CATEGORIES.map((category) => category.label)).toEqual([
       'Répertoire',
       'Jeux',
+      'Bureau & staff',
       'Utilisateurs',
       'Journal d’activité',
       'Paramètres système',

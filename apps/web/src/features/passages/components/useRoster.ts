@@ -2,26 +2,30 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { fetchTeamRoster } from '../passage.api';
-import type { TeamRoster } from '../types/passage.types';
+import { fetchRoster } from '../passage.api';
+import { STRUCTURE_PASSAGES } from '../passage.constants';
+import type { PassageRoster, PassageScope } from '../types/passage.types';
 
-type TeamRosterState = Readonly<{
+type RosterState = Readonly<{
   /** Every write answers the whole roster, taken as is. */
-  accept: (next: TeamRoster) => void;
+  accept: (next: PassageRoster) => void;
   error: Error | null;
   load: () => Promise<void>;
   retry: () => Promise<void>;
-  roster: TeamRoster | null;
+  roster: PassageRoster | null;
 }>;
 
 /**
- * The passages of a team, read by the tab that shows them: the Roster (what
- * is there and coming) or the former members, from the same answer.
+ * The passages of a place, read by the tab that shows them: the Roster or
+ * the Effectif (what is there and coming), or the former members, from the
+ * same answer.
  */
-export const useTeamRoster = (teamId: string): TeamRosterState => {
-  const [roster, setRoster] = useState<TeamRoster | null>(null);
+export const useRoster = (requested: PassageScope): RosterState => {
+  const [roster, setRoster] = useState<PassageRoster | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const mountedRef = useRef(false);
+  // One place per mount, whatever object the page passes on each render.
+  const teamId = requested.type === 'team' ? requested.teamId : null;
 
   useEffect(() => {
     mountedRef.current = true;
@@ -32,7 +36,9 @@ export const useTeamRoster = (teamId: string): TeamRosterState => {
   }, []);
 
   const load = useCallback(async (): Promise<void> => {
-    const fresh = await fetchTeamRoster(teamId);
+    const fresh = await fetchRoster(
+      teamId === null ? STRUCTURE_PASSAGES : { teamId, type: 'team' },
+    );
     if (mountedRef.current) {
       setRoster(fresh);
       setError(null);

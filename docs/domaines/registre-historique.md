@@ -5,8 +5,9 @@
 
 Décisions du propriétaire du 7 novembre 2026. **Livré en partie** : les jeux,
 les équipes, les fonctions de chaque jeu et les passages d’une équipe (Roster de
-la [fiche équipe](../pages/esport/equipe.md), 9 novembre 2026) ; restent la
-structure (Bureau & staff), le Parcours d’une fiche et le statut calculé.
+la [fiche équipe](../pages/esport/equipe.md), 9 novembre 2026), le Parcours
+d’une fiche, puis la structure ([Bureau & staff](../pages/structure/bureau-staff.md) :
+Effectif, anciens membres et fonctions, même jour) ; reste le statut calculé.
 
 ## Rôle du site
 
@@ -27,7 +28,8 @@ Un seul objet central : le **passage**, une relation datée entre une fiche du
 | Élément | Règle |
 | --- | --- |
 | Rattachement | Une équipe, ou la structure elle-même pour une fonction de bureau ou de staff |
-| Fonction | Valeur d’une liste de choix selon le rattachement (8 novembre 2026) : fonctions du jeu pour une équipe (Joueur, Coach, Manager… ou postes propres au jeu, gérées dans sa fiche), fonctions de la structure pour la structure (Président, Trésorier, Secrétaire, bénévole…). Le mot « rôle » reste réservé à Utilisateur et Administrateur |
+| Fonction | Valeur d’une liste de choix selon le rattachement (8 novembre 2026) : fonctions du jeu pour une équipe (Joueur, Coach, Manager… ou postes propres au jeu, gérées dans sa fiche), fonctions de la structure pour la structure (Président, Trésorier, Secrétaire, bénévole…, gérées dans Bureau & staff). Chaque liste a deux types (9 novembre 2026, « ok go ») : Joueur et Encadrement pour un jeu, **Bureau** (mandats élus) et **Staff** pour la structure, que la base garde séparés (`MemberFunction_kind_scope_check`). Le mot « rôle » reste réservé à Utilisateur et Administrateur |
+| Graphiste, monteur, soutien | Selon pour qui il travaille (9 novembre 2026) : toute la structure, dans l’Effectif de Bureau & staff, type Staff ; une seule équipe, dans son Roster, avec une fonction d’encadrement du jeu. Une même personne peut avoir les deux ; son Parcours les lit ensemble |
 | Début et fin | Une fin vide signifie « en cours ». Plusieurs passages simultanés sont possibles |
 | Statut dans la structure | Calculé, jamais saisi : une fiche est dans la structure si un passage est en cours à la date du jour. Sans date de fin, il reste en cours ; une date de fin atteinte le clôt toute seule |
 | Dates approximatives | Année, mois ou jour : une date connue à l’année se saisit à l’année, sans inventer de jour |
@@ -43,7 +45,10 @@ même période (contrainte d’exclusion de la base) ; la fonction appartient au
 jeu de l’équipe (déclencheur) ; une fiche, une équipe ou une fonction qui a des
 passages ne se supprime plus. Chaque écriture est tracée sur la fiche de la
 personne (type « Parcours » du journal), sans son nom dans la trace. Droits :
-ceux des équipes.
+ceux des équipes. Le passage dans la structure suit le 9 novembre 2026, sans
+équipe et avec une fonction de la structure (le même déclencheur le vérifie),
+dans l’Effectif de [Bureau & staff](../pages/structure/bureau-staff.md), sous
+ses droits propres (`staff:view`, `staff:manage`).
 
 Un passage n’a pas de motif de fin (décision du 8 novembre 2026) : la fin se
 saisit à son endroit, dans le Roster de l’équipe ou l’Effectif de Bureau & staff. Un changement
@@ -174,8 +179,8 @@ Une donnée se modifie là où on la lit.
 | Besoin | Où |
 | --- | --- |
 | Ajouter ou terminer un passage dans une équipe | Fiche de l’équipe (sous son jeu), onglet Roster (début et fin), en fenêtre |
-| Ajouter ou terminer un passage dans la structure (bureau, staff, bénévoles) | Page Bureau & staff, onglet Effectif, avec la même fenêtre |
-| Voir tout le parcours d’une personne | Onglet Parcours de sa fiche, en lecture ↗ (livré le 9 novembre 2026) : en cours et à venir, puis terminés ; chaque ligne ouvre son équipe, ses anciens membres pour un passage terminé, ou Bureau & staff (à venir) |
+| Ajouter ou terminer un passage dans la structure (bureau, staff, bénévoles) | Page Bureau & staff, onglet Effectif, avec la même fenêtre (livré le 9 novembre 2026) ; un passage terminé se lit dans ses Anciens membres |
+| Voir tout le parcours d’une personne | Onglet Parcours de sa fiche, en lecture ↗ (livré le 9 novembre 2026) : en cours et à venir, puis terminés ; chaque ligne ouvre son équipe ou Bureau & staff, leurs anciens membres pour un passage terminé ; seules les listes que le lecteur voit |
 | Ajouter un ancien pseudo | Onglet Identité de la fiche, y compris un pseudo d’avant le site |
 | Voir les membres actuels et anciens d’une équipe | Fiche de l’équipe : onglet Roster pour les actuels et ceux à venir, onglet Anciens membres pour les passages terminés, jamais mélangés (9 novembre 2026) |
 | Changer une liste de choix | Onglet de la liste, à côté de ce qu’elle classe, ou ajout direct depuis le champ |

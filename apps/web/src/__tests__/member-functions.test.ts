@@ -9,16 +9,22 @@ import {
   projectJournalEvent,
 } from '$features/audit/server/audit-journal.projection';
 import {
-  COMMON_GAME_FUNCTIONS,
+  commonFunctionsOf,
   compareMemberFunctions,
+  functionKindsOf,
+  memberFunctionEmptyGroupLabel,
+  memberFunctionGroupLabel,
   memberFunctionKindLabel,
 } from '$features/member-functions/member-function.constants';
 import {
   addCommonMemberFunctionsSchema,
-  createMemberFunctionSchema,
-  reorderMemberFunctionsSchema,
-  updateMemberFunctionSchema,
+  gameFunctionSchemas,
+  structureFunctionSchemas,
 } from '$features/member-functions/schemas/member-function.schemas';
+
+const createMemberFunctionSchema = gameFunctionSchemas.create;
+const reorderMemberFunctionsSchema = gameFunctionSchemas.reorder;
+const updateMemberFunctionSchema = gameFunctionSchemas.update;
 
 const coach = { isActive: true, kind: 'STAFF', name: '  Coach ' };
 
@@ -118,8 +124,9 @@ describe('order and common functions of a game', () => {
 
   it('offers Joueur, Remplaçant, Coach, Manager and Analyste', () => {
     expect(
-      COMMON_GAME_FUNCTIONS.map(
-        ({ kind, name }) => `${name} (${memberFunctionKindLabel(kind)})`,
+      commonFunctionsOf('game').map(
+        ({ kind, name }) =>
+          `${name} (${memberFunctionKindLabel(kind, 'game')})`,
       ),
     ).toEqual([
       'Joueur (Joueur)',
@@ -127,6 +134,83 @@ describe('order and common functions of a game', () => {
       'Coach (Encadrement)',
       'Manager (Encadrement)',
       'Analyste (Encadrement)',
+    ]);
+  });
+});
+
+// Owner, 9 November 2026 (« ok go »): the structure's functions are of two
+// kinds, the board apart from the staff, as players are from their staff.
+describe('the functions of the structure (Bureau & staff)', () => {
+  it('has the board and the staff, never the players; a game never the board', () => {
+    expect(functionKindsOf('structure')).toEqual(['BOARD', 'STAFF']);
+    expect(functionKindsOf('game')).toEqual(['PLAYER', 'STAFF']);
+    const graphiste = { isActive: true, kind: 'STAFF', name: 'Graphiste' };
+    expect(structureFunctionSchemas.create.safeParse(graphiste).success).toBe(
+      true,
+    );
+    expect(
+      structureFunctionSchemas.create.safeParse({
+        ...graphiste,
+        kind: 'BOARD',
+      }).success,
+    ).toBe(true);
+    expect(
+      structureFunctionSchemas.create.safeParse({
+        ...graphiste,
+        kind: 'PLAYER',
+      }).error?.issues[0]?.message,
+    ).toBe('Choisissez un type');
+    expect(
+      createMemberFunctionSchema.safeParse({ ...coach, kind: 'BOARD' }).success,
+    ).toBe(false);
+    expect(
+      structureFunctionSchemas.reorder.safeParse({
+        ids: ['f1'],
+        kind: 'PLAYER',
+      }).success,
+    ).toBe(false);
+  });
+
+  it('says « Bureau » and « Staff » where a team says « Joueurs » and « Encadrement »', () => {
+    expect(memberFunctionKindLabel('BOARD', 'structure')).toBe('Bureau');
+    expect(memberFunctionKindLabel('STAFF', 'structure')).toBe('Staff');
+    expect(memberFunctionKindLabel('STAFF', 'game')).toBe('Encadrement');
+    expect(memberFunctionGroupLabel('PLAYER', 'game')).toBe('Joueurs');
+    expect(memberFunctionGroupLabel('BOARD', 'structure')).toBe('Bureau');
+    expect(memberFunctionEmptyGroupLabel('BOARD', 'structure')).toBe(
+      'Aucune fonction du bureau',
+    );
+    expect(memberFunctionEmptyGroupLabel('STAFF', 'game')).toBe(
+      'Aucune fonction d’encadrement',
+    );
+  });
+
+  it('lists the board first, then the staff', () => {
+    const functions = [
+      { isActive: true, kind: 'STAFF', name: 'Graphiste', position: 0 },
+      { isActive: true, kind: 'BOARD', name: 'Trésorier', position: 1 },
+      { isActive: true, kind: 'BOARD', name: 'Président', position: 0 },
+    ] as const;
+    expect(
+      [...functions].sort(compareMemberFunctions).map(({ name }) => name),
+    ).toEqual(['Président', 'Trésorier', 'Graphiste']);
+  });
+
+  it('offers the usual board and staff in one click', () => {
+    expect(
+      commonFunctionsOf('structure').map(
+        ({ kind, name }) =>
+          `${name} (${memberFunctionKindLabel(kind, 'structure')})`,
+      ),
+    ).toEqual([
+      'Président (Bureau)',
+      'Vice-président (Bureau)',
+      'Trésorier (Bureau)',
+      'Secrétaire (Bureau)',
+      'Graphiste (Staff)',
+      'Monteur (Staff)',
+      'Community manager (Staff)',
+      'Bénévole (Staff)',
     ]);
   });
 });
@@ -277,6 +361,34 @@ describe('a function in the activity journal', () => {
         label: 'Ordre',
       },
     ]);
+  });
+
+  it('names a function of the structure, and its group, by Bureau & staff', () => {
+    expect(
+      project({
+        metadata: {
+          after: { name: 'Trésorier' },
+          before: { name: 'Tresorier' },
+          changes: ['name'],
+          functionId: 'function-2',
+          functionName: 'Trésorier',
+          pageKey: 'staff',
+          poleKey: 'structure',
+          scopeName: 'Bureau & staff',
+        },
+      }).subject,
+    ).toBe('Fonction : Trésorier (Bureau & staff)');
+    expect(
+      project({
+        action: 'FUNCTION_REORDER',
+        metadata: {
+          changes: ['order'],
+          kind: 'BOARD',
+          kindLabel: 'Bureau',
+          scopeName: 'Bureau & staff',
+        },
+      }).subject,
+    ).toBe('Fonctions : Bureau (Bureau & staff)');
   });
 
   it('lists the functions removed with a game deleted by mistake', () => {

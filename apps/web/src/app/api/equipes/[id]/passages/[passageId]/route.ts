@@ -56,10 +56,12 @@ export async function PATCH(
 
   try {
     return apiSuccess(
-      await updatePassage(ids.teamId, ids.passageId, parsed.data, {
-        actor: auth.user,
-        session: auth.session,
-      }),
+      await updatePassage(
+        { teamId: ids.teamId, type: 'team' },
+        ids.passageId,
+        parsed.data,
+        { actor: auth.user, session: auth.session },
+      ),
     );
   } catch (error) {
     return serviceErrorResponse(error, { action: 'PASSAGE_UPDATE', request });
@@ -86,7 +88,7 @@ export async function DELETE(
   try {
     return apiSuccess(
       await deletePassage(
-        ids.teamId,
+        { teamId: ids.teamId, type: 'team' },
         ids.passageId,
         parsed.data.expectedVersion,
         { actor: auth.user, session: auth.session },

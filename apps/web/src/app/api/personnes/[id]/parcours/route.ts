@@ -11,8 +11,9 @@ type RouteParams = { params: Promise<{ id: string }> };
 
 /**
  * The journey of a person, for the Parcours tab of their record: the record
- * (`persons:view`) and the rosters it is read from (`teams:view`), with no
- * right of its own (9 November 2026).
+ * (`persons:view`) and the lists it is read from, with no right of its own
+ * (9 November 2026): the teams' rosters (`teams:view`), the structure's
+ * Effectif (`staff:view`); at least one, and only those passages.
  */
 export async function GET(
   request: NextRequest,
@@ -20,15 +21,21 @@ export async function GET(
 ): Promise<NextResponse> {
   const auth = await requireAuth();
   if (!auth.success) return auth.response;
-  for (const key of [PERMISSIONS.PERSONS.VIEW, PERMISSIONS.TEAMS.VIEW]) {
-    const permission = requirePermission(auth.user, key);
-    if (!permission.success) return permission.response;
-  }
+  const record = requirePermission(auth.user, PERMISSIONS.PERSONS.VIEW);
+  if (!record.success) return record.response;
+  const teams = requirePermission(auth.user, PERMISSIONS.TEAMS.VIEW);
+  const structure = requirePermission(auth.user, PERMISSIONS.STAFF.VIEW);
+  if (!teams.success && !structure.success) return teams.response;
   const personId = passagePersonIdSchema.safeParse((await params).id);
   if (!personId.success) return apiErrors.notFound('Fiche introuvable');
 
   try {
-    return apiSuccess(await getPersonJourney(personId.data));
+    return apiSuccess(
+      await getPersonJourney(personId.data, {
+        structure: structure.success,
+        teams: teams.success,
+      }),
+    );
   } catch (error) {
     return serviceErrorResponse(error, { action: 'PERSON_JOURNEY', request });
   }

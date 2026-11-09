@@ -9,13 +9,18 @@ import { serviceErrorResponse } from '$server/service-error';
 
 /**
  * Records of the Répertoire to pick for a passage, by pseudo or name: only
- * who manages the teams adds a passage, so only they search here.
+ * who adds passages searches here, in a team's roster (`teams:manage`) or in
+ * the structure's (`staff:manage`, 9 November 2026).
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const auth = await requireAuth();
   if (!auth.success) return auth.response;
   const permission = requirePermission(auth.user, PERMISSIONS.TEAMS.MANAGE);
-  if (!permission.success) return permission.response;
+  if (
+    !permission.success &&
+    !requirePermission(auth.user, PERMISSIONS.STAFF.MANAGE).success
+  )
+    return permission.response;
   const query = passagePersonQuerySchema.safeParse(
     request.nextUrl.searchParams.get('q') ?? '',
   );

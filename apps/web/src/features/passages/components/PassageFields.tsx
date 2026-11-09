@@ -5,7 +5,8 @@ import Link from 'next/link';
 import React, { type FC, useEffect, useId, useRef, useState } from 'react';
 
 import {
-  MEMBER_FUNCTION_KINDS,
+  functionKindsOf,
+  type FunctionScopeType,
   memberFunctionGroupLabel,
   type MemberFunctionKind,
 } from '$features/member-functions/member-function.constants';
@@ -34,25 +35,40 @@ import type {
 const ID = 'passage-dialog';
 
 /**
- * The functions of the team's game, by group: the active ones first, then the
- * inactive ones, marked, still chosen for an old passage (PREF-Q10).
+ * The functions of the team's game, or of the structure, by group: the active
+ * ones first, then the inactive ones, marked, still chosen for an old passage
+ * (PREF-Q10).
  */
 export const FunctionSelect: FC<{
   disabled: boolean;
   error?: string;
   exclude?: string;
   functions: readonly PassageFunction[];
+  /** Names its groups: « Encadrement » in a team, « Staff » in the structure. */
+  functionScope: FunctionScopeType;
   id: string;
   label: string;
   onChange: (id: string) => void;
   value: string;
-}> = ({ disabled, error, exclude, functions, id, label, onChange, value }) => {
-  const groups = MEMBER_FUNCTION_KINDS.map((kind: MemberFunctionKind) => ({
-    items: functions
-      .filter((entry) => entry.kind === kind && entry.id !== exclude)
-      .sort(compareActiveThenRank),
-    kind,
-  })).filter((group) => group.items.length > 0);
+}> = ({
+  disabled,
+  error,
+  exclude,
+  functions,
+  functionScope,
+  id,
+  label,
+  onChange,
+  value,
+}) => {
+  const groups = functionKindsOf(functionScope)
+    .map((kind: MemberFunctionKind) => ({
+      items: functions
+        .filter((entry) => entry.kind === kind && entry.id !== exclude)
+        .sort(compareActiveThenRank),
+      kind,
+    }))
+    .filter((group) => group.items.length > 0);
 
   return (
     <div className="space-y-1.5">
@@ -79,7 +95,7 @@ export const FunctionSelect: FC<{
               >
                 {index === 0 && (
                   <span className="sr-only">
-                    {memberFunctionGroupLabel(kind)} :{' '}
+                    {memberFunctionGroupLabel(kind, functionScope)} :{' '}
                   </span>
                 )}
                 {entry.isActive ? entry.name : `${entry.name} (inactive)`}

@@ -5,52 +5,59 @@ import type {
   PassageCreateInput,
   PassageInput,
   PassagePersonResults,
+  PassageRoster,
+  PassageScope,
   PersonJourney,
-  TeamRoster,
 } from './types/passage.types';
 
-const rosterUrl = (teamId: string): string =>
-  `/api/equipes/${encodeURIComponent(teamId)}/passages`;
-const passageUrl = (teamId: string, id: string): string =>
-  `${rosterUrl(teamId)}/${encodeURIComponent(id)}`;
+/** A team's roster under the team, the structure's under Bureau & staff. */
+const rosterUrl = (scope: PassageScope): string =>
+  scope.type === 'team'
+    ? `/api/equipes/${encodeURIComponent(scope.teamId)}/passages`
+    : '/api/structure/effectif';
+const passageUrl = (scope: PassageScope, id: string): string =>
+  `${rosterUrl(scope)}/${encodeURIComponent(id)}`;
 
-export const fetchTeamRoster = (
-  teamId: string,
+export const fetchRoster = (
+  scope: PassageScope,
   signal?: AbortSignal,
-): Promise<TeamRoster> =>
-  apiFetchJson<TeamRoster>(rosterUrl(teamId), { cache: 'no-store', signal });
+): Promise<PassageRoster> =>
+  apiFetchJson<PassageRoster>(rosterUrl(scope), { cache: 'no-store', signal });
 
 /** Every mutation answers the whole roster, in its order. */
 export const createPassageRequest = (
-  teamId: string,
+  scope: PassageScope,
   input: PassageCreateInput,
-): Promise<TeamRoster> =>
-  apiFetchJson<TeamRoster>(rosterUrl(teamId), jsonRequest('POST', input));
+): Promise<PassageRoster> =>
+  apiFetchJson<PassageRoster>(rosterUrl(scope), jsonRequest('POST', input));
 
 export const updatePassageRequest = (
-  teamId: string,
+  scope: PassageScope,
   id: string,
   input: PassageInput & { expectedVersion: number },
-): Promise<TeamRoster> =>
-  apiFetchJson<TeamRoster>(passageUrl(teamId, id), jsonRequest('PATCH', input));
+): Promise<PassageRoster> =>
+  apiFetchJson<PassageRoster>(
+    passageUrl(scope, id),
+    jsonRequest('PATCH', input),
+  );
 
 export const changePassageFunctionRequest = (
-  teamId: string,
+  scope: PassageScope,
   id: string,
   input: PassageChangeInput,
-): Promise<TeamRoster> =>
-  apiFetchJson<TeamRoster>(
-    `${passageUrl(teamId, id)}/changement`,
+): Promise<PassageRoster> =>
+  apiFetchJson<PassageRoster>(
+    `${passageUrl(scope, id)}/changement`,
     jsonRequest('POST', input),
   );
 
 export const deletePassageRequest = (
-  teamId: string,
+  scope: PassageScope,
   id: string,
   expectedVersion: number,
-): Promise<TeamRoster> =>
-  apiFetchJson<TeamRoster>(
-    passageUrl(teamId, id),
+): Promise<PassageRoster> =>
+  apiFetchJson<PassageRoster>(
+    passageUrl(scope, id),
     jsonRequest('DELETE', { expectedVersion }),
   );
 

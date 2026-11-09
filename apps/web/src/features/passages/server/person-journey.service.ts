@@ -1,5 +1,7 @@
 import 'server-only';
 
+import type { Prisma } from '@prisma/client';
+
 import { prisma } from '$server/prisma';
 import { serviceErrors } from '$server/service-error';
 import { normalizeApproximateDate } from '$utils/approximate-date.utils';
@@ -33,22 +35,33 @@ const JOURNEY_SELECT = {
   },
 } as const;
 
+/** Which lists the reader may see: the teams' rosters, the structure's. */
+export type JourneyReach = Readonly<{ structure: boolean; teams: boolean }>;
+
 /**
  * The journey of a person (owner, 9 November 2026: « l'onglet Parcours,
  * maintenant, par rapport au Roster »): every passage, read from the rosters
  * where it is kept, with its team and the team's game; the earliest start
- * first. A passage of the structure (Bureau & staff, to come) has no team.
+ * first. A passage of the structure (Bureau & staff) has no team. Only the
+ * lists the reader may see are read.
  */
 export const getPersonJourney = async (
   personId: string,
+  reach: JourneyReach,
 ): Promise<PersonJourney> => {
+  const places: Prisma.PersonPassageWhereInput[] = [
+    ...(reach.teams ? [{ teamId: { not: null } }] : []),
+    ...(reach.structure ? [{ teamId: null }] : []),
+  ];
   const [person, rows] = await Promise.all([
     prisma.person.findUnique({ select: { id: true }, where: { id: personId } }),
-    prisma.personPassage.findMany({
-      orderBy: [{ startOn: 'asc' }, { id: 'asc' }],
-      select: JOURNEY_SELECT,
-      where: { personId },
-    }),
+    places.length === 0
+      ? Promise.resolve([])
+      : prisma.personPassage.findMany({
+          orderBy: [{ startOn: 'asc' }, { id: 'asc' }],
+          select: JOURNEY_SELECT,
+          where: { OR: places, personId },
+        }),
   ]);
   if (!person)
     throw serviceErrors.notFound(
