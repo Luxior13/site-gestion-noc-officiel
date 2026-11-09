@@ -81,6 +81,8 @@ type Props = {
   canUpdate: boolean;
   game: GameItem;
   onChange: (game: GameItem) => void;
+  /** Marks the Informations tab while a draft is pending. */
+  onDirtyChange?: (dirty: boolean) => void;
   onReload: () => Promise<GameItem>;
 };
 
@@ -92,6 +94,7 @@ export const GameInformationSection: FC<Props> = ({
   canUpdate,
   game,
   onChange,
+  onDirtyChange,
   onReload,
 }) => {
   const [base, setBase] = useState(game);
@@ -123,6 +126,12 @@ export const GameInformationSection: FC<Props> = ({
   } = useUnsavedNavigationGuard(isDirty, () => {
     mountedRef.current = false;
   });
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+
+    return (): void => onDirtyChange?.(false);
+  }, [isDirty, onDirtyChange]);
 
   useEffect(() => {
     mountedRef.current = true;

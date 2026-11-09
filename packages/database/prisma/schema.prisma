@@ -238,6 +238,9 @@ enum AuditAction {
   TEAM_CREATE
   TEAM_UPDATE
   TEAM_DELETE
+  FUNCTION_CREATE
+  FUNCTION_UPDATE
+  FUNCTION_DELETE
   /// Historical only. The partner module was removed from the application on
   /// 2026-09-21; these values stay declared so older journal entries remain
   /// readable. No code produces them anymore.
@@ -263,6 +266,7 @@ enum AuditCategory {
   PERSON
   GAME
   TEAM
+  FUNCTION
   /// Historical only, kept for the same reason as `AuditAction.PARTNER_*`.
   PARTNER
 }
@@ -514,20 +518,22 @@ enum DatePrecision {
 }
 
 /// A game of the structure, one section per game: the first page of the
-/// Esport pole (8 November 2026). Its teams sit under it; functions come later.
+/// Esport pole (8 November 2026). Its teams sit under it, its functions in
+/// its record (9 November 2026).
 model Game {
-  id                   String        @id @default(cuid())
-  name                 String        @db.VarChar(60)
+  id                   String           @id @default(cuid())
+  name                 String           @db.VarChar(60)
   /// Shared search form of the name: « Valorant » and « VALORANT » are one game.
-  normalizedName       String        @unique @db.VarChar(120)
-  shortName            String?       @db.VarChar(12)
-  firstOpenedOn        DateTime      @db.Date
-  firstOpenedPrecision DatePrecision @default(DAY)
-  isActive             Boolean       @default(true)
-  version              Int           @default(1)
-  createdAt            DateTime      @default(now())
-  updatedAt            DateTime      @updatedAt
+  normalizedName       String           @unique @db.VarChar(120)
+  shortName            String?          @db.VarChar(12)
+  firstOpenedOn        DateTime         @db.Date
+  firstOpenedPrecision DatePrecision    @default(DAY)
+  isActive             Boolean          @default(true)
+  version              Int              @default(1)
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
   teams                Team[]
+  functions            MemberFunction[]
 
   @@index([isActive, name])
 }
@@ -552,6 +558,35 @@ model Team {
 
   @@unique([gameId, normalizedName])
   @@index([gameId, isActive, name])
+}
+
+/// What a function is about: playing, or supervising the players (coach,
+/// manager, analyst). A fixed list, in the code (9 November 2026).
+enum MemberFunctionKind {
+  PLAYER
+  STAFF
+}
+
+/// A function held in a team of a game (Joueur, Coach…), managed in the game's
+/// record (9 November 2026). An empty `gameId` is kept for the functions of the
+/// structure (Bureau & staff, later), unique among themselves (partial index in
+/// the migration). Renaming corrects a typo; a function that changes becomes a
+/// new one and the old one turns inactive, still chosen for old passages.
+model MemberFunction {
+  id             String             @id @default(cuid())
+  gameId         String?
+  game           Game?              @relation(fields: [gameId], references: [id], onDelete: Restrict)
+  name           String             @db.VarChar(40)
+  /// Shared search form of the name: « Coach » and « COACH » are one function.
+  normalizedName String             @db.VarChar(80)
+  kind           MemberFunctionKind
+  isActive       Boolean            @default(true)
+  version        Int                @default(1)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@unique([gameId, normalizedName])
+  @@index([gameId, kind, isActive, name])
 }
 
 model SystemSetting {

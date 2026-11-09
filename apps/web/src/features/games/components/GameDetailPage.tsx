@@ -1,6 +1,6 @@
 'use client';
 
-import { RefreshCw } from 'lucide-react';
+import { Info, RefreshCw, UserCog } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, {
   type FC,
@@ -14,9 +14,12 @@ import AuthenticatedLayout from '$components/AuthenticatedLayout';
 import { EntityDangerZone } from '$components/layout/EntityDangerZone';
 import { EntityDetailLayout } from '$components/layout/EntityDetailLayout';
 import { PageDetailSkeleton } from '$components/layout/PageDetailSkeleton';
+import type { PageSection } from '$components/layout/PageSectionNavigation';
 import { AccessDeniedState, PageState } from '$components/layout/PageState';
 import { FEATURES } from '$constants/feature-registry.constants';
+import { gameDetailPath } from '$constants/routes.constants';
 import { useUser } from '$context/UserContext';
+import { MemberFunctionsSection } from '$features/member-functions/components/MemberFunctionsSection';
 import { PageCanvas, PageShell } from '$ui/page-shell';
 import { StatusBadge } from '$ui/status-badge';
 import { ApiClientError } from '$utils/api.utils';
@@ -33,6 +36,29 @@ import {
 
 const GAMES_HREF = FEATURES.games.href;
 
+type GameDetailSection = 'fonctions' | 'informations';
+
+/**
+ * What the game is first, its information last (owner, 9 November 2026), as
+ * a team keeps its information last; Finances ↗ will come between them.
+ */
+const GAME_DETAIL_SECTIONS: readonly PageSection<GameDetailSection>[] = [
+  { icon: <UserCog className="size-4" />, id: 'fonctions', label: 'Fonctions' },
+  {
+    icon: <Info className="size-4" />,
+    id: 'informations',
+    label: 'Informations',
+  },
+];
+
+/** The first tab keeps the plain address. */
+const sectionHrefOf =
+  (gameId: string) =>
+  (section: GameDetailSection): string =>
+    section === 'fonctions'
+      ? gameDetailPath(gameId)
+      : `${gameDetailPath(gameId)}?section=${section}`;
+
 const GameState: FC<{ game: GameItem }> = ({ game }) =>
   game.isActive ? (
     <StatusBadge tone="success">Actif</StatusBadge>
@@ -42,6 +68,14 @@ const GameState: FC<{ game: GameItem }> = ({ game }) =>
 
 const teamCountLabel = (count: number): string =>
   count === 0 ? 'aucune équipe' : count > 1 ? `${count} équipes` : '1 équipe';
+
+/** Said in the deletion window: unused functions leave with the game. */
+const functionsNotice = (count: number): string =>
+  count === 0
+    ? ''
+    : count === 1
+      ? ' Sa fonction, jamais utilisée, est supprimée avec lui.'
+      : ` Ses ${count} fonctions, jamais utilisées, sont supprimées avec lui.`;
 
 /** « VAL · depuis le 15 mars 2021 · 3 équipes ». */
 const GameContext: FC<{ game: GameItem; showTeams: boolean }> = ({
@@ -56,14 +90,24 @@ const GameContext: FC<{ game: GameItem; showTeams: boolean }> = ({
   </>
 );
 
-const GameDetailContent: FC<{ gameId: string }> = ({ gameId }) => {
+type ContentProps = { activeSection: GameDetailSection; gameId: string };
+
+const GameDetailContent: FC<ContentProps> = ({ activeSection, gameId }) => {
   const router = useRouter();
   const { userData } = useUser();
   const { canManage, canView, canViewTeams } = getGameCapabilities(userData);
   const [game, setGame] = useState<GameItem | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [informationDirty, setInformationDirty] = useState(false);
   const mountedRef = useRef(false);
+  const setFunctionCount = useCallback((functionCount: number): void => {
+    setGame((current) =>
+      current && current.functionCount !== functionCount
+        ? { ...current, functionCount }
+        : current,
+    );
+  }, []);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -144,45 +188,66 @@ const GameDetailContent: FC<{ gameId: string }> = ({ gameId }) => {
       );
 
     return (
-      // One content until its functions: no tabs (gabarit B, « Onglets »).
       <EntityDetailLayout
+        activeSection={activeSection}
+        ariaLiveLabel={`Section ${activeSection === 'fonctions' ? 'Fonctions' : 'Informations'} affichée`}
         condensedAside={<GameState game={game} />}
+        dirtySections={informationDirty ? ['informations'] : []}
         heroDescription={<GameContext game={game} showTeams={canViewTeams} />}
         heroIcon={<GameAvatar className="size-full rounded-md" />}
         heroMeta={<GameState game={game} />}
         heroTitle={game.name}
+        navigationAriaLabel="Navigation de la fiche jeu"
+        sectionHref={sectionHrefOf(game.id)}
+        sections={GAME_DETAIL_SECTIONS.map((section) =>
+          section.id === 'fonctions'
+            ? { ...section, count: game.functionCount }
+            : section,
+        )}
       >
-        <section aria-label="Informations" className="space-y-5">
-          <GameInformationSection
-            key={game.id}
-            canUpdate={canManage}
-            game={game}
-            onChange={setGame}
-            onReload={load}
-          />
-          {canManage && (
-            <EntityDangerZone
-              description="Le jeu disparaît de la liste ; le journal d’activité garde la trace de la suppression."
-              dialogDescription="Cette action est irréversible. Seul un jeu créé par erreur, sans équipe, se supprime."
-              dialogNotice="Le jeu sera supprimé immédiatement et définitivement."
-              dialogTitle={`Supprimer définitivement le jeu ${game.name} ?`}
-              onDelete={async (version) => {
-                await deleteGameRequest(game.id, version);
-              }}
-              onDeleted={() => router.replace(GAMES_HREF)}
-              onDeletedLabel="Retour aux jeux"
-              onReloadVersion={async () => (await load()).version}
-              triggerLabel="Supprimer le jeu"
-              // Said instead of a deletion the server and the base refuse.
-              unavailableReason={
-                game.teamCount > 0
-                  ? `Ce jeu a ${teamCountLabel(game.teamCount)} : rendez-le inactif plutôt que de le supprimer.`
-                  : undefined
-              }
-              version={game.version}
+        {activeSection === 'fonctions' ? (
+          <section aria-label="Fonctions">
+            <MemberFunctionsSection
+              key={game.id}
+              canManage={canManage}
+              game={game}
+              onCountChange={setFunctionCount}
             />
-          )}
-        </section>
+          </section>
+        ) : (
+          <section aria-label="Informations" className="space-y-5">
+            <GameInformationSection
+              key={game.id}
+              canUpdate={canManage}
+              game={game}
+              onChange={setGame}
+              onDirtyChange={setInformationDirty}
+              onReload={load}
+            />
+            {canManage && (
+              <EntityDangerZone
+                description="Le jeu disparaît de la liste ; le journal d’activité garde la trace de la suppression."
+                dialogDescription={`Cette action est irréversible. Seul un jeu créé par erreur, sans équipe, se supprime.${functionsNotice(game.functionCount)}`}
+                dialogNotice="Le jeu sera supprimé immédiatement et définitivement."
+                dialogTitle={`Supprimer définitivement le jeu ${game.name} ?`}
+                onDelete={async (version) => {
+                  await deleteGameRequest(game.id, version);
+                }}
+                onDeleted={() => router.replace(GAMES_HREF)}
+                onDeletedLabel="Retour aux jeux"
+                onReloadVersion={async () => (await load()).version}
+                triggerLabel="Supprimer le jeu"
+                // Said instead of a deletion the server and the base refuse.
+                unavailableReason={
+                  game.teamCount > 0
+                    ? `Ce jeu a ${teamCountLabel(game.teamCount)} : rendez-le inactif plutôt que de le supprimer.`
+                    : undefined
+                }
+                version={game.version}
+              />
+            )}
+          </section>
+        )}
         {/* Save bar of the record: at page level, outside the section. */}
         <div className="contents" id={GAME_ACTION_BAR_SLOT} />
       </EntityDetailLayout>
@@ -203,16 +268,17 @@ const GameDetailContent: FC<{ gameId: string }> = ({ gameId }) => {
 };
 
 /**
- * Record of a game (8 November 2026), opened from its line on the Jeux page.
- * Its information for now; its functions come with the roster, then its
- * finances.
+ * Record of a game (8 November 2026), opened from its line on the Jeux page:
+ * its functions, then its information (9 November 2026); its finances will
+ * come between them.
  */
-export const GameDetailPage: FC<{ gameId: string }> = ({ gameId }) => {
+export const GameDetailPage: FC<ContentProps> = ({ activeSection, gameId }) => {
   const { authorizationRevision, userData } = useUser();
 
   return (
     <GameDetailContent
       key={`${gameId}:${userData?.id ?? ''}:${authorizationRevision}`}
+      activeSection={activeSection}
       gameId={gameId}
     />
   );

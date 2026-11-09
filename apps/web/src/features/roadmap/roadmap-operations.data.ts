@@ -7,9 +7,9 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     description:
       'Faire évoluer les listes de choix du site sans attendre un développement.',
     doneWhen:
-      'Ajouter, renommer ou archiver une valeur ne demande aucun développement et ne réécrit pas l’historique.',
+      'Ajouter, renommer ou rendre inactive une valeur ne demande aucun développement et ne réécrit pas l’historique.',
     firstRelease:
-      'Chaque liste à côté de ce qu’elle classe (la page Jeux est livrée depuis le 8 novembre 2026) : fonctions de chaque jeu en onglet de sa fiche, fonctions de la structure en onglet de Bureau & staff, jeux pratiqués choisis sur la fiche ; ajout direct depuis un champ et champ à choix multiples réutilisable. Renommer corrige une faute ; une chose qui change vraiment devient une nouvelle valeur.',
+      'Chaque liste à côté de ce qu’elle classe (la page Jeux est livrée depuis le 8 novembre 2026, les fonctions de chaque jeu depuis le 9) : fonctions de chaque jeu en onglet de sa fiche, fonctions de la structure en onglet de Bureau & staff, jeux pratiqués choisis sur la fiche ; ajout direct depuis un champ et champ à choix multiples réutilisable. Renommer corrige une faute ; une chose qui change vraiment devient une nouvelle valeur.',
     id: 'reference-lists',
     later:
       'Les autres listes arrivent avec leur module : catégories et moyens de paiement dans Comptes, types de matériel dans Matériel & abonnements.',

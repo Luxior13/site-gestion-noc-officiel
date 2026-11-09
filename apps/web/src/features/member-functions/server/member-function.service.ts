@@ -1,0 +1,370 @@
+import 'server-only';
+
+import type { MemberFunction, Prisma } from '@prisma/client';
+import { AuditAction, AuditCategory } from '@repo/database';
+
+import { FEATURES } from '$constants/feature-registry.constants';
+import { PERMISSIONS } from '$constants/permissions.constants';
+import {
+  isPrismaForeignKeyError,
+  isPrismaUniqueConstraintError,
+} from '$server/api-response';
+import { createAuditLogWithHeaders } from '$server/audit-log';
+import { prisma } from '$server/prisma';
+import { ServiceError, serviceErrors } from '$server/service-error';
+import { authorizeUserAction } from '$server/user-action-authorization';
+import { ErrorCode } from '$types/api.types';
+import type { SessionType, UserType } from '$types/auth.types';
+import { normalizeSearchText } from '$utils/search-text.utils';
+
+import {
+  COMMON_GAME_FUNCTIONS,
+  compareMemberFunctions,
+  memberFunctionKindLabel,
+} from '../member-function.constants';
+import type {
+  MemberFunctionInput,
+  MemberFunctionItem,
+} from '../types/member-function.types';
+
+export type MemberFunctionActor = Readonly<{
+  actor: Pick<UserType, 'id'>;
+  session: SessionType | null;
+}>;
+
+type AuditValues = Readonly<{
+  game: string;
+  isActive: boolean;
+  kind: string;
+  name: string;
+}>;
+
+type GameRef = Readonly<{ id: string; name: string }>;
+
+const DUPLICATE_NAME = 'Ce jeu a déjà une fonction de ce nom.';
+
+const duplicateName = (): ServiceError =>
+  new ServiceError(ErrorCode.CONFLICT, DUPLICATE_NAME, 409, {
+    details: { name: [DUPLICATE_NAME] },
+  });
+const functionChanged = (): ServiceError =>
+  serviceErrors.conflict(
+    'Cette fonction a été modifiée entre-temps. Rechargez la liste avant de recommencer.',
+  );
+const functionMissing = (): ServiceError =>
+  serviceErrors.notFound('Cette fonction n’existe plus. Rechargez la liste.');
+const gameMissing = (): ServiceError =>
+  serviceErrors.notFound('Ce jeu n’existe plus. Rechargez la liste.');
+/** The common functions only fill an empty list (owner, 9 November 2026). */
+const functionsArrived = (): ServiceError =>
+  serviceErrors.conflict(
+    'Des fonctions ont été ajoutées entre-temps. Rechargez la liste.',
+  );
+/**
+ * A function used by a passage stays in the history: it is made inactive.
+ * The roster's passages will reference it with `ON DELETE RESTRICT`.
+ */
+const functionUsed = (): ServiceError =>
+  serviceErrors.conflict(
+    'Cette fonction a déjà servi : rendez-la inactive plutôt que de la supprimer.',
+  );
+
+const toItem = (row: MemberFunction): MemberFunctionItem => ({
+  id: row.id,
+  isActive: row.isActive,
+  kind: row.kind,
+  name: row.name,
+  updatedAt: row.updatedAt.toISOString(),
+  version: row.version,
+});
+
+/** What the journal shows: the game by its name, the kind by its label. */
+const auditValues = (
+  item: MemberFunctionInput | MemberFunctionItem,
+  game: GameRef,
+): AuditValues => ({
+  game: game.name,
+  isActive: item.isActive,
+  kind: memberFunctionKindLabel(item.kind),
+  name: item.name,
+});
+
+const changedKeys = (
+  before: AuditValues,
+  after: AuditValues,
+): (keyof AuditValues)[] =>
+  (Object.keys(after) as (keyof AuditValues)[]).filter(
+    // Keys come from the closed AuditValues type.
+    // eslint-disable-next-line security/detect-object-injection
+    (key) => before[key] !== after[key],
+  );
+
+const pick = (
+  values: AuditValues,
+  keys: readonly (keyof AuditValues)[],
+): Partial<AuditValues> =>
+  Object.fromEntries(
+    // eslint-disable-next-line security/detect-object-injection
+    keys.map((key) => [key, values[key]]),
+  ) as Partial<AuditValues>;
+
+const editableData = (
+  input: MemberFunctionInput,
+): Pick<
+  Prisma.MemberFunctionUncheckedCreateInput,
+  'isActive' | 'kind' | 'name' | 'normalizedName'
+> => ({
+  isActive: input.isActive,
+  kind: input.kind,
+  name: input.name,
+  normalizedName: normalizeSearchText(input.name),
+});
+
+const findGame = async (
+  client: Prisma.TransactionClient,
+  id: string,
+): Promise<GameRef> => {
+  const game = await client.game.findUnique({
+    select: { id: true, name: true },
+    where: { id },
+  });
+  if (!game) throw gameMissing();
+
+  return game;
+};
+
+/** A function of this game: another game's function is « not found » here. */
+const findFunction = async (
+  client: Prisma.TransactionClient,
+  gameId: string,
+  id: string,
+): Promise<MemberFunction> => {
+  const row = await client.memberFunction.findFirst({ where: { gameId, id } });
+  if (!row) throw functionMissing();
+
+  return row;
+};
+
+const audit = async (
+  transaction: Prisma.TransactionClient,
+  input: {
+    action: 'FUNCTION_CREATE' | 'FUNCTION_DELETE' | 'FUNCTION_UPDATE';
+    actorId: string;
+    after: Partial<AuditValues> | null;
+    before: Partial<AuditValues> | null;
+    changes: readonly string[];
+    description: string;
+    game: GameRef;
+    item: Pick<MemberFunctionItem, 'id' | 'name'>;
+  },
+): Promise<void> =>
+  createAuditLogWithHeaders(
+    {
+      action: AuditAction[input.action],
+      category: AuditCategory.FUNCTION,
+      description: input.description,
+      metadata: {
+        after: input.after,
+        before: input.before,
+        changes: input.changes,
+        functionId: input.item.id,
+        functionName: input.item.name,
+        gameId: input.game.id,
+        gameName: input.game.name,
+        // The functions of a game are managed in its record.
+        ...FEATURES.games.audit,
+      },
+      targetUserId: null,
+      userId: input.actorId,
+    },
+    { client: transaction, required: true },
+  );
+
+const authorize = (
+  transaction: Prisma.TransactionClient,
+  { actor, session }: MemberFunctionActor,
+): Promise<unknown> =>
+  authorizeUserAction(
+    transaction,
+    { actorId: actor.id, session },
+    PERMISSIONS.GAMES.MANAGE,
+  );
+
+const createOne = async (
+  transaction: Prisma.TransactionClient,
+  game: GameRef,
+  input: MemberFunctionInput,
+  actorId: string,
+): Promise<MemberFunctionItem> => {
+  const item = toItem(
+    await transaction.memberFunction.create({
+      data: { ...editableData(input), gameId: game.id },
+    }),
+  );
+  const after = auditValues(item, game);
+  await audit(transaction, {
+    action: 'FUNCTION_CREATE',
+    actorId,
+    after,
+    before: null,
+    changes: Object.keys(after),
+    description: `Fonction ajoutée : ${item.name} (${game.name})`,
+    game,
+    item,
+  });
+
+  return item;
+};
+
+/** The functions of a game: players first, active ones first, then by name. */
+export const listGameFunctions = async (
+  gameId: string,
+): Promise<MemberFunctionItem[]> => {
+  await findGame(prisma, gameId);
+
+  return (await prisma.memberFunction.findMany({ where: { gameId } }))
+    .map(toItem)
+    .sort(compareMemberFunctions);
+};
+
+/** Adds a function to a game; its name is unique within the game. */
+export const createGameFunction = async (
+  gameId: string,
+  input: MemberFunctionInput,
+  actor: MemberFunctionActor,
+): Promise<MemberFunctionItem> => {
+  try {
+    return await prisma.$transaction(async (transaction) => {
+      await authorize(transaction, actor);
+      const game = await findGame(transaction, gameId);
+
+      return createOne(transaction, game, input, actor.actor.id);
+    });
+  } catch (error) {
+    if (isPrismaUniqueConstraintError(error)) throw duplicateName();
+    throw error;
+  }
+};
+
+/**
+ * Adds Joueur, Remplaçant, Coach, Manager and Analyste to a game that has no
+ * function yet, each traced like a single addition, in one transaction.
+ */
+export const addCommonGameFunctions = async (
+  gameId: string,
+  actor: MemberFunctionActor,
+): Promise<MemberFunctionItem[]> => {
+  try {
+    return await prisma.$transaction(async (transaction) => {
+      await authorize(transaction, actor);
+      const game = await findGame(transaction, gameId);
+      if ((await transaction.memberFunction.count({ where: { gameId } })) > 0)
+        throw functionsArrived();
+      const items: MemberFunctionItem[] = [];
+      for (const common of COMMON_GAME_FUNCTIONS)
+        items.push(
+          await createOne(
+            transaction,
+            game,
+            { ...common, isActive: true },
+            actor.actor.id,
+          ),
+        );
+
+      return items.sort(compareMemberFunctions);
+    });
+  } catch (error) {
+    // Two clicks at once: the second meets the first one's names.
+    if (isPrismaUniqueConstraintError(error)) throw functionsArrived();
+    throw error;
+  }
+};
+
+/**
+ * Edits a function under optimistic versioning. Renaming corrects a typo: a
+ * function that changes becomes a new one, and the old one turns inactive
+ * (registre historique). An unchanged form answers the current state.
+ */
+export const updateGameFunction = async (
+  gameId: string,
+  id: string,
+  input: MemberFunctionInput & { expectedVersion: number },
+  actor: MemberFunctionActor,
+): Promise<MemberFunctionItem> => {
+  try {
+    return await prisma.$transaction(async (transaction) => {
+      await authorize(transaction, actor);
+      const game = await findGame(transaction, gameId);
+      const previous = toItem(await findFunction(transaction, gameId, id));
+      if (previous.version !== input.expectedVersion) throw functionChanged();
+      const before = auditValues(previous, game);
+      const after = auditValues(input, game);
+      const changes = changedKeys(before, after);
+      if (changes.length === 0) return previous;
+      const result = await transaction.memberFunction.updateMany({
+        data: { ...editableData(input), version: { increment: 1 } },
+        where: { gameId, id, version: input.expectedVersion },
+      });
+      if (result.count !== 1) throw functionChanged();
+      const item = toItem(
+        await transaction.memberFunction.findUniqueOrThrow({ where: { id } }),
+      );
+      await audit(transaction, {
+        action: 'FUNCTION_UPDATE',
+        actorId: actor.actor.id,
+        after: pick(after, changes),
+        before: pick(before, changes),
+        changes,
+        description: `Fonction modifiée : ${item.name} (${game.name})`,
+        game,
+        item,
+      });
+
+      return item;
+    });
+  } catch (error) {
+    if (isPrismaUniqueConstraintError(error)) throw duplicateName();
+    throw error;
+  }
+};
+
+/**
+ * Deletes a function created by mistake. Nothing uses a function yet; the
+ * roster's passages will, with `ON DELETE RESTRICT`, and a used function is
+ * then refused here: it is made inactive instead.
+ */
+export const deleteGameFunction = async (
+  gameId: string,
+  id: string,
+  expectedVersion: number,
+  actor: MemberFunctionActor,
+): Promise<{ id: string }> => {
+  try {
+    return await prisma.$transaction(async (transaction) => {
+      await authorize(transaction, actor);
+      const game = await findGame(transaction, gameId);
+      const previous = toItem(await findFunction(transaction, gameId, id));
+      if (previous.version !== expectedVersion) throw functionChanged();
+      const result = await transaction.memberFunction.deleteMany({
+        where: { gameId, id, version: expectedVersion },
+      });
+      if (result.count !== 1) throw functionChanged();
+      const before = auditValues(previous, game);
+      await audit(transaction, {
+        action: 'FUNCTION_DELETE',
+        actorId: actor.actor.id,
+        after: null,
+        before,
+        changes: Object.keys(before),
+        description: `Fonction supprimée : ${previous.name} (${game.name})`,
+        game,
+        item: previous,
+      });
+
+      return { id };
+    });
+  } catch (error) {
+    if (isPrismaForeignKeyError(error)) throw functionUsed();
+    throw error;
+  }
+};

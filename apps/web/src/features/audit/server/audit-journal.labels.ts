@@ -14,6 +14,9 @@ export const JOURNAL_ACTION_LABELS: Record<AuditAction, string> = {
   AUDIT_PURGE: 'Journal purgé',
   AUDIT_VIEW: 'Journal consulté',
   BACKGROUND_JOB_UPDATE: 'Tâche de fond modifiée',
+  FUNCTION_CREATE: 'Fonction ajoutée',
+  FUNCTION_DELETE: 'Fonction supprimée',
+  FUNCTION_UPDATE: 'Fonction modifiée',
   GAME_CREATE: 'Jeu ajouté',
   GAME_DELETE: 'Jeu supprimé',
   GAME_UPDATE: 'Jeu modifié',
@@ -88,6 +91,8 @@ export const GAME_FIELD_LABELS: ReadonlyArray<readonly [string, string]> = [
   ['shortName', 'Nom court'],
   ['firstOpened', 'Première ouverture'],
   ['isActive', 'Actif'],
+  // Removed with a game created by mistake (9 November 2026).
+  ['functions', 'Fonctions'],
 ];
 
 /** Team fields recorded in `before` / `after`, in display order. */
@@ -95,6 +100,14 @@ export const TEAM_FIELD_LABELS: ReadonlyArray<readonly [string, string]> = [
   ['game', 'Jeu'],
   ['name', 'Nom'],
   ['founded', 'Création'],
+  ['isActive', 'Active'],
+];
+
+/** Function fields recorded in `before` / `after`, in display order. */
+export const FUNCTION_FIELD_LABELS: ReadonlyArray<readonly [string, string]> = [
+  ['game', 'Jeu'],
+  ['name', 'Nom'],
+  ['kind', 'Type'],
   ['isActive', 'Active'],
 ];
 

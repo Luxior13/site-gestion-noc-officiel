@@ -3,6 +3,8 @@ import type { ApproximateDate } from '$utils/approximate-date.utils';
 /** Browser-safe projection of a game (one section of the structure). */
 export type GameItem = Readonly<{
   firstOpened: ApproximateDate;
+  /** Functions of the game (Joueur, Coach…), managed in its record. */
+  functionCount: number;
   id: string;
   isActive: boolean;
   name: string;

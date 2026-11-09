@@ -51,14 +51,17 @@ const gameHasTeams = (count: number | null): ServiceError =>
     `Ce jeu a ${count === null ? 'des équipes' : count > 1 ? `${count} équipes` : 'une équipe'} : rendez-le inactif plutôt que de le supprimer.`,
   );
 
-const WITH_TEAM_COUNT = { _count: { select: { teams: true } } } as const;
-type GameRow = Prisma.GameGetPayload<{ include: typeof WITH_TEAM_COUNT }>;
+const WITH_COUNTS = {
+  _count: { select: { functions: true, teams: true } },
+} as const;
+type GameRow = Prisma.GameGetPayload<{ include: typeof WITH_COUNTS }>;
 
 const toGameItem = (game: GameRow): GameItem => ({
   firstOpened: {
     date: game.firstOpenedOn.toISOString().slice(0, 10),
     precision: game.firstOpenedPrecision,
   },
+  functionCount: game._count.functions,
   id: game.id,
   isActive: game.isActive,
   name: game.name,
@@ -137,14 +140,14 @@ const audit = async (
 
 /** Every game, active ones first: the list stays short (one section per game). */
 export const listGames = async (): Promise<GameItem[]> =>
-  (await prisma.game.findMany({ include: WITH_TEAM_COUNT }))
+  (await prisma.game.findMany({ include: WITH_COUNTS }))
     .map(toGameItem)
     .sort(compareActiveThenName);
 
-/** A game with its number of teams, for its record. */
+/** A game with its numbers of teams and functions, for its record. */
 export const getGame = async (id: string): Promise<GameItem> => {
   const game = await prisma.game.findUnique({
-    include: WITH_TEAM_COUNT,
+    include: WITH_COUNTS,
     where: { id },
   });
   if (!game) throw gameMissing();
@@ -167,7 +170,7 @@ export const createGame = async (
       const game = toGameItem(
         await transaction.game.create({
           data: writeData(input),
-          include: WITH_TEAM_COUNT,
+          include: WITH_COUNTS,
         }),
       );
       const after = auditValues(game);
@@ -207,7 +210,7 @@ export const updateGame = async (
         PERMISSIONS.GAMES.MANAGE,
       );
       const previous = await transaction.game.findUnique({
-        include: WITH_TEAM_COUNT,
+        include: WITH_COUNTS,
         where: { id },
       });
       if (!previous) throw gameMissing();
@@ -225,7 +228,7 @@ export const updateGame = async (
       if (result.count !== 1) throw gameChanged();
       const game = toGameItem(
         await transaction.game.findUniqueOrThrow({
-          include: WITH_TEAM_COUNT,
+          include: WITH_COUNTS,
           where: { id },
         }),
       );
@@ -251,6 +254,9 @@ export const updateGame = async (
  * Deletes a game created by mistake. A game that has teams is refused here
  * with its count, and by the database (`Team_gameId_fkey`, `ON DELETE
  * RESTRICT`) if a team arrives in between: it is made inactive instead.
+ * Without a team, none of its functions has served: they are removed with it,
+ * explicitly and named in the trace (`MemberFunction_gameId_fkey` stays
+ * RESTRICT, never CASCADE).
  */
 export const deleteGame = async (
   id: string,
@@ -265,18 +271,29 @@ export const deleteGame = async (
         PERMISSIONS.GAMES.MANAGE,
       );
       const previous = await transaction.game.findUnique({
-        include: WITH_TEAM_COUNT,
+        include: WITH_COUNTS,
         where: { id },
       });
       if (!previous) throw gameMissing();
       if (previous.version !== expectedVersion) throw gameChanged();
       if (previous._count.teams > 0) throw gameHasTeams(previous._count.teams);
+      const functions = await transaction.memberFunction.findMany({
+        orderBy: { name: 'asc' },
+        select: { name: true },
+        where: { gameId: id },
+      });
+      await transaction.memberFunction.deleteMany({ where: { gameId: id } });
       const result = await transaction.game.deleteMany({
         where: { id, version: expectedVersion },
       });
       if (result.count !== 1) throw gameChanged();
       const game = toGameItem(previous);
-      const before = auditValues(game);
+      const before = {
+        ...auditValues(game),
+        ...(functions.length
+          ? { functions: functions.map(({ name }) => name).join(', ') }
+          : {}),
+      };
       await audit(transaction, {
         action: 'GAME_DELETE',
         actorId: actor.id,

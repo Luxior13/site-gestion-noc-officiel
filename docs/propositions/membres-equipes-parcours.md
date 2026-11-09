@@ -20,7 +20,7 @@ migration. Ils demandent des scénarios d’abus et une validation sur base isol
 
 | Lot | Contenu | Résultat visible |
 | --- | --- | --- |
-| 1 | Listes de choix | Champ « Jeux » sur la fiche, avec ajout direct ; la page Jeux et l’onglet Fonctions de chaque fiche jeu arrivent au lot 2 |
+| 1 | Listes de choix | Champ « Jeux » sur la fiche, avec ajout direct ; la page Jeux (8 novembre 2026) et l’onglet Fonctions de chaque fiche jeu (9 novembre 2026) sont livrés |
 | 2 | Équipes & parcours | Page Jeux, fiches jeu et équipe, page Bureau & staff (Effectif, Fonctions), onglet Parcours en lecture, anciens pseudos dans Identité |
 | 3 | Accès manager | Un manager se connecte et ne voit que son équipe |
 
@@ -30,7 +30,7 @@ Confidentialité & conservation et Données, exports & sauvegardes complètent l
 ## Lot 1 — Listes de choix
 
 **Données** : les jeux ont leur table `Game`, livrée le 8 novembre 2026 avec la page Jeux (nom unique, nom court, première ouverture et sa précision, actif) ; une table `ReferenceValue` pour les autres listes (`list`, `label`,
-libellé normalisé, `archivedAt`, `version`, et le jeu pour les fonctions d’un jeu),
+libellé normalisé, actif, `version`) ; les fonctions ont leur table `MemberFunction`, livrée le 9 novembre 2026 (nom unique par jeu, type Joueur ou Encadrement, active, `version`, `gameId` vide réservé aux fonctions de la structure, unique entre elles par un index partiel),
 unique par liste (et jeu) et libellé normalisé,
 et une table de liaison `PersonGame`. Une table commune évite une page, une API et
 une migration par liste. Pour qu’une fonction ne puisse pas remplir un champ
@@ -43,7 +43,8 @@ Jeux sur `/esport/jeux` et fonctions de chaque jeu dans sa fiche (lot 2), foncti
 dans Système. Deux listes de fonctions : un passage dans une équipe ne propose
 que les fonctions de son jeu, un passage dans la structure que celles de la
 structure, et la base le contrôle. Ajout et renommage en fenêtre. Une colonne indique le
-nombre d’usages, pour comprendre pourquoi une valeur s’archive sans se supprimer.
+nombre d’usages, pour comprendre pourquoi une valeur se rend inactive sans se
+supprimer : elle arrive avec les passages, qui créent les usages.
 
 **Composant** : `MultiSelect` dans `components/ui`, composé de `Popover` et
 `Command` déjà présents, sans nouvelle dépendance. Il propose « Ajouter … » quand
@@ -87,8 +88,8 @@ identifiants de jeu, finances) le fait en `ON DELETE RESTRICT`, jamais en
 - `/esport/jeux` (livrée le 8 novembre 2026, avec les équipes sous chaque jeu le même jour ; le nom d’une équipe ouvre sa fiche) : accueil d’Esport, au gabarit A, sans onglet : les sections,
   actives ou archivées, chacune avec ses équipes en dessous ; une équipe ouvre sa
   fiche en un clic, le nom du jeu ouvre la fiche jeu (décision du 8 novembre 2026).
-- `/esport/jeux/[id]` (ouverte le 8 novembre 2026 avec ses informations seules, sans barre d’onglets) : fiche jeu, onglets Fonctions et Finances ↗ (celles de ce
-  jeu, réglage « Donne accès à son équipe ») ; l’onglet Équipes est retiré le
+- `/esport/jeux/[id]` (ouverte le 8 novembre 2026, onglets Fonctions et Informations le 9) : fiche jeu, onglets Fonctions (livré ; réglage « Donne accès à son équipe » à l’étape 3), Finances ↗ (celles de ce
+  jeu) et Informations ; l’onglet Équipes est retiré le
   8 novembre 2026, les équipes s’affichent et s’ajoutent sous chaque jeu de la
   page Jeux.
 - `/esport/equipes/[id]` (ouverte le 8 novembre 2026 avec ses informations seules, sans barre d’onglets) : fiche équipe, sous son jeu, onglets Roster (membres

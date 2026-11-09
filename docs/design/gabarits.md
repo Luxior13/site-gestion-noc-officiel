@@ -132,6 +132,13 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
   « Documents » pour les pièces, « Justificatifs » pour celles des Finances.
 - **Pas d’onglet Historique** : le bouton de l’en-tête ouvre le journal, filtré.
 - **Un onglet en lecture le signale** (8 novembre 2026) : quand rien ne s’y modifie et que son contenu se gère sur une autre page (Adhésions ou Finances d’une fiche personne), l’onglet garde le même style, suivi d’une flèche ↗ et du texte accessible « se modifie dans … ». Dedans, une ligne en tête nomme la page source avec un bouton pour l’ouvrir, chaque ligne ouvre son dossier, sans action de modification. Un onglet mixte (Suivi d’une fiche personne, Gains d’une fiche tournoi) reste un onglet normal : ses lignes venues d’ailleurs portent leur source et un lien.
+- **Liste de choix dans une fiche** (fonctions d’un jeu, 9 novembre 2026) : la
+  liste du Répertoire dans la carte de l’onglet (titre, phrase, « Ajouter … » à
+  droite pour qui gère) ; une valeur n’a pas de fiche, son nom ouvre sa fenêtre
+  de modification, toute la ligne étant la cible ; « Supprimer » vit dans cette
+  fenêtre, confirmé à part, pour une valeur jamais utilisée ; une liste vide
+  propose « Ajouter les … courantes » en un clic à côté de l’ajout simple. Un
+  lecteur voit les mêmes lignes, sans action.
 - **Créer** : en fenêtre pour quelques champs, sur une page pour un long formulaire.
   Un élément qui a sa fiche s’ouvre sur elle, jamais dans une fenêtre : la fenêtre
   ne sert qu’à le créer, puis sa fiche s’ouvre (équipe, 8 novembre 2026).

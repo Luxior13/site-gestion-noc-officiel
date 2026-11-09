@@ -331,7 +331,7 @@ dans la page Jeux de l’éditeur, en deux groupes (Jeux, Équipes) ; voir les
 | Clé canonique | Action couverte | Dépend de | Risque | Step-up à l'usage |
 | --- | --- | --- | --- | --- |
 | `games:view` | consulter la liste des jeux et leur première ouverture | — | défaut | Non |
-| `games:manage` | ajouter, modifier, rendre actif ou non, supprimer un jeu qui n’a jamais servi (un jeu qui a des équipes est refusé par le service et par la base) | `games:view` | sensible | Non |
+| `games:manage` | ajouter, modifier, rendre actif ou non, supprimer un jeu qui n’a jamais servi (un jeu qui a des équipes est refusé par le service et par la base) ; ajouter, modifier, rendre active ou non, supprimer une fonction du jeu jamais utilisée (9 novembre 2026, sans permission nouvelle) | `games:view` | sensible | Non |
 | `teams:view` | voir les équipes sous chaque jeu, actives ou non | `games:view` | défaut | Non |
 | `teams:manage` | ajouter une équipe à un jeu, la modifier, la rendre active ou non, supprimer une équipe qui n’a jamais servi | `teams:view` | sensible | Non |
 
@@ -387,6 +387,7 @@ pas en droits délégables individuellement.
 | `/tableau-de-bord`                                   | alias de support redirigeant vers `/` ; aucune permission supplémentaire                                                                                   |
 | `/administration`                                    | route de support redirigeant vers les utilisateurs                                                                                                         |
 | `/esport/jeux`                                       | `games:view` pour lire ; `games:manage` pour ajouter, modifier et supprimer un jeu ; `teams:view` et `teams:manage` pour les équipes (`/api/equipes`) ; l’API refait le contrôle dans sa transaction |
+| `/esport/jeux/[id]`                                  | `games:view` pour lire le jeu et ses fonctions ; `games:manage` pour les modifier (`/api/jeux/[id]/fonctions`) ; le nombre d’équipes avec `teams:view` |
 | `/systeme/utilisateurs`                       | `users:view`                                                                                                                                               |
 | `/systeme/utilisateurs/nouveau`               | `users:create`, donc aussi `users:view`                                                                                                                    |
 | `/systeme/utilisateurs/[id]?section=profile`  | lecture de fiche, contact, profil et identifiant via les clés `users:*` correspondantes                                                                    |

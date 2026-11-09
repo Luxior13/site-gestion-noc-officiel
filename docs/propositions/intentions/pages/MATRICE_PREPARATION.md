@@ -11,7 +11,7 @@ Référence révisée le 7 novembre 2026. Les chantiers proviennent du [catalogu
 | `/mon-compte` | Profil, autorisations et sécurité du compte livrés | Outils globaux |
 | `/recherche` | Page retirée le 9 octobre 2026 ; navigation rapide conservée ; redirige vers l’accueil | Outils globaux |
 | `/personnes/repertoire`, `/nouveau`, `/[id]` sous ce chemin | Liste, création et fiche Personne livrées ; `/membres/repertoire/*` y redirige depuis le 8 novembre 2026 | Personnes |
-| `/esport/jeux/[id]` | Fiche jeu ouverte le 8 novembre 2026 (informations ; Fonctions à venir) | Esport |
+| `/esport/jeux/[id]` | Fiche jeu ouverte le 8 novembre 2026 (Fonctions et Informations depuis le 9 novembre 2026 ; Finances ↗ à venir) | Esport |
 | `/esport/equipes/[id]` | Fiche équipe ouverte le 8 novembre 2026 (informations ; Roster à venir) | Esport |
 | `/esport/jeux` | Page Jeux livrée le 8 novembre 2026, avec les équipes sous chaque jeu | Esport |
 | `/activite/actualites` | Ancienne page ; redirige vers la feuille de route | — |

@@ -41,6 +41,7 @@ const TYPE_FILTERS: Record<
     category: { in: ['USER', 'PERMISSION'] },
     stream: { in: ['IDENTITY', 'AUTHORIZATION'] },
   },
+  functions: { category: 'FUNCTION' },
   games: { category: 'GAME' },
   persons: { category: 'PERSON' },
   security: { stream: { in: ['AUTHENTICATION', 'SECURITY'] } },

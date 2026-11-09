@@ -96,7 +96,7 @@ Regroupements toujours valables :
 
 Savoir qui est passé dans la structure, à quelle fonction et dans quelle équipe.
 
-- **Listes de choix** (Esport) : Chaque liste à côté de ce qu’elle classe : fonctions de chaque jeu en onglet de sa fiche (la page Jeux est livrée), jeux pratiqués choisis sur la fiche ; ajout direct depuis un champ et champ à choix multiples réutilisable. Renommer corrige une faute ; une chose qui change vraiment devient une nouvelle valeur.
+- **Listes de choix** (Esport) : Chaque liste à côté de ce qu’elle classe : fonctions de chaque jeu en onglet de sa fiche (la page Jeux est livrée, les fonctions de chaque jeu aussi), jeux pratiqués choisis sur la fiche ; ajout direct depuis un champ et champ à choix multiples réutilisable. Renommer corrige une faute ; une chose qui change vraiment devient une nouvelle valeur.
 - **Équipes & parcours** (Personnes) : Page Jeux, fiche de chaque jeu (ses équipes) et de chaque équipe (Roster, anciens noms), page Bureau & staff ; passages datés (équipe ou structure, fonction, début, fin, dates approximatives admises) saisis dans le Roster d’une équipe ou l’Effectif de Bureau & staff, lus dans l’onglet Parcours de la fiche, membres actuels et anciens, anciens pseudos. Fiche complétée : nationalité, adresse, identifiants de jeu, contact d’urgence, représentants légaux.
 
 ## 2. Accès & conservation
@@ -259,10 +259,10 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 | Page | Onglet | Contenu | État |
 | --- | --- | --- | --- |
 | **Jeux** | — | Liste, sans onglet, sur le modèle du Répertoire : chaque jeu et, sur des lignes dessous reliées par un guide, ses équipes, en bandes alternées par jeu, les actifs en tête, une icône de manette par défaut, une recherche sur les jeux et les équipes et un filtre ; ajout et modification en fenêtre d’un jeu (nom, nom court, première ouverture, actif) ; un bouton « Ajouter une équipe » : jeu choisi dans la fenêtre, actif ou non, nom unique dans le jeu, création, active, puis sa fiche s’ouvre ; le nom d’un jeu ou d’une équipe ouvre sa fiche ; renommer corrige une faute ; un jeu qui a des équipes ne se supprime pas, il devient inactif. C’est aussi la liste de choix des jeux. À venir (étape 1) : l’image de chaque jeu à la place de la manette. | Livré |
-| **Fiche jeu** | — | Ouverte par le nom d’un jeu sur la page Jeux, ou juste après son ajout. À venir (étape 1) : l’onglet Fonctions avec le Roster : la barre d’onglets apparaît avec lui, puis Finances. | Livré |
-|  | Fonctions | Les fonctions de ce jeu : joueur, remplaçant, coach, manager, ou des postes propres au jeu ; réglage « Donne accès à son équipe » ; ajouter, renommer, archiver. | Étape 1 |
+| **Fiche jeu** | — | Ouverte par le nom d’un jeu sur la page Jeux, ou juste après son ajout. À venir (étape 1) : avec le Roster, le nombre de passages de chaque fonction ; puis l’onglet Finances ↗, entre Fonctions et Informations. | Livré |
+|  | Fonctions | Premier onglet : les fonctions de ce jeu (Joueur, Remplaçant, Coach…), type Joueur ou Encadrement, active ou non ; ajout et modification en fenêtre, fonctions courantes en un clic quand la liste est vide ; une fonction inactive reste choisissable pour un passage ancien. À venir (étape 1) : le nombre de passages de chaque fonction avec le Roster ; le réglage « Donne accès à son équipe » viendra avec l’accès des managers. | Livré |
 |  | Finances ↗ | Total de la section : ses équipes, plus les opérations liées au jeu lui-même (licence, matériel commun) ; détaillé par équipe. Lu ici, se modifie dans Finances. | Étape 3 |
-|  | Informations | Nom, nom court, première ouverture, actif, modifiés sur place ; zone dangereuse, qui explique « rendez-le inactif » quand le jeu a des équipes. Seul contenu de la fiche pour l’instant, donc sans barre d’onglets. | Livré |
+|  | Informations | Dernier onglet : nom, nom court, première ouverture, actif, modifiés sur place ; zone dangereuse, qui explique « rendez-le inactif » quand le jeu a des équipes. | Livré |
 | **Fiche équipe** | — | Ouverte par le nom d’une équipe sur la page Jeux, ou juste après son ajout. À venir (étape 1) : le Roster, premier onglet : la barre d’onglets apparaît avec lui, puis les autres onglets. | Livré |
 |  | Roster | Joueurs et encadrement actuels et anciens, avec début et fin ; composition à une date ; on y ajoute ou termine un passage. Date de fin de contrat affichée seule, lue dans les contrats (étape 7). Seule fiche d’un manager, en lecture. | Étape 1 |
 |  | Tournois ↗ | Tournois joués par cette équipe, avec son classement. Un manager les voit et crée ceux de son équipe, sans les gains ni le Suivi. Lu ici, se modifie dans Tournois. | Étape 5 |
@@ -338,7 +338,7 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 | Page | Onglet | Contenu | État |
 | --- | --- | --- | --- |
 | **Bureau & staff** | Effectif | Le roster de la structure : qui occupe quelle fonction (bureau, staff, bénévoles), avec début et fin, depuis 2014 ; on y ajoute ou termine un passage, avec la même fenêtre que dans le Roster d’une équipe. | Étape 1 |
-|  | Fonctions | Fonctions de la structure : président, trésorier, secrétaire, graphiste, bénévole… ; ajouter, renommer, archiver. | Étape 1 |
+|  | Fonctions | Fonctions de la structure : président, trésorier, secrétaire, graphiste, bénévole… ; ajouter, renommer, rendre inactive, comme les fonctions d’un jeu. | Étape 1 |
 | **Identité juridique** | Identité | Dénomination, forme, identifiants, adresse. | Étape 3 |
 |  | Assurances | Assurances, affiliations, licences, marque, et leurs échéances. | Étape 3 |
 |  | Documents | Statuts et pièces officielles. | Étape 7 |

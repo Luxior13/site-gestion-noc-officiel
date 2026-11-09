@@ -21,9 +21,16 @@ const SUITE_DATABASES = [
     database: 'audit_journal_service_test',
     variable: 'AUDIT_JOURNAL_TEST_DATABASE_URL',
   },
-  { database: 'creation_service_test', variable: 'USER_CREATION_TEST_DATABASE_URL' },
+  {
+    database: 'creation_service_test',
+    variable: 'USER_CREATION_TEST_DATABASE_URL',
+  },
   { database: 'games_service_test', variable: 'GAMES_TEST_DATABASE_URL' },
   { database: 'teams_service_test', variable: 'TEAMS_TEST_DATABASE_URL' },
+  {
+    database: 'member_functions_service_test',
+    variable: 'MEMBER_FUNCTIONS_TEST_DATABASE_URL',
+  },
   { database: 'login_service_test', variable: 'LOGIN_TEST_DATABASE_URL' },
   {
     database: 'person_creation_service_test',
@@ -39,8 +46,15 @@ const SUITE_DATABASES = [
     variable: 'PERSONS_LIST_TEST_DATABASE_URL',
   },
   { database: 'settings_service_test', variable: 'SETTINGS_TEST_DATABASE_URL' },
-  { database: 'user_detail_service_test', variable: 'USER_DETAIL_TEST_DATABASE_URL' },
-  { database: 'users_list_test', migrate: false, variable: 'USERS_LIST_TEST_DATABASE_URL' },
+  {
+    database: 'user_detail_service_test',
+    variable: 'USER_DETAIL_TEST_DATABASE_URL',
+  },
+  {
+    database: 'users_list_test',
+    migrate: false,
+    variable: 'USERS_LIST_TEST_DATABASE_URL',
+  },
 ];
 // Any accidental use of the default client fails here instead of reaching a
 // real database.
@@ -87,15 +101,20 @@ const schemaPath = resolve(
 );
 
 const runPrisma = (args, databaseUrl) =>
-  spawnSync(process.execPath, ['x', 'prisma', ...args, '--schema', schemaPath], {
-    encoding: 'utf8',
-    env: { ...process.env, DATABASE_URL: databaseUrl },
-  });
+  spawnSync(
+    process.execPath,
+    ['x', 'prisma', ...args, '--schema', schemaPath],
+    {
+      encoding: 'utf8',
+      env: { ...process.env, DATABASE_URL: databaseUrl },
+    },
+  );
 
 const admin = new PrismaClient({ datasourceUrl: adminUrl.toString() });
 try {
   for (const { database } of SUITE_DATABASES) {
-    if (!/^[a-z_]+_test$/.test(database)) fail(`nom de base refusé : ${database}`);
+    if (!/^[a-z_]+_test$/.test(database))
+      fail(`nom de base refusé : ${database}`);
     // Identifiers come from the fixed list above, never from input.
     await admin.$executeRawUnsafe(
       `DROP DATABASE IF EXISTS "${database}" WITH (FORCE)`,

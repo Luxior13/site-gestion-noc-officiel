@@ -35,6 +35,7 @@ import type {
 import {
   BLOCKED_ATTEMPT_PROOFS,
   BLOCKED_ATTEMPT_STEPS,
+  FUNCTION_FIELD_LABELS,
   GAME_FIELD_LABELS,
   JOURNAL_ACTION_LABELS,
   LOGIN_FAILURE_REASONS,
@@ -204,8 +205,8 @@ const projectUserChanges = (
 };
 
 /**
- * A game or a team records its readable values in `before` / `after`
- * (8 November 2026); the labels list fixes their names and order.
+ * A game, a team or a function records its readable values in `before` /
+ * `after` (8 and 9 November 2026); the labels list fixes their names and order.
  */
 const projectReadableChanges = (
   metadata: Record<string, unknown>,
@@ -350,6 +351,7 @@ const typeLabelOf = (row: AuditLog): string => {
   if (row.category === 'PERSON') return 'Personnes';
   if (row.category === 'GAME') return 'Jeux';
   if (row.category === 'TEAM') return 'Équipes';
+  if (row.category === 'FUNCTION') return 'Fonctions';
   if (row.stream === 'AUTHENTICATION' || row.stream === 'SECURITY')
     return 'Sécurité';
   if (row.category === 'USER' || row.category === 'PERMISSION')
@@ -381,6 +383,10 @@ const subjectOf = (
     return typeof metadata.gameName === 'string'
       ? `Équipe : ${metadata.teamName} (${metadata.gameName})`
       : `Équipe : ${metadata.teamName}`;
+  if (row.category === 'FUNCTION' && typeof metadata.functionName === 'string')
+    return typeof metadata.gameName === 'string'
+      ? `Fonction : ${metadata.functionName} (${metadata.gameName})`
+      : `Fonction : ${metadata.functionName}`;
   if (
     row.action === 'AUDIT_PURGE' &&
     typeof metadata.deletedEvents === 'number'
@@ -436,7 +442,9 @@ export const projectJournalEvent = (
         ? projectReadableChanges(metadata, GAME_FIELD_LABELS)
         : row.category === 'TEAM'
           ? projectReadableChanges(metadata, TEAM_FIELD_LABELS)
-          : projectUserChanges(row, metadata, rights);
+          : row.category === 'FUNCTION'
+            ? projectReadableChanges(metadata, FUNCTION_FIELD_LABELS)
+            : projectUserChanges(row, metadata, rights);
 
   return {
     actor:

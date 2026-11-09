@@ -10,12 +10,27 @@ export const metadata: Metadata = {
   title: pageTitle('Fiche jeu', FEATURES.games.label),
 };
 
-type GameRouteProps = { params: Promise<{ id: string }> };
+type GameRouteProps = {
+  params: Promise<{ id: string }>;
+  searchParams?: Promise<{ section?: string | string[] }>;
+};
 
 export default async function GameRoute({
   params,
+  searchParams,
 }: GameRouteProps): Promise<React.ReactNode> {
-  const { id } = await params;
+  const [{ id }, query] = await Promise.all([
+    params,
+    searchParams ?? Promise.resolve<{ section?: string | string[] }>({}),
+  ]);
 
-  return <GameDetailPage gameId={id} />;
+  // Functions first (9 November 2026); any other value opens them too.
+  return (
+    <GameDetailPage
+      activeSection={
+        query.section === 'informations' ? 'informations' : 'fonctions'
+      }
+      gameId={id}
+    />
+  );
 }

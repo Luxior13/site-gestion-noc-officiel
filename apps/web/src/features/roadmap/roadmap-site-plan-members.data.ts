@@ -142,11 +142,13 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
       'Ouverte par le nom d’un jeu sur la page Jeux, ou juste après son ajout.',
     tabs: [
       {
-        chantier: 'reference-lists',
+        chantier: 'sport-teams',
         label: 'Fonctions',
-        phase: 1,
+        phase: null,
         summary:
-          'Les fonctions de ce jeu : joueur, remplaçant, coach, manager, ou des postes propres au jeu ; réglage « Donne accès à son équipe » ; ajouter, renommer, archiver.',
+          'Premier onglet : les fonctions de ce jeu (Joueur, Remplaçant, Coach…), type Joueur ou Encadrement, active ou non ; ajout et modification en fenêtre, fonctions courantes en un clic quand la liste est vide ; une fonction inactive reste choisissable pour un passage ancien.',
+        upcoming:
+          'Le nombre de passages de chaque fonction avec le Roster ; le réglage « Donne accès à son équipe » viendra avec l’accès des managers.',
       },
       {
         chantier: 'payments',
@@ -160,11 +162,11 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         label: 'Informations',
         phase: null,
         summary:
-          'Nom, nom court, première ouverture, actif, modifiés sur place ; zone dangereuse, qui explique « rendez-le inactif » quand le jeu a des équipes. Seul contenu de la fiche pour l’instant, donc sans barre d’onglets.',
+          'Dernier onglet : nom, nom court, première ouverture, actif, modifiés sur place ; zone dangereuse, qui explique « rendez-le inactif » quand le jeu a des équipes.',
       },
     ],
     upcoming:
-      'L’onglet Fonctions avec le Roster : la barre d’onglets apparaît avec lui, puis Finances.',
+      'Avec le Roster, le nombre de passages de chaque fonction ; puis l’onglet Finances ↗, entre Fonctions et Informations.',
   },
   {
     area: 'esport',

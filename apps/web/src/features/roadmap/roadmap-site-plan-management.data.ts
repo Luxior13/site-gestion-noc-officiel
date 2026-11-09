@@ -18,7 +18,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         label: 'Fonctions',
         phase: 1,
         summary:
-          'Fonctions de la structure : président, trésorier, secrétaire, graphiste, bénévole… ; ajouter, renommer, archiver.',
+          'Fonctions de la structure : président, trésorier, secrétaire, graphiste, bénévole… ; ajouter, renommer, rendre inactive, comme les fonctions d’un jeu.',
       },
     ],
   },

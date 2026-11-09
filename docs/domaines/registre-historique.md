@@ -109,17 +109,22 @@ développement. Une liste fixée par une règle (statut, rôle) reste dans le co
 - Chaque liste se gère en onglet, à côté de ce qu’elle classe, au gabarit des
   listes de gestion (décision du 8 novembre 2026) : Jeux dans la page Jeux (livrée
   le 8 novembre 2026, [fiche](../pages/esport/jeux.md)) et
-  Fonctions de chaque jeu dans sa fiche (Esport), Fonctions de la structure dans Bureau & staff (Structure),
+  Fonctions de chaque jeu dans sa fiche (Esport, livrées le 9 novembre 2026,
+  [fiche jeu](../pages/esport/jeu.md)), Fonctions de la structure dans Bureau & staff (Structure),
   Catégories et Moyens de paiement dans Comptes (Finances), Types de matériel
   dans Matériel & abonnements (Structure). Aucune liste ne se gère dans Système.
 - **Renommer** corrige une faute et met à jour la valeur partout. Quand la
   chose change vraiment (CS:GO devenu Counter-Strike 2, une fonction qui change
-  de nature), on crée une nouvelle valeur et on archive l’ancienne, qui reste sur
-  les anciens passages : l’histoire n’est pas réécrite (décision du 8 novembre 2026).
-- **Archiver** retire la valeur des choix ; elle reste affichée sur les anciens
-  passages. Une valeur utilisée ne se supprime pas. Une valeur archivée reste-t-elle
-  choisissable pour saisir un fait ancien ? Question ouverte PREF-Q10 du
-  [journal des préférences](../design/preferences.md#questions-ouvertes).
+  de nature), on crée une nouvelle valeur et on rend l’ancienne inactive ; elle
+  reste sur les anciens passages : l’histoire n’est pas réécrite (décision du
+  8 novembre 2026).
+- **Rendre inactive** une valeur (plutôt que l’« archiver », mot retiré le
+  9 novembre 2026, comme pour les jeux et les équipes) la fait passer après les
+  valeurs actives dans les choix, marquée « (inactive) » ; elle reste
+  choisissable pour saisir un fait ancien et affichée sur les anciens passages
+  (PREF-Q10 tranchée le 9 novembre 2026, « ok go tes recommandations »). Une
+  valeur utilisée ne se supprime pas ; une valeur jamais utilisée, créée par
+  erreur, si.
 - **Inactif ne verrouille rien** (décision du 8 novembre 2026) : le site sert sur
   le très long terme, en interne ; un élément inactif n’est simplement pas en
   activité en ce moment. Un jeu inactif reçoit encore des équipes, pour saisir
@@ -127,10 +132,13 @@ développement. Une liste fixée par une règle (statut, rôle) reste dans le co
   Roster à compléter. Seuls les choix courants mettent les éléments actifs en
   tête.
 - La base le garantit : toute table qui référence un jeu (équipes depuis le
-  8 novembre 2026, puis fonctions, tournois, finances) le fait en
+  8 novembre 2026, fonctions depuis le 9, puis tournois, finances) le fait en
   `ON DELETE RESTRICT`, jamais en `CASCADE` ; le service explique le refus
   (« Ce jeu a 3 équipes : rendez-le inactif plutôt que de le supprimer ») et
   l’interface ne propose pas la suppression ([Jeux](../pages/esport/jeux.md)).
+  Un jeu sans équipe n’a aucun passage, donc aucune fonction utilisée : le
+  supprimer retire ses fonctions explicitement, dans la même transaction, et la
+  trace les nomme (9 novembre 2026).
 - Une équipe garde le jeu de sa création (8 novembre 2026) : un autre jeu, c’est
   une autre équipe, et ses passages utilisent les fonctions de ce jeu. L’API et
   la base refusent de le changer ([fiche équipe](../pages/esport/equipe.md)).
