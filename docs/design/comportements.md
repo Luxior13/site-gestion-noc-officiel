@@ -107,7 +107,8 @@ Références : [liste du Répertoire](../pages/personnes/repertoire/liste.md) et
   la poignée. Le nouvel ordre s’affiche aussitôt et s’enregistre (« Ordre
   enregistré ») ; pendant l’enregistrement, les poignées restent focalisables
   mais inertes ; un refus remet l’ancien ordre et une liste changée entre-temps
-  se recharge. Sans le droit, pas de poignée.
+  se recharge. Sans le droit, pas de poignée ni de consigne ; avec lui, la
+  consigne se lit sous la liste (9 novembre 2026).
 - Pagination à 25 lignes (`PAGINATION.DEFAULT_LIMIT`, partagé client et
   serveur) ; une exception de densité se justifie dans la fiche. Le nombre de
   lignes n’est pas un paramètre système.

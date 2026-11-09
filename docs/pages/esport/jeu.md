@@ -38,10 +38,13 @@ Composition, de haut en bas :
    glisser-déposer ne pèse que sur Fonctions, et la page passe de 318 à
    276 Kio compressés au budget de performance (9 novembre 2026).
 3. **Fonctions** (`MemberFunctionsSection`) : une carte « Fonctions », avec la
-   phrase « Ce que fait chaque membre d’une équipe de Valorant. Glissez une
-   fonction par sa poignée pour la placer selon son importance : cet ordre est
-   repris partout. » et, pour qui a `games:manage`, « Ajouter une fonction » à
-   droite. Deux blocs, **Joueurs** puis **Encadrement**, chacun avec son
+   phrase « Ce que fait chaque membre d’une équipe de Valorant. » (pour un
+   lecteur : « …, dans l’ordre de leur importance. ») et, pour qui a
+   `games:manage`, « Ajouter une fonction » à droite. Sous la liste, pour qui
+   gère, la consigne « Glissez une fonction par sa poignée pour la placer selon
+   son importance : cet ordre est repris partout. », en petit texte discret
+   précédé de l’icône de la poignée (demande du propriétaire du 9 novembre
+   2026 : « en dessous du tableau »). Deux blocs, **Joueurs** puis **Encadrement**, chacun avec son
    nombre ; une ligne par fonction : poignée ⠿, nom, état à droite, dans
    l’ordre posé par ses gestionnaires, les inactives à leur place. La poignée
    glisse la ligne dans son bloc, à la souris, au doigt ou au clavier

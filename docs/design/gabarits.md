@@ -142,7 +142,10 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
   par importance, 9 novembre 2026), un bloc par groupe (« Joueurs »,
   « Encadrement », avec son nombre) remplace la colonne du groupe, et chaque
   ligne commence par une poignée ⠿ pour la glisser dans son bloc
-  ([comportements](comportements.md#listes-recherche-et-pagination)).
+  ([comportements](comportements.md#listes-recherche-et-pagination)). La
+  consigne (« Glissez … par sa poignée … ») se lit sous la liste, dans la carte,
+  en petit texte discret avec l’icône de la poignée, pour qui peut réordonner ;
+  l’en-tête dit seulement ce que contient la liste (9 novembre 2026).
 - **Créer** : en fenêtre pour quelques champs, sur une page pour un long formulaire.
   Un élément qui a sa fiche s’ouvre sur elle, jamais dans une fenêtre : la fenêtre
   ne sert qu’à le créer, puis sa fiche s’ouvre (équipe, 8 novembre 2026).

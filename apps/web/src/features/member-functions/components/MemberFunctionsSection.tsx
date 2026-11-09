@@ -1,6 +1,6 @@
 'use client';
 
-import { ListPlus, Plus, RefreshCw, UserCog } from 'lucide-react';
+import { GripVertical, ListPlus, Plus, RefreshCw, UserCog } from 'lucide-react';
 import React, {
   type FC,
   type ReactNode,
@@ -361,7 +361,7 @@ export const MemberFunctionsSection: FC<Props> = ({
         className="border-border-content bg-surface-content rounded-panel"
         description={
           canManage
-            ? `Ce que fait chaque membre d’une équipe de ${game.name}. Glissez une fonction par sa poignée pour la placer selon son importance : cet ordre est repris partout.`
+            ? `Ce que fait chaque membre d’une équipe de ${game.name}.`
             : `Ce que fait chaque membre d’une équipe de ${game.name}, dans l’ordre de leur importance.`
         }
         headerClassName="bg-surface-content-header"
@@ -370,13 +370,29 @@ export const MemberFunctionsSection: FC<Props> = ({
         toolbar={
           addButton && <div className="flex sm:justify-end">{addButton}</div>
         }
+        // A single button, not a search bar: it keeps its own width and the
+        // sentence wraps beside it instead of running under it.
+        toolbarClassName="@min-[56rem]/data-table:flex-none"
       >
         {items === null ? (
           skeleton
         ) : items.length === 0 ? (
           <div className="px-4 py-8">{emptyState}</div>
         ) : (
-          groups(items)
+          <>
+            {groups(items)}
+            {canManage && (
+              // Under the list it explains (owner, 9 November 2026).
+              <p className="border-border-divider text-muted-foreground flex items-start gap-2 border-t px-4 py-3 text-xs">
+                <GripVertical
+                  aria-hidden="true"
+                  className="mt-px size-3.5 shrink-0"
+                />
+                Glissez une fonction par sa poignée pour la placer selon son
+                importance : cet ordre est repris partout.
+              </p>
+            )}
+          </>
         )}
       </DataTableSection>
       <MemberFunctionDialog
