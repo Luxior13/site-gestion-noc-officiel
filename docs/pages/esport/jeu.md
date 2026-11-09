@@ -46,7 +46,8 @@ Composition, de haut en bas :
    précédé de l’icône de la poignée (demande du propriétaire du 9 novembre
    2026 : « en dessous du tableau »). Deux blocs, **Joueurs** puis **Encadrement**, chacun avec son
    nombre ; une ligne par fonction : poignée ⠿, nom, état à droite, dans
-   l’ordre posé par ses gestionnaires, les inactives à leur place. La poignée
+   l’ordre posé par ses gestionnaires, les inactives en bas du bloc, rangées
+   entre elles (une fonction inactive ne bloque rien). La poignée
    glisse la ligne dans son bloc, à la souris, au doigt ou au clavier
    ([comportements](../../design/comportements.md#listes-recherche-et-pagination)) ;
    le nouvel ordre s’affiche et s’enregistre aussitôt (« Ordre enregistré »).
@@ -113,10 +114,13 @@ fonctions retirées avec lui).
   Ni description, ni nom court.
 - Ordre par glisser-déposer (9 novembre 2026, « on devrait mettre du drag and
   drop sur les placements pour l’importance ? », puis « ok go ») : il remplace
-  l’ordre « actives d’abord, puis par nom » décidé le matin. On réordonne dans
-  un bloc (un Coach ne passe pas devant les joueurs) ; l’ordre est repris
-  partout (Roster, choix de la fonction d’un passage, Parcours), où les choix
-  mettent seulement les actives d’abord. Une nouvelle fonction, ou une fonction
+  l’ordre « actives d’abord, puis par nom » décidé le matin. On réordonne les
+  fonctions actives dans un bloc (un Coach ne passe pas devant les joueurs) ;
+  les inactives passent en bas du bloc et se rangent entre elles, et une
+  fonction réactivée retrouve à peu près sa place (règle commune aux jeux et
+  aux équipes, décidée le même jour : « pense long terme », puis « un jeu
+  inactif ne doit jamais bloquer ») ; l’ordre est repris partout (Roster, choix
+  de la fonction d’un passage, Parcours). Une nouvelle fonction, ou une fonction
   qui change de type, se place en fin de son bloc ; les fonctions courantes
   arrivent dans l’ordre Joueur, Remplaçant, puis Coach, Manager, Analyste.
   L’ordre ne fait pas partie de la version d’une fonction : une fenêtre ouverte

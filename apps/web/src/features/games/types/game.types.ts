@@ -8,6 +8,8 @@ export type GameItem = Readonly<{
   id: string;
   isActive: boolean;
   name: string;
+  /** Rank among the active games, set by dragging (9 November 2026). */
+  position: number;
   shortName: string | null;
   /** Teams attached to the game: a game that has some is not deleted. */
   teamCount: number;

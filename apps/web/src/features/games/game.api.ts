@@ -15,6 +15,16 @@ export const fetchGame = (
 ): Promise<GameItem> =>
   apiFetchJson<GameItem>(gameUrl(id), { cache: 'no-store', signal });
 
+/** Answers every game, in the new order. */
+export const reorderGamesRequest = (
+  ids: readonly string[],
+  active: boolean,
+): Promise<GameItem[]> =>
+  apiFetchJson<GameItem[]>(
+    `${GAMES_API}/ordre`,
+    jsonRequest('PUT', { active, ids }),
+  );
+
 export const createGameRequest = (input: GameInput): Promise<GameItem> =>
   apiFetchJson<GameItem>(GAMES_API, jsonRequest('POST', input));
 

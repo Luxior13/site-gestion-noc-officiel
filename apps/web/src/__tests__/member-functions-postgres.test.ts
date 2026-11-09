@@ -180,10 +180,11 @@ describe.skipIf(!target)(
       game: Game,
       kind: string,
       ids: readonly string[],
+      active = true,
     ): ReturnType<typeof PUT_ORDER> =>
       PUT_ORDER(
         new NextRequest(url(game, '/ordre'), {
-          body: JSON.stringify({ ids, kind }),
+          body: JSON.stringify({ active, ids, kind }),
           method: 'PUT',
         }),
         params(game),
@@ -402,6 +403,60 @@ describe.skipIf(!target)(
         'Stratège',
         'Remplaçant',
       ]);
+    });
+
+    it('ranks only the active functions; an inactive one stays below its group', async () => {
+      const common = (await read<FunctionData[]>(await addCommon(valorant)))
+        .data;
+      const id = (name: string): string =>
+        common?.find((item) => item.name === name)?.id ?? 'missing';
+      const coachRow = await db.memberFunction.findUniqueOrThrow({
+        where: { id: id('Coach') },
+      });
+      expect(
+        (
+          await patch(valorant, coachRow.id, {
+            expectedVersion: coachRow.version,
+            isActive: false,
+            kind: 'STAFF',
+            name: 'Coach',
+          })
+        ).status,
+      ).toBe(200);
+      expect(await names(valorant)).toEqual([
+        'Joueur',
+        'Remplaçant',
+        'Manager',
+        'Analyste',
+        'Coach',
+      ]);
+      expect(
+        (
+          await reorder(valorant, 'STAFF', [
+            id('Analyste'),
+            id('Manager'),
+            id('Coach'),
+          ])
+        ).status,
+      ).toBe(409);
+      expect(
+        (await reorder(valorant, 'STAFF', [id('Analyste'), id('Manager')]))
+          .status,
+      ).toBe(200);
+      expect(await names(valorant)).toEqual([
+        'Joueur',
+        'Remplaçant',
+        'Analyste',
+        'Manager',
+        'Coach',
+      ]);
+      // The inactive functions rank among themselves: nothing blocks them.
+      expect(
+        (await reorder(valorant, 'STAFF', [id('Coach')], false)).status,
+      ).toBe(200);
+      expect(
+        (await reorder(valorant, 'STAFF', [id('Manager')], false)).status,
+      ).toBe(409);
     });
 
     it('refuses an order whose group changed meanwhile, without a trace', async () => {

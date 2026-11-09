@@ -10,12 +10,13 @@ import {
   isPrismaUniqueConstraintError,
 } from '$server/api-response';
 import { createAuditLogWithHeaders } from '$server/audit-log';
+import { planManualOrder } from '$server/manual-order';
 import { prisma } from '$server/prisma';
 import { ServiceError, serviceErrors } from '$server/service-error';
 import { authorizeUserAction } from '$server/user-action-authorization';
 import { ErrorCode } from '$types/api.types';
 import type { SessionType, UserType } from '$types/auth.types';
-import { compareActiveThenName } from '$utils/active-order.utils';
+import { compareActiveThenRank } from '$utils/active-order.utils';
 import { formatApproximateDate } from '$utils/approximate-date.utils';
 import { normalizeSearchText } from '$utils/search-text.utils';
 
@@ -52,6 +53,11 @@ const teamChanged = (): ServiceError =>
   );
 const teamMissing = (): ServiceError =>
   serviceErrors.notFound('Cette équipe n’existe plus. Rechargez la liste.');
+/** A reorder names every active team of the game, as they are now. */
+const teamsChanged = (): ServiceError =>
+  serviceErrors.conflict(
+    'Les équipes de ce jeu ont changé entre-temps. Elles sont rechargées : recommencez le déplacement.',
+  );
 const gameMissing = (): ServiceError =>
   serviceErrors.notFound('Ce jeu n’existe plus. Rechargez la liste.');
 /** A team that has been used stays in the history: it is made inactive. */
@@ -73,6 +79,7 @@ const toTeamItem = (team: Omit<TeamRow, 'game'>): TeamItem => ({
   id: team.id,
   isActive: team.isActive,
   name: team.name,
+  position: team.position,
   updatedAt: team.updatedAt.toISOString(),
   version: team.version,
 });
@@ -170,9 +177,9 @@ const audit = async (
     { client: transaction, required: true },
   );
 
-/** Every team, active ones first; the page groups them under their game. */
+/** Every team, active ones in their order first; the page groups them by game. */
 export const listTeams = async (): Promise<TeamItem[]> =>
-  (await prisma.team.findMany()).map(toTeamItem).sort(compareActiveThenName);
+  (await prisma.team.findMany()).map(toTeamItem).sort(compareActiveThenRank);
 
 /** A team with its game, for its record. */
 export const getTeam = async (id: string): Promise<TeamDetail> => {
@@ -200,7 +207,18 @@ export const createTeam = async (
       const game = await findGame(transaction, input.gameId);
       const team = toTeamDetail(
         await transaction.team.create({
-          data: { ...editableData(input), gameId: input.gameId },
+          data: {
+            ...editableData(input),
+            gameId: input.gameId,
+            // Last of its game; its managers drag it higher if it matters more.
+            position:
+              ((
+                await transaction.team.aggregate({
+                  _max: { position: true },
+                  where: { gameId: input.gameId },
+                })
+              )._max.position ?? -1) + 1,
+          },
           include: WITH_GAME,
         }),
       );
@@ -286,6 +304,66 @@ export const updateTeam = async (
     throw error;
   }
 };
+
+/**
+ * Sets the order of a game's active teams, or of its inactive ones, as their
+ * managers dragged it (owner, 9 November 2026). The request names every team
+ * of the game in that state: one added, (de)activated in between refuses it.
+ * The active and the inactive items rank apart, the inactive ones below;
+ * both are ranked (owner, 9 November 2026: « un jeu inactif ne doit jamais
+ * bloquer »).
+ * One trace holds the order before and after. Answers every team of the game,
+ * in the new order.
+ */
+export const reorderTeams = async (
+  gameId: string,
+  { active, ids }: Readonly<{ active: boolean; ids: readonly string[] }>,
+  { actor, session }: TeamActor,
+): Promise<TeamItem[]> =>
+  prisma.$transaction(async (transaction) => {
+    await authorizeUserAction(
+      transaction,
+      { actorId: actor.id, session },
+      PERMISSIONS.TEAMS.MANAGE,
+    );
+    const game = await findGame(transaction, gameId);
+    // One reorder of a game's teams at a time.
+    await transaction.$queryRaw`SELECT "id" FROM "Team" WHERE "gameId" = ${gameId} AND "isActive" = ${active} ORDER BY "id" FOR UPDATE`;
+    const read = async (): Promise<TeamItem[]> =>
+      (await transaction.team.findMany({ where: { gameId } }))
+        .map(toTeamItem)
+        .sort(compareActiveThenRank);
+    const plan = planManualOrder(
+      (await read()).filter((team) => team.isActive === active),
+      ids,
+    );
+    if (!plan) throw teamsChanged();
+    if (plan.changed) {
+      for (const { id, position } of plan.moves)
+        await transaction.team.update({ data: { position }, where: { id } });
+      await createAuditLogWithHeaders(
+        {
+          action: AuditAction.TEAM_REORDER,
+          category: AuditCategory.TEAM,
+          description: `Ordre des équipes ${active ? '' : 'inactives '}modifié : ${game.name}`,
+          metadata: {
+            active,
+            after: { order: plan.after },
+            before: { order: plan.before },
+            changes: ['order'],
+            gameId: game.id,
+            gameName: game.name,
+            ...FEATURES.games.audit,
+          },
+          targetUserId: null,
+          userId: actor.id,
+        },
+        { client: transaction, required: true },
+      );
+    }
+
+    return read();
+  });
 
 /**
  * Deletes a team created by mistake. Nothing references a team yet; the

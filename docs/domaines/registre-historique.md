@@ -125,15 +125,19 @@ développement. Une liste fixée par une règle (statut, rôle) reste dans le co
   (PREF-Q10 tranchée le 9 novembre 2026, « ok go tes recommandations »). Une
   valeur utilisée ne se supprime pas ; une valeur jamais utilisée, créée par
   erreur, si.
-- **Inactif ne verrouille rien** (décision du 8 novembre 2026) : le site sert sur
+- **Inactif ne verrouille rien** (décisions des 8 et 9 novembre 2026 : « un
+  site de gestion ne doit pas bloquer ») : un élément inactif ne bloque jamais
+  rien ; son seul effet est d’être marqué « Inactif » (« (inactif) » dans les
+  menus déroulants) et placé après les actifs. Le site sert sur
   le très long terme, en interne ; un élément inactif n’est simplement pas en
   activité en ce moment. Un jeu inactif reçoit encore des équipes, pour saisir
   l’historique ou préparer une reprise ; une équipe inactive gardera de même son
   Roster à compléter. Seuls les choix courants mettent les éléments actifs en
   tête.
-- Les fonctions d’un jeu se rangent par glisser-déposer, pour leur
-  importance, joueurs et encadrement chacun dans son ordre (9 novembre 2026) :
-  cet ordre est repris partout, l’historique n’en dépend pas.
+- Les jeux, les équipes de chaque jeu et les fonctions de chaque type se
+  rangent par glisser-déposer, pour leur importance (9 novembre 2026) : les
+  actifs dans l’ordre posé, les inactifs en dessous, rangés eux aussi ; cet
+  ordre est repris partout, l’historique n’en dépend pas.
 - La base le garantit : toute table qui référence un jeu (équipes depuis le
   8 novembre 2026, fonctions depuis le 9, puis tournois, finances) le fait en
   `ON DELETE RESTRICT`, jamais en `CASCADE` ; le service explique le refus

@@ -16,7 +16,7 @@ import {
   createGameSchema,
   updateGameSchema,
 } from '$features/games/schemas/game.schemas';
-import { compareActiveThenName } from '$utils/active-order.utils';
+import { compareActiveThenRank } from '$utils/active-order.utils';
 import {
   changeDatePrecision,
   formatApproximateDate,
@@ -110,23 +110,30 @@ describe('game form contract', () => {
 });
 
 describe('order of the games', () => {
-  it('puts the active games first, then sorts by name whatever the accents', () => {
+  it('puts the active games first in their dragged order, the inactive ones below', () => {
     const games = [
-      { isActive: false, name: 'Counter-Strike: Global Offensive' },
-      { isActive: true, name: 'Valorant' },
-      { isActive: false, name: 'Apex Legends' },
-      { isActive: true, name: 'échecs' },
-      { isActive: true, name: 'League of Legends' },
+      {
+        isActive: false,
+        name: 'Counter-Strike: Global Offensive',
+        position: 0,
+      },
+      { isActive: true, name: 'Valorant', position: 0 },
+      { isActive: false, name: 'Apex Legends', position: 1 },
+      { isActive: true, name: 'échecs', position: 2 },
+      { isActive: true, name: 'League of Legends', position: 1 },
+      // A tie (two additions at once) falls back on the name, accents aside.
+      { isActive: true, name: 'Échecs bis', position: 2 },
     ];
 
     expect(
-      [...games].sort(compareActiveThenName).map((game) => game.name),
+      [...games].sort(compareActiveThenRank).map((game) => game.name),
     ).toEqual([
-      'échecs',
-      'League of Legends',
       'Valorant',
-      'Apex Legends',
+      'League of Legends',
+      'échecs',
+      'Échecs bis',
       'Counter-Strike: Global Offensive',
+      'Apex Legends',
     ]);
   });
 });

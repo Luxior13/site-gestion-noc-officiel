@@ -1,3 +1,5 @@
+import { compareActiveThenRank } from '$utils/active-order.utils';
+
 /** Limit shared by the form, the API and the database (CHECK constraint). */
 export const MEMBER_FUNCTION_NAME_MAX_LENGTH = 40;
 
@@ -36,10 +38,11 @@ export const MEMBER_FUNCTION_GROUP_MAX = 100;
 
 /**
  * Order of the functions of a game: players first, then the staff; in each,
- * the order its managers set by dragging (owner, 9 November 2026), the same on
- * every page; the name breaks a tie.
+ * the active ones in the order their managers set by dragging, then the
+ * inactive ones (owner, 9 November 2026), the same on every page.
  */
 type Sortable = Readonly<{
+  isActive: boolean;
   kind: MemberFunctionKind;
   name: string;
   position: number;
@@ -51,8 +54,7 @@ export const compareMemberFunctions = (
 ): number =>
   MEMBER_FUNCTION_KINDS.indexOf(left.kind) -
     MEMBER_FUNCTION_KINDS.indexOf(right.kind) ||
-  left.position - right.position ||
-  left.name.localeCompare(right.name, 'fr', { sensitivity: 'base' });
+  compareActiveThenRank(left, right);
 
 /** « Joueurs », « Encadrement »: the heading of each group of the list. */
 const GROUP_LABELS: ReadonlyMap<MemberFunctionKind, string> = new Map([

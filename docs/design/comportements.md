@@ -90,17 +90,25 @@ Références : [liste du Répertoire](../pages/personnes/repertoire/liste.md) et
   ou les rôles.
 - Un filtre rapide enfoncé porte une bordure et un texte d’accent sur un fond
   teinté : les critères actifs se repèrent d’un coup d’œil.
-- Ordre : une liste sans tri au choix dont les éléments sont actifs ou non
-  montre les actifs d’abord, puis par nom (page Jeux, décision du 8 novembre
-  2026). Une liste qui propose un tri (Répertoire, Utilisateurs) garde le sien
-  (question ouverte PREF-Q8 du [journal](preferences.md#questions-ouvertes)).
-  Une liste rangée à la main (fonctions d’un jeu, 9 novembre 2026) garde
-  l’ordre posé, ses éléments inactifs à leur place ; seuls les choix mettent
-  les actifs d’abord.
+- Ordre (9 novembre 2026, « pense long terme », qui remplace « actifs
+  d’abord, puis par nom » du 8) : une liste où l’importance compte (jeux,
+  équipes de chaque jeu, fonctions de chaque type, puis les listes de choix à
+  venir) montre ses éléments actifs dans l’ordre posé à la main, puis les
+  inactifs, rangés à la main entre eux eux aussi : un inactif ne bloque
+  jamais rien (9 novembre 2026, « un site de gestion ne doit pas bloquer ») ;
+  un élément réactivé retrouve à peu près sa place ; le nom départage deux
+  rangs égaux. Cet ordre est repris
+  partout où la liste s’affiche ou se choisit. Une liste qui propose un menu
+  de tri (Répertoire, Utilisateurs) garde le sien (question ouverte PREF-Q8 du
+  [journal](preferences.md#questions-ouvertes)).
 - Réordonner par glisser-déposer ([SortableList](../../apps/web/src/components/ui/sortable-list.tsx),
-  9 novembre 2026) : une poignée ⠿ en début de ligne, seule à déclencher le
-  glisser (le nom reste un clic qui ouvre la fenêtre) ; la ligne ne sort pas de
-  son bloc. Souris et doigt après 4 px de déplacement ; clavier : Espace ou
+  9 novembre 2026) : une poignée ⠿ en début de ligne de chaque élément, actif
+  ou non, seule à déclencher le glisser (le nom reste un clic qui ouvre sa fiche ou sa
+  fenêtre) ; la ligne ne sort pas de son bloc (une équipe reste sous son jeu,
+  un jeu déplace ses équipes avec lui, un inactif reste parmi les inactifs).
+  Le filtre « Inactifs » (ou « Actifs ») montre un groupe entier : ses
+  poignées restent. Pendant une recherche, qui n’en montre qu’une partie, pas
+  de poignée : la consigne sous la liste dit « effacez la recherche ». Souris et doigt après 4 px de déplacement ; clavier : Espace ou
   Entrée pour saisir, flèches haut et bas, Espace ou Entrée pour poser, Échap
   pour annuler ; un lecteur d’écran entend « Déplacement de Manager : position
   2 sur 3 », puis « Manager : nouvelle position 1 sur 3 », et le focus reste sur

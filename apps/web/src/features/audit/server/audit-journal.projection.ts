@@ -383,15 +383,27 @@ const subjectOf = (
     return typeof metadata.gameName === 'string'
       ? `Équipe : ${metadata.teamName} (${metadata.gameName})`
       : `Équipe : ${metadata.teamName}`;
+  // A new order concerns the active teams of a game, or its inactive ones.
+  if (row.category === 'TEAM' && typeof metadata.gameName === 'string')
+    return metadata.active === false
+      ? `Équipes inactives : ${metadata.gameName}`
+      : `Équipes : ${metadata.gameName}`;
+  if (row.action === 'GAME_REORDER' && metadata.active === false)
+    return 'Jeux inactifs';
   if (row.category === 'FUNCTION' && typeof metadata.functionName === 'string')
     return typeof metadata.gameName === 'string'
       ? `Fonction : ${metadata.functionName} (${metadata.gameName})`
       : `Fonction : ${metadata.functionName}`;
-  // A new order concerns a whole group: « Fonctions : Encadrement (Valorant) ».
-  if (row.category === 'FUNCTION' && typeof metadata.kindLabel === 'string')
+  // A new order concerns a whole group: « Fonctions : Encadrement (Valorant) »,
+  // or its inactive ones (9 November 2026).
+  if (row.category === 'FUNCTION' && typeof metadata.kindLabel === 'string') {
+    const group =
+      metadata.active === false ? 'Fonctions inactives' : 'Fonctions';
+
     return typeof metadata.gameName === 'string'
-      ? `Fonctions : ${metadata.kindLabel} (${metadata.gameName})`
-      : `Fonctions : ${metadata.kindLabel}`;
+      ? `${group} : ${metadata.kindLabel} (${metadata.gameName})`
+      : `${group} : ${metadata.kindLabel}`;
+  }
   if (
     row.action === 'AUDIT_PURGE' &&
     typeof metadata.deletedEvents === 'number'

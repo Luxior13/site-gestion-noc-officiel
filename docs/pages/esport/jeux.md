@@ -65,8 +65,22 @@ Composition, de haut en bas :
    (`groupedTable`), sans trait à l’intérieur d’un jeu ; « Aucune équipe » sous
    un jeu vide. Sur téléphone, une carte par jeu puis une ligne par équipe avec
    le même guide (nom et « depuis … » à gauche, pastille à droite, 44 px au
-   moins). Jeux et équipes : actifs d’abord, puis par nom ; sans pagination (une
-   section par jeu).
+   moins). Jeux et équipes : les actifs dans l’ordre posé à la main, puis les
+   inactifs ; sans pagination (une section par jeu).
+   **Ordre** (9 novembre 2026) : pour qui a `games:manage`, une poignée ⠿ avant
+   la manette de chaque jeu, qui le déplace avec ses équipes ; pour qui a
+   `teams:manage`, une poignée avant l’écusson de chaque équipe, qui la
+   déplace sous son jeu. Les actifs se rangent entre eux, les inactifs entre
+   eux, en dessous : un inactif ne bloque rien (« un site de gestion ne doit
+   pas bloquer »). Toutes les lignes gardent la place de la poignée, pour
+   l’alignement et le guide.
+   Souris, doigt et clavier ; ordre affiché et enregistré aussitôt (« Ordre
+   enregistré »), annulé en cas de refus. Sous la liste, la consigne « Glissez
+   un jeu ou une équipe par sa poignée pour les placer selon leur importance :
+   cet ordre est repris partout. Les inactifs se rangent entre eux, sous les
+   actifs. » ; le filtre « Inactifs » garde les poignées ; pendant une
+   recherche, pas de poignée, et « Pour ranger les jeux et les équipes,
+   effacez la recherche. ». La liste charge son code à la demande (budget de la page).
 4. Chaque jeu porte, à la place d’un avatar, une vignette de 36 px
    (`GameAvatar`, `rounded-tile`) avec une manette au ton du pôle Esport, en
    attendant les vraies images ; sur téléphone, elle se centre sur le nom, dont
@@ -143,11 +157,34 @@ chaque jeu et les jeux pratiqués sur la fiche personne
 - Une icône par défaut sur chaque jeu, de vraies images plus tard
   (« ajoute un icône sur les jeux par défaut, plus tard on mettra des vraies
   images », 8 novembre 2026).
-- Les jeux actifs d’abord, puis par nom (« le tri actif / inactif doit être pris
-  en compte en premier », 8 novembre 2026), au chargement comme après un ajout
-  ou une modification (`compareActiveThenName`, aussi pour les équipes).
+- Les jeux actifs d’abord (« le tri actif / inactif doit être pris en compte en
+  premier », 8 novembre 2026), dans l’ordre posé à la main depuis le
+  9 novembre 2026 (« pense long terme », puis « ok go ») ; de même pour les
+  équipes de chaque jeu ; les inactifs en dessous, rangés eux aussi
+  (`compareActiveThenRank`). Un jeu ou une équipe ajouté se place en dernier
+  parmi les actifs. L’ordre est repris partout : choix du jeu d’une équipe,
+  puis Roster, Parcours, tournois et finances. Les jeux ne se rangent pas
+  seulement « parce qu’il y en a peu » : la liste grandira, surtout en
+  inactifs, et le jeu principal doit rester en tête.
 
 ## Preuves et limites
+
+Le 9 novembre 2026, ordre : `manual-order` (nouvel ordre, ordre inchangé, liste
+changée), ordre des jeux dans `games`, lignes du journal ; `games-postgres` :
+jeu ajouté en dernier, jeu inactif hors de l’ordre des actifs (409) mais rangé
+parmi les inactifs, ordre tracé une fois,
+version inchangée, lecteur refusé, position négative refusée par la base ;
+`teams-postgres` : équipe inactive (rangée parmi les inactives) ou d’un autre
+jeu refusée de l’ordre des actives, ordre tracé avec
+le jeu, équipe ajoutée en dernier de son jeu, lecteur refusé ; 271 tests SQL.
+Banc client à 1 440, 768, 390 et 320 px : poignées sur tous les jeux et toutes
+les équipes, inactifs compris, jeu inactif rangé au clavier parmi les
+inactifs, poignées gardées avec le filtre « Inactifs », jeu puis équipe
+déplacés au clavier (focus resté sur la poignée), jeu glissé à la
+souris avec ses équipes, aucune poignée pendant une recherche ni pour un
+lecteur ; aucun débordement, aucune erreur. Pendant le glisser d’un jeu, la
+ligne peut survoler un instant l’en-tête du tableau (le conteneur est le
+tableau entier) ; sans effet sur le dépôt.
 
 Le 8 novembre 2026, page Jeux : lint, types, suite web (dont `games.test.ts` :
 dates, validation, droits, journal, ordre), knip, budget d’architecture, build et

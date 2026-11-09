@@ -1,7 +1,8 @@
 import { z } from 'zod';
 
+import { ORDER_GROUP_MAX } from '$features/games/game.constants';
 import { approximateDateSchema } from '$utils/approximate-date.utils';
-import { requiredNameSchema } from '$utils/zod.utils';
+import { orderedIdsSchema, requiredNameSchema } from '$utils/zod.utils';
 
 import { TEAM_NAME_MAX_LENGTH } from '../team.constants';
 
@@ -28,3 +29,8 @@ export const deleteTeamSchema = z
   .strict();
 
 export const teamIdSchema = z.string().min(1).max(128);
+
+/** The new order of a game's active teams, or of its inactive ones. */
+export const reorderTeamsSchema = z
+  .object({ active: z.boolean(), ids: orderedIdsSchema(ORDER_GROUP_MAX) })
+  .strict();

@@ -7,6 +7,8 @@ export type TeamItem = Readonly<{
   id: string;
   isActive: boolean;
   name: string;
+  /** Rank among the active teams of its game, set by dragging. */
+  position: number;
   updatedAt: string;
   version: number;
 }>;

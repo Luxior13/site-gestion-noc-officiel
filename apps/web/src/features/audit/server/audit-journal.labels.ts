@@ -20,6 +20,7 @@ export const JOURNAL_ACTION_LABELS: Record<AuditAction, string> = {
   FUNCTION_UPDATE: 'Fonction modifiée',
   GAME_CREATE: 'Jeu ajouté',
   GAME_DELETE: 'Jeu supprimé',
+  GAME_REORDER: 'Ordre des jeux modifié',
   GAME_UPDATE: 'Jeu modifié',
   INTERNAL_ANNOUNCEMENT_PIN_UPDATE: 'Annonce épinglée ou désépinglée',
   INTERNAL_ANNOUNCEMENT_PUBLISH: 'Annonce publiée',
@@ -56,6 +57,7 @@ export const JOURNAL_ACTION_LABELS: Record<AuditAction, string> = {
   SYSTEM_SETTING_UPDATE: 'Paramètre modifié',
   TEAM_CREATE: 'Équipe ajoutée',
   TEAM_DELETE: 'Équipe supprimée',
+  TEAM_REORDER: 'Ordre des équipes modifié',
   TEAM_UPDATE: 'Équipe modifiée',
   USER_ACTIVATE: 'Compte réactivé',
   USER_CREATE: 'Compte créé',
@@ -94,6 +96,8 @@ export const GAME_FIELD_LABELS: ReadonlyArray<readonly [string, string]> = [
   ['isActive', 'Actif'],
   // Removed with a game created by mistake (9 November 2026).
   ['functions', 'Fonctions'],
+  // A new order of the active games, as dragged (9 November 2026).
+  ['order', 'Ordre'],
 ];
 
 /** Team fields recorded in `before` / `after`, in display order. */
@@ -102,6 +106,8 @@ export const TEAM_FIELD_LABELS: ReadonlyArray<readonly [string, string]> = [
   ['name', 'Nom'],
   ['founded', 'Création'],
   ['isActive', 'Active'],
+  // A new order of a game's active teams, as dragged (9 November 2026).
+  ['order', 'Ordre'],
 ];
 
 /** Function fields recorded in `before` / `after`, in display order. */

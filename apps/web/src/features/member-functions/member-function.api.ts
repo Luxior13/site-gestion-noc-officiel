@@ -50,7 +50,11 @@ export const updateGameFunctionRequest = (
 /** Answers every function of the game, in its new order. */
 export const reorderGameFunctionsRequest = (
   gameId: string,
-  input: Readonly<{ ids: readonly string[]; kind: MemberFunctionKind }>,
+  input: Readonly<{
+    active: boolean;
+    ids: readonly string[];
+    kind: MemberFunctionKind;
+  }>,
 ): Promise<MemberFunctionItem[]> =>
   apiFetchJson<MemberFunctionItem[]>(
     `${gameFunctionsUrl(gameId)}/ordre`,

@@ -55,6 +55,13 @@ Cadre privé (sidebar 264 px, header 56 px)
   son parent. Écartés le même jour : lignes en retrait sans vignette, bande de
   couleur par groupe, étiquettes sous le nom (petites cibles, et un clic à côté
   ouvrait le parent).
+- Une liste où l’importance compte se range à la main (jeux et équipes de la
+  page Jeux, 9 novembre 2026) : une poignée ⠿ avant la vignette de chaque
+  élément, dans une place réservée sur toutes les lignes pour garder
+  l’alignement (`--handle-room`, classe `withHandles`) ; les inactifs en
+  dessous, rangés entre eux (un inactif ne bloque rien) ; la consigne sous la
+  liste
+  ([comportements](comportements.md#listes-recherche-et-pagination)).
 - Retour de fiche avec contexte restauré ([comportements](comportements.md#listes-recherche-et-pagination)).
 
 Pages adoptant ce gabarit : voir [Harmonisation](harmonisation.md#état-par-page).
@@ -141,7 +148,8 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
   lecteur voit les mêmes lignes, sans action. Quand l’ordre compte (fonctions,
   par importance, 9 novembre 2026), un bloc par groupe (« Joueurs »,
   « Encadrement », avec son nombre) remplace la colonne du groupe, et chaque
-  ligne commence par une poignée ⠿ pour la glisser dans son bloc
+  ligne commence par une poignée ⠿ pour la glisser dans son bloc, les
+  inactives en bas du bloc, rangées entre elles
   ([comportements](comportements.md#listes-recherche-et-pagination)). La
   consigne (« Glissez … par sa poignée … ») se lit sous la liste, dans la carte,
   en petit texte discret avec l’icône de la poignée, pour qui peut réordonner ;

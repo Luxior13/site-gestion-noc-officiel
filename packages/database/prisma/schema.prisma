@@ -235,9 +235,11 @@ enum AuditAction {
   GAME_CREATE
   GAME_UPDATE
   GAME_DELETE
+  GAME_REORDER
   TEAM_CREATE
   TEAM_UPDATE
   TEAM_DELETE
+  TEAM_REORDER
   FUNCTION_CREATE
   FUNCTION_UPDATE
   FUNCTION_DELETE
@@ -529,6 +531,9 @@ model Game {
   shortName            String?          @db.VarChar(12)
   firstOpenedOn        DateTime         @db.Date
   firstOpenedPrecision DatePrecision    @default(DAY)
+  /// Rank among the active games, set by dragging (9 November 2026); an
+  /// inactive game keeps its last rank and shows below the active ones.
+  position             Int              @default(0)
   isActive             Boolean          @default(true)
   version              Int              @default(1)
   createdAt            DateTime         @default(now())
@@ -536,7 +541,7 @@ model Game {
   teams                Team[]
   functions            MemberFunction[]
 
-  @@index([isActive, name])
+  @@index([isActive, position])
 }
 
 /// A team of a game, shown under it on the Jeux page (8 November 2026). Its
@@ -552,13 +557,16 @@ model Team {
   normalizedName   String        @db.VarChar(120)
   foundedOn        DateTime      @db.Date
   foundedPrecision DatePrecision @default(DAY)
+  /// Rank among the active teams of its game, set by dragging (9 November
+  /// 2026); an inactive team keeps its last rank and shows below.
+  position         Int           @default(0)
   isActive         Boolean       @default(true)
   version          Int           @default(1)
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
   @@unique([gameId, normalizedName])
-  @@index([gameId, isActive, name])
+  @@index([gameId, isActive, position])
 }
 
 /// What a function is about: playing, or supervising the players (coach,

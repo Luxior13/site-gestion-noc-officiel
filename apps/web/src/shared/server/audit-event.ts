@@ -112,6 +112,7 @@ const AUDIT_EVENT_CLASSIFICATIONS = {
     AuditStream.SYSTEM,
     AuditSeverity.WARNING,
   ),
+  [AuditAction.GAME_REORDER]: activity(AuditStream.SYSTEM),
   [AuditAction.GAME_UPDATE]: activity(AuditStream.SYSTEM),
   [AuditAction.FUNCTION_CREATE]: activity(AuditStream.SYSTEM),
   [AuditAction.FUNCTION_DELETE]: activity(
@@ -125,6 +126,7 @@ const AUDIT_EVENT_CLASSIFICATIONS = {
     AuditStream.SYSTEM,
     AuditSeverity.WARNING,
   ),
+  [AuditAction.TEAM_REORDER]: activity(AuditStream.SYSTEM),
   [AuditAction.TEAM_UPDATE]: activity(AuditStream.SYSTEM),
   [AuditAction.PERSON_CREATE]: activity(AuditStream.IDENTITY),
   [AuditAction.PERSON_DELETE]: activity(

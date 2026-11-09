@@ -20,6 +20,17 @@ export const fetchTeam = (
 ): Promise<TeamDetail> =>
   apiFetchJson<TeamDetail>(teamUrl(id), { cache: 'no-store', signal });
 
+/** Answers every team of the game, in the new order. */
+export const reorderTeamsRequest = (
+  gameId: string,
+  ids: readonly string[],
+  active: boolean,
+): Promise<TeamItem[]> =>
+  apiFetchJson<TeamItem[]>(
+    `/api/jeux/${encodeURIComponent(gameId)}/equipes/ordre`,
+    jsonRequest('PUT', { active, ids }),
+  );
+
 export const createTeamRequest = (input: TeamInput): Promise<TeamDetail> =>
   apiFetchJson<TeamDetail>(TEAMS_API, jsonRequest('POST', input));
 

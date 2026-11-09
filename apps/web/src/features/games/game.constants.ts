@@ -11,5 +11,8 @@ export const GAME_STATE_FILTER_LABELS: Record<GameStateFilter, string> = {
   inactive: 'Inactifs',
 };
 
+/** Far above any real number of games or of teams in a game. */
+export const ORDER_GROUP_MAX = 200;
+
 /** Where the record's save bar renders: at page level, outside the tabs. */
 export const GAME_ACTION_BAR_SLOT = 'game-record-action-bar';

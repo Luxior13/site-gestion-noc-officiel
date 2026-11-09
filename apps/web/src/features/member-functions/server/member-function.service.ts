@@ -10,6 +10,7 @@ import {
   isPrismaUniqueConstraintError,
 } from '$server/api-response';
 import { createAuditLogWithHeaders } from '$server/audit-log';
+import { planManualOrder } from '$server/manual-order';
 import { prisma } from '$server/prisma';
 import { ServiceError, serviceErrors } from '$server/service-error';
 import { authorizeUserAction } from '$server/user-action-authorization';
@@ -363,16 +364,25 @@ export const updateGameFunction = async (
 };
 
 /**
- * Sets the order of one group of a game's functions (players or staff), as
- * its managers dragged it (owner, 9 November 2026). The request names every
- * function of the group: one added, removed or moved to the other group in
- * between refuses it. The order is not part of a function's version, so an
- * edit window left open stays valid; one trace holds the order before and
- * after. Answers every function of the game, in its new order.
+ * Sets the order of the active functions of one group of a game (players or
+ * staff), or of its inactive ones, as its managers dragged it (owner,
+ * 9 November 2026). The request names every function of the group in that
+ * state: one added, (de)activated or moved to the other group in between
+ * refuses it.
+ * The active and the inactive items rank apart, the inactive ones below;
+ * both are ranked (owner, 9 November 2026: « un jeu inactif ne doit jamais
+ * bloquer »).
+ * The order is not part of a function's version, so an edit window left open
+ * stays valid; one trace holds the order before and after. Answers every
+ * function of the game, in its new order.
  */
 export const reorderGameFunctions = async (
   gameId: string,
-  input: Readonly<{ ids: readonly string[]; kind: MemberFunctionKind }>,
+  input: Readonly<{
+    active: boolean;
+    ids: readonly string[];
+    kind: MemberFunctionKind;
+  }>,
   actor: MemberFunctionActor,
 ): Promise<MemberFunctionItem[]> =>
   prisma.$transaction(async (transaction) => {
@@ -381,40 +391,33 @@ export const reorderGameFunctions = async (
     // One reorder of a group at a time: the second waits for the first to
     // commit, then reads its order as « before ».
     await transaction.$queryRaw`SELECT "id" FROM "MemberFunction" WHERE "gameId" = ${gameId} AND "kind" = ${input.kind}::"MemberFunctionKind" ORDER BY "id" FOR UPDATE`;
-    const group = (
-      await transaction.memberFunction.findMany({
-        where: { gameId, kind: input.kind },
-      })
-    )
-      .map(toItem)
-      .sort(compareMemberFunctions);
-    const byId = new Map(group.map((item) => [item.id, item]));
-    if (
-      input.ids.length !== group.length ||
-      input.ids.some((id) => !byId.has(id))
-    )
-      throw groupChanged();
-    const unchanged = input.ids.every(
-      (id, index) => group.at(index)?.id === id,
+    const plan = planManualOrder(
+      (
+        await transaction.memberFunction.findMany({
+          where: { gameId, isActive: input.active, kind: input.kind },
+        })
+      )
+        .map(toItem)
+        .sort(compareMemberFunctions),
+      input.ids,
     );
-    if (!unchanged) {
-      for (const [position, id] of input.ids.entries())
-        if (byId.get(id)?.position !== position)
-          await transaction.memberFunction.update({
-            data: { position },
-            where: { id },
-          });
+    if (!plan) throw groupChanged();
+    if (plan.changed) {
+      for (const { id, position } of plan.moves)
+        await transaction.memberFunction.update({
+          data: { position },
+          where: { id },
+        });
       const kind = memberFunctionKindLabel(input.kind);
       await createAuditLogWithHeaders(
         {
           action: AuditAction.FUNCTION_REORDER,
           category: AuditCategory.FUNCTION,
-          description: `Ordre des fonctions modifié : ${kind} (${game.name})`,
+          description: `Ordre des fonctions ${input.active ? '' : 'inactives '}modifié : ${kind} (${game.name})`,
           metadata: {
-            after: {
-              order: input.ids.map((id) => byId.get(id)?.name).join(', '),
-            },
-            before: { order: group.map((item) => item.name).join(', ') },
+            active: input.active,
+            after: { order: plan.after },
+            before: { order: plan.before },
             changes: ['order'],
             gameId: game.id,
             gameName: game.name,

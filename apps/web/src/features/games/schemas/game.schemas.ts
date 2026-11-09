@@ -1,11 +1,12 @@
 import { z } from 'zod';
 
 import { approximateDateSchema } from '$utils/approximate-date.utils';
-import { requiredNameSchema } from '$utils/zod.utils';
+import { orderedIdsSchema, requiredNameSchema } from '$utils/zod.utils';
 
 import {
   GAME_NAME_MAX_LENGTH,
   GAME_SHORT_NAME_MAX_LENGTH,
+  ORDER_GROUP_MAX,
 } from '../game.constants';
 
 const shortNameSchema = z
@@ -46,3 +47,11 @@ export const deleteGameSchema = z
   .strict();
 
 export const gameIdSchema = z.string().min(1).max(128);
+
+/**
+ * The new order of the active games, or of the inactive ones (`active`
+ * false): an inactive game is ranked too, below (9 November 2026).
+ */
+export const reorderGamesSchema = z
+  .object({ active: z.boolean(), ids: orderedIdsSchema(ORDER_GROUP_MAX) })
+  .strict();

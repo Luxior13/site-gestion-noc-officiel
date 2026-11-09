@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { requiredNameSchema } from '$utils/zod.utils';
+import { orderedIdsSchema, requiredNameSchema } from '$utils/zod.utils';
 
 import {
   MEMBER_FUNCTION_GROUP_MAX,
@@ -39,18 +39,14 @@ export const addCommonMemberFunctionsSchema = z.object({}).strict();
 export const memberFunctionIdSchema = z.string().min(1).max(128);
 
 /**
- * The new order of one group (players or staff): every function of the group,
- * each once, from the first to the last.
+ * The new order of one group (players or staff): every active function of
+ * the group, or every inactive one (`active` false), each once, from the
+ * first to the last.
  */
 export const reorderMemberFunctionsSchema = z
   .object({
-    ids: z
-      .array(memberFunctionIdSchema)
-      .min(1)
-      .max(MEMBER_FUNCTION_GROUP_MAX)
-      .refine((ids) => new Set(ids).size === ids.length, {
-        message: 'Une fonction ne figure qu’une fois',
-      }),
+    active: z.boolean(),
+    ids: orderedIdsSchema(MEMBER_FUNCTION_GROUP_MAX),
     kind: kindSchema,
   })
   .strict();

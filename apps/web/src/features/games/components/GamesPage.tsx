@@ -1,8 +1,10 @@
 'use client';
 
 import { Gamepad2, Plus } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import AuthenticatedLayout from '$components/AuthenticatedLayout';
 import { ContentState } from '$components/layout/ContentState';
@@ -12,31 +14,70 @@ import { FEATURES } from '$constants/feature-registry.constants';
 import { gameDetailPath, teamDetailPath } from '$constants/routes.constants';
 import { useUser } from '$context/UserContext';
 import { TeamDialog } from '$features/teams/components/TeamDialog';
-import { fetchTeams } from '$features/teams/team.api';
+import { fetchTeams, reorderTeamsRequest } from '$features/teams/team.api';
 import type { TeamItem } from '$features/teams/types/team.types';
 import { Button } from '$ui/button';
 import directoryStyles from '$ui/directory.module.css';
 import { PageCanvas, PageShell } from '$ui/page-shell';
 import { Skeleton } from '$ui/skeleton';
-import { compareActiveThenName } from '$utils/active-order.utils';
+import { compareActiveThenRank } from '$utils/active-order.utils';
+import { ApiClientError } from '$utils/api.utils';
 import { cn } from '$utils/css.utils';
 
-import { fetchGames } from '../game.api';
+import { fetchGames, reorderGamesRequest } from '../game.api';
 import {
   type GameCapabilities,
   getGameCapabilities,
 } from '../game.permissions';
 import type { GameItem } from '../types/game.types';
 import { GameDialog } from './GameDialog';
-import { GamesList } from './GamesList';
+
+const ListSkeleton: FC = () => (
+  <div aria-label="Chargement des jeux" role="status">
+    <Skeleton className="rounded-panel h-64" />
+  </div>
+);
+
+// The list brings the drag-and-drop: loaded with its own code (page budget).
+const GamesList = dynamic(
+  () => import('./GamesList').then((module) => module.GamesList),
+  { loading: () => <ListSkeleton /> },
+);
+
+/** The given items take ranks 0 to n − 1, the others keep theirs. */
+const rank = <
+  Item extends {
+    id: string;
+    isActive: boolean;
+    name: string;
+    position: number;
+  },
+>(
+  items: readonly Item[],
+  ids: readonly string[],
+): Item[] =>
+  items
+    .map((item) =>
+      ids.includes(item.id)
+        ? { ...item, position: ids.indexOf(item.id) }
+        : item,
+    )
+    .sort(compareActiveThenRank);
 
 /** Replaces or adds an item, then keeps the list's order. */
-const upsert = <Item extends { id: string; isActive: boolean; name: string }>(
+const upsert = <
+  Item extends {
+    id: string;
+    isActive: boolean;
+    name: string;
+    position: number;
+  },
+>(
   items: readonly Item[] | null,
   saved: Item,
 ): Item[] =>
   [...(items ?? []).filter((item) => item.id !== saved.id), saved].sort(
-    compareActiveThenName,
+    compareActiveThenRank,
   );
 
 const GamesContent: FC<{ capabilities: GameCapabilities }> = ({
@@ -48,6 +89,7 @@ const GamesContent: FC<{ capabilities: GameCapabilities }> = ({
   const [loadError, setLoadError] = useState<string | null>(null);
   const [gameDialogOpen, setGameDialogOpen] = useState(false);
   const [teamDialogOpen, setTeamDialogOpen] = useState(false);
+  const [savingOrder, setSavingOrder] = useState(false);
 
   const load = useCallback(
     async (signal?: AbortSignal): Promise<void> => {
@@ -76,6 +118,65 @@ const GamesContent: FC<{ capabilities: GameCapabilities }> = ({
 
     return (): void => controller.abort();
   }, [load]);
+
+  /**
+   * Shows a new order at once and saves it (owner, 9 November 2026); a
+   * refusal puts the former order back, and a list changed meanwhile is read
+   * again.
+   */
+  const saveOrder = async (
+    show: () => void,
+    restore: () => void,
+    save: () => Promise<void>,
+  ): Promise<void> => {
+    if (savingOrder) return;
+    show();
+    setSavingOrder(true);
+    try {
+      await save();
+      toast.success('Ordre enregistré');
+    } catch (error) {
+      restore();
+      toast.error(
+        error instanceof ApiClientError
+          ? error.message
+          : 'L’ordre n’a pas été enregistré. Réessayez.',
+      );
+      if (error instanceof ApiClientError && error.status === 409) void load();
+    } finally {
+      setSavingOrder(false);
+    }
+  };
+
+  const reorderGames = (ids: string[], active: boolean): void => {
+    const previous = games;
+    void saveOrder(
+      () => setGames((current) => current && rank(current, ids)),
+      () => setGames(previous),
+      async () => setGames(await reorderGamesRequest(ids, active)),
+    );
+  };
+
+  const reorderTeams = (
+    gameId: string,
+    ids: string[],
+    active: boolean,
+  ): void => {
+    const previous = teams;
+    void saveOrder(
+      () => setTeams((current) => current && rank(current, ids)),
+      () => setTeams(previous),
+      async () => {
+        const saved = await reorderTeamsRequest(gameId, ids, active);
+        setTeams((current) =>
+          [
+            ...(current ?? []).filter((team) => team.gameId !== gameId),
+            ...saved,
+          ].sort(compareActiveThenRank),
+        );
+      },
+    );
+  };
 
   const openCreate = (): void => setGameDialogOpen(true);
   // A team needs a game: without any, the page offers « Ajouter un jeu ».
@@ -140,14 +241,17 @@ const GamesContent: FC<{ capabilities: GameCapabilities }> = ({
       ) : games ? (
         <GamesList
           canManage={canManage}
+          canReorderGames={canManage}
+          canReorderTeams={canManageTeams}
+          frozen={savingOrder}
           games={games}
           onCreate={openCreate}
+          onReorderGames={reorderGames}
+          onReorderTeams={reorderTeams}
           teams={teams}
         />
       ) : (
-        <div aria-label="Chargement des jeux" role="status">
-          <Skeleton className="rounded-panel h-64" />
-        </div>
+        <ListSkeleton />
       )}
       <GameDialog
         onClose={() => setGameDialogOpen(false)}

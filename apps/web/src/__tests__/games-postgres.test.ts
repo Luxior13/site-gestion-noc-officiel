@@ -13,6 +13,7 @@ import {
 } from 'vitest';
 
 import { DELETE, GET as GET_GAME, PATCH } from '$app/api/jeux/[id]/route';
+import { PUT as PUT_ORDER } from '$app/api/jeux/ordre/route';
 import { GET, POST } from '$app/api/jeux/route';
 import { PERMISSIONS } from '$constants/permissions.constants';
 import { mapUserToUserType } from '$server/user-projection';
@@ -311,6 +312,90 @@ describe.skipIf(!target)('games on fully migrated PostgreSQL', () => {
     await authenticate(await createUser('USER'));
     expect((await GET(new NextRequest(BASE))).status).toBe(403);
     expect(await db.game.count()).toBe(1);
+  });
+
+  it('keeps the order its managers drag, the inactive games below, traced once', async () => {
+    const add = async (name: string): Promise<string> => {
+      const created = (await body(await post({ ...valorant, name }))).data;
+      if (!created) throw new Error('Missing game');
+
+      return created.id;
+    };
+    const valorantId = await add('Valorant');
+    const leagueId = await add('League of Legends');
+    const rocketId = await add('Rocket League');
+    const reorder = (
+      ids: readonly string[],
+      active = true,
+    ): ReturnType<typeof PUT_ORDER> =>
+      PUT_ORDER(
+        new NextRequest(`${BASE}/ordre`, {
+          body: JSON.stringify({ active, ids }),
+          method: 'PUT',
+        }),
+      );
+    const names = async (): Promise<string[]> =>
+      (
+        (await (await GET(new NextRequest(BASE))).json()) as {
+          data: { name: string }[];
+        }
+      ).data.map(({ name }) => name);
+    // A new game goes last.
+    expect(await names()).toEqual([
+      'Valorant',
+      'League of Legends',
+      'Rocket League',
+    ]);
+    const rocket = await db.game.findUniqueOrThrow({ where: { id: rocketId } });
+    expect(
+      (
+        await patch(rocketId, {
+          ...valorant,
+          expectedVersion: rocket.version,
+          isActive: false,
+          name: 'Rocket League',
+        })
+      ).status,
+    ).toBe(200);
+
+    // The inactive game is not part of the active ones' order: it stays below.
+    expect((await reorder([leagueId, valorantId, rocketId])).status).toBe(409);
+    // It is ranked among the inactive ones: an inactive game never blocks.
+    expect((await reorder([rocketId], false)).status).toBe(200);
+    expect((await reorder([leagueId], false)).status).toBe(409);
+    expect((await reorder([leagueId])).status).toBe(409);
+    expect((await reorder([leagueId, leagueId])).status).toBe(400);
+    expect(await audits('GAME_REORDER')).toBe(0);
+    const response = await reorder([leagueId, valorantId]);
+    expect(response.status).toBe(200);
+    expect(await names()).toEqual([
+      'League of Legends',
+      'Valorant',
+      'Rocket League',
+    ]);
+    expect((await lastAudit('GAME_REORDER')).metadata).toMatchObject({
+      after: { order: 'League of Legends, Valorant' },
+      before: { order: 'Valorant, League of Legends' },
+      changes: ['order'],
+      pageKey: 'games',
+    });
+    // The order is not part of a game's version; the same order writes nothing.
+    expect(
+      (await db.game.findUniqueOrThrow({ where: { id: leagueId } })).version,
+    ).toBe(1);
+    expect((await reorder([leagueId, valorantId])).status).toBe(200);
+    expect(await audits('GAME_REORDER')).toBe(1);
+
+    await authenticate(
+      await createUser('USER', { [PERMISSIONS.GAMES.VIEW]: true }),
+    );
+    expect((await reorder([valorantId, leagueId])).status).toBe(403);
+    await expect(
+      db.$executeRawUnsafe(
+        'UPDATE "Game" SET "position" = -1 WHERE "id" = $1',
+        valorantId,
+      ),
+    ).rejects.toThrow(/Game_position_check/);
   });
 
   it('rolls the game back when its trace cannot be written', async () => {

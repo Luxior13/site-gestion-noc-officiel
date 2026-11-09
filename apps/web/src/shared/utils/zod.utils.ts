@@ -160,6 +160,19 @@ export const requiredNameSchema = (maxLength: number): z.ZodType<string> =>
     );
 
 /**
+ * A new order of a list ranked by dragging (9 November 2026): its ids from
+ * the first to the last, each once.
+ */
+export const orderedIdsSchema = (max: number): z.ZodType<string[]> =>
+  z
+    .array(z.string().min(1).max(128))
+    .min(1)
+    .max(max)
+    .refine((ids) => new Set(ids).size === ids.length, {
+      message: 'Un élément ne figure qu’une fois',
+    });
+
+/**
  * Zod schema for phone number with basic sanitization.
  * Removes extra spaces but keeps the number format.
  */

@@ -1,6 +1,6 @@
 'use client';
 
-import { Gamepad2, Plus } from 'lucide-react';
+import { Gamepad2, GripVertical, Plus } from 'lucide-react';
 import Link from 'next/link';
 import React, { type FC, useMemo, useState } from 'react';
 
@@ -17,6 +17,7 @@ import {
 import directoryStyles from '$ui/directory.module.css';
 import { ListSearchField } from '$ui/list-search-field';
 import { QuickFilter, QuickFilterGroup } from '$ui/quick-filter';
+import { SortableGroup, SortableItem } from '$ui/sortable-list';
 import { StatusBadge } from '$ui/status-badge';
 import {
   Table,
@@ -101,8 +102,18 @@ const GameName: FC<{ game: GameItem }> = ({ game }) => (
 const teamLabel = (game: GameItem, team: TeamItem): string =>
   `${team.name}, équipe ${game.name}, ${team.isActive ? 'active' : 'inactive'}`;
 
-/** Centre of a game's avatar from the line's left edge: 16 px + 36 / 2. */
-const GUIDE = 'pointer-events-none absolute left-[34px] w-px bg-border-strong';
+/**
+ * Centre of a game's avatar from the line's left edge: 16 px + 36 / 2, after
+ * the handles' room when the list is ranked by dragging.
+ */
+const GUIDE =
+  'pointer-events-none absolute left-[calc(34px+var(--handle-room,0px))] w-px bg-border-strong';
+
+/** A handle before the line's content, in the room the section reserves. */
+const ROW_HANDLE = 'absolute top-1/2 left-3 -translate-y-1/2';
+
+/** The line being dragged keeps the hover colour, above the others. */
+const DRAGGED_ROW = { background: 'var(--m-row-hover)' } as const;
 
 /**
  * The guide from a game's controller down to its teams, as in a tree: under
@@ -117,7 +128,7 @@ const TeamGuide: FC<{ last: boolean }> = ({ last }) => (
     />
     <span
       aria-hidden="true"
-      className="bg-border-strong pointer-events-none absolute top-1/2 left-[34px] h-px w-3"
+      className="bg-border-strong pointer-events-none absolute top-1/2 left-[calc(34px+var(--handle-room,0px))] h-px w-3"
     />
   </>
 );
@@ -139,18 +150,45 @@ const TeamName: FC<{ game: GameItem; team: TeamItem }> = ({ game, team }) => (
 
 type Props = {
   canManage: boolean;
+  /** `games:manage`: a handle on each active game. */
+  canReorderGames: boolean;
+  /** `teams:manage`: a handle on each active team, within its game. */
+  canReorderTeams: boolean;
+  /** An order is being saved: the handles wait. */
+  frozen: boolean;
   games: GameItem[];
   onCreate: () => void;
+  /** The new order of the active games, or of the inactive ones. */
+  onReorderGames: (ids: string[], active: boolean) => void;
+  onReorderTeams: (gameId: string, ids: string[], active: boolean) => void;
   /** Null without the right to see teams: the list shows games only. */
   teams: TeamItem[] | null;
 };
+
+/** The order rule under the list, for who may rank (9 November 2026). */
+const orderHint = (games: boolean, teams: boolean): string =>
+  games && teams
+    ? 'Glissez un jeu ou une équipe par sa poignée pour les placer selon leur importance : cet ordre est repris partout. Les inactifs se rangent entre eux, sous les actifs.'
+    : games
+      ? 'Glissez un jeu par sa poignée pour le placer selon son importance : cet ordre est repris partout. Les jeux inactifs se rangent entre eux, sous les actifs.'
+      : 'Glissez une équipe par sa poignée pour la placer selon son importance dans son jeu : cet ordre est repris partout. Les équipes inactives se rangent entre elles, sous les actives.';
 
 /**
  * The sections of the structure, each with its teams on lines under it,
  * searched and filtered in the page; the colour alternates per game, as the
  * Répertoire alternates per record.
  */
-export const GamesList: FC<Props> = ({ canManage, games, onCreate, teams }) => {
+export const GamesList: FC<Props> = ({
+  canManage,
+  canReorderGames,
+  canReorderTeams,
+  frozen,
+  games,
+  onCreate,
+  onReorderGames,
+  onReorderTeams,
+  teams,
+}) => {
   const [query, setQuery] = useState('');
   const [state, setState] = useState<GameStateFilter>('all');
   const terms = useMemo(() => getSearchTerms(query), [query]);
@@ -182,6 +220,72 @@ export const GamesList: FC<Props> = ({ canManage, games, onCreate, teams }) => {
   );
   const visible = searched.filter(({ game }) => matchesState(game, state));
   const isFiltered = Boolean(query.trim()) || state !== 'all';
+  // A part of a list is not ranked: no handle while searching. The state
+  // filter shows a whole group (the active games, or the inactive ones): its
+  // handles stay. An inactive item never blocks (owner, 9 November 2026).
+  const rankable = !query.trim();
+  const gameHandles = canReorderGames && rankable;
+  const teamHandles = canReorderTeams && rankable && teams !== null;
+  const withHandles = gameHandles || teamHandles;
+  const activeGroups = visible.filter(({ game }) => game.isActive);
+  const inactiveGroups = visible.filter(({ game }) => !game.isActive);
+  const nameOf = (item: Readonly<{ name: string }>): string => item.name;
+  /**
+   * A game's teams: the active ones ranked together, then the inactive ones,
+   * ranked together too (9 November 2026).
+   */
+  const teamRows = (
+    game: GameItem,
+    gameTeams: readonly TeamItem[],
+    render: (team: TeamItem, index: number) => React.ReactNode,
+  ): React.ReactNode =>
+    [true, false].map((active) => {
+      const group = gameTeams.filter((team) => team.isActive === active);
+      const rows = group.map((team) => render(team, gameTeams.indexOf(team)));
+
+      return teamHandles && group.length > 0 ? (
+        <SortableGroup
+          frozen={frozen}
+          items={group}
+          key={String(active)}
+          labelOf={nameOf}
+          onReorder={(next) =>
+            onReorderTeams(
+              game.id,
+              next.map((team) => team.id),
+              active,
+            )
+          }
+        >
+          {rows}
+        </SortableGroup>
+      ) : (
+        <React.Fragment key={String(active)}>{rows}</React.Fragment>
+      );
+    });
+  /** The active games ranked together, then the inactive ones. */
+  const gameRows = (
+    groups: readonly GameGroup[],
+    active: boolean,
+    render: (group: GameGroup) => React.ReactNode,
+  ): React.ReactNode =>
+    gameHandles && groups.length > 0 ? (
+      <SortableGroup
+        frozen={frozen}
+        items={groups.map(({ game }) => game)}
+        labelOf={nameOf}
+        onReorder={(next) =>
+          onReorderGames(
+            next.map((game) => game.id),
+            active,
+          )
+        }
+      >
+        {groups.map(render)}
+      </SortableGroup>
+    ) : (
+      groups.map(render)
+    );
   const reset = (): void => {
     setQuery('');
     setState('all');
@@ -263,16 +367,211 @@ export const GamesList: FC<Props> = ({ canManage, games, onCreate, teams }) => {
     </div>
   );
 
+  /** A game's band in the table: its line, then its teams' lines. */
+  const desktopGame = ({
+    game,
+    teams: gameTeams,
+  }: GameGroup): React.ReactNode => (
+    <SortableItem
+      enabled={gameHandles}
+      handleClassName={ROW_HANDLE}
+      id={game.id}
+      key={game.id}
+      label={game.name}
+    >
+      {({ handle, ref, style }) => (
+        <TableBody ref={ref} style={style}>
+          <TableRow className={LINE_FOCUS}>
+            <TableCell>
+              {handle}
+              {gameTeams.length > 0 && (
+                <span
+                  aria-hidden="true"
+                  className={cn(GUIDE, 'top-[calc(50%+18px)] bottom-0')}
+                />
+              )}
+              <div className="flex min-w-0 items-center gap-2.5">
+                <GameAvatar />
+                <div className="min-w-0 flex-1">
+                  <GameName game={game} />
+                  {teams && gameTeams.length === 0 && (
+                    <p className="text-muted-foreground text-xs">
+                      Aucune équipe
+                    </p>
+                  )}
+                </div>
+              </div>
+            </TableCell>
+            <TableCell className="pointer-events-none tabular-nums">
+              {formatApproximateDate(game.firstOpened)}
+            </TableCell>
+            <TableCell className="pointer-events-none">
+              <GameState game={game} />
+            </TableCell>
+          </TableRow>
+          {teamRows(game, gameTeams, (team, index) => (
+            <SortableItem
+              enabled={teamHandles}
+              handleClassName={ROW_HANDLE}
+              id={team.id}
+              key={team.id}
+              label={team.name}
+            >
+              {({
+                handle: teamHandle,
+                isDragging,
+                ref: rowRef,
+                style: rowStyle,
+              }) => (
+                <TableRow
+                  className={LINE_FOCUS}
+                  ref={rowRef}
+                  style={
+                    isDragging ? { ...rowStyle, ...DRAGGED_ROW } : rowStyle
+                  }
+                >
+                  <TableCell>
+                    {teamHandle}
+                    <TeamGuide last={index === gameTeams.length - 1} />
+                    {/* The crest starts after the tick: 34 + 12 + 2 px. */}
+                    <div className="flex min-w-0 items-center gap-2 pl-8 text-sm">
+                      <TeamAvatar className="rounded-tile size-7 shrink-0" />
+                      <TeamName game={game} team={team} />
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground pointer-events-none tabular-nums">
+                    {formatApproximateDate(team.founded)}
+                  </TableCell>
+                  <TableCell className="pointer-events-none">
+                    <TeamState team={team} />
+                  </TableCell>
+                </TableRow>
+              )}
+            </SortableItem>
+          ))}
+        </TableBody>
+      )}
+    </SortableItem>
+  );
+
+  /** A game's card on a phone: its line, then its teams' lines. */
+  const mobileGame = ({
+    game,
+    teams: gameTeams,
+  }: GameGroup): React.ReactNode => (
+    <SortableItem
+      enabled={gameHandles}
+      handleClassName="absolute top-2 left-3"
+      id={game.id}
+      key={game.id}
+      label={game.name}
+    >
+      {({ handle, isDragging, ref, style }) => (
+        <div
+          ref={ref}
+          style={isDragging ? { ...style, ...DRAGGED_ROW } : style}
+        >
+          <div
+            className={cn(
+              LINE_FOCUS,
+              'py-3 pr-4 pl-[calc(16px+var(--handle-room,0px))] hover:bg-[var(--surface-row-hover)]',
+            )}
+          >
+            {handle}
+            {gameTeams.length > 0 && (
+              // Below the avatar: 12 px of padding and 36 px.
+              <span
+                aria-hidden="true"
+                className={cn(GUIDE, 'top-[48px] bottom-0')}
+              />
+            )}
+            <div className="flex items-start gap-3">
+              <GameAvatar />
+              <div className="min-w-0 flex-1">
+                <h2 className="text-sm">
+                  <GameName game={game} />
+                </h2>
+                <div className="text-muted-foreground mt-2 flex flex-wrap items-center gap-2 text-xs">
+                  <GameState game={game} />
+                  <span>
+                    Première ouverture :{' '}
+                    {formatApproximateDate(game.firstOpened)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {teams && gameTeams.length === 0 && (
+            <p className="text-muted-foreground pr-4 pb-3 pl-[calc(64px+var(--handle-room,0px))] text-xs">
+              Aucune équipe
+            </p>
+          )}
+          {gameTeams.length > 0 && (
+            <ul aria-label={`Équipes de ${game.name}`} className="pb-2">
+              {teamRows(game, gameTeams, (team, index) => (
+                // The crest after the guide's tick (48 px); the whole
+                // line (44 px at least) is the name's target.
+                <SortableItem
+                  enabled={teamHandles}
+                  handleClassName={ROW_HANDLE}
+                  id={team.id}
+                  key={team.id}
+                  label={team.name}
+                >
+                  {({
+                    handle: teamHandle,
+                    isDragging: dragged,
+                    ref: itemRef,
+                    style: itemStyle,
+                  }) => (
+                    <li
+                      className={cn(
+                        LINE_FOCUS,
+                        'flex min-h-11 items-center gap-2 py-1.5 pr-4 pl-[calc(48px+var(--handle-room,0px))] text-sm hover:bg-[var(--surface-row-hover)]',
+                      )}
+                      ref={itemRef}
+                      style={
+                        dragged ? { ...itemStyle, ...DRAGGED_ROW } : itemStyle
+                      }
+                    >
+                      {teamHandle}
+                      <TeamGuide last={index === gameTeams.length - 1} />
+                      <TeamAvatar className="rounded-tile size-7 shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <TeamName game={game} team={team} />
+                        <p className="text-muted-foreground text-xs">
+                          {sinceLabel(team.founded)}
+                        </p>
+                      </div>
+                      <TeamState className="shrink-0" team={team} />
+                    </li>
+                  )}
+                </SortableItem>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </SortableItem>
+  );
+
   return (
     <DataTableSection
-      className="border-border-content bg-surface-content rounded-panel"
+      className={cn(
+        'border-border-content bg-surface-content rounded-panel',
+        withHandles && '[--handle-room:44px]',
+      )}
       headerClassName="bg-surface-content-header"
       toolbar={toolbar}
     >
       <DataTableDesktop>
         <Table
           aria-label="Liste des jeux"
-          className={cn(directoryStyles.table, directoryStyles.groupedTable)}
+          className={cn(
+            directoryStyles.table,
+            directoryStyles.groupedTable,
+            withHandles && directoryStyles.withHandles,
+          )}
         >
           <TableCaption className="sr-only">
             {teams
@@ -297,56 +596,12 @@ export const GamesList: FC<Props> = ({ canManage, games, onCreate, teams }) => {
               </TableRow>
             </TableBody>
           ) : (
-            // One tbody per game: a game and its teams share one band.
-            visible.map(({ game, teams: gameTeams }) => (
-              <TableBody key={game.id}>
-                <TableRow className={LINE_FOCUS}>
-                  <TableCell>
-                    {gameTeams.length > 0 && (
-                      <span
-                        aria-hidden="true"
-                        className={cn(GUIDE, 'top-[calc(50%+18px)] bottom-0')}
-                      />
-                    )}
-                    <div className="flex min-w-0 items-center gap-2.5">
-                      <GameAvatar />
-                      <div className="min-w-0 flex-1">
-                        <GameName game={game} />
-                        {teams && gameTeams.length === 0 && (
-                          <p className="text-muted-foreground text-xs">
-                            Aucune équipe
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="pointer-events-none tabular-nums">
-                    {formatApproximateDate(game.firstOpened)}
-                  </TableCell>
-                  <TableCell className="pointer-events-none">
-                    <GameState game={game} />
-                  </TableCell>
-                </TableRow>
-                {gameTeams.map((team, index) => (
-                  <TableRow className={LINE_FOCUS} key={team.id}>
-                    <TableCell>
-                      <TeamGuide last={index === gameTeams.length - 1} />
-                      {/* The crest starts after the tick: 34 + 12 + 2 px. */}
-                      <div className="flex min-w-0 items-center gap-2 pl-8 text-sm">
-                        <TeamAvatar className="rounded-tile size-7 shrink-0" />
-                        <TeamName game={game} team={team} />
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground pointer-events-none tabular-nums">
-                      {formatApproximateDate(team.founded)}
-                    </TableCell>
-                    <TableCell className="pointer-events-none">
-                      <TeamState team={team} />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            ))
+            // One tbody per game: a game and its teams share one band; the
+            // active games move with their teams, the inactive ones stay below.
+            <>
+              {gameRows(activeGroups, true, desktopGame)}
+              {gameRows(inactiveGroups, false, desktopGame)}
+            </>
           )}
         </Table>
       </DataTableDesktop>
@@ -354,71 +609,25 @@ export const GamesList: FC<Props> = ({ canManage, games, onCreate, teams }) => {
         {visible.length === 0 ? (
           <div className="min-h-48 px-4 py-6">{emptyState}</div>
         ) : (
-          visible.map(({ game, teams: gameTeams }) => (
-            <div key={game.id}>
-              <div
-                className={cn(
-                  LINE_FOCUS,
-                  'px-4 py-3 hover:bg-[var(--surface-row-hover)]',
-                )}
-              >
-                {gameTeams.length > 0 && (
-                  // Below the avatar: 12 px of padding and 36 px.
-                  <span
-                    aria-hidden="true"
-                    className={cn(GUIDE, 'top-[48px] bottom-0')}
-                  />
-                )}
-                <div className="flex items-start gap-3">
-                  <GameAvatar />
-                  <div className="min-w-0 flex-1">
-                    <h2 className="text-sm">
-                      <GameName game={game} />
-                    </h2>
-                    <div className="text-muted-foreground mt-2 flex flex-wrap items-center gap-2 text-xs">
-                      <GameState game={game} />
-                      <span>
-                        Première ouverture :{' '}
-                        {formatApproximateDate(game.firstOpened)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {teams && gameTeams.length === 0 && (
-                <p className="text-muted-foreground pr-4 pb-3 pl-16 text-xs">
-                  Aucune équipe
-                </p>
-              )}
-              {gameTeams.length > 0 && (
-                <ul aria-label={`Équipes de ${game.name}`} className="pb-2">
-                  {gameTeams.map((team, index) => (
-                    // The crest after the guide's tick (48 px); the whole
-                    // line (44 px at least) is the name's target.
-                    <li
-                      className={cn(
-                        LINE_FOCUS,
-                        'flex min-h-11 items-center gap-2 py-1.5 pr-4 pl-12 text-sm hover:bg-[var(--surface-row-hover)]',
-                      )}
-                      key={team.id}
-                    >
-                      <TeamGuide last={index === gameTeams.length - 1} />
-                      <TeamAvatar className="rounded-tile size-7 shrink-0" />
-                      <div className="min-w-0 flex-1">
-                        <TeamName game={game} team={team} />
-                        <p className="text-muted-foreground text-xs">
-                          {sinceLabel(team.founded)}
-                        </p>
-                      </div>
-                      <TeamState className="shrink-0" team={team} />
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))
+          <>
+            {gameRows(activeGroups, true, mobileGame)}
+            {gameRows(inactiveGroups, false, mobileGame)}
+          </>
         )}
       </DataTableMobileList>
+      {withHandles ||
+      ((canReorderGames || canReorderTeams) && visible.length) ? (
+        // Under the list it explains (owner, 9 November 2026).
+        <p className="border-border-divider text-muted-foreground flex items-start gap-2 border-t px-4 py-3 text-xs">
+          <GripVertical
+            aria-hidden="true"
+            className="mt-px size-3.5 shrink-0"
+          />
+          {withHandles
+            ? orderHint(gameHandles, teamHandles)
+            : 'Pour ranger les jeux et les équipes, effacez la recherche.'}
+        </p>
+      ) : null}
     </DataTableSection>
   );
 };

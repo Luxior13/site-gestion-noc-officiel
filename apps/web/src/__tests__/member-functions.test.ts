@@ -75,30 +75,37 @@ describe('function form contract (9 November 2026)', () => {
 describe('a new order of a group', () => {
   it('names one group and each of its functions once', () => {
     expect(
-      reorderMemberFunctionsSchema.parse({ ids: ['f2', 'f1'], kind: 'STAFF' }),
-    ).toEqual({ ids: ['f2', 'f1'], kind: 'STAFF' });
+      reorderMemberFunctionsSchema.parse({
+        active: false,
+        ids: ['f2', 'f1'],
+        kind: 'STAFF',
+      }),
+    ).toEqual({ active: false, ids: ['f2', 'f1'], kind: 'STAFF' });
     for (const body of [
-      { ids: [], kind: 'STAFF' },
-      { ids: ['f1', 'f1'], kind: 'STAFF' },
-      { ids: ['f1'], kind: 'POSITION' },
-      { ids: ['f1'] },
-      { gameId: 'game-1', ids: ['f1'], kind: 'PLAYER' },
+      { active: true, ids: [], kind: 'STAFF' },
+      { active: true, ids: ['f1', 'f1'], kind: 'STAFF' },
+      { active: true, ids: ['f1'], kind: 'POSITION' },
+      { active: true, ids: ['f1'] },
+      // Which group: the active functions, or the inactive ones.
+      { ids: ['f1'], kind: 'STAFF' },
+      { active: true, gameId: 'game-1', ids: ['f1'], kind: 'PLAYER' },
     ])
       expect(reorderMemberFunctionsSchema.safeParse(body).success).toBe(false);
   });
 });
 
 describe('order and common functions of a game', () => {
-  it('lists the players first, then the staff, each in the order set by dragging', () => {
+  it('lists the players, then the staff, each active ones in their dragged order, inactive ones below', () => {
     const functions = [
-      { kind: 'STAFF', name: 'Manager', position: 0 },
-      { kind: 'PLAYER', name: 'Capitaine', position: 2 },
-      { kind: 'PLAYER', name: 'Remplaçant', position: 1 },
-      { kind: 'STAFF', name: 'Analyste', position: 2 },
-      { kind: 'PLAYER', name: 'Joueur', position: 0 },
-      { kind: 'STAFF', name: 'Coach', position: 1 },
+      { isActive: true, kind: 'STAFF', name: 'Manager', position: 0 },
+      // Inactive: below its group, whatever its former rank.
+      { isActive: false, kind: 'PLAYER', name: 'Capitaine', position: 0 },
+      { isActive: true, kind: 'PLAYER', name: 'Remplaçant', position: 1 },
+      { isActive: true, kind: 'STAFF', name: 'Analyste', position: 2 },
+      { isActive: true, kind: 'PLAYER', name: 'Joueur', position: 0 },
+      { isActive: true, kind: 'STAFF', name: 'Coach', position: 1 },
       // A tie (two additions at once) falls back on the name.
-      { kind: 'STAFF', name: 'Coach adjoint', position: 1 },
+      { isActive: true, kind: 'STAFF', name: 'Coach adjoint', position: 1 },
     ] as const;
     expect(
       [...functions].sort(compareMemberFunctions).map(({ name }) => name),
@@ -200,6 +207,56 @@ describe('a function in the activity journal', () => {
       ['FUNCTION_DELETE', 'Fonction supprimée'],
     ] as const)
       expect(project({ action }).label).toBe(label);
+  });
+
+  it('tells a new order of the games and of the teams of a game', () => {
+    const games = project({
+      action: 'GAME_REORDER',
+      category: 'GAME',
+      metadata: {
+        after: { order: 'League of Legends, Valorant' },
+        before: { order: 'Valorant, League of Legends' },
+        changes: ['order'],
+      },
+    });
+    expect(games.label).toBe('Ordre des jeux modifié');
+    expect(games.typeLabel).toBe('Jeux');
+    expect(games.changes).toEqual([
+      {
+        after: 'League of Legends, Valorant',
+        before: 'Valorant, League of Legends',
+        label: 'Ordre',
+      },
+    ]);
+    const teams = project({
+      action: 'TEAM_REORDER',
+      category: 'TEAM',
+      metadata: {
+        after: { order: 'Noctambule Academy, Noctambule' },
+        before: { order: 'Noctambule, Noctambule Academy' },
+        changes: ['order'],
+        gameId: 'game-1',
+        gameName: 'Valorant',
+      },
+    });
+    expect(teams.label).toBe('Ordre des équipes modifié');
+    expect(teams.subject).toBe('Équipes : Valorant');
+    // The inactive teams, ranked too, say so.
+    expect(
+      project({
+        action: 'TEAM_REORDER',
+        category: 'TEAM',
+        metadata: { active: false, gameName: 'Valorant' },
+      }).subject,
+    ).toBe('Équipes inactives : Valorant');
+    expect(
+      project({
+        action: 'GAME_REORDER',
+        category: 'GAME',
+        metadata: { active: false },
+      }).subject,
+    ).toBe('Jeux inactifs');
+    expect(teams.changes.map(({ label }) => label)).toEqual(['Ordre']);
   });
 
   it('tells a new order of a group, before and after', () => {

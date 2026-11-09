@@ -14,6 +14,7 @@ import {
 
 import { DELETE, GET as GET_TEAM, PATCH } from '$app/api/equipes/[id]/route';
 import { GET, POST } from '$app/api/equipes/route';
+import { PUT as PUT_ORDER } from '$app/api/jeux/[id]/equipes/ordre/route';
 import { DELETE as DELETE_GAME } from '$app/api/jeux/[id]/route';
 import { GET as GET_GAMES } from '$app/api/jeux/route';
 import { PERMISSIONS } from '$constants/permissions.constants';
@@ -391,6 +392,77 @@ describe.skipIf(!target)('teams on fully migrated PostgreSQL', () => {
     );
     expect((await GET(new NextRequest(BASE))).status).toBe(403);
     expect(await db.team.count()).toBe(1);
+  });
+
+  it('keeps the order of a game’s active teams, the inactive ones below, traced once', async () => {
+    const add = async (
+      name: string,
+      game: Game = valorant,
+    ): Promise<string> => {
+      const created = (await body(await post({ ...academy(game.id), name })))
+        .data;
+      if (!created) throw new Error('Missing team');
+
+      return created.id;
+    };
+    const first = await add('Noctambule');
+    const academyId = await add('Noctambule Academy');
+    const ladies = await add('Noctambule Ladies');
+    await add('Noctambule', league);
+    await db.team.update({ data: { isActive: false }, where: { id: ladies } });
+    const reorder = (
+      game: Game,
+      ids: readonly string[],
+      active = true,
+    ): ReturnType<typeof PUT_ORDER> =>
+      PUT_ORDER(
+        new NextRequest(`http://localhost/api/jeux/${game.id}/equipes/ordre`, {
+          body: JSON.stringify({ active, ids }),
+          method: 'PUT',
+        }),
+        { params: Promise.resolve({ id: game.id }) },
+      );
+    const names = async (game: Game): Promise<string[]> =>
+      (
+        (await (await GET(new NextRequest(BASE))).json()) as {
+          data: { gameId: string; name: string }[];
+        }
+      ).data
+        .filter((team) => team.gameId === game.id)
+        .map(({ name }) => name);
+
+    // Inactive, another game's, or under the wrong game: the list changed.
+    expect((await reorder(valorant, [academyId, first, ladies])).status).toBe(
+      409,
+    );
+    expect((await reorder(league, [academyId, first])).status).toBe(409);
+    // The inactive teams rank among themselves: nothing blocks them.
+    expect((await reorder(valorant, [ladies], false)).status).toBe(200);
+    expect((await reorder(valorant, [first], false)).status).toBe(409);
+    expect(await audits('TEAM_REORDER')).toBe(0);
+    const response = await reorder(valorant, [academyId, first]);
+    expect(response.status).toBe(200);
+    expect(await names(valorant)).toEqual([
+      'Noctambule Academy',
+      'Noctambule',
+      'Noctambule Ladies',
+    ]);
+    expect((await lastAudit('TEAM_REORDER')).metadata).toMatchObject({
+      after: { order: 'Noctambule Academy, Noctambule' },
+      before: { order: 'Noctambule, Noctambule Academy' },
+      gameName: 'Valorant',
+    });
+    // A new team goes last of its game.
+    await add('Noctambule Rising');
+    expect((await names(valorant)).at(2)).toBe('Noctambule Rising');
+
+    await authenticate(
+      await createUser('USER', {
+        [PERMISSIONS.GAMES.VIEW]: true,
+        [PERMISSIONS.TEAMS.VIEW]: true,
+      }),
+    );
+    expect((await reorder(valorant, [first, academyId])).status).toBe(403);
   });
 
   it('rolls the team back when its trace cannot be written', async () => {

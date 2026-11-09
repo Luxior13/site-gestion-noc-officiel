@@ -10,12 +10,13 @@ import {
   isPrismaUniqueConstraintError,
 } from '$server/api-response';
 import { createAuditLogWithHeaders } from '$server/audit-log';
+import { planManualOrder } from '$server/manual-order';
 import { prisma } from '$server/prisma';
 import { ServiceError, serviceErrors } from '$server/service-error';
 import { authorizeUserAction } from '$server/user-action-authorization';
 import { ErrorCode } from '$types/api.types';
 import type { SessionType, UserType } from '$types/auth.types';
-import { compareActiveThenName } from '$utils/active-order.utils';
+import { compareActiveThenRank } from '$utils/active-order.utils';
 import { formatApproximateDate } from '$utils/approximate-date.utils';
 import { normalizeSearchText } from '$utils/search-text.utils';
 
@@ -43,6 +44,11 @@ const gameChanged = (): ServiceError =>
   serviceErrors.conflict(
     'Ce jeu a été modifié entre-temps. Rechargez la liste avant de recommencer.',
   );
+/** A reorder names every active game, as they are now. */
+const gamesChanged = (): ServiceError =>
+  serviceErrors.conflict(
+    'La liste des jeux a changé entre-temps. Elle est rechargée : recommencez le déplacement.',
+  );
 const gameMissing = (): ServiceError =>
   serviceErrors.notFound('Ce jeu n’existe plus. Rechargez la liste.');
 /** A game that has teams stays in the history: it is made inactive instead. */
@@ -65,6 +71,7 @@ const toGameItem = (game: GameRow): GameItem => ({
   id: game.id,
   isActive: game.isActive,
   name: game.name,
+  position: game.position,
   shortName: game.shortName,
   teamCount: game._count.teams,
   updatedAt: game.updatedAt.toISOString(),
@@ -138,11 +145,15 @@ const audit = async (
     { client: transaction, required: true },
   );
 
-/** Every game, active ones first: the list stays short (one section per game). */
-export const listGames = async (): Promise<GameItem[]> =>
-  (await prisma.game.findMany({ include: WITH_COUNTS }))
+/** Every game: the active ones in their order, then the inactive ones. */
+const readGames = async (
+  client: Prisma.TransactionClient,
+): Promise<GameItem[]> =>
+  (await client.game.findMany({ include: WITH_COUNTS }))
     .map(toGameItem)
-    .sort(compareActiveThenName);
+    .sort(compareActiveThenRank);
+
+export const listGames = (): Promise<GameItem[]> => readGames(prisma);
 
 /** A game with its numbers of teams and functions, for its record. */
 export const getGame = async (id: string): Promise<GameItem> => {
@@ -169,7 +180,13 @@ export const createGame = async (
       );
       const game = toGameItem(
         await transaction.game.create({
-          data: writeData(input),
+          data: {
+            ...writeData(input),
+            // Last of the list; its managers drag it higher if it matters more.
+            position:
+              ((await transaction.game.aggregate({ _max: { position: true } }))
+                ._max.position ?? -1) + 1,
+          },
           include: WITH_COUNTS,
         }),
       );
@@ -249,6 +266,60 @@ export const updateGame = async (
     throw error;
   }
 };
+
+/**
+ * Sets the order of the active games, or of the inactive ones, as their
+ * managers dragged it (owner, 9 November 2026). The request names every game
+ * of that state: one added, (de)activated in between refuses it.
+ * The active and the inactive items rank apart, the inactive ones below;
+ * both are ranked (owner, 9 November 2026: « un jeu inactif ne doit jamais
+ * bloquer »).
+ * One trace holds the order before and after; the order is not part of a
+ * game's version. Answers every game, in the new order.
+ */
+export const reorderGames = async (
+  { active, ids }: Readonly<{ active: boolean; ids: readonly string[] }>,
+  { actor, session }: GameActor,
+): Promise<GameItem[]> =>
+  prisma.$transaction(async (transaction) => {
+    await authorizeUserAction(
+      transaction,
+      { actorId: actor.id, session },
+      PERMISSIONS.GAMES.MANAGE,
+    );
+    // One reorder at a time: the second waits, then reads the first.
+    await transaction.$queryRaw`SELECT "id" FROM "Game" WHERE "isActive" = ${active} ORDER BY "id" FOR UPDATE`;
+    const plan = planManualOrder(
+      (await readGames(transaction)).filter((game) => game.isActive === active),
+      ids,
+    );
+    if (!plan) throw gamesChanged();
+    if (plan.changed) {
+      for (const { id, position } of plan.moves)
+        await transaction.game.update({ data: { position }, where: { id } });
+      await createAuditLogWithHeaders(
+        {
+          action: AuditAction.GAME_REORDER,
+          category: AuditCategory.GAME,
+          description: active
+            ? 'Ordre des jeux modifié'
+            : 'Ordre des jeux inactifs modifié',
+          metadata: {
+            active,
+            after: { order: plan.after },
+            before: { order: plan.before },
+            changes: ['order'],
+            ...FEATURES.games.audit,
+          },
+          targetUserId: null,
+          userId: actor.id,
+        },
+        { client: transaction, required: true },
+      );
+    }
+
+    return readGames(transaction);
+  });
 
 /**
  * Deletes a game created by mistake. A game that has teams is refused here
