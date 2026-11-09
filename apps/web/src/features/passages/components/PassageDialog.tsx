@@ -391,6 +391,30 @@ const PassageDialogContent: FC<Props> = ({
                       Fonction inactive : elle reste celle de ce passage.
                     </p>
                   )}
+                  {item && (
+                    // Next to the field it concerns, never in the footer
+                    // (owner, 9 November 2026: « ça crée un plus gros
+                    // footer »): a correction here, a new function there.
+                    <div className="-mt-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+                      <p className="text-muted-foreground text-xs">
+                        Ce champ corrige la fonction sur tout le passage.
+                      </p>
+                      <Button
+                        disabled={busy || stale}
+                        onClick={() => {
+                          setMode('change');
+                          setErrors({});
+                          setFormError(null);
+                        }}
+                        size="sm"
+                        type="button"
+                        variant="outline"
+                      >
+                        <ArrowRightLeft className="size-4" />
+                        Changer de fonction
+                      </Button>
+                    </div>
+                  )}
                   <ApproximateDateField
                     disabled={busy}
                     error={errors.start}
@@ -440,30 +464,15 @@ const PassageDialogContent: FC<Props> = ({
             </div>
             <DialogFooter className="border-border-divider bg-surface-inset border-t px-4 py-4 sm:justify-between sm:px-5">
               {item && !changing && (
-                <div className="flex flex-col-reverse gap-2 sm:flex-row">
-                  <Button
-                    disabled={busy}
-                    onClick={() => setConfirmDelete(true)}
-                    type="button"
-                    variant="destructive"
-                  >
-                    <Trash2 className="size-4" />
-                    Supprimer
-                  </Button>
-                  <Button
-                    disabled={busy || stale}
-                    onClick={() => {
-                      setMode('change');
-                      setErrors({});
-                      setFormError(null);
-                    }}
-                    type="button"
-                    variant="outline"
-                  >
-                    <ArrowRightLeft className="size-4" />
-                    Changer de fonction
-                  </Button>
-                </div>
+                <Button
+                  disabled={busy}
+                  onClick={() => setConfirmDelete(true)}
+                  type="button"
+                  variant="destructive"
+                >
+                  <Trash2 className="size-4" />
+                  Supprimer
+                </Button>
               )}
               <div className="flex flex-col-reverse gap-2 sm:ml-auto sm:flex-row">
                 <Button

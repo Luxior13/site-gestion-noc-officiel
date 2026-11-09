@@ -64,7 +64,10 @@ d’encadrement de son jeu. Une même personne peut avoir les deux ; son
 6. **Fenêtre d’un passage** (`PassageDialog`) : celle du Roster, avec « Une
    personne dans la structure, avec une fonction, depuis une date. », les
    fonctions de la structure (Bureau puis Staff), « Membre ajouté à
-   l’Effectif », « Recharger l’Effectif » ; même fonction déjà tenue :
+   l’Effectif », « Recharger l’Effectif » ; le choix de la fonction est le
+   menu des listes du site (`SearchSelect`) : titres « Bureau » et « Staff »,
+   hauteur bornée qui défile, recherche en tête dès 8 fonctions (demande du
+   9 novembre 2026 sur ce menu) ; même fonction déjà tenue :
    « Cette personne a déjà cette fonction dans la structure sur cette
    période. »
 
@@ -144,5 +147,23 @@ et son aide ; lecture seule sans « Ajouter un membre » ni lien vers les
 fiches ; « Accès refusé » sans `staff:view` ; aucun débordement, aucune
 erreur JavaScript ; page à 260 241 octets compressés, fiche personne à
 271 182.
+
+Le 9 novembre 2026, menu des fonctions : `search-select` (groupes gardés,
+recherche sans accents ni casse et par mots, seuil de 8, bouton nommé par son
+libellé puis sa valeur) ; banc à 1 440 et 390 px : titres « Bureau » et
+« Staff », 8 fonctions et la recherche qui prend le focus, menu de 274 px qui
+défile, « secr » ne laisse que Secrétaire, « Aucune fonction trouvée », Entrée
+choisit et ferme ; liste courte (« Nouvelle fonction », 7) sans recherche,
+flèches et Entrée, focus rendu au champ ; jeu d’une nouvelle équipe au clavier ;
+aucune erreur JavaScript ; page Jeux à 286 943 octets compressés.
+
+Le 9 novembre 2026, molette et pied de la fenêtre : banc à 1 440 et 390 px,
+la molette fait défiler le menu des fonctions jusqu’au bout (58 px et 138 px,
+aucun avant la correction), un clic sur la dernière fonction la choisit, un
+clic à côté ferme le menu et garde la fenêtre ; banc à 1 440, 768, 390 et
+320 px : pied « Supprimer », « Annuler », « Enregistrer » sur une ligne (66 px
+de haut à 1 440 px, empilé sur téléphone), « Changer de fonction » sous le
+champ Fonction, mode changement avec « Retour » et « Changer de fonction » ;
+aucune erreur JavaScript.
 
 Limites : E2E non rejoués ; base de développement non migrée par moi.

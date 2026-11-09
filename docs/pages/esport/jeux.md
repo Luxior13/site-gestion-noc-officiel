@@ -104,7 +104,8 @@ rendez-le inactif plutôt que de le supprimer. »
 
 Fenêtre « Ajouter une équipe » (« Sa fiche s’ouvre ensuite, pour la
 compléter. »), pour la création seulement : Jeu (« Choisir un jeu », focus
-initial ; « Choisissez un jeu » s’il manque ; pour un jeu inactif, « Ce jeu est
+initial ; menu `SearchSelect` des jeux, actifs puis inactifs, à hauteur bornée,
+recherche en tête dès 8 jeux, 9 novembre 2026 ; « Choisissez un jeu » s’il manque ; pour un jeu inactif, « Ce jeu est
 inactif : l’équipe s’ajoute à son historique, passée ou à venir. »), Nom,
 Création (champ de date partagé `ApproximateDateField`), Active. Un nom déjà
 pris dans le jeu s’affiche sous le champ. Une fois ajoutée,

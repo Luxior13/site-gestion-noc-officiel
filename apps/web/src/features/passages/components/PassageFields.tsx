@@ -15,13 +15,7 @@ import { Button } from '$ui/button';
 import { Input } from '$ui/input';
 import { Label } from '$ui/label';
 import { Popover, PopoverAnchor, PopoverContent } from '$ui/popover';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '$ui/select';
+import { SearchSelect, type SearchSelectGroup } from '$ui/search-select';
 import { compareActiveThenRank } from '$utils/active-order.utils';
 import { cn } from '$utils/css.utils';
 
@@ -35,9 +29,10 @@ import type {
 const ID = 'passage-dialog';
 
 /**
- * The functions of the team's game, or of the structure, by group: the active
- * ones first, then the inactive ones, marked, still chosen for an old passage
- * (PREF-Q10).
+ * The functions of the team's game, or of the structure, under their group's
+ * heading (« Joueurs », « Bureau »…): the active ones first, then the
+ * inactive ones, marked, still chosen for an old passage (PREF-Q10). A search
+ * from eight functions (owner, 9 November 2026).
  */
 export const FunctionSelect: FC<{
   disabled: boolean;
@@ -61,49 +56,38 @@ export const FunctionSelect: FC<{
   onChange,
   value,
 }) => {
-  const groups = functionKindsOf(functionScope)
+  const groups: SearchSelectGroup[] = functionKindsOf(functionScope)
     .map((kind: MemberFunctionKind) => ({
-      items: functions
+      label: memberFunctionGroupLabel(kind, functionScope),
+      options: functions
         .filter((entry) => entry.kind === kind && entry.id !== exclude)
-        .sort(compareActiveThenRank),
-      kind,
+        .sort(compareActiveThenRank)
+        .map((entry) => ({
+          label: entry.name,
+          note: entry.isActive ? undefined : 'inactive',
+          value: entry.id,
+        })),
     }))
-    .filter((group) => group.items.length > 0);
+    .filter((group) => group.options.length > 0);
 
   return (
     <div className="space-y-1.5">
-      <Label htmlFor={id} required>
+      <Label htmlFor={id} id={`${id}-label`} required>
         {label}
       </Label>
-      <Select disabled={disabled} onValueChange={onChange} value={value}>
-        <SelectTrigger
-          aria-describedby={error ? `${id}-error` : undefined}
-          aria-invalid={Boolean(error)}
-          className="w-full"
-          id={id}
-        >
-          <SelectValue placeholder="Choisir une fonction" />
-        </SelectTrigger>
-        <SelectContent>
-          {groups.map(({ items, kind }) =>
-            items.map((entry, index) => (
-              <SelectItem
-                // The group's name before its first function.
-                key={entry.id}
-                textValue={entry.name}
-                value={entry.id}
-              >
-                {index === 0 && (
-                  <span className="sr-only">
-                    {memberFunctionGroupLabel(kind, functionScope)} :{' '}
-                  </span>
-                )}
-                {entry.isActive ? entry.name : `${entry.name} (inactive)`}
-              </SelectItem>
-            )),
-          )}
-        </SelectContent>
-      </Select>
+      <SearchSelect
+        aria-describedby={error ? `${id}-error` : undefined}
+        aria-invalid={Boolean(error)}
+        disabled={disabled}
+        emptyText="Aucune fonction trouvée"
+        groups={groups}
+        id={id}
+        labelId={`${id}-label`}
+        onValueChange={onChange}
+        placeholder="Choisir une fonction"
+        searchLabel="Rechercher une fonction"
+        value={value}
+      />
       {error && (
         <p className="text-destructive text-xs" id={`${id}-error`} role="alert">
           {error}

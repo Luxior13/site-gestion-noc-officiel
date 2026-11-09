@@ -16,13 +16,7 @@ import {
 } from '$ui/dialog';
 import { Input } from '$ui/input';
 import { Label } from '$ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '$ui/select';
+import { SearchSelect } from '$ui/search-select';
 import { Switch } from '$ui/switch';
 import { compareActiveThenRank } from '$utils/active-order.utils';
 import { ApiClientError } from '$utils/api.utils';
@@ -154,37 +148,39 @@ const TeamDialogContent: FC<Props> = ({ games, onClose, onCreated }) => {
               </p>
             )}
             <div className="space-y-1.5">
-              <Label htmlFor={`${ID}-game`} required>
+              <Label htmlFor={`${ID}-game`} id={`${ID}-game-label`} required>
                 Jeu
               </Label>
-              <Select
+              <SearchSelect
+                aria-describedby={`${ID}-game-hint${errors.gameId ? ` ${ID}-game-error` : ''}`}
+                aria-invalid={Boolean(errors.gameId)}
+                // The first choice to make, unless the only game is set.
+                autoFocus={games.length !== 1}
                 disabled={busy}
+                emptyText="Aucun jeu trouvé"
+                // The active games first, then the inactive ones, marked,
+                // each in the dragged order (PREF-Q10).
+                groups={[
+                  {
+                    options: [...games]
+                      .sort(compareActiveThenRank)
+                      .map((entry) => ({
+                        label: entry.name,
+                        note: entry.isActive ? undefined : 'inactif',
+                        value: entry.id,
+                      })),
+                  },
+                ]}
+                id={`${ID}-game`}
+                labelId={`${ID}-game-label`}
                 onValueChange={(gameId) => {
                   change({ gameId });
                   setErrors((current) => ({ ...current, gameId: undefined }));
                 }}
+                placeholder="Choisir un jeu"
+                searchLabel="Rechercher un jeu"
                 value={draft.gameId}
-              >
-                <SelectTrigger
-                  aria-describedby={`${ID}-game-hint${errors.gameId ? ` ${ID}-game-error` : ''}`}
-                  // The first choice to make, unless the only game is set.
-                  autoFocus={games.length !== 1}
-                  aria-invalid={Boolean(errors.gameId)}
-                  className="w-full"
-                  id={`${ID}-game`}
-                >
-                  <SelectValue placeholder="Choisir un jeu" />
-                </SelectTrigger>
-                <SelectContent>
-                  {/* A choice: the active games first, then the inactive
-                      ones, marked, each in the dragged order (PREF-Q10). */}
-                  {[...games].sort(compareActiveThenRank).map((entry) => (
-                    <SelectItem key={entry.id} value={entry.id}>
-                      {entry.isActive ? entry.name : `${entry.name} (inactif)`}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              />
               <p
                 className="text-muted-foreground text-xs"
                 id={`${ID}-game-hint`}

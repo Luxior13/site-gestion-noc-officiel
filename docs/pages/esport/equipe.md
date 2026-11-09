@@ -97,17 +97,22 @@ Composition, de haut en bas :
      fois le passage créé, elle ne change plus (un passage sur la mauvaise
      personne se supprime) ; la fenêtre la montre avec son avatar et « Ouvrir
      la fiche ».
-   - **Fonction** : les fonctions du jeu de l’équipe, joueurs puis
-     encadrement, les actives d’abord, les inactives ensuite marquées
-     « (inactive) » (PREF-Q10).
+   - **Fonction** : les fonctions du jeu de l’équipe, sous les titres
+     « Joueurs » puis « Encadrement », les actives d’abord, les inactives
+     ensuite marquées « (inactive) » (PREF-Q10) ; menu à hauteur bornée qui
+     défile, recherche en tête dès 8 fonctions (`SearchSelect`,
+     9 novembre 2026).
    - **Début** : au jour, au mois ou à l’année, aujourd’hui par défaut.
    - **En cours** (interrupteur, coché par défaut) : le retirer fait paraître
      **Fin**, aujourd’hui par défaut : c’est « Terminer ».
-   - Pied : « Supprimer » (confirmation à part : « Seul un passage saisi par
-     erreur se supprime. Pour un départ, retirez plutôt « En cours » ») et
-     « Changer de fonction », qui passe la fenêtre en **Nouvelle fonction** et
-     **À partir du** : le passage se termine à cette date et un nouveau
-     commence, en une fois.
+   - Pied, sur une ligne : « Supprimer » à gauche (confirmation à part :
+     « Seul un passage saisi par erreur se supprime. Pour un départ, retirez
+     plutôt « En cours » »), « Annuler » et « Enregistrer » à droite.
+   - Sous le champ Fonction d’un passage existant, « Ce champ corrige la
+     fonction sur tout le passage. » et **Changer de fonction** (déplacé du
+     pied le 9 novembre 2026 : « ça crée un plus gros footer »), qui passe la
+     fenêtre en **Nouvelle fonction** et **À partir du** : le passage se
+     termine à cette date et un nouveau commence, en une fois.
    - Erreurs sous le champ concerné : même fonction déjà tenue sur la période
      (« Cette personne a déjà cette fonction dans l’équipe sur cette
      période. »), fin avant le début, fonction d’un autre jeu ; version

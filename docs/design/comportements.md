@@ -258,6 +258,16 @@ du 25 octobre 2026).
   Durand ? », « Réinitialiser le mot de passe de Camille Exemple ? ») ;
   décision du 31 octobre 2026 qui tranche AUD-Q1.
 - Une fenêtre ouverte au-dessus d’une autre laisse une seule zone active.
+- Le pied d’une fenêtre de saisie tient sur une ligne dès 640 px : l’action
+  destructrice (« Supprimer ») à gauche, « Annuler » et l’action principale à
+  droite, trois boutons au plus. Une action propre à un champ se place sous ce
+  champ, pas dans le pied (« Changer de fonction » sous Fonction, avec « Ce
+  champ corrige la fonction sur tout le passage. ») ; décision du propriétaire
+  du 9 novembre 2026 (« ça crée un plus gros footer »).
+- Un menu ouvert dans une fenêtre défile à la molette et au doigt : les menus
+  de choix (`Select`, `SearchSelect`) sont modaux pendant leur ouverture,
+  sinon la fenêtre, qui bloque le défilement de la page, bloque aussi le leur
+  (9 novembre 2026).
 - Une action que le serveur refuserait n’est pas proposée : la fenêtre ou la
   zone dangereuse de la fiche dit à sa place pourquoi et quoi faire (« Ce jeu a 3 équipes : rendez-le inactif
   plutôt que de le supprimer. »), sans bouton désactivé muet ; le service et la
