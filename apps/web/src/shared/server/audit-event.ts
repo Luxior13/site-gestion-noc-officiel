@@ -118,6 +118,7 @@ const AUDIT_EVENT_CLASSIFICATIONS = {
     AuditStream.SYSTEM,
     AuditSeverity.WARNING,
   ),
+  [AuditAction.FUNCTION_REORDER]: activity(AuditStream.SYSTEM),
   [AuditAction.FUNCTION_UPDATE]: activity(AuditStream.SYSTEM),
   [AuditAction.TEAM_CREATE]: activity(AuditStream.SYSTEM),
   [AuditAction.TEAM_DELETE]: activity(

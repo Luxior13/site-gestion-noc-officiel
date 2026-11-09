@@ -94,6 +94,20 @@ Références : [liste du Répertoire](../pages/personnes/repertoire/liste.md) et
   montre les actifs d’abord, puis par nom (page Jeux, décision du 8 novembre
   2026). Une liste qui propose un tri (Répertoire, Utilisateurs) garde le sien
   (question ouverte PREF-Q8 du [journal](preferences.md#questions-ouvertes)).
+  Une liste rangée à la main (fonctions d’un jeu, 9 novembre 2026) garde
+  l’ordre posé, ses éléments inactifs à leur place ; seuls les choix mettent
+  les actifs d’abord.
+- Réordonner par glisser-déposer ([SortableList](../../apps/web/src/components/ui/sortable-list.tsx),
+  9 novembre 2026) : une poignée ⠿ en début de ligne, seule à déclencher le
+  glisser (le nom reste un clic qui ouvre la fenêtre) ; la ligne ne sort pas de
+  son bloc. Souris et doigt après 4 px de déplacement ; clavier : Espace ou
+  Entrée pour saisir, flèches haut et bas, Espace ou Entrée pour poser, Échap
+  pour annuler ; un lecteur d’écran entend « Déplacement de Manager : position
+  2 sur 3 », puis « Manager : nouvelle position 1 sur 3 », et le focus reste sur
+  la poignée. Le nouvel ordre s’affiche aussitôt et s’enregistre (« Ordre
+  enregistré ») ; pendant l’enregistrement, les poignées restent focalisables
+  mais inertes ; un refus remet l’ancien ordre et une liste changée entre-temps
+  se recharge. Sans le droit, pas de poignée.
 - Pagination à 25 lignes (`PAGINATION.DEFAULT_LIMIT`, partagé client et
   serveur) ; une exception de densité se justifie dans la fiche. Le nombre de
   lignes n’est pas un paramètre système.

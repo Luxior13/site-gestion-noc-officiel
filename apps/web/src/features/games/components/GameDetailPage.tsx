@@ -1,6 +1,7 @@
 'use client';
 
 import { Info, RefreshCw, UserCog } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import React, {
   type FC,
@@ -19,20 +20,28 @@ import { AccessDeniedState, PageState } from '$components/layout/PageState';
 import { FEATURES } from '$constants/feature-registry.constants';
 import { gameDetailPath } from '$constants/routes.constants';
 import { useUser } from '$context/UserContext';
-import { MemberFunctionsSection } from '$features/member-functions/components/MemberFunctionsSection';
 import { PageCanvas, PageShell } from '$ui/page-shell';
 import { StatusBadge } from '$ui/status-badge';
 import { ApiClientError } from '$utils/api.utils';
 import { formatApproximateDate } from '$utils/approximate-date.utils';
 
 import { deleteGameRequest, fetchGame } from '../game.api';
+import { GAME_ACTION_BAR_SLOT } from '../game.constants';
 import { getGameCapabilities } from '../game.permissions';
 import type { GameItem } from '../types/game.types';
 import { GameAvatar } from './GameAvatar';
-import {
-  GAME_ACTION_BAR_SLOT,
-  GameInformationSection,
-} from './GameInformationSection';
+
+// Each tab loads with its own code: the functions bring the drag-and-drop.
+const MemberFunctionsSection = dynamic(() =>
+  import('$features/member-functions/components/MemberFunctionsSection').then(
+    (module) => module.MemberFunctionsSection,
+  ),
+);
+const GameInformationSection = dynamic(() =>
+  import('./GameInformationSection').then(
+    (module) => module.GameInformationSection,
+  ),
+);
 
 const GAMES_HREF = FEATURES.games.href;
 

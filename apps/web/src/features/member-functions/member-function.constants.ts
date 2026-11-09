@@ -31,14 +31,18 @@ export const COMMON_GAME_FUNCTIONS: readonly Readonly<{
   { kind: 'STAFF', name: 'Analyste' },
 ];
 
+/** Limit of a reordered group, far above any real list of functions. */
+export const MEMBER_FUNCTION_GROUP_MAX = 100;
+
 /**
- * Order of the functions of a game: players first, then the staff; active
- * ones first in each; then by name.
+ * Order of the functions of a game: players first, then the staff; in each,
+ * the order its managers set by dragging (owner, 9 November 2026), the same on
+ * every page; the name breaks a tie.
  */
 type Sortable = Readonly<{
-  isActive: boolean;
   kind: MemberFunctionKind;
   name: string;
+  position: number;
 }>;
 
 export const compareMemberFunctions = (
@@ -47,5 +51,14 @@ export const compareMemberFunctions = (
 ): number =>
   MEMBER_FUNCTION_KINDS.indexOf(left.kind) -
     MEMBER_FUNCTION_KINDS.indexOf(right.kind) ||
-  Number(right.isActive) - Number(left.isActive) ||
+  left.position - right.position ||
   left.name.localeCompare(right.name, 'fr', { sensitivity: 'base' });
+
+/** « Joueurs », « Encadrement »: the heading of each group of the list. */
+const GROUP_LABELS: ReadonlyMap<MemberFunctionKind, string> = new Map([
+  ['PLAYER', 'Joueurs'],
+  ['STAFF', 'Encadrement'],
+]);
+
+export const memberFunctionGroupLabel = (kind: MemberFunctionKind): string =>
+  GROUP_LABELS.get(kind) ?? kind;

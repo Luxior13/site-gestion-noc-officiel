@@ -331,7 +331,7 @@ dans la page Jeux de l’éditeur, en deux groupes (Jeux, Équipes) ; voir les
 | Clé canonique | Action couverte | Dépend de | Risque | Step-up à l'usage |
 | --- | --- | --- | --- | --- |
 | `games:view` | consulter la liste des jeux et leur première ouverture | — | défaut | Non |
-| `games:manage` | ajouter, modifier, rendre actif ou non, supprimer un jeu qui n’a jamais servi (un jeu qui a des équipes est refusé par le service et par la base) ; ajouter, modifier, rendre active ou non, supprimer une fonction du jeu jamais utilisée (9 novembre 2026, sans permission nouvelle) | `games:view` | sensible | Non |
+| `games:manage` | ajouter, modifier, rendre actif ou non, supprimer un jeu qui n’a jamais servi (un jeu qui a des équipes est refusé par le service et par la base) ; ajouter, modifier, rendre active ou non, ordonner par glisser-déposer, supprimer une fonction du jeu jamais utilisée (9 novembre 2026, sans permission nouvelle) | `games:view` | sensible | Non |
 | `teams:view` | voir les équipes sous chaque jeu, actives ou non | `games:view` | défaut | Non |
 | `teams:manage` | ajouter une équipe à un jeu, la modifier, la rendre active ou non, supprimer une équipe qui n’a jamais servi | `teams:view` | sensible | Non |
 

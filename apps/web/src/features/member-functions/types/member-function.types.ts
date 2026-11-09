@@ -6,6 +6,8 @@ export type MemberFunctionItem = Readonly<{
   isActive: boolean;
   kind: MemberFunctionKind;
   name: string;
+  /** Rank within its game and kind, set by dragging. */
+  position: number;
   updatedAt: string;
   version: number;
 }>;

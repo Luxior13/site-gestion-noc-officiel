@@ -10,3 +10,6 @@ export const GAME_STATE_FILTER_LABELS: Record<GameStateFilter, string> = {
   all: 'Tous',
   inactive: 'Inactifs',
 };
+
+/** Where the record's save bar renders: at page level, outside the tabs. */
+export const GAME_ACTION_BAR_SLOT = 'game-record-action-bar';

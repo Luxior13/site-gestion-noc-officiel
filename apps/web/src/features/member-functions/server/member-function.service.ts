@@ -20,6 +20,7 @@ import { normalizeSearchText } from '$utils/search-text.utils';
 import {
   COMMON_GAME_FUNCTIONS,
   compareMemberFunctions,
+  type MemberFunctionKind,
   memberFunctionKindLabel,
 } from '../member-function.constants';
 import type {
@@ -55,6 +56,11 @@ const functionMissing = (): ServiceError =>
   serviceErrors.notFound('Cette fonction n’existe plus. Rechargez la liste.');
 const gameMissing = (): ServiceError =>
   serviceErrors.notFound('Ce jeu n’existe plus. Rechargez la liste.');
+/** A reorder names every function of its group, as they are now. */
+const groupChanged = (): ServiceError =>
+  serviceErrors.conflict(
+    'La liste des fonctions a changé entre-temps. Elle est rechargée : recommencez le déplacement.',
+  );
 /** The common functions only fill an empty list (owner, 9 November 2026). */
 const functionsArrived = (): ServiceError =>
   serviceErrors.conflict(
@@ -74,6 +80,7 @@ const toItem = (row: MemberFunction): MemberFunctionItem => ({
   isActive: row.isActive,
   kind: row.kind,
   name: row.name,
+  position: row.position,
   updatedAt: row.updatedAt.toISOString(),
   version: row.version,
 });
@@ -132,6 +139,19 @@ const findGame = async (
 
   return game;
 };
+
+/** The place after the last function of a group: a new one goes there. */
+const nextPosition = async (
+  client: Prisma.TransactionClient,
+  gameId: string,
+  kind: MemberFunctionKind,
+): Promise<number> =>
+  ((
+    await client.memberFunction.aggregate({
+      _max: { position: true },
+      where: { gameId, kind },
+    })
+  )._max.position ?? -1) + 1;
 
 /** A function of this game: another game's function is « not found » here. */
 const findFunction = async (
@@ -198,7 +218,12 @@ const createOne = async (
 ): Promise<MemberFunctionItem> => {
   const item = toItem(
     await transaction.memberFunction.create({
-      data: { ...editableData(input), gameId: game.id },
+      data: {
+        ...editableData(input),
+        gameId: game.id,
+        // Last of its group; its managers drag it higher if it matters more.
+        position: await nextPosition(transaction, game.id, input.kind),
+      },
     }),
   );
   const after = auditValues(item, game);
@@ -216,7 +241,7 @@ const createOne = async (
   return item;
 };
 
-/** The functions of a game: players first, active ones first, then by name. */
+/** The functions of a game: players first, then the staff, each in its order. */
 export const listGameFunctions = async (
   gameId: string,
 ): Promise<MemberFunctionItem[]> => {
@@ -302,7 +327,16 @@ export const updateGameFunction = async (
       const changes = changedKeys(before, after);
       if (changes.length === 0) return previous;
       const result = await transaction.memberFunction.updateMany({
-        data: { ...editableData(input), version: { increment: 1 } },
+        data: {
+          ...editableData(input),
+          // Another kind: last of its new group.
+          ...(input.kind === previous.kind
+            ? {}
+            : {
+                position: await nextPosition(transaction, gameId, input.kind),
+              }),
+          version: { increment: 1 },
+        },
         where: { gameId, id, version: input.expectedVersion },
       });
       if (result.count !== 1) throw functionChanged();
@@ -327,6 +361,78 @@ export const updateGameFunction = async (
     throw error;
   }
 };
+
+/**
+ * Sets the order of one group of a game's functions (players or staff), as
+ * its managers dragged it (owner, 9 November 2026). The request names every
+ * function of the group: one added, removed or moved to the other group in
+ * between refuses it. The order is not part of a function's version, so an
+ * edit window left open stays valid; one trace holds the order before and
+ * after. Answers every function of the game, in its new order.
+ */
+export const reorderGameFunctions = async (
+  gameId: string,
+  input: Readonly<{ ids: readonly string[]; kind: MemberFunctionKind }>,
+  actor: MemberFunctionActor,
+): Promise<MemberFunctionItem[]> =>
+  prisma.$transaction(async (transaction) => {
+    await authorize(transaction, actor);
+    const game = await findGame(transaction, gameId);
+    // One reorder of a group at a time: the second waits for the first to
+    // commit, then reads its order as « before ».
+    await transaction.$queryRaw`SELECT "id" FROM "MemberFunction" WHERE "gameId" = ${gameId} AND "kind" = ${input.kind}::"MemberFunctionKind" ORDER BY "id" FOR UPDATE`;
+    const group = (
+      await transaction.memberFunction.findMany({
+        where: { gameId, kind: input.kind },
+      })
+    )
+      .map(toItem)
+      .sort(compareMemberFunctions);
+    const byId = new Map(group.map((item) => [item.id, item]));
+    if (
+      input.ids.length !== group.length ||
+      input.ids.some((id) => !byId.has(id))
+    )
+      throw groupChanged();
+    const unchanged = input.ids.every(
+      (id, index) => group.at(index)?.id === id,
+    );
+    if (!unchanged) {
+      for (const [position, id] of input.ids.entries())
+        if (byId.get(id)?.position !== position)
+          await transaction.memberFunction.update({
+            data: { position },
+            where: { id },
+          });
+      const kind = memberFunctionKindLabel(input.kind);
+      await createAuditLogWithHeaders(
+        {
+          action: AuditAction.FUNCTION_REORDER,
+          category: AuditCategory.FUNCTION,
+          description: `Ordre des fonctions modifié : ${kind} (${game.name})`,
+          metadata: {
+            after: {
+              order: input.ids.map((id) => byId.get(id)?.name).join(', '),
+            },
+            before: { order: group.map((item) => item.name).join(', ') },
+            changes: ['order'],
+            gameId: game.id,
+            gameName: game.name,
+            kind: input.kind,
+            kindLabel: kind,
+            ...FEATURES.games.audit,
+          },
+          targetUserId: null,
+          userId: actor.actor.id,
+        },
+        { client: transaction, required: true },
+      );
+    }
+
+    return (await transaction.memberFunction.findMany({ where: { gameId } }))
+      .map(toItem)
+      .sort(compareMemberFunctions);
+  });
 
 /**
  * Deletes a function created by mistake. Nothing uses a function yet; the

@@ -30,7 +30,7 @@ Confidentialité & conservation et Données, exports & sauvegardes complètent l
 ## Lot 1 — Listes de choix
 
 **Données** : les jeux ont leur table `Game`, livrée le 8 novembre 2026 avec la page Jeux (nom unique, nom court, première ouverture et sa précision, actif) ; une table `ReferenceValue` pour les autres listes (`list`, `label`,
-libellé normalisé, actif, `version`) ; les fonctions ont leur table `MemberFunction`, livrée le 9 novembre 2026 (nom unique par jeu, type Joueur ou Encadrement, active, `version`, `gameId` vide réservé aux fonctions de la structure, unique entre elles par un index partiel),
+libellé normalisé, actif, `version`) ; les fonctions ont leur table `MemberFunction`, livrée le 9 novembre 2026 (nom unique par jeu, type Joueur ou Encadrement, position posée par glisser-déposer dans chaque type, active, `version`, `gameId` vide réservé aux fonctions de la structure, unique entre elles par un index partiel),
 unique par liste (et jeu) et libellé normalisé,
 et une table de liaison `PersonGame`. Une table commune évite une page, une API et
 une migration par liste. Pour qu’une fonction ne puisse pas remplir un champ

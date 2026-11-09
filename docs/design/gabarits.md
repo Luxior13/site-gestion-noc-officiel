@@ -138,7 +138,11 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
   de modification, toute la ligne étant la cible ; « Supprimer » vit dans cette
   fenêtre, confirmé à part, pour une valeur jamais utilisée ; une liste vide
   propose « Ajouter les … courantes » en un clic à côté de l’ajout simple. Un
-  lecteur voit les mêmes lignes, sans action.
+  lecteur voit les mêmes lignes, sans action. Quand l’ordre compte (fonctions,
+  par importance, 9 novembre 2026), un bloc par groupe (« Joueurs »,
+  « Encadrement », avec son nombre) remplace la colonne du groupe, et chaque
+  ligne commence par une poignée ⠿ pour la glisser dans son bloc
+  ([comportements](comportements.md#listes-recherche-et-pagination)).
 - **Créer** : en fenêtre pour quelques champs, sur une page pour un long formulaire.
   Un élément qui a sa fiche s’ouvre sur elle, jamais dans une fenêtre : la fenêtre
   ne sert qu’à le créer, puis sa fiche s’ouvre (équipe, 8 novembre 2026).

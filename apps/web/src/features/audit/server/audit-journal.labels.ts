@@ -16,6 +16,7 @@ export const JOURNAL_ACTION_LABELS: Record<AuditAction, string> = {
   BACKGROUND_JOB_UPDATE: 'Tâche de fond modifiée',
   FUNCTION_CREATE: 'Fonction ajoutée',
   FUNCTION_DELETE: 'Fonction supprimée',
+  FUNCTION_REORDER: 'Ordre des fonctions modifié',
   FUNCTION_UPDATE: 'Fonction modifiée',
   GAME_CREATE: 'Jeu ajouté',
   GAME_DELETE: 'Jeu supprimé',
@@ -109,6 +110,8 @@ export const FUNCTION_FIELD_LABELS: ReadonlyArray<readonly [string, string]> = [
   ['name', 'Nom'],
   ['kind', 'Type'],
   ['isActive', 'Active'],
+  // A new order of one group, as its managers dragged it (9 November 2026).
+  ['order', 'Ordre'],
 ];
 
 /** Account fields recorded in `before` / `after`, in display order. */

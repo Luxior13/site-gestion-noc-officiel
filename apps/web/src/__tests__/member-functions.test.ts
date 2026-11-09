@@ -16,6 +16,7 @@ import {
 import {
   addCommonMemberFunctionsSchema,
   createMemberFunctionSchema,
+  reorderMemberFunctionsSchema,
   updateMemberFunctionSchema,
 } from '$features/member-functions/schemas/member-function.schemas';
 
@@ -71,15 +72,33 @@ describe('function form contract (9 November 2026)', () => {
   });
 });
 
+describe('a new order of a group', () => {
+  it('names one group and each of its functions once', () => {
+    expect(
+      reorderMemberFunctionsSchema.parse({ ids: ['f2', 'f1'], kind: 'STAFF' }),
+    ).toEqual({ ids: ['f2', 'f1'], kind: 'STAFF' });
+    for (const body of [
+      { ids: [], kind: 'STAFF' },
+      { ids: ['f1', 'f1'], kind: 'STAFF' },
+      { ids: ['f1'], kind: 'POSITION' },
+      { ids: ['f1'] },
+      { gameId: 'game-1', ids: ['f1'], kind: 'PLAYER' },
+    ])
+      expect(reorderMemberFunctionsSchema.safeParse(body).success).toBe(false);
+  });
+});
+
 describe('order and common functions of a game', () => {
-  it('lists the players first, active ones first in each, then by name', () => {
+  it('lists the players first, then the staff, each in the order set by dragging', () => {
     const functions = [
-      { isActive: true, kind: 'STAFF', name: 'Manager' },
-      { isActive: false, kind: 'PLAYER', name: 'Capitaine' },
-      { isActive: true, kind: 'PLAYER', name: 'Remplaçant' },
-      { isActive: true, kind: 'STAFF', name: 'Analyste' },
-      { isActive: true, kind: 'PLAYER', name: 'Joueur' },
-      { isActive: false, kind: 'STAFF', name: 'Coach adjoint' },
+      { kind: 'STAFF', name: 'Manager', position: 0 },
+      { kind: 'PLAYER', name: 'Capitaine', position: 2 },
+      { kind: 'PLAYER', name: 'Remplaçant', position: 1 },
+      { kind: 'STAFF', name: 'Analyste', position: 2 },
+      { kind: 'PLAYER', name: 'Joueur', position: 0 },
+      { kind: 'STAFF', name: 'Coach', position: 1 },
+      // A tie (two additions at once) falls back on the name.
+      { kind: 'STAFF', name: 'Coach adjoint', position: 1 },
     ] as const;
     expect(
       [...functions].sort(compareMemberFunctions).map(({ name }) => name),
@@ -87,9 +106,10 @@ describe('order and common functions of a game', () => {
       'Joueur',
       'Remplaçant',
       'Capitaine',
-      'Analyste',
       'Manager',
+      'Coach',
       'Coach adjoint',
+      'Analyste',
     ]);
   });
 
@@ -180,6 +200,30 @@ describe('a function in the activity journal', () => {
       ['FUNCTION_DELETE', 'Fonction supprimée'],
     ] as const)
       expect(project({ action }).label).toBe(label);
+  });
+
+  it('tells a new order of a group, before and after', () => {
+    const projected = project({
+      action: 'FUNCTION_REORDER',
+      metadata: {
+        after: { order: 'Manager, Coach, Analyste' },
+        before: { order: 'Coach, Manager, Analyste' },
+        changes: ['order'],
+        gameId: 'game-1',
+        gameName: 'Valorant',
+        kind: 'STAFF',
+        kindLabel: 'Encadrement',
+      },
+    });
+    expect(projected.label).toBe('Ordre des fonctions modifié');
+    expect(projected.subject).toBe('Fonctions : Encadrement (Valorant)');
+    expect(projected.changes).toEqual([
+      {
+        after: 'Manager, Coach, Analyste',
+        before: 'Coach, Manager, Analyste',
+        label: 'Ordre',
+      },
+    ]);
   });
 
   it('lists the functions removed with a game deleted by mistake', () => {

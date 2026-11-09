@@ -131,6 +131,9 @@ développement. Une liste fixée par une règle (statut, rôle) reste dans le co
   l’historique ou préparer une reprise ; une équipe inactive gardera de même son
   Roster à compléter. Seuls les choix courants mettent les éléments actifs en
   tête.
+- Les fonctions d’un jeu se rangent par glisser-déposer, pour leur
+  importance, joueurs et encadrement chacun dans son ordre (9 novembre 2026) :
+  cet ordre est repris partout, l’historique n’en dépend pas.
 - La base le garantit : toute table qui référence un jeu (équipes depuis le
   8 novembre 2026, fonctions depuis le 9, puis tournois, finances) le fait en
   `ON DELETE RESTRICT`, jamais en `CASCADE` ; le service explique le refus

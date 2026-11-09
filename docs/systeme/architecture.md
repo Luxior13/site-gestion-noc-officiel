@@ -135,6 +135,7 @@ registre : ils relèvent du socle personnel et de l’authentification.
 ## Dépendances principales
 
 Next.js 15.5, React 19.1, Prisma 6.19, Zod 4, cmdk, sonner, lucide-react,
+@dnd-kit (glisser-déposer accessible de `SortableList`, 9 novembre 2026),
 DiceBear, @node-rs/argon2 (hachage des mots de passe ; bcryptjs ne sert plus
 qu'à vérifier les anciens hachages) ; Vitest et Playwright pour les tests. Les versions exactes
 sont celles des manifests ; consulter Context7 pour leur documentation

@@ -33,15 +33,23 @@ Composition, de haut en bas :
    d’équipes pour qui les voit), puis la barre d’onglets **Fonctions** (avec
    leur nombre) et **Informations**. Fonctions garde l’adresse simple ;
    Informations ajoute `?section=informations`. Un brouillon des informations
-   marque leur onglet. Finances ↗ viendra entre les deux.
-3. **Fonctions** (`MemberFunctionsSection`) : la liste du Répertoire dans une
-   carte « Fonctions », avec la phrase « Ce que fait chaque membre d’une équipe
-   de Valorant : jouer, coacher, manager… » et, pour qui a `games:manage`,
-   « Ajouter une fonction » à droite. Colonnes Fonction · Type · État ; les
-   joueurs d’abord, puis l’encadrement, les actives d’abord dans chacun, puis
-   par nom. Le nom d’une fonction ouvre sa fenêtre de modification (toute la
-   ligne est la cible) ; un lecteur voit les mêmes lignes, sans action. Sur
-   téléphone, une ligne par fonction : nom, type en dessous, état à droite.
+   marque leur onglet. Finances ↗ viendra entre les deux. Chaque onglet charge
+   son code à la demande (`next/dynamic`, comme la fiche personne) : le
+   glisser-déposer ne pèse que sur Fonctions, et la page passe de 318 à
+   276 Kio compressés au budget de performance (9 novembre 2026).
+3. **Fonctions** (`MemberFunctionsSection`) : une carte « Fonctions », avec la
+   phrase « Ce que fait chaque membre d’une équipe de Valorant. Glissez une
+   fonction par sa poignée pour la placer selon son importance : cet ordre est
+   repris partout. » et, pour qui a `games:manage`, « Ajouter une fonction » à
+   droite. Deux blocs, **Joueurs** puis **Encadrement**, chacun avec son
+   nombre ; une ligne par fonction : poignée ⠿, nom, état à droite, dans
+   l’ordre posé par ses gestionnaires, les inactives à leur place. La poignée
+   glisse la ligne dans son bloc, à la souris, au doigt ou au clavier
+   ([comportements](../../design/comportements.md#listes-recherche-et-pagination)) ;
+   le nouvel ordre s’affiche et s’enregistre aussitôt (« Ordre enregistré »).
+   Le nom d’une fonction ouvre sa fenêtre de modification (toute la ligne est
+   la cible) ; un lecteur voit l’ordre, sans poignée ni action. Même rendu sur
+   téléphone, poignée de 44 px.
    Liste vide : « Aucune fonction pour l’instant » ; pour qui gère, « Ajouter
    les fonctions courantes » (Joueur, Remplaçant, Coach, Manager, Analyste, en
    une transaction, chacune tracée) et « Ajouter une fonction ».
@@ -76,12 +84,14 @@ Composition, de haut en bas :
 
 Données : `GET /api/jeux/[id]` rend le jeu avec ses nombres d’équipes et de
 fonctions ; `GET/POST /api/jeux/[id]/fonctions`, `POST
-/api/jeux/[id]/fonctions/courantes`, `PATCH/DELETE
+/api/jeux/[id]/fonctions/courantes`, `PUT /api/jeux/[id]/fonctions/ordre`,
+`PATCH/DELETE
 /api/jeux/[id]/fonctions/[functionId]` ([API](../../systeme/api.md)), table
 `MemberFunction` ([données](../../systeme/donnees.md)). Écritures tracées dans
 la même transaction : « Fonction ajoutée / modifiée / supprimée », sujet
 « Fonction : Coach (Valorant) », champs Jeu, Nom, Type, Active, type
-« Fonctions » du journal ; « Jeu modifié », « Jeu supprimé » (avec la liste des
+« Fonctions » du journal ; « Ordre des fonctions modifié », sujet « Fonctions :
+Encadrement (Valorant) », champ Ordre avant et après ; « Jeu modifié », « Jeu supprimé » (avec la liste des
 fonctions retirées avec lui).
 
 ## Décisions courantes
@@ -97,7 +107,18 @@ fonctions retirées avec lui).
   postes en jeu (Top, Jungle…) ne sont pas des fonctions, un éventuel champ
   « Poste » du passage les accueillera ; les fonctions courantes en un clic
   quand la liste est vide ; droit `games:manage`, sans permission nouvelle.
-  Ni description, ni nom court, ni ordre manuel.
+  Ni description, ni nom court.
+- Ordre par glisser-déposer (9 novembre 2026, « on devrait mettre du drag and
+  drop sur les placements pour l’importance ? », puis « ok go ») : il remplace
+  l’ordre « actives d’abord, puis par nom » décidé le matin. On réordonne dans
+  un bloc (un Coach ne passe pas devant les joueurs) ; l’ordre est repris
+  partout (Roster, choix de la fonction d’un passage, Parcours), où les choix
+  mettent seulement les actives d’abord. Une nouvelle fonction, ou une fonction
+  qui change de type, se place en fin de son bloc ; les fonctions courantes
+  arrivent dans l’ordre Joueur, Remplaçant, puis Coach, Manager, Analyste.
+  L’ordre ne fait pas partie de la version d’une fonction : une fenêtre ouverte
+  reste valable après un déplacement ; une liste changée entre-temps refuse le
+  déplacement et se recharge.
 - Une fonction inactive reste choisissable pour un passage ancien, après les
   actives et marquée « (inactive) » (PREF-Q10 tranchée le 9 novembre 2026) ;
   elle ne se supprime que si elle n’a jamais servi
@@ -114,6 +135,18 @@ fonctions retirées avec lui).
   dans la fiche.
 
 ## Preuves et limites
+
+Ordre par glisser-déposer, le 9 novembre 2026 : `sortable-list` (poignées
+nommées, annonce en français, lecture sans poignée, poignées inertes pendant
+l’enregistrement), contrat du réordonnancement et ligne du journal ;
+`member-functions-postgres` : ordre posé et tracé une fois, même ordre sans
+trace, versions inchangées, ajout et changement de type en fin de bloc, liste
+changée, fonction de l’autre bloc ou d’un autre jeu refusées (409), doublon
+refusé (400), lecteur refusé (403), position négative refusée par la base ;
+268 tests SQL. Banc client à 1 440, 768, 390 et 320 px : clavier (Espace,
+flèche haut, Espace : ordre envoyé, focus resté sur la poignée, annonce
+« Manager : nouvelle position 1 sur 3 ») et souris (la ligne reste dans son
+bloc) ; aucun débordement, aucune cible sous 44 px, aucune erreur JavaScript.
 
 Le 9 novembre 2026 : lint, types, suite web (dont `member-functions` : contrat
 du formulaire, ordre, fonctions courantes, lignes du journal) ; 15 suites SQL et

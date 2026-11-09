@@ -14,6 +14,7 @@ import {
 
 import { DELETE, PATCH } from '$app/api/jeux/[id]/fonctions/[functionId]/route';
 import { POST as POST_COMMON } from '$app/api/jeux/[id]/fonctions/courantes/route';
+import { PUT as PUT_ORDER } from '$app/api/jeux/[id]/fonctions/ordre/route';
 import { GET, POST } from '$app/api/jeux/[id]/fonctions/route';
 import {
   DELETE as DELETE_GAME,
@@ -63,6 +64,7 @@ type FunctionData = {
   isActive: boolean;
   kind: string;
   name: string;
+  position: number;
   version: number;
 };
 type Body<T> = {
@@ -173,6 +175,22 @@ describe.skipIf(!target)(
           method: 'DELETE',
         }),
         itemParams(game, id),
+      );
+    const reorder = (
+      game: Game,
+      kind: string,
+      ids: readonly string[],
+    ): ReturnType<typeof PUT_ORDER> =>
+      PUT_ORDER(
+        new NextRequest(url(game, '/ordre'), {
+          body: JSON.stringify({ ids, kind }),
+          method: 'PUT',
+        }),
+        params(game),
+      );
+    const names = async (game: Game): Promise<string[]> =>
+      ((await read<FunctionData[]>(await list(game))).data ?? []).map(
+        ({ name }) => name,
       );
     const removeGame = async (game: Game): ReturnType<typeof DELETE_GAME> =>
       DELETE_GAME(
@@ -309,9 +327,9 @@ describe.skipIf(!target)(
       ).toEqual([
         'Joueur:PLAYER',
         'Remplaçant:PLAYER',
-        'Analyste:STAFF',
         'Coach:STAFF',
         'Manager:STAFF',
+        'Analyste:STAFF',
       ]);
       expect(await audits('FUNCTION_CREATE')).toBe(5);
       const again = await addCommon(valorant);
@@ -323,6 +341,111 @@ describe.skipIf(!target)(
       // Only an empty list receives them.
       await created(league, coach);
       expect((await addCommon(league)).status).toBe(409);
+    });
+
+    it('keeps the order its managers drag, within each kind, traced once', async () => {
+      const common = (await read<FunctionData[]>(await addCommon(valorant)))
+        .data;
+      const id = (name: string): string =>
+        common?.find((item) => item.name === name)?.id ?? 'missing';
+      const staff = ['Manager', 'Coach', 'Analyste'].map(id);
+      const response = await reorder(valorant, 'STAFF', staff);
+      expect(response.status).toBe(200);
+      expect(
+        (await read<FunctionData[]>(response)).data?.map(({ name }) => name),
+      ).toEqual(['Joueur', 'Remplaçant', 'Manager', 'Coach', 'Analyste']);
+      expect(await names(valorant)).toEqual([
+        'Joueur',
+        'Remplaçant',
+        'Manager',
+        'Coach',
+        'Analyste',
+      ]);
+      const audit = await lastAudit('FUNCTION_REORDER');
+      expect(audit).toMatchObject({ category: 'FUNCTION', pageKey: 'games' });
+      expect(audit.metadata).toMatchObject({
+        after: { order: 'Manager, Coach, Analyste' },
+        before: { order: 'Coach, Manager, Analyste' },
+        changes: ['order'],
+        gameName: 'Valorant',
+        kind: 'STAFF',
+        kindLabel: 'Encadrement',
+      });
+      // The order is not part of a function's version: an open window stays valid.
+      expect(
+        (await db.memberFunction.findMany({ select: { version: true } })).every(
+          ({ version }) => version === 1,
+        ),
+      ).toBe(true);
+      // The same order again writes nothing.
+      expect((await reorder(valorant, 'STAFF', staff)).status).toBe(200);
+      expect(await audits('FUNCTION_REORDER')).toBe(1);
+
+      // A new function goes last of its group; another kind, last of the new one.
+      const strategist = await created(valorant, {
+        ...coach,
+        name: 'Stratège',
+      });
+      expect(strategist.position).toBe(3);
+      const substitute = await patch(valorant, id('Remplaçant'), {
+        expectedVersion: 1,
+        isActive: true,
+        kind: 'STAFF',
+        name: 'Remplaçant',
+      });
+      expect((await read<FunctionData>(substitute)).data?.position).toBe(4);
+      expect(await names(valorant)).toEqual([
+        'Joueur',
+        'Manager',
+        'Coach',
+        'Analyste',
+        'Stratège',
+        'Remplaçant',
+      ]);
+    });
+
+    it('refuses an order whose group changed meanwhile, without a trace', async () => {
+      const common = (await read<FunctionData[]>(await addCommon(valorant)))
+        .data;
+      const ids = (kind: string): string[] =>
+        (common ?? [])
+          .filter((item) => item.kind === kind)
+          .map((item) => item.id);
+      const [coachId = '', managerId = '', analystId = ''] = ids('STAFF');
+      const refused = [
+        // One missing (added by someone else meanwhile, for instance).
+        await reorder(valorant, 'STAFF', [managerId, coachId]),
+        // A player among the staff.
+        await reorder(valorant, 'STAFF', [
+          managerId,
+          coachId,
+          ids('PLAYER')[0] ?? '',
+        ]),
+        // The right functions under the wrong game.
+        await reorder(league, 'STAFF', [managerId, coachId, analystId]),
+      ];
+      for (const response of refused) expect(response.status).toBe(409);
+      expect((await read(refused[0] as Response)).error?.message).toBe(
+        'La liste des fonctions a changé entre-temps. Elle est rechargée : recommencez le déplacement.',
+      );
+      expect(
+        (await reorder(valorant, 'STAFF', [coachId, coachId])).status,
+      ).toBe(400);
+      expect(await audits('FUNCTION_REORDER')).toBe(0);
+      expect(await names(valorant)).toEqual([
+        'Joueur',
+        'Remplaçant',
+        'Coach',
+        'Manager',
+        'Analyste',
+      ]);
+      await authenticate(
+        await createUser('USER', { [PERMISSIONS.GAMES.VIEW]: true }),
+      );
+      expect(
+        (await reorder(valorant, 'STAFF', [managerId, coachId, analystId]))
+          .status,
+      ).toBe(403);
     });
 
     it('edits under its version and traces only what changed', async () => {
@@ -496,6 +619,12 @@ describe.skipIf(!target)(
       await expect(insert('missing-game', 'Coach', 'coach')).rejects.toThrow(
         /MemberFunction_gameId_fkey/,
       );
+      await expect(
+        db.$executeRawUnsafe(
+          'UPDATE "MemberFunction" SET "position" = -1 WHERE "gameId" = $1',
+          valorant.id,
+        ),
+      ).rejects.toThrow(/MemberFunction_position_check/);
     });
   },
 );

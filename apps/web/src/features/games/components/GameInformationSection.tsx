@@ -18,13 +18,13 @@ import type { ApproximateDate } from '$utils/approximate-date.utils';
 
 import { updateGameRequest } from '../game.api';
 import {
+  GAME_ACTION_BAR_SLOT,
   GAME_NAME_MAX_LENGTH,
   GAME_SHORT_NAME_MAX_LENGTH,
 } from '../game.constants';
 import type { GameItem } from '../types/game.types';
 
 /** Where the record page renders the save bar, outside the section. */
-export const GAME_ACTION_BAR_SLOT = 'game-record-action-bar';
 
 const ID = 'game-detail';
 const FORM_ID = `${ID}-form`;

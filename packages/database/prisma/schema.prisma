@@ -241,6 +241,7 @@ enum AuditAction {
   FUNCTION_CREATE
   FUNCTION_UPDATE
   FUNCTION_DELETE
+  FUNCTION_REORDER
   /// Historical only. The partner module was removed from the application on
   /// 2026-09-21; these values stay declared so older journal entries remain
   /// readable. No code produces them anymore.
@@ -572,6 +573,8 @@ enum MemberFunctionKind {
 /// structure (Bureau & staff, later), unique among themselves (partial index in
 /// the migration). Renaming corrects a typo; a function that changes becomes a
 /// new one and the old one turns inactive, still chosen for old passages.
+/// Within a game, each kind keeps the order its managers set by dragging
+/// (`position`, 9 November 2026), the same on every page.
 model MemberFunction {
   id             String             @id @default(cuid())
   gameId         String?
@@ -580,13 +583,15 @@ model MemberFunction {
   /// Shared search form of the name: « Coach » and « COACH » are one function.
   normalizedName String             @db.VarChar(80)
   kind           MemberFunctionKind
+  /// Rank within the game and the kind, from 0; ties fall back on the name.
+  position       Int                @default(0)
   isActive       Boolean            @default(true)
   version        Int                @default(1)
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
 
   @@unique([gameId, normalizedName])
-  @@index([gameId, kind, isActive, name])
+  @@index([gameId, kind, position])
 }
 
 model SystemSetting {

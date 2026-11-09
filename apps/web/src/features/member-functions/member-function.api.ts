@@ -1,5 +1,6 @@
 import { apiFetchJson, jsonRequest } from '$utils/api.utils';
 
+import type { MemberFunctionKind } from './member-function.constants';
 import type {
   MemberFunctionInput,
   MemberFunctionItem,
@@ -44,6 +45,16 @@ export const updateGameFunctionRequest = (
   apiFetchJson<MemberFunctionItem>(
     gameFunctionUrl(gameId, id),
     jsonRequest('PATCH', input),
+  );
+
+/** Answers every function of the game, in its new order. */
+export const reorderGameFunctionsRequest = (
+  gameId: string,
+  input: Readonly<{ ids: readonly string[]; kind: MemberFunctionKind }>,
+): Promise<MemberFunctionItem[]> =>
+  apiFetchJson<MemberFunctionItem[]>(
+    `${gameFunctionsUrl(gameId)}/ordre`,
+    jsonRequest('PUT', input),
   );
 
 export const deleteGameFunctionRequest = (

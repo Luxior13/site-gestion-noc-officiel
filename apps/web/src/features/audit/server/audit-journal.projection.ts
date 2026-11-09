@@ -387,6 +387,11 @@ const subjectOf = (
     return typeof metadata.gameName === 'string'
       ? `Fonction : ${metadata.functionName} (${metadata.gameName})`
       : `Fonction : ${metadata.functionName}`;
+  // A new order concerns a whole group: « Fonctions : Encadrement (Valorant) ».
+  if (row.category === 'FUNCTION' && typeof metadata.kindLabel === 'string')
+    return typeof metadata.gameName === 'string'
+      ? `Fonctions : ${metadata.kindLabel} (${metadata.gameName})`
+      : `Fonctions : ${metadata.kindLabel}`;
   if (
     row.action === 'AUDIT_PURGE' &&
     typeof metadata.deletedEvents === 'number'
