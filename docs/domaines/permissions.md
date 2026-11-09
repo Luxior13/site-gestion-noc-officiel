@@ -298,6 +298,10 @@ possède implicitement.
 | `persons:update_contact` | ajouter, modifier ou retirer ces coordonnées | `persons:view`, `persons:view_contact` | sensible | Non |
 | `persons:delete` | supprimer définitivement une fiche et ses coordonnées | `persons:view` | critique | Oui (mot de passe de 30 minutes au plus) |
 
+L’onglet Parcours (9 novembre 2026) n’a pas de droit propre : il demande
+`persons:view` et `teams:view`, car il montre les Rosters d’où il se lit ; sans
+`teams:view`, il n’apparaît pas et son API répond 403.
+
 Sans lecture des coordonnées, la fiche et les retours de mutation contiennent
 des collections vides ; leurs compteurs sont masqués, la recherche ne porte que
 sur l'identité, et le filtre « sans coordonnées » est refusé. Dans le journal
@@ -383,7 +387,7 @@ pas en droits délégables individuellement.
 | `/recherche`                                         | redirection vers `/` ; la navigation rapide de l’en-tête reste sans permission supplémentaire et filtre chaque destination autorisée                       |
 | `/personnes/repertoire`                            | `persons:view` pour consulter et rechercher le répertoire                                                                                                  |
 | `/personnes/repertoire/nouveau`                    | `persons:create`, donc aussi `persons:view`                                                                                                                |
-| `/personnes/repertoire/[id]`                       | `persons:view` pour l'identité ; coordonnées via `persons:view_contact` ; mutations via `persons:update`, `persons:update_contact` ou `persons:delete`                                                                  |
+| `/personnes/repertoire/[id]`                       | `persons:view` pour l'identité ; coordonnées via `persons:view_contact` ; parcours via `teams:view` en plus (`GET /api/personnes/[id]/parcours`, 9 novembre 2026) ; mutations via `persons:update`, `persons:update_contact` ou `persons:delete`                                                                  |
 | `/tableau-de-bord`                                   | alias de support redirigeant vers `/` ; aucune permission supplémentaire                                                                                   |
 | `/administration`                                    | route de support redirigeant vers les utilisateurs                                                                                                         |
 | `/esport/jeux`                                       | `games:view` pour lire ; `games:manage` pour ajouter, modifier et supprimer un jeu ; `teams:view` et `teams:manage` pour les équipes (`/api/equipes`) ; l’API refait le contrôle dans sa transaction |

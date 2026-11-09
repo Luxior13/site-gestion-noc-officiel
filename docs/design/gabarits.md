@@ -124,8 +124,11 @@ Détail et preuves : [Utilisateurs](../pages/systeme/utilisateurs/README.md).
 Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
 [plan des pages](../propositions/feuille-de-route.md#pages-et-onglets-prévus) :
 
-- **Un onglet est un lieu, un filtre est une requête** : actuels et anciens, recettes
-  et dépenses sont des filtres, pas des onglets.
+- **Un onglet est un lieu, un filtre est une requête** : recettes et dépenses
+  sont des filtres, pas des onglets. Exception : une archive qui grandit sans
+  fin et ne doit jamais se mêler au présent a son onglet (anciens membres
+  d’une équipe, décision du propriétaire du 9 novembre 2026, qui remplace
+  « actuels et anciens sont des filtres »).
 - **Deux à huit onglets**, les moins utilisés dans « Plus ▾ ». Une page d’un seul
   contenu n’a pas d’onglet.
 - **Ordre** : ce qu’est l’objet, puis ses liens, puis ses pièces. Une fiche équipe
@@ -141,7 +144,7 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
   « Règlements » pour l’argent lié à l’objet, « règles » pour celles d’un tournoi ;
   « Documents » pour les pièces, « Justificatifs » pour celles des Finances.
 - **Pas d’onglet Historique** : le bouton de l’en-tête ouvre le journal, filtré.
-- **Un onglet en lecture le signale** (8 novembre 2026) : quand rien ne s’y modifie et que son contenu se gère sur une autre page (Adhésions ou Finances d’une fiche personne), l’onglet garde le même style, suivi d’une flèche ↗ et du texte accessible « se modifie dans … ». Dedans, une ligne en tête nomme la page source avec un bouton pour l’ouvrir, chaque ligne ouvre son dossier, sans action de modification. Un onglet mixte (Suivi d’une fiche personne, Gains d’une fiche tournoi) reste un onglet normal : ses lignes venues d’ailleurs portent leur source et un lien.
+- **Un onglet en lecture le signale** (8 novembre 2026) : quand rien ne s’y modifie et que son contenu se gère sur une autre page (Adhésions ou Finances d’une fiche personne), l’onglet garde le même style, suivi d’une flèche ↗ et du texte accessible « se modifie dans … ». Dedans, une ligne en tête nomme la page source avec un bouton pour l’ouvrir, chaque ligne ouvre son dossier, sans action de modification. Premier livré : Parcours de la fiche personne (9 novembre 2026) ; `managedIn` de `PageSection` donne la flèche, une icône `ArrowUpRight` (le caractère ↗ devient un émoji sous Windows), et le texte accessible ; quand les sources sont nombreuses (« le Roster de chaque équipe »), le bouton ouvre leur liste (« Ouvrir les jeux »). Un onglet mixte (Suivi d’une fiche personne, Gains d’une fiche tournoi) reste un onglet normal : ses lignes venues d’ailleurs portent leur source et un lien.
 - **Liste de choix dans une fiche** (fonctions d’un jeu, 9 novembre 2026) : la
   liste du Répertoire dans la carte de l’onglet (titre, phrase, « Ajouter … » à
   droite pour qui gère) ; une valeur n’a pas de fiche, son nom ouvre sa fenêtre

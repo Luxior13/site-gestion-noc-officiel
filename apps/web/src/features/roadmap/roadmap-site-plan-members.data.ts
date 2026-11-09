@@ -83,9 +83,11 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         chantier: 'sport-teams',
         label: 'Parcours',
         managedIn: 'le Roster de chaque équipe et l’Effectif de Bureau & staff',
-        phase: 1,
+        phase: null,
         summary:
-          'Passages datés : équipe ou structure, fonction, début et fin ; tournois joués. Chaque ligne ouvre son équipe ou Bureau & staff.',
+          'En lecture : chaque passage dans une équipe, en cours et à venir puis terminés, avec le jeu, la fonction, le statut, le début, la fin et la durée. Chaque ligne ouvre son équipe, ses anciens membres pour un passage terminé.',
+        upcoming:
+          'Les passages de Bureau & staff, avec leur page ; puis les tournois joués (étape 5).',
       },
       {
         chantier: 'person-relationships',
@@ -234,7 +236,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
       },
     ],
     upcoming:
-      'Le Parcours de chaque membre, lu sur sa fiche, et son statut dans la structure, calculé depuis les passages.',
+      'Le statut de chaque membre dans la structure, calculé depuis les passages.',
   },
   {
     area: 'people',

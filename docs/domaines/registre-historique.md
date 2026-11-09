@@ -175,9 +175,9 @@ Une donnée se modifie là où on la lit.
 | --- | --- |
 | Ajouter ou terminer un passage dans une équipe | Fiche de l’équipe (sous son jeu), onglet Roster (début et fin), en fenêtre |
 | Ajouter ou terminer un passage dans la structure (bureau, staff, bénévoles) | Page Bureau & staff, onglet Effectif, avec la même fenêtre |
-| Voir tout le parcours d’une personne | Onglet Parcours de sa fiche, en lecture ↗ : chaque ligne ouvre son équipe ou Bureau & staff |
+| Voir tout le parcours d’une personne | Onglet Parcours de sa fiche, en lecture ↗ (livré le 9 novembre 2026) : en cours et à venir, puis terminés ; chaque ligne ouvre son équipe, ses anciens membres pour un passage terminé, ou Bureau & staff (à venir) |
 | Ajouter un ancien pseudo | Onglet Identité de la fiche, y compris un pseudo d’avant le site |
-| Voir les membres actuels et anciens d’une équipe | Fiche de l’équipe, onglet Roster |
+| Voir les membres actuels et anciens d’une équipe | Fiche de l’équipe : onglet Roster pour les actuels et ceux à venir, onglet Anciens membres pour les passages terminés, jamais mélangés (9 novembre 2026) |
 | Changer une liste de choix | Onglet de la liste, à côté de ce qu’elle classe, ou ajout direct depuis le champ |
 
 Pas de page « Parcours » séparée : elle dupliquerait les fiches. Les équipes

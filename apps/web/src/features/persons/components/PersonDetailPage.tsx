@@ -1,6 +1,6 @@
 'use client';
 
-import { AtSign, Clock3, RefreshCw, UserRound } from 'lucide-react';
+import { AtSign, Clock3, RefreshCw, Route, UserRound } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import React, {
   type FC,
@@ -19,6 +19,7 @@ import { FEATURES } from '$constants/feature-registry.constants';
 import { personDetailPath } from '$constants/routes.constants';
 import { useUser } from '$context/UserContext';
 import { JournalHistoryLink } from '$features/audit/components/JournalHistoryLink';
+import { getGameCapabilities } from '$features/games/game.permissions';
 import { PageCanvas, PageShell } from '$ui/page-shell';
 import { ApiClientError } from '$utils/api.utils';
 
@@ -44,6 +45,11 @@ const PersonIdentitySection = dynamic(() =>
     (module) => module.PersonIdentitySection,
   ),
 );
+const PersonJourneySection = dynamic(() =>
+  import('$features/passages/components/PersonJourneySection').then(
+    (module) => module.PersonJourneySection,
+  ),
+);
 
 type PersonDetailPageProps = {
   activeSection: PersonDetailSection;
@@ -53,7 +59,7 @@ type PersonDetailPageProps = {
   returnHref: string;
 };
 
-export type PersonDetailSection = 'coordonnees' | 'identite';
+export type PersonDetailSection = 'coordonnees' | 'identite' | 'parcours';
 
 const PERSON_DETAIL_SECTIONS: readonly PageSection<PersonDetailSection>[] = [
   {
@@ -65,6 +71,13 @@ const PERSON_DETAIL_SECTIONS: readonly PageSection<PersonDetailSection>[] = [
     icon: <AtSign className="size-4" />,
     id: 'coordonnees',
     label: 'Coordonnées',
+  },
+  // Read here, kept in each team's Roster (9 November 2026).
+  {
+    icon: <Route className="size-4" />,
+    id: 'parcours',
+    label: 'Parcours',
+    managedIn: 'le Roster de chaque équipe',
   },
 ];
 
@@ -112,7 +125,14 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
   const [identityDirty, setIdentityDirty] = useState(false);
   const { canDelete, canUpdate, canUpdateContact, canView, canViewContact } =
     getPersonCapabilities(userData);
-  const activeSection = canViewContact ? requestedSection : 'identite';
+  // The journey is read from the rosters: it follows the right to see them.
+  const { canViewTeams } = getGameCapabilities(userData);
+  const allowed = (section: PersonDetailSection): boolean =>
+    section === 'identite' ||
+    (section === 'coordonnees' ? canViewContact : canViewTeams);
+  const activeSection = allowed(requestedSection)
+    ? requestedSection
+    : 'identite';
   const mountedRef = useRef(false);
   const personRef = useRef(person);
   const requestRef = useRef<AbortController | null>(null);
@@ -267,7 +287,7 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
         activeSection={activeSection}
         condensedAside={<PersonStatusBadge status={person.structureStatus} />}
         dirtySections={identityDirty ? ['identite'] : []}
-        ariaLiveLabel={`Section ${activeSection === 'identite' ? 'Identité' : 'Coordonnées'} affichée`}
+        ariaLiveLabel={`Section ${PERSON_DETAIL_SECTIONS.find((section) => section.id === activeSection)?.label ?? 'Identité'} affichée`}
         heroActions={<JournalHistoryLink person={person.id} />}
         heroDescription={<PersonRecordDates person={person} />}
         heroIcon={
@@ -277,8 +297,8 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
         heroTitle={getPersonDisplayName(person)}
         navigationAriaLabel="Navigation de la fiche du répertoire"
         sectionHref={sectionHref}
-        sections={PERSON_DETAIL_SECTIONS.filter(
-          (section) => section.id !== 'coordonnees' || canViewContact,
+        sections={PERSON_DETAIL_SECTIONS.filter((section) =>
+          allowed(section.id),
         ).map((section) =>
           // The tab says how many contacts there are (27 October 2026).
           section.id === 'coordonnees'
@@ -309,6 +329,10 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
                 returnHref={returnHref}
               />
             )}
+          </section>
+        ) : activeSection === 'parcours' ? (
+          <section aria-label="Parcours">
+            <PersonJourneySection key={person.id} personId={person.id} />
           </section>
         ) : (
           <section aria-label="Coordonnées" className="space-y-5">

@@ -5,6 +5,7 @@ import type {
   PassageCreateInput,
   PassageInput,
   PassagePersonResults,
+  PersonJourney,
   TeamRoster,
 } from './types/passage.types';
 
@@ -51,6 +52,16 @@ export const deletePassageRequest = (
   apiFetchJson<TeamRoster>(
     passageUrl(teamId, id),
     jsonRequest('DELETE', { expectedVersion }),
+  );
+
+/** Every passage of a person, for the Parcours tab of their record. */
+export const fetchPersonJourney = (
+  personId: string,
+  signal?: AbortSignal,
+): Promise<PersonJourney> =>
+  apiFetchJson<PersonJourney>(
+    `/api/personnes/${encodeURIComponent(personId)}/parcours`,
+    { cache: 'no-store', signal },
   );
 
 /** Records of the Répertoire by pseudo or name, for the person picker. */

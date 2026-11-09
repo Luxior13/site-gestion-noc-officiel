@@ -44,6 +44,24 @@ export type PassageItem = Readonly<{
   version: number;
 }>;
 
+/** A passage as a person's journey shows it: in which team, of which game. */
+export type JourneyItem = Readonly<{
+  end: ApproximateDate | null;
+  function: PassageFunction;
+  id: string;
+  start: ApproximateDate;
+  /** Null for a function of the structure (Bureau & staff, to come). */
+  team: Readonly<{
+    game: Readonly<{ id: string; name: string }>;
+    id: string;
+    isActive: boolean;
+    name: string;
+  }> | null;
+}>;
+
+/** Every passage of a person, the earliest start first. */
+export type PersonJourney = Readonly<{ passages: readonly JourneyItem[] }>;
+
 /** The roster of a team, with the functions of its game to choose from. */
 export type TeamRoster = Readonly<{
   functions: readonly PassageFunction[];

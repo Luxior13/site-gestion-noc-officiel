@@ -101,19 +101,22 @@ identifiants de jeu, finances) le fait en `ON DELETE RESTRICT`, jamais en
 - Page Bureau & staff (pôle Structure) : onglet Effectif, le roster de la
   structure (bureau, staff, bénévoles, depuis 2014), et onglet Fonctions.
 - Onglet Parcours de la fiche personne (`?section=parcours`), en lecture ↗ :
-  chaque ligne ouvre son équipe ou Bureau & staff ([onglet en lecture](../design/gabarits.md#onglets-dune-fiche)).
+  chaque ligne ouvre son équipe ou Bureau & staff ([onglet en lecture](../design/gabarits.md#onglets-dune-fiche)) ;
+  livré le 9 novembre 2026 pour les équipes ([fiche](../pages/personnes/repertoire/fiche-parcours.md)).
 - Une seule fenêtre de passage, ouverte depuis le Roster d’une équipe ou
   l’Effectif de Bureau & staff. Début et fin s’y saisissent, sans motif de fin.
 
 **API** : `/api/jeux`, `/api/jeux/[id]`, `/api/equipes`, `/api/equipes/[id]`,
 `/api/equipes/[id]/passages` (et `/[passageId]`, `/[passageId]/changement`),
-`/api/passages/personnes` (livrés le 9 novembre 2026), selon le
+`/api/passages/personnes`, `/api/personnes/[id]/parcours` (livrés le
+9 novembre 2026), selon le
 [contrat d’une fonctionnalité](../references/architecture-fonctionnalite.md).
 
 **Droits** : `teams:view`, `teams:manage` (livrés le 8 novembre 2026) couvrent
 aussi le Roster depuis le 9 novembre 2026 (décision du propriétaire, « ok go ») :
 `persons:view_journey` et `persons:update_journey` ne sont pas créés. Le
-Parcours d’une fiche suivra `persons:view` ; Bureau & staff aura ses droits.
+Parcours d’une fiche demande `persons:view` et `teams:view` (9 novembre 2026 :
+il montre les Rosters d’où il se lit) ; Bureau & staff aura ses droits.
 
 **Journal** : chaque écriture suit la
 [liste de contrôle Q15](../references/audit-historique.md#règle--toute-action-est-lisible-dans-le-journal-dactivité) :

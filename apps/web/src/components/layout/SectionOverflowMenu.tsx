@@ -13,7 +13,11 @@ import {
 } from '$ui/dropdown-menu';
 import { cn } from '$utils/css.utils';
 
-import { type PageSection, SectionCount } from './PageSectionNavigation';
+import {
+  type PageSection,
+  SectionCount,
+  SectionSource,
+} from './PageSectionNavigation';
 
 type SectionOverflowMenuProps<SectionId extends string> = {
   activeSection: SectionId;
@@ -136,7 +140,15 @@ export const SectionOverflowMenu = <SectionId extends string>({
                     {section.icon}
                   </span>
                 )}
-                <span className="min-w-0 flex-1 truncate">{section.label}</span>
+                <span className="min-w-0 flex-1 truncate">
+                  {section.label}
+                  {section.managedIn && (
+                    <>
+                      {' '}
+                      <SectionSource managedIn={section.managedIn} />
+                    </>
+                  )}
+                </span>
                 {section.count !== undefined && (
                   <SectionCount count={section.count} />
                 )}

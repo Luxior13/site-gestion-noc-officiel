@@ -1,6 +1,11 @@
 'use client';
 
-import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  ArrowUpRight,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 import Link from 'next/link';
 import React, {
   type ReactNode,
@@ -28,6 +33,11 @@ export type PageSection<SectionId extends string = string> = {
   icon?: ReactNode;
   id: SectionId;
   label: string;
+  /**
+   * Where a tab that only reads is kept (8 November 2026): « le Roster de
+   * chaque équipe ». The tab shows ↗ after its name.
+   */
+  managedIn?: string;
 };
 
 export type PageSectionNavigationProps<SectionId extends string> = {
@@ -84,6 +94,25 @@ export const SectionCount = ({
   >
     {count}
   </span>
+);
+
+/**
+ * A tab that only reads, its content kept on another page (rule of
+ * 8 November 2026): an arrow after its name, and where it is kept for
+ * assistive technologies.
+ */
+export const SectionSource = ({
+  managedIn,
+}: {
+  managedIn: string;
+}): React.JSX.Element => (
+  <>
+    <ArrowUpRight
+      aria-hidden="true"
+      className="text-muted-foreground -ml-1 size-3.5 shrink-0"
+    />
+    <span className="sr-only">, se modifie dans {managedIn}</span>
+  </>
 );
 
 /** Each section remains a real URL, with native link and keyboard behavior. */
@@ -289,6 +318,9 @@ export const PageSectionNavigation = <SectionId extends string>({
               </span>
             )}
             {section.label}
+            {section.managedIn && (
+              <SectionSource managedIn={section.managedIn} />
+            )}
             {section.count !== undefined && (
               <SectionCount count={section.count} />
             )}
@@ -437,6 +469,9 @@ export const PageSectionNavigation = <SectionId extends string>({
                     </span>
                   )}
                   {section.label}
+                  {section.managedIn && (
+                    <ArrowUpRight className="-ml-1 size-3.5 shrink-0" />
+                  )}
                   {section.count !== undefined && (
                     <SectionCount count={section.count} />
                   )}

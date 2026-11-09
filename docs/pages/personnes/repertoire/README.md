@@ -3,7 +3,7 @@
 [Index des pages](../../README.md) · [Espace Personnes](../README.md) · [Design](../../../design/README.md) · [Guide général](../../../REFERENCE_GENERALE.md)
 
 Fiches des personnes, dans ou hors de la structure : liste de **référence
-visuelle et UX** de l’application, création et fiche à deux sections. Une fiche
+visuelle et UX** de l’application, création et fiche à trois sections. Une fiche
 personne n’est ni un compte utilisateur, ni une adhésion, ni un rôle.
 
 ## Pages et sections
@@ -14,6 +14,7 @@ personne n’est ni un compte utilisateur, ni une adhésion, ni un rôle.
 | `/personnes/repertoire/nouveau` | — | [Nouvelle fiche](creation.md) | [C. Formulaire de création](../../../design/gabarits.md#c-formulaire-de-création) | Aligné |
 | `/personnes/repertoire/[id]` | Identité (défaut) | [Personne — Identité](fiche-identite.md) | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections) | Aligné |
 | `/personnes/repertoire/[id]` | `?section=coordonnees` | [Personne — Coordonnées](fiche-coordonnees.md) | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections) | Aligné |
+| `/personnes/repertoire/[id]` | `?section=parcours` | [Personne — Parcours](fiche-parcours.md) | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections), onglet en lecture | Aligné |
 
 Alias historiques `/personnes` et `/vie-interne/repertoire` : redirections
 vers la liste (voir les [routes](../../../systeme/routes.md)).
@@ -40,7 +41,8 @@ structure » dans le journal (AC-32).
 
 - **Accès** : lecture `persons:view`, création `persons:create`, identité
   `persons:update`, coordonnées `persons:update_contact`, suppression
-  `persons:delete` ; contrôles serveur sous `/api/personnes`. Référence :
+  `persons:delete`, parcours `persons:view` et `teams:view` ; contrôles
+  serveur sous `/api/personnes`. Référence :
   [page Répertoire](../../../domaines/permissions.md#page-répertoire).
 - **Cadre de la fiche** : [PersonDetailPage](../../../../apps/web/src/features/persons/components/PersonDetailPage.tsx)
   compose `EntityDetailLayout` (bandeau compact avec statut, dates de création
@@ -49,13 +51,13 @@ structure » dans le journal (AC-32).
 - **Règles métier** : statut `IN_STRUCTURE` / `OUTSIDE_STRUCTURE` ; futures
   relations datées rattachées à la personne, jamais empilées sur `Person`
   ([sujets futurs](../../../propositions/sujets-futurs.md)).
-- **Évolution décidée le 7 novembre 2026** : la fiche recevra un onglet Parcours
-  (en lecture ↗ depuis le 8 novembre : les passages se saisissent dans le Roster
-  des équipes et l’Effectif de Bureau & staff ; anciens pseudos dans Identité),
-  et une fiche qui a un parcours ne se supprimera plus
+- **Évolution décidée le 7 novembre 2026** : l’onglet Parcours, en lecture ↗,
+  est livré le 9 novembre 2026 ([fiche](fiche-parcours.md)) : les passages se
+  saisissent dans le Roster des équipes (et plus tard l’Effectif de Bureau &
+  staff) ; une fiche qui a un parcours ne se supprime plus, depuis le même jour
   ([registre historique](../../../domaines/registre-historique.md),
-  [cadrage](../../../propositions/membres-equipes-parcours.md)). Rien de cela
-  n’est encore livré.
+  [cadrage](../../../propositions/membres-equipes-parcours.md)). Les anciens
+  pseudos dans Identité restent à construire.
 - **Points ouverts** : [registre REP](#points-ouverts) ; REP-02 (évolution du
   statut de structure) est décidé, à construire ; les autres sont clos.
 

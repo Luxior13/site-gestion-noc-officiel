@@ -31,6 +31,7 @@ import {
 } from '$app/api/equipes/[id]/route';
 import { DELETE as DELETE_FUNCTION } from '$app/api/jeux/[id]/fonctions/[functionId]/route';
 import { GET as SEARCH } from '$app/api/passages/personnes/route';
+import { GET as JOURNEY } from '$app/api/personnes/[id]/parcours/route';
 import { PERMISSIONS } from '$constants/permissions.constants';
 import { mapUserToUserType } from '$server/user-projection';
 
@@ -650,6 +651,77 @@ describe.skipIf(!target)(
       expect((await GET(new NextRequest(url()), teamParams())).status).toBe(
         403,
       );
+    });
+
+    it('reads a person’s journey, team and game, for who sees the record and the rosters', async () => {
+      await added(
+        member(
+          kaiz,
+          player,
+          { date: '2024-03-01', precision: 'MONTH' },
+          { date: '2025-06-01', precision: 'MONTH' },
+        ),
+      );
+      await added(
+        member(kaiz, coach, { date: '2025-07-01', precision: 'MONTH' }),
+      );
+      const journey = (id: string): ReturnType<typeof JOURNEY> =>
+        JOURNEY(
+          new NextRequest(`http://localhost/api/personnes/${id}/parcours`),
+          {
+            params: Promise.resolve({ id }),
+          },
+        );
+      const found = await read<{
+        passages: {
+          end: Day | null;
+          function: { name: string };
+          start: Day;
+          team: { game: { name: string }; isActive: boolean; name: string };
+        }[];
+      }>(await journey(kaiz.id));
+      // The earliest start first; both dates at the start of their period.
+      expect(found.data?.passages).toEqual([
+        expect.objectContaining({
+          end: { date: '2025-06-01', precision: 'MONTH' },
+          function: expect.objectContaining({ name: 'Joueur' }),
+          start: { date: '2024-03-01', precision: 'MONTH' },
+          team: {
+            game: { id: valorant.id, name: 'Valorant' },
+            id: team.id,
+            isActive: true,
+            name: 'Noctambule',
+          },
+        }),
+        expect.objectContaining({
+          end: null,
+          function: expect.objectContaining({ name: 'Coach' }),
+        }),
+      ]);
+      expect(
+        (await read<{ passages: unknown[] }>(await journey(nova.id))).data,
+      ).toEqual({ passages: [] });
+      expect((await journey('fiche-absente')).status).toBe(404);
+      // Read from the rosters: the record alone is not enough, nor the rosters.
+      await authenticate(
+        await createUser('USER', { [PERMISSIONS.PERSONS.VIEW]: true }),
+      );
+      expect((await journey(kaiz.id)).status).toBe(403);
+      await authenticate(
+        await createUser('USER', {
+          [PERMISSIONS.GAMES.VIEW]: true,
+          [PERMISSIONS.TEAMS.VIEW]: true,
+        }),
+      );
+      expect((await journey(kaiz.id)).status).toBe(403);
+      await authenticate(
+        await createUser('USER', {
+          [PERMISSIONS.GAMES.VIEW]: true,
+          [PERMISSIONS.PERSONS.VIEW]: true,
+          [PERMISSIONS.TEAMS.VIEW]: true,
+        }),
+      );
+      expect((await journey(kaiz.id)).status).toBe(200);
     });
 
     it('rolls the passage back when its trace cannot be written', async () => {

@@ -7,7 +7,7 @@ import {
 } from '$utils/approximate-date.utils';
 import { normalizeSearchText } from '$utils/search-text.utils';
 
-import type { PassageItem } from './types/passage.types';
+import type { JourneyItem, PassageItem } from './types/passage.types';
 
 type Dated = Readonly<{ end: ApproximateDate | null; start: ApproximateDate }>;
 
@@ -52,6 +52,33 @@ export const rosterLines = (
   ...passages.filter((passage) => passageStateOn(passage, day) === 'current'),
   ...passages.filter((passage) => passageStateOn(passage, day) === 'upcoming'),
 ];
+
+/**
+ * A person's journey in two blocks, never mixed, as the Roster and its former
+ * members: what is there and coming (the earliest start first, those to come
+ * after), then what ended (the latest end first).
+ */
+export const journeyBlocks = (
+  passages: readonly JourneyItem[],
+  day: string,
+): Readonly<{ current: JourneyItem[]; former: JourneyItem[] }> => {
+  const byStart = (left: Dated, right: Dated): number =>
+    left.start.date.localeCompare(right.start.date);
+  const of = (state: PassageState): JourneyItem[] =>
+    passages
+      .filter((passage) => passageStateOn(passage, day) === state)
+      .sort(byStart);
+
+  return {
+    current: [...of('current'), ...of('upcoming')],
+    former: of('former').sort(
+      (left, right) =>
+        approximateDateEnd(right.end ?? right.start).localeCompare(
+          approximateDateEnd(left.end ?? left.start),
+        ) || byStart(right, left),
+    ),
+  };
+};
 
 /** The year a former passage ended in: the archive's groups. */
 export const passageEndYear = (passage: Dated): number =>

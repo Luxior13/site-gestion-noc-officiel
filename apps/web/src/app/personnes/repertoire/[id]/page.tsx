@@ -35,7 +35,9 @@ export default async function PersonPage({
   const activeSection: PersonDetailSection =
     query.section === 'coordonnees' || query.section === 'contacts'
       ? 'coordonnees'
-      : 'identite';
+      : query.section === 'parcours'
+        ? 'parcours'
+        : 'identite';
   const capabilities = getPersonCapabilities(user);
   let initialPerson: PersonDetail | undefined;
 

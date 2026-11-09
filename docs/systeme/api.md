@@ -55,6 +55,7 @@ ce relevé n’est pas une revue de sécurité.
 | `/api/equipes/[id]` | GET, PATCH, DELETE | GET `teams:view` : l’équipe avec son jeu, ses membres du jour (`memberCount`), ses anciens membres (`formerCount`, personnes ayant un passage terminé) et son nombre de passages (`passageCount`), pour sa fiche ; DELETE refusé (409) pour une équipe qui a des passages ; PATCH et DELETE `teams:manage`, version attendue ; le jeu ne change pas (un `gameId` dans PATCH est refusé, 400) ; chaque écriture tracée dans la même transaction (catégorie `TEAM`) |
 | `/api/personnes` | GET, POST | `persons:view` ; POST `persons:create`. GET renvoie `overview`, compteurs à facettes des filtres rapides (20 octobre 2026) |
 | `/api/personnes/[id]` | GET, PATCH, DELETE | `persons:view`, `persons:update`, `persons:delete` |
+| `/api/personnes/[id]/parcours` | GET | `persons:view` et `teams:view` (9 novembre 2026) : `{ passages }`, chaque passage de la fiche avec sa fonction, son équipe (`isActive`) et le jeu de l’équipe, ses dates au début de leur période, le début le plus ancien d’abord ; équipe `null` pour un passage de la structure ; 404 pour une fiche absente ; lecture seule, pour l’onglet Parcours |
 | `/api/personnes/[id]/emails` | POST | `persons:update_contact` |
 | `/api/personnes/[id]/emails/[emailId]` | PATCH, DELETE | `persons:update_contact` |
 | `/api/personnes/[id]/telephones` | POST | `persons:update_contact` |

@@ -51,6 +51,7 @@ export const changePassageFunctionSchema = z
   .strict();
 
 export const passageIdSchema = idSchema;
+export const passagePersonIdSchema = idSchema;
 
 /** A few letters of a pseudo or a name, for the person picker. */
 export const passagePersonQuerySchema = z.string().trim().min(1).max(80);

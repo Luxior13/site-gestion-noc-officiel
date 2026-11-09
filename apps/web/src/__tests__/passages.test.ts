@@ -11,6 +11,7 @@ import {
 import {
   countPeopleOn,
   formerLines,
+  journeyBlocks,
   matchesRosterSearch,
   passageEndYear,
   passagePeriodLabel,
@@ -184,6 +185,29 @@ describe('the roster on a day', () => {
 
     expect(lines.map((line) => line.id)).toEqual(['p2', 'p5']);
     expect(lines.map(passageEndYear)).toEqual([2024, 2023]);
+  });
+
+  it('splits a person’s journey as the Roster: there and coming, then ended', () => {
+    const team = {
+      game: { id: 'g', name: 'Valorant' },
+      id: 't',
+      isActive: true,
+      name: 'Noctambule',
+    };
+    const journey = [kaiz, nova, tom, kaizCoach].map(
+      ({ end, function: role, id, start }) => ({
+        end,
+        function: role,
+        id,
+        start,
+        team,
+      }),
+    );
+    const blocks = journeyBlocks(journey, '2026-11-09');
+
+    // Current by their start, then those to come; the ended ones apart.
+    expect(blocks.current.map((line) => line.id)).toEqual(['p1', 'p4', 'p3']);
+    expect(blocks.former.map((line) => line.id)).toEqual(['p2']);
   });
 
   it('counts each person once, whatever their functions', () => {

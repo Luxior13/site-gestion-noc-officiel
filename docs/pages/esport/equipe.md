@@ -165,8 +165,9 @@ seul un lecteur du Répertoire voit, par la fiche.
   avec « Cette fiche figure dans 2 passages d’un Roster ».
 - Ordre prévu des onglets : Roster, Anciens membres, Tournois ↗,
   Entraînements, Finances ↗, Partenaires ↗, Informations ([feuille de route](../../propositions/feuille-de-route.md)).
-- Reportés : l’onglet Parcours de la fiche personne (lecture de ses passages),
-  le statut « Dans la structure » calculé depuis les passages (une fois les
+- Livré le 9 novembre 2026 : l’onglet Parcours de la fiche personne, qui lit
+  ces passages ([fiche](../personnes/repertoire/fiche-parcours.md)).
+- Reportés : le statut « Dans la structure » calculé depuis les passages (une fois les
   membres actuels saisis), le manager qui lit le Roster de son équipe
   (étape 3), la date de fin de contrat lue dans les contrats (étape 7), le
   poste en jeu.
