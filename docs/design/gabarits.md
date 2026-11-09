@@ -48,7 +48,10 @@ Cadre privé (sidebar 264 px, header 56 px)
   guide fin (`border-strong`) descend de la vignette du parent et mène à
   chacune, comme une arborescence, coupé à mi-hauteur sur la dernière. Un
   `tbody` par parent (`groupedTable`) : la couleur alterne par parent comme le
-  Répertoire alterne par fiche, sans trait à l’intérieur d’un groupe. Un parent
+  Répertoire alterne par fiche ; un trait fin sépare les lignes d’un groupe,
+  tracé depuis la vignette de l’élément pour que le guide reste entier, et un
+  trait plus marqué sépare deux groupes (9 novembre 2026, « ça manque de
+  quelque chose pour séparer les lignes »). Un parent
   sans élément le dit sous son nom (« Aucune équipe »). Sur téléphone, la carte
   du parent puis une ligne par élément, avec le même guide, de 44 px au moins.
   La recherche trouve aussi les éléments ; un élément trouvé s’affiche seul sous
@@ -58,8 +61,8 @@ Cadre privé (sidebar 264 px, header 56 px)
 - Une liste où l’importance compte se range à la main (jeux et équipes de la
   page Jeux, 9 novembre 2026) : une poignée ⠿ avant la vignette de chaque
   élément, dans une place réservée sur toutes les lignes pour garder
-  l’alignement (`--handle-room`, classe `withHandles`) ; les inactifs en
-  dessous, rangés entre eux (un inactif ne bloque rien) ; la consigne sous la
+  l’alignement (`--handle-room`, classe `withHandles`) ; un seul ordre, actifs
+  et inactifs mélangés (un inactif ne bloque rien) ; la consigne sous la
   liste
   ([comportements](comportements.md#listes-recherche-et-pagination)).
 - Retour de fiche avec contexte restauré ([comportements](comportements.md#listes-recherche-et-pagination)).
@@ -148,8 +151,8 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
   lecteur voit les mêmes lignes, sans action. Quand l’ordre compte (fonctions,
   par importance, 9 novembre 2026), un bloc par groupe (« Joueurs »,
   « Encadrement », avec son nombre) remplace la colonne du groupe, et chaque
-  ligne commence par une poignée ⠿ pour la glisser dans son bloc, les
-  inactives en bas du bloc, rangées entre elles
+  ligne commence par une poignée ⠿ pour la glisser dans son bloc, active ou
+  non, un seul ordre par bloc
   ([comportements](comportements.md#listes-recherche-et-pagination)). La
   consigne (« Glissez … par sa poignée … ») se lit sous la liste, dans la carte,
   en petit texte discret avec l’icône de la poignée, pour qui peut réordonner ;

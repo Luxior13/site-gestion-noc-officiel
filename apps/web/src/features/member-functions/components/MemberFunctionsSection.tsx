@@ -16,7 +16,7 @@ import { Button } from '$ui/button';
 import { DataTableSection } from '$ui/data-table-section';
 import directoryStyles from '$ui/directory.module.css';
 import { Skeleton } from '$ui/skeleton';
-import { SortableGroup, SortableItem, SortableList } from '$ui/sortable-list';
+import { SortableList } from '$ui/sortable-list';
 import { StatusBadge } from '$ui/status-badge';
 import { ApiClientError } from '$utils/api.utils';
 import { cn } from '$utils/css.utils';
@@ -186,20 +186,18 @@ export const MemberFunctionsSection: FC<Props> = ({
    */
   const reorder = async (
     kind: MemberFunctionKind,
-    active: boolean,
     group: MemberFunctionItem[],
   ): Promise<void> => {
     if (!items || savingOrder) return;
     const previous = items;
-    // The functions of the group in that state take ranks 0 to n − 1.
+    // The functions of the group take ranks 0 to n − 1.
     accept([
-      ...items.filter((item) => item.kind !== kind || item.isActive !== active),
+      ...items.filter((item) => item.kind !== kind),
       ...group.map((item, position) => ({ ...item, position })),
     ]);
     setSavingOrder(true);
     try {
       const saved = await reorderGameFunctionsRequest(game.id, {
-        active,
         ids: group.map((item) => item.id),
         kind,
       });
@@ -319,13 +317,10 @@ export const MemberFunctionsSection: FC<Props> = ({
   );
 
   // Players, then the staff: a heading per group, each group in its order,
-  // its inactive functions below, ranked among themselves: an inactive item
-  // never blocks (owner, 9 November 2026).
+  // active or not: an inactive item never blocks (owner, 9 November 2026).
   const groups = (list: MemberFunctionItem[]): ReactNode =>
     MEMBER_FUNCTION_KINDS.map((kind) => {
       const group = list.filter((item) => item.kind === kind);
-      const active = group.filter((item) => item.isActive);
-      const inactive = group.filter((item) => !item.isActive);
       const headingId = `member-functions-${kind.toLowerCase()}`;
 
       return (
@@ -346,44 +341,15 @@ export const MemberFunctionsSection: FC<Props> = ({
             </p>
           ) : (
             <SortableList
-              after={
-                inactive.length > 0 && (
-                  <SortableGroup
-                    frozen={savingOrder}
-                    items={inactive}
-                    labelOf={(item) => item.name}
-                    onReorder={(next) => void reorder(kind, false, next)}
-                  >
-                    {inactive.map((item) => (
-                      <SortableItem
-                        enabled={canManage}
-                        id={item.id}
-                        key={item.id}
-                        label={item.name}
-                      >
-                        {({ handle, ref, style }) => (
-                          <li
-                            className="even:bg-surface-row-alternate"
-                            ref={ref}
-                            style={style}
-                          >
-                            {row(item, handle)}
-                          </li>
-                        )}
-                      </SortableItem>
-                    ))}
-                  </SortableGroup>
-                )
-              }
               aria-labelledby={headingId}
               // A handle even alone, so names line up from one group to the other.
               canReorder={canManage}
               className="divide-border-divider divide-y"
               frozen={savingOrder}
               itemClassName="even:bg-surface-row-alternate"
-              items={active}
+              items={group}
               labelOf={(item) => item.name}
-              onReorder={(next) => void reorder(kind, true, next)}
+              onReorder={(next) => void reorder(kind, next)}
               renderItem={row}
             />
           )}
@@ -425,8 +391,7 @@ export const MemberFunctionsSection: FC<Props> = ({
                   className="mt-px size-3.5 shrink-0"
                 />
                 Glissez une fonction par sa poignée pour la placer selon son
-                importance : cet ordre est repris partout. Les fonctions
-                inactives se rangent entre elles, en dessous.
+                importance, active ou non : cet ordre est repris partout.
               </p>
             )}
           </>

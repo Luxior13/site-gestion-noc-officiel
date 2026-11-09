@@ -364,25 +364,19 @@ export const updateGameFunction = async (
 };
 
 /**
- * Sets the order of the active functions of one group of a game (players or
- * staff), or of its inactive ones, as its managers dragged it (owner,
- * 9 November 2026). The request names every function of the group in that
- * state: one added, (de)activated or moved to the other group in between
- * refuses it.
- * The active and the inactive items rank apart, the inactive ones below;
- * both are ranked (owner, 9 November 2026: « un jeu inactif ne doit jamais
- * bloquer »).
+ * Sets the order of the functions of one group of a game (players or staff),
+ * as its managers dragged it (owner, 9 November 2026). The request names
+ * every function of the group: one added, deleted or moved to the other
+ * group in between refuses it.
+ * One order for every item of the list, active or not: an inactive item
+ * never blocks (owner, 9 November 2026).
  * The order is not part of a function's version, so an edit window left open
  * stays valid; one trace holds the order before and after. Answers every
  * function of the game, in its new order.
  */
 export const reorderGameFunctions = async (
   gameId: string,
-  input: Readonly<{
-    active: boolean;
-    ids: readonly string[];
-    kind: MemberFunctionKind;
-  }>,
+  input: Readonly<{ ids: readonly string[]; kind: MemberFunctionKind }>,
   actor: MemberFunctionActor,
 ): Promise<MemberFunctionItem[]> =>
   prisma.$transaction(async (transaction) => {
@@ -394,7 +388,7 @@ export const reorderGameFunctions = async (
     const plan = planManualOrder(
       (
         await transaction.memberFunction.findMany({
-          where: { gameId, isActive: input.active, kind: input.kind },
+          where: { gameId, kind: input.kind },
         })
       )
         .map(toItem)
@@ -413,9 +407,8 @@ export const reorderGameFunctions = async (
         {
           action: AuditAction.FUNCTION_REORDER,
           category: AuditCategory.FUNCTION,
-          description: `Ordre des fonctions ${input.active ? '' : 'inactives '}modifié : ${kind} (${game.name})`,
+          description: `Ordre des fonctions modifié : ${kind} (${game.name})`,
           metadata: {
-            active: input.active,
             after: { order: plan.after },
             before: { order: plan.before },
             changes: ['order'],

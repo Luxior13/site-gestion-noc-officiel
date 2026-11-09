@@ -48,10 +48,7 @@ export const deleteGameSchema = z
 
 export const gameIdSchema = z.string().min(1).max(128);
 
-/**
- * The new order of the active games, or of the inactive ones (`active`
- * false): an inactive game is ranked too, below (9 November 2026).
- */
+/** The new order of every game, active or not, as their managers dragged it. */
 export const reorderGamesSchema = z
-  .object({ active: z.boolean(), ids: orderedIdsSchema(ORDER_GROUP_MAX) })
+  .object({ ids: orderedIdsSchema(ORDER_GROUP_MAX) })
   .strict();

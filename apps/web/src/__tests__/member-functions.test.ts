@@ -75,32 +75,28 @@ describe('function form contract (9 November 2026)', () => {
 describe('a new order of a group', () => {
   it('names one group and each of its functions once', () => {
     expect(
-      reorderMemberFunctionsSchema.parse({
-        active: false,
-        ids: ['f2', 'f1'],
-        kind: 'STAFF',
-      }),
-    ).toEqual({ active: false, ids: ['f2', 'f1'], kind: 'STAFF' });
+      reorderMemberFunctionsSchema.parse({ ids: ['f2', 'f1'], kind: 'STAFF' }),
+    ).toEqual({ ids: ['f2', 'f1'], kind: 'STAFF' });
     for (const body of [
-      { active: true, ids: [], kind: 'STAFF' },
-      { active: true, ids: ['f1', 'f1'], kind: 'STAFF' },
-      { active: true, ids: ['f1'], kind: 'POSITION' },
-      { active: true, ids: ['f1'] },
-      // Which group: the active functions, or the inactive ones.
-      { ids: ['f1'], kind: 'STAFF' },
-      { active: true, gameId: 'game-1', ids: ['f1'], kind: 'PLAYER' },
+      { ids: [], kind: 'STAFF' },
+      { ids: ['f1', 'f1'], kind: 'STAFF' },
+      { ids: ['f1'], kind: 'POSITION' },
+      { ids: ['f1'] },
+      // One order for the whole group: no « active » part of it.
+      { active: false, ids: ['f1'], kind: 'STAFF' },
+      { gameId: 'game-1', ids: ['f1'], kind: 'PLAYER' },
     ])
       expect(reorderMemberFunctionsSchema.safeParse(body).success).toBe(false);
   });
 });
 
 describe('order and common functions of a game', () => {
-  it('lists the players, then the staff, each active ones in their dragged order, inactive ones below', () => {
+  it('lists the players, then the staff, each in its dragged order, active or not', () => {
     const functions = [
       { isActive: true, kind: 'STAFF', name: 'Manager', position: 0 },
-      // Inactive: below its group, whatever its former rank.
-      { isActive: false, kind: 'PLAYER', name: 'Capitaine', position: 0 },
-      { isActive: true, kind: 'PLAYER', name: 'Remplaçant', position: 1 },
+      // Inactive: in its place, like any other.
+      { isActive: false, kind: 'PLAYER', name: 'Capitaine', position: 1 },
+      { isActive: true, kind: 'PLAYER', name: 'Remplaçant', position: 2 },
       { isActive: true, kind: 'STAFF', name: 'Analyste', position: 2 },
       { isActive: true, kind: 'PLAYER', name: 'Joueur', position: 0 },
       { isActive: true, kind: 'STAFF', name: 'Coach', position: 1 },
@@ -111,8 +107,8 @@ describe('order and common functions of a game', () => {
       [...functions].sort(compareMemberFunctions).map(({ name }) => name),
     ).toEqual([
       'Joueur',
-      'Remplaçant',
       'Capitaine',
+      'Remplaçant',
       'Manager',
       'Coach',
       'Coach adjoint',

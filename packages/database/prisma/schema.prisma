@@ -531,8 +531,7 @@ model Game {
   shortName            String?          @db.VarChar(12)
   firstOpenedOn        DateTime         @db.Date
   firstOpenedPrecision DatePrecision    @default(DAY)
-  /// Rank among the active games, set by dragging (9 November 2026); an
-  /// inactive game keeps its last rank and shows below the active ones.
+  /// Rank of the game, set by dragging, active or not (9 November 2026).
   position             Int              @default(0)
   isActive             Boolean          @default(true)
   version              Int              @default(1)
@@ -557,8 +556,7 @@ model Team {
   normalizedName   String        @db.VarChar(120)
   foundedOn        DateTime      @db.Date
   foundedPrecision DatePrecision @default(DAY)
-  /// Rank among the active teams of its game, set by dragging (9 November
-  /// 2026); an inactive team keeps its last rank and shows below.
+  /// Rank of the team in its game, set by dragging, active or not.
   position         Int           @default(0)
   isActive         Boolean       @default(true)
   version          Int           @default(1)

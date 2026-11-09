@@ -30,7 +30,7 @@ export const deleteTeamSchema = z
 
 export const teamIdSchema = z.string().min(1).max(128);
 
-/** The new order of a game's active teams, or of its inactive ones. */
+/** The new order of every team of a game, active or not. */
 export const reorderTeamsSchema = z
-  .object({ active: z.boolean(), ids: orderedIdsSchema(ORDER_GROUP_MAX) })
+  .object({ ids: orderedIdsSchema(ORDER_GROUP_MAX) })
   .strict();

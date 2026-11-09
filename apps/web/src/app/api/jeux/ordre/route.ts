@@ -12,7 +12,7 @@ import {
 } from '$server/api-response';
 import { serviceErrorResponse } from '$server/service-error';
 
-/** The order of the active games, or of the inactive ones, as dragged. */
+/** The order of every game, active or not, as their managers dragged it. */
 export async function PUT(request: NextRequest): Promise<NextResponse> {
   const auth = await requireAuth();
   if (!auth.success) return auth.response;
@@ -30,7 +30,7 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
 
   try {
     return apiSuccess(
-      await reorderGames(parsed.data, {
+      await reorderGames(parsed.data.ids, {
         actor: auth.user,
         session: auth.session,
       }),

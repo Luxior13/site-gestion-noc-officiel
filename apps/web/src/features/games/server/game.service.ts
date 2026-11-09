@@ -16,7 +16,7 @@ import { ServiceError, serviceErrors } from '$server/service-error';
 import { authorizeUserAction } from '$server/user-action-authorization';
 import { ErrorCode } from '$types/api.types';
 import type { SessionType, UserType } from '$types/auth.types';
-import { compareActiveThenRank } from '$utils/active-order.utils';
+import { compareRank } from '$utils/active-order.utils';
 import { formatApproximateDate } from '$utils/approximate-date.utils';
 import { normalizeSearchText } from '$utils/search-text.utils';
 
@@ -145,13 +145,13 @@ const audit = async (
     { client: transaction, required: true },
   );
 
-/** Every game: the active ones in their order, then the inactive ones. */
+/** Every game, in the order its managers dragged, active or not. */
 const readGames = async (
   client: Prisma.TransactionClient,
 ): Promise<GameItem[]> =>
   (await client.game.findMany({ include: WITH_COUNTS }))
     .map(toGameItem)
-    .sort(compareActiveThenRank);
+    .sort(compareRank);
 
 export const listGames = (): Promise<GameItem[]> => readGames(prisma);
 
@@ -268,17 +268,16 @@ export const updateGame = async (
 };
 
 /**
- * Sets the order of the active games, or of the inactive ones, as their
- * managers dragged it (owner, 9 November 2026). The request names every game
- * of that state: one added, (de)activated in between refuses it.
- * The active and the inactive items rank apart, the inactive ones below;
- * both are ranked (owner, 9 November 2026: « un jeu inactif ne doit jamais
- * bloquer »).
+ * Sets the order of the games, as their managers dragged it (owner,
+ * 9 November 2026). The request names every game: one added or deleted in
+ * between refuses it.
+ * One order for every item of the list, active or not: an inactive item
+ * never blocks (owner, 9 November 2026).
  * One trace holds the order before and after; the order is not part of a
  * game's version. Answers every game, in the new order.
  */
 export const reorderGames = async (
-  { active, ids }: Readonly<{ active: boolean; ids: readonly string[] }>,
+  ids: readonly string[],
   { actor, session }: GameActor,
 ): Promise<GameItem[]> =>
   prisma.$transaction(async (transaction) => {
@@ -288,11 +287,8 @@ export const reorderGames = async (
       PERMISSIONS.GAMES.MANAGE,
     );
     // One reorder at a time: the second waits, then reads the first.
-    await transaction.$queryRaw`SELECT "id" FROM "Game" WHERE "isActive" = ${active} ORDER BY "id" FOR UPDATE`;
-    const plan = planManualOrder(
-      (await readGames(transaction)).filter((game) => game.isActive === active),
-      ids,
-    );
+    await transaction.$queryRaw`SELECT "id" FROM "Game" ORDER BY "id" FOR UPDATE`;
+    const plan = planManualOrder(await readGames(transaction), ids);
     if (!plan) throw gamesChanged();
     if (plan.changed) {
       for (const { id, position } of plan.moves)
@@ -301,11 +297,8 @@ export const reorderGames = async (
         {
           action: AuditAction.GAME_REORDER,
           category: AuditCategory.GAME,
-          description: active
-            ? 'Ordre des jeux modifié'
-            : 'Ordre des jeux inactifs modifié',
+          description: 'Ordre des jeux modifié',
           metadata: {
-            active,
             after: { order: plan.after },
             before: { order: plan.before },
             changes: ['order'],

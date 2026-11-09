@@ -15,7 +15,7 @@ import { serviceErrorResponse } from '$server/service-error';
 
 type RouteParams = { params: Promise<{ id: string }> };
 
-/** The order of a game's active teams, or of its inactive ones. */
+/** The order of every team of a game, active or not. */
 export async function PUT(
   request: NextRequest,
   { params }: RouteParams,
@@ -38,7 +38,7 @@ export async function PUT(
 
   try {
     return apiSuccess(
-      await reorderTeams(gameId.data, parsed.data, {
+      await reorderTeams(gameId.data, parsed.data.ids, {
         actor: auth.user,
         session: auth.session,
       }),

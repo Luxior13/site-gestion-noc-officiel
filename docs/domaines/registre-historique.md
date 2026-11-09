@@ -135,9 +135,9 @@ développement. Une liste fixée par une règle (statut, rôle) reste dans le co
   Roster à compléter. Seuls les choix courants mettent les éléments actifs en
   tête.
 - Les jeux, les équipes de chaque jeu et les fonctions de chaque type se
-  rangent par glisser-déposer, pour leur importance (9 novembre 2026) : les
-  actifs dans l’ordre posé, les inactifs en dessous, rangés eux aussi ; cet
-  ordre est repris partout, l’historique n’en dépend pas.
+  rangent par glisser-déposer, pour leur importance (9 novembre 2026) : un
+  seul ordre, actifs et inactifs mélangés ; cet ordre est repris partout,
+  l’historique n’en dépend pas.
 - La base le garantit : toute table qui référence un jeu (équipes depuis le
   8 novembre 2026, fonctions depuis le 9, puis tournois, finances) le fait en
   `ON DELETE RESTRICT`, jamais en `CASCADE` ; le service explique le refus

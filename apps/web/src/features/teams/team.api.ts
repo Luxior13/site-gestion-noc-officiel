@@ -24,11 +24,10 @@ export const fetchTeam = (
 export const reorderTeamsRequest = (
   gameId: string,
   ids: readonly string[],
-  active: boolean,
 ): Promise<TeamItem[]> =>
   apiFetchJson<TeamItem[]>(
     `/api/jeux/${encodeURIComponent(gameId)}/equipes/ordre`,
-    jsonRequest('PUT', { active, ids }),
+    jsonRequest('PUT', { ids }),
   );
 
 export const createTeamRequest = (input: TeamInput): Promise<TeamDetail> =>

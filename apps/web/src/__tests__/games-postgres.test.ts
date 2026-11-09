@@ -314,7 +314,7 @@ describe.skipIf(!target)('games on fully migrated PostgreSQL', () => {
     expect(await db.game.count()).toBe(1);
   });
 
-  it('keeps the order its managers drag, the inactive games below, traced once', async () => {
+  it('keeps one order for every game, active or not, traced once', async () => {
     const add = async (name: string): Promise<string> => {
       const created = (await body(await post({ ...valorant, name }))).data;
       if (!created) throw new Error('Missing game');
@@ -324,13 +324,10 @@ describe.skipIf(!target)('games on fully migrated PostgreSQL', () => {
     const valorantId = await add('Valorant');
     const leagueId = await add('League of Legends');
     const rocketId = await add('Rocket League');
-    const reorder = (
-      ids: readonly string[],
-      active = true,
-    ): ReturnType<typeof PUT_ORDER> =>
+    const reorder = (ids: readonly string[]): ReturnType<typeof PUT_ORDER> =>
       PUT_ORDER(
         new NextRequest(`${BASE}/ordre`, {
-          body: JSON.stringify({ active, ids }),
+          body: JSON.stringify({ ids }),
           method: 'PUT',
         }),
       );
@@ -357,25 +354,34 @@ describe.skipIf(!target)('games on fully migrated PostgreSQL', () => {
         })
       ).status,
     ).toBe(200);
+    // Inactive, it keeps its place.
+    expect((await names()).at(2)).toBe('Rocket League');
 
-    // The inactive game is not part of the active ones' order: it stays below.
-    expect((await reorder([leagueId, valorantId, rocketId])).status).toBe(409);
-    // It is ranked among the inactive ones: an inactive game never blocks.
-    expect((await reorder([rocketId], false)).status).toBe(200);
-    expect((await reorder([leagueId], false)).status).toBe(409);
-    expect((await reorder([leagueId])).status).toBe(409);
-    expect((await reorder([leagueId, leagueId])).status).toBe(400);
+    // The whole list, once each: a missing or a repeated game is refused.
+    expect((await reorder([leagueId, valorantId])).status).toBe(409);
+    expect((await reorder([leagueId, leagueId, valorantId])).status).toBe(400);
+    expect(
+      (
+        await PUT_ORDER(
+          new NextRequest(`${BASE}/ordre`, {
+            body: JSON.stringify({ active: false, ids: [rocketId] }),
+            method: 'PUT',
+          }),
+        )
+      ).status,
+    ).toBe(400);
     expect(await audits('GAME_REORDER')).toBe(0);
-    const response = await reorder([leagueId, valorantId]);
+    // An inactive game goes above the active ones: it never blocks.
+    const response = await reorder([rocketId, leagueId, valorantId]);
     expect(response.status).toBe(200);
     expect(await names()).toEqual([
+      'Rocket League',
       'League of Legends',
       'Valorant',
-      'Rocket League',
     ]);
     expect((await lastAudit('GAME_REORDER')).metadata).toMatchObject({
-      after: { order: 'League of Legends, Valorant' },
-      before: { order: 'Valorant, League of Legends' },
+      after: { order: 'Rocket League, League of Legends, Valorant' },
+      before: { order: 'Valorant, League of Legends, Rocket League' },
       changes: ['order'],
       pageKey: 'games',
     });
@@ -383,13 +389,13 @@ describe.skipIf(!target)('games on fully migrated PostgreSQL', () => {
     expect(
       (await db.game.findUniqueOrThrow({ where: { id: leagueId } })).version,
     ).toBe(1);
-    expect((await reorder([leagueId, valorantId])).status).toBe(200);
+    expect((await reorder([rocketId, leagueId, valorantId])).status).toBe(200);
     expect(await audits('GAME_REORDER')).toBe(1);
 
     await authenticate(
       await createUser('USER', { [PERMISSIONS.GAMES.VIEW]: true }),
     );
-    expect((await reorder([valorantId, leagueId])).status).toBe(403);
+    expect((await reorder([valorantId, leagueId, rocketId])).status).toBe(403);
     await expect(
       db.$executeRawUnsafe(
         'UPDATE "Game" SET "position" = -1 WHERE "id" = $1',

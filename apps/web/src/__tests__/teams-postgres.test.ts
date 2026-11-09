@@ -394,7 +394,7 @@ describe.skipIf(!target)('teams on fully migrated PostgreSQL', () => {
     expect(await db.team.count()).toBe(1);
   });
 
-  it('keeps the order of a game’s active teams, the inactive ones below, traced once', async () => {
+  it('keeps one order for a game’s teams, active or not, traced once', async () => {
     const add = async (
       name: string,
       game: Game = valorant,
@@ -413,11 +413,10 @@ describe.skipIf(!target)('teams on fully migrated PostgreSQL', () => {
     const reorder = (
       game: Game,
       ids: readonly string[],
-      active = true,
     ): ReturnType<typeof PUT_ORDER> =>
       PUT_ORDER(
         new NextRequest(`http://localhost/api/jeux/${game.id}/equipes/ordre`, {
-          body: JSON.stringify({ active, ids }),
+          body: JSON.stringify({ ids }),
           method: 'PUT',
         }),
         { params: Promise.resolve({ id: game.id }) },
@@ -431,30 +430,28 @@ describe.skipIf(!target)('teams on fully migrated PostgreSQL', () => {
         .filter((team) => team.gameId === game.id)
         .map(({ name }) => name);
 
-    // Inactive, another game's, or under the wrong game: the list changed.
-    expect((await reorder(valorant, [academyId, first, ladies])).status).toBe(
+    // The whole list of the game, once each: missing, or another game's.
+    expect((await reorder(valorant, [academyId, first])).status).toBe(409);
+    expect((await reorder(league, [academyId, first, ladies])).status).toBe(
       409,
     );
-    expect((await reorder(league, [academyId, first])).status).toBe(409);
-    // The inactive teams rank among themselves: nothing blocks them.
-    expect((await reorder(valorant, [ladies], false)).status).toBe(200);
-    expect((await reorder(valorant, [first], false)).status).toBe(409);
     expect(await audits('TEAM_REORDER')).toBe(0);
-    const response = await reorder(valorant, [academyId, first]);
+    // The inactive team goes above the active ones: it never blocks.
+    const response = await reorder(valorant, [ladies, academyId, first]);
     expect(response.status).toBe(200);
     expect(await names(valorant)).toEqual([
+      'Noctambule Ladies',
       'Noctambule Academy',
       'Noctambule',
-      'Noctambule Ladies',
     ]);
     expect((await lastAudit('TEAM_REORDER')).metadata).toMatchObject({
-      after: { order: 'Noctambule Academy, Noctambule' },
-      before: { order: 'Noctambule, Noctambule Academy' },
+      after: { order: 'Noctambule Ladies, Noctambule Academy, Noctambule' },
+      before: { order: 'Noctambule, Noctambule Academy, Noctambule Ladies' },
       gameName: 'Valorant',
     });
     // A new team goes last of its game.
     await add('Noctambule Rising');
-    expect((await names(valorant)).at(2)).toBe('Noctambule Rising');
+    expect((await names(valorant)).at(3)).toBe('Noctambule Rising');
 
     await authenticate(
       await createUser('USER', {
@@ -462,7 +459,9 @@ describe.skipIf(!target)('teams on fully migrated PostgreSQL', () => {
         [PERMISSIONS.TEAMS.VIEW]: true,
       }),
     );
-    expect((await reorder(valorant, [first, academyId])).status).toBe(403);
+    expect((await reorder(valorant, [first, academyId, ladies])).status).toBe(
+      403,
+    );
   });
 
   it('rolls the team back when its trace cannot be written', async () => {

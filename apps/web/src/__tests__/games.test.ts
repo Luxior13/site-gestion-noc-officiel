@@ -16,7 +16,7 @@ import {
   createGameSchema,
   updateGameSchema,
 } from '$features/games/schemas/game.schemas';
-import { compareActiveThenRank } from '$utils/active-order.utils';
+import { compareActiveThenRank, compareRank } from '$utils/active-order.utils';
 import {
   changeDatePrecision,
   formatApproximateDate,
@@ -110,7 +110,20 @@ describe('game form contract', () => {
 });
 
 describe('order of the games', () => {
-  it('puts the active games first in their dragged order, the inactive ones below', () => {
+  it('keeps one dragged order for the list, active or not', () => {
+    const games = [
+      { isActive: true, name: 'Valorant', position: 2 },
+      { isActive: false, name: 'Rainbow Six Siège', position: 0 },
+      { isActive: true, name: 'Sea of Thieves', position: 1 },
+    ];
+    expect([...games].sort(compareRank).map((game) => game.name)).toEqual([
+      'Rainbow Six Siège',
+      'Sea of Thieves',
+      'Valorant',
+    ]);
+  });
+
+  it('offers the active games first in a choice, each in the dragged order', () => {
     const games = [
       {
         isActive: false,

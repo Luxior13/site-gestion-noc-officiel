@@ -150,17 +150,18 @@ const TeamName: FC<{ game: GameItem; team: TeamItem }> = ({ game, team }) => (
 
 type Props = {
   canManage: boolean;
-  /** `games:manage`: a handle on each active game. */
+  /** `games:manage`: a handle on each game. */
   canReorderGames: boolean;
-  /** `teams:manage`: a handle on each active team, within its game. */
+  /** `teams:manage`: a handle on each team, within its game. */
   canReorderTeams: boolean;
   /** An order is being saved: the handles wait. */
   frozen: boolean;
   games: GameItem[];
   onCreate: () => void;
-  /** The new order of the active games, or of the inactive ones. */
-  onReorderGames: (ids: string[], active: boolean) => void;
-  onReorderTeams: (gameId: string, ids: string[], active: boolean) => void;
+  /** The new order of every game, active or not. */
+  onReorderGames: (ids: string[]) => void;
+  /** The new order of every team of a game. */
+  onReorderTeams: (gameId: string, ids: string[]) => void;
   /** Null without the right to see teams: the list shows games only. */
   teams: TeamItem[] | null;
 };
@@ -168,10 +169,25 @@ type Props = {
 /** The order rule under the list, for who may rank (9 November 2026). */
 const orderHint = (games: boolean, teams: boolean): string =>
   games && teams
-    ? 'Glissez un jeu ou une équipe par sa poignée pour les placer selon leur importance : cet ordre est repris partout. Les inactifs se rangent entre eux, sous les actifs.'
+    ? 'Glissez un jeu ou une équipe par sa poignée pour les placer selon leur importance, actifs ou non : cet ordre est repris partout.'
     : games
-      ? 'Glissez un jeu par sa poignée pour le placer selon son importance : cet ordre est repris partout. Les jeux inactifs se rangent entre eux, sous les actifs.'
-      : 'Glissez une équipe par sa poignée pour la placer selon son importance dans son jeu : cet ordre est repris partout. Les équipes inactives se rangent entre elles, sous les actives.';
+      ? 'Glissez un jeu par sa poignée pour le placer selon son importance, actif ou non : cet ordre est repris partout.'
+      : 'Glissez une équipe par sa poignée pour la placer selon son importance dans son jeu, active ou non : cet ordre est repris partout.';
+
+/**
+ * A new order of the shown items put back into the whole list: they take,
+ * in their new order, the places they held; the items a search or a filter
+ * hides keep theirs (9 November 2026: nothing blocks the ranking).
+ */
+const mergeOrder = (
+  whole: readonly string[],
+  shown: readonly string[],
+): string[] => {
+  const shownSet = new Set(shown);
+  const next = [...shown];
+
+  return whole.map((id) => (shownSet.has(id) ? (next.shift() ?? id) : id));
+};
 
 /**
  * The sections of the structure, each with its teams on lines under it,
@@ -194,7 +210,7 @@ export const GamesList: FC<Props> = ({
   const terms = useMemo(() => getSearchTerms(query), [query]);
   const teamsByGame = useMemo(() => {
     const groups = new Map<string, TeamItem[]>();
-    // Teams arrive active first, then by name: the order under each game.
+    // Teams arrive in their dragged order: the order under each game.
     for (const team of teams ?? [])
       groups.set(team.gameId, [...(groups.get(team.gameId) ?? []), team]);
 
@@ -220,71 +236,61 @@ export const GamesList: FC<Props> = ({
   );
   const visible = searched.filter(({ game }) => matchesState(game, state));
   const isFiltered = Boolean(query.trim()) || state !== 'all';
-  // A part of a list is not ranked: no handle while searching. The state
-  // filter shows a whole group (the active games, or the inactive ones): its
-  // handles stay. An inactive item never blocks (owner, 9 November 2026).
-  const rankable = !query.trim();
-  const gameHandles = canReorderGames && rankable;
-  const teamHandles = canReorderTeams && rankable && teams !== null;
+  // One order for every game, and for the teams of each game, active or not;
+  // a search or a filter ranks what it shows, the others keep their place:
+  // an inactive item never blocks (owner, 9 November 2026).
+  const gameHandles = canReorderGames;
+  const teamHandles = canReorderTeams && teams !== null;
   const withHandles = gameHandles || teamHandles;
-  const activeGroups = visible.filter(({ game }) => game.isActive);
-  const inactiveGroups = visible.filter(({ game }) => !game.isActive);
   const nameOf = (item: Readonly<{ name: string }>): string => item.name;
-  /**
-   * A game's teams: the active ones ranked together, then the inactive ones,
-   * ranked together too (9 November 2026).
-   */
+  /** A game's shown teams, ranked together. */
   const teamRows = (
     game: GameItem,
     gameTeams: readonly TeamItem[],
     render: (team: TeamItem, index: number) => React.ReactNode,
   ): React.ReactNode =>
-    [true, false].map((active) => {
-      const group = gameTeams.filter((team) => team.isActive === active);
-      const rows = group.map((team) => render(team, gameTeams.indexOf(team)));
-
-      return teamHandles && group.length > 0 ? (
-        <SortableGroup
-          frozen={frozen}
-          items={group}
-          key={String(active)}
-          labelOf={nameOf}
-          onReorder={(next) =>
-            onReorderTeams(
-              game.id,
-              next.map((team) => team.id),
-              active,
-            )
-          }
-        >
-          {rows}
-        </SortableGroup>
-      ) : (
-        <React.Fragment key={String(active)}>{rows}</React.Fragment>
-      );
-    });
-  /** The active games ranked together, then the inactive ones. */
-  const gameRows = (
-    groups: readonly GameGroup[],
-    active: boolean,
-    render: (group: GameGroup) => React.ReactNode,
-  ): React.ReactNode =>
-    gameHandles && groups.length > 0 ? (
+    teamHandles && gameTeams.length > 0 ? (
       <SortableGroup
         frozen={frozen}
-        items={groups.map(({ game }) => game)}
+        items={gameTeams}
         labelOf={nameOf}
         onReorder={(next) =>
-          onReorderGames(
-            next.map((game) => game.id),
-            active,
+          onReorderTeams(
+            game.id,
+            mergeOrder(
+              (teamsByGame.get(game.id) ?? []).map((team) => team.id),
+              next.map((team) => team.id),
+            ),
           )
         }
       >
-        {groups.map(render)}
+        {gameTeams.map(render)}
       </SortableGroup>
     ) : (
-      groups.map(render)
+      gameTeams.map(render)
+    );
+  /** The shown games, ranked together, with their teams. */
+  const gameRows = (
+    render: (group: GameGroup) => React.ReactNode,
+  ): React.ReactNode =>
+    gameHandles && visible.length > 0 ? (
+      <SortableGroup
+        frozen={frozen}
+        items={visible.map(({ game }) => game)}
+        labelOf={nameOf}
+        onReorder={(next) =>
+          onReorderGames(
+            mergeOrder(
+              games.map((game) => game.id),
+              next.map((game) => game.id),
+            ),
+          )
+        }
+      >
+        {visible.map(render)}
+      </SortableGroup>
+    ) : (
+      visible.map(render)
     );
   const reset = (): void => {
     setQuery('');
@@ -528,6 +534,8 @@ export const GamesList: FC<Props> = ({
                       className={cn(
                         LINE_FOCUS,
                         'flex min-h-11 items-center gap-2 py-1.5 pr-4 pl-[calc(48px+var(--handle-room,0px))] text-sm hover:bg-[var(--surface-row-hover)]',
+                        // A fine rule from the crest, as on a wide screen.
+                        'before:pointer-events-none before:absolute before:top-0 before:right-0 before:left-[calc(48px+var(--handle-room,0px))] before:h-px before:bg-[var(--m-border-soft)]',
                       )}
                       ref={itemRef}
                       style={
@@ -598,10 +606,7 @@ export const GamesList: FC<Props> = ({
           ) : (
             // One tbody per game: a game and its teams share one band; the
             // active games move with their teams, the inactive ones stay below.
-            <>
-              {gameRows(activeGroups, true, desktopGame)}
-              {gameRows(inactiveGroups, false, desktopGame)}
-            </>
+            <>{gameRows(desktopGame)}</>
           )}
         </Table>
       </DataTableDesktop>
@@ -609,10 +614,7 @@ export const GamesList: FC<Props> = ({
         {visible.length === 0 ? (
           <div className="min-h-48 px-4 py-6">{emptyState}</div>
         ) : (
-          <>
-            {gameRows(activeGroups, true, mobileGame)}
-            {gameRows(inactiveGroups, false, mobileGame)}
-          </>
+          <>{gameRows(mobileGame)}</>
         )}
       </DataTableMobileList>
       {withHandles ||

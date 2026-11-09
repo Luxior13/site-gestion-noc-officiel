@@ -20,7 +20,7 @@ import { Button } from '$ui/button';
 import directoryStyles from '$ui/directory.module.css';
 import { PageCanvas, PageShell } from '$ui/page-shell';
 import { Skeleton } from '$ui/skeleton';
-import { compareActiveThenRank } from '$utils/active-order.utils';
+import { compareRank } from '$utils/active-order.utils';
 import { ApiClientError } from '$utils/api.utils';
 import { cn } from '$utils/css.utils';
 
@@ -62,7 +62,7 @@ const rank = <
         ? { ...item, position: ids.indexOf(item.id) }
         : item,
     )
-    .sort(compareActiveThenRank);
+    .sort(compareRank);
 
 /** Replaces or adds an item, then keeps the list's order. */
 const upsert = <
@@ -77,7 +77,7 @@ const upsert = <
   saved: Item,
 ): Item[] =>
   [...(items ?? []).filter((item) => item.id !== saved.id), saved].sort(
-    compareActiveThenRank,
+    compareRank,
   );
 
 const GamesContent: FC<{ capabilities: GameCapabilities }> = ({
@@ -148,31 +148,27 @@ const GamesContent: FC<{ capabilities: GameCapabilities }> = ({
     }
   };
 
-  const reorderGames = (ids: string[], active: boolean): void => {
+  const reorderGames = (ids: string[]): void => {
     const previous = games;
     void saveOrder(
       () => setGames((current) => current && rank(current, ids)),
       () => setGames(previous),
-      async () => setGames(await reorderGamesRequest(ids, active)),
+      async () => setGames(await reorderGamesRequest(ids)),
     );
   };
 
-  const reorderTeams = (
-    gameId: string,
-    ids: string[],
-    active: boolean,
-  ): void => {
+  const reorderTeams = (gameId: string, ids: string[]): void => {
     const previous = teams;
     void saveOrder(
       () => setTeams((current) => current && rank(current, ids)),
       () => setTeams(previous),
       async () => {
-        const saved = await reorderTeamsRequest(gameId, ids, active);
+        const saved = await reorderTeamsRequest(gameId, ids);
         setTeams((current) =>
           [
             ...(current ?? []).filter((team) => team.gameId !== gameId),
             ...saved,
-          ].sort(compareActiveThenRank),
+          ].sort(compareRank),
         );
       },
     );

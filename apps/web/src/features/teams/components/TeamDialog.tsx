@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from '$ui/select';
 import { Switch } from '$ui/switch';
+import { compareActiveThenRank } from '$utils/active-order.utils';
 import { ApiClientError } from '$utils/api.utils';
 import {
   type ApproximateDate,
@@ -175,7 +176,9 @@ const TeamDialogContent: FC<Props> = ({ games, onClose, onCreated }) => {
                   <SelectValue placeholder="Choisir un jeu" />
                 </SelectTrigger>
                 <SelectContent>
-                  {games.map((entry) => (
+                  {/* A choice: the active games first, then the inactive
+                      ones, marked, each in the dragged order (PREF-Q10). */}
+                  {[...games].sort(compareActiveThenRank).map((entry) => (
                     <SelectItem key={entry.id} value={entry.id}>
                       {entry.isActive ? entry.name : `${entry.name} (inactif)`}
                     </SelectItem>

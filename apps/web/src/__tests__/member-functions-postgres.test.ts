@@ -180,11 +180,10 @@ describe.skipIf(!target)(
       game: Game,
       kind: string,
       ids: readonly string[],
-      active = true,
     ): ReturnType<typeof PUT_ORDER> =>
       PUT_ORDER(
         new NextRequest(url(game, '/ordre'), {
-          body: JSON.stringify({ active, ids, kind }),
+          body: JSON.stringify({ ids, kind }),
           method: 'PUT',
         }),
         params(game),
@@ -405,7 +404,7 @@ describe.skipIf(!target)(
       ]);
     });
 
-    it('ranks only the active functions; an inactive one stays below its group', async () => {
+    it('ranks an inactive function like any other, in place', async () => {
       const common = (await read<FunctionData[]>(await addCommon(valorant)))
         .data;
       const id = (name: string): string =>
@@ -423,12 +422,13 @@ describe.skipIf(!target)(
           })
         ).status,
       ).toBe(200);
+      // Inactive, it keeps its place in its group.
       expect(await names(valorant)).toEqual([
         'Joueur',
         'Remplaçant',
+        'Coach',
         'Manager',
         'Analyste',
-        'Coach',
       ]);
       expect(
         (
@@ -438,10 +438,6 @@ describe.skipIf(!target)(
             id('Coach'),
           ])
         ).status,
-      ).toBe(409);
-      expect(
-        (await reorder(valorant, 'STAFF', [id('Analyste'), id('Manager')]))
-          .status,
       ).toBe(200);
       expect(await names(valorant)).toEqual([
         'Joueur',
@@ -450,13 +446,6 @@ describe.skipIf(!target)(
         'Manager',
         'Coach',
       ]);
-      // The inactive functions rank among themselves: nothing blocks them.
-      expect(
-        (await reorder(valorant, 'STAFF', [id('Coach')], false)).status,
-      ).toBe(200);
-      expect(
-        (await reorder(valorant, 'STAFF', [id('Manager')], false)).status,
-      ).toBe(409);
     });
 
     it('refuses an order whose group changed meanwhile, without a trace', async () => {

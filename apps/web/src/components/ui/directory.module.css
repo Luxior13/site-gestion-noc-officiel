@@ -383,13 +383,31 @@
   background: var(--m-row-alt);
 }
 
-/* No rule inside a group (a transparent one would show the table beneath). */
+/* No border inside a group (a transparent one would show the table beneath). */
 .directory .table.groupedTable tbody:nth-of-type(n) tr + tr {
   border-top: 0;
 }
 
+/*
+ * Inside a group, a fine rule between the lines, drawn from the child's
+ * vignette to the right edge so the tree guide stays whole (owner,
+ * 9 November 2026: « ça manque de quelque chose pour séparer les lignes »).
+ * The vignette starts 48 px in, after the handles' room.
+ */
+.directory .table.groupedTable tbody:nth-of-type(n) tr + tr > td {
+  background-image: linear-gradient(var(--m-border-soft), var(--m-border-soft));
+  background-position: right top;
+  background-repeat: no-repeat;
+  background-size: 100% 1px;
+}
+
+.directory .table.groupedTable tbody:nth-of-type(n) tr + tr > td:first-child {
+  background-size: calc(100% - 48px - var(--handle-room, 0px)) 1px;
+}
+
+/* Between two groups, a firmer rule than between two lines of a group. */
 .directory .table.groupedTable tbody + tbody {
-  border-top: 1px solid var(--m-border-soft);
+  border-top: 1px solid var(--m-border);
 }
 
 .directory
