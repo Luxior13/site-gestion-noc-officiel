@@ -192,6 +192,12 @@ dépliable « Voir les modifications avant enregistrement » depuis le
 
 ## Points ouverts
 
+- **Portée Esport — décision du propriétaire du 10 novembre 2026, à
+  construire** : l’éditeur choisira, pour le compte, tous les jeux, des jeux
+  choisis ou des équipes choisies ; c’est elle qui limite un manager, jamais
+  une fonction dans un Roster ([rôles métier](../../../domaines/roles-metier.md),
+  [cadrage](../../../propositions/membres-equipes-parcours.md#lot-3--accès-manager)).
+
 - **Section fixe avec défilement par colonne — question du propriétaire du
   26 octobre 2026, d’abord non retenue, puis livrée pour l’ordinateur (voir
   les décisions retenues).** Elle donnerait un ressenti d’application, mais : la bande

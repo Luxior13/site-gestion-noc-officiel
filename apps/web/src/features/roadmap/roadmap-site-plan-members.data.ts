@@ -149,13 +149,10 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
       'Ouverte par le nom d’un jeu sur la page Jeux, ou juste après son ajout.',
     tabs: [
       {
-        chantier: 'access-scopes',
         label: 'Fonctions',
         phase: null,
         summary:
           'Premier onglet : les fonctions de ce jeu (Joueur, Remplaçant, Coach…), type Joueur ou Encadrement, active ou non, avec leur nombre de passages ; rangées par glisser-déposer selon leur importance, actives ou non, ordre repris partout ; ajout et modification en fenêtre, fonctions courantes en un clic quand la liste est vide ; une fonction inactive reste choisissable pour un passage ancien.',
-        upcoming:
-          'Le réglage « Donne accès à son équipe » viendra avec l’accès des managers.',
       },
       {
         chantier: 'payments',

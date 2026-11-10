@@ -11,7 +11,7 @@ Le site sert d’abord à la trésorerie et à la traçabilité de la structure
 | Public | Voit | Mécanisme |
 | --- | --- | --- |
 | Membres du bureau | Ce que leurs autorisations ouvrent | Rôle et autorisations par page, déjà livrés |
-| Manager d’équipe | Seulement son équipe, sans les autres pôles | Compte Utilisateur et portée par équipe, à construire |
+| Manager d’équipe | Seulement les jeux ou équipes que ses autorisations lui ouvrent, sans les autres pôles | Compte Utilisateur, ses autorisations et une portée Esport (jeux ou équipes choisis), à construire (décision du 10 novembre 2026) |
 
 Les joueurs, coachs et autres membres sont des fiches du
 [Répertoire](../pages/personnes/repertoire/README.md), sans compte. Valable jusqu’à
@@ -22,8 +22,21 @@ Conséquences :
 - Un manager reste un Utilisateur : aucun nouveau rôle technique. Le menu filtre
   déjà les pôles selon les droits ; le serveur doit filtrer ses données par équipe.
 - Le modèle REV-15 ci-dessous se construit avec Équipes & parcours, réduit à ce
-  besoin : liaison explicite entre un compte et une fiche, et portée par équipe.
-  Portées par entité, modèles de rôle et délégations restent une cible.
+  besoin : une **portée Esport** sur le compte (voir la décision du 10 novembre
+  2026 ci-dessous). Portées par entité, modèles de rôle et délégations restent
+  une cible.
+- **Décision du propriétaire du 10 novembre 2026** (« le rôle manager se fait à
+  part, donc ne doit pas impacter les autorisations ; un manager d’un jeu
+  pourrait avoir plusieurs jeux si je le souhaite ; c’est l’utilisateur et ses
+  autorisations qui font, pas un rôle dans une équipe ») : l’accès vient
+  **uniquement du compte et de ses autorisations**. Une fonction tenue dans un
+  Roster (Manager, Coach…) reste un fait du registre et n’ouvre jamais rien.
+  L’éditeur d’autorisations d’un compte choisit la portée Esport : tous les
+  jeux, des jeux choisis (toutes leurs équipes, celles à venir comprises) ou
+  des équipes choisies. Remplace le réglage « Donne accès à son équipe » d’une
+  fonction et la liaison compte–fiche prévus le 7 novembre 2026 pour l’accès.
+  Conséquence assumée : au départ d’un manager, un administrateur retire ou
+  réduit sa portée ; rien ne se retire tout seul à la fin de son passage.
 - Les modules du bureau utilisent les autorisations actuelles : ils n’attendent
   pas la portée par équipe.
 - Les profils Joueur, Coach et Secrétariat du tableau ci-dessous ne décrivent plus

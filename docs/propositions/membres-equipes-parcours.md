@@ -28,7 +28,7 @@ migration. Ils demandent des scénarios d’abus et une validation sur base isol
 | --- | --- | --- |
 | 1 | Listes de choix | Champ « Jeux » sur la fiche, avec ajout direct ; la page Jeux (8 novembre 2026) et l’onglet Fonctions de chaque fiche jeu (9 novembre 2026) sont livrés |
 | 2 | Équipes & parcours | Page Jeux, fiches jeu et équipe, page Bureau & staff (Effectif, Anciens membres, Fonctions ; livrée le 9 novembre 2026), onglet Parcours en lecture (livré le même jour), autres pseudos dans l’onglet En ligne (10 novembre 2026) |
-| 3 | Accès manager | Un manager se connecte et ne voit que son équipe |
+| 3 | Accès manager | Un manager se connecte et ne voit que les jeux ou équipes de sa portée, choisie dans ses autorisations |
 
 Confidentialité & conservation et Données, exports & sauvegardes complètent l’étape 2. Le lot 1 introduit TanStack Query, prévu avec son premier consommateur
 ([décision REV-20](../references/architecture-fonctionnalite.md#5-états-ux-obligatoires)).
@@ -94,7 +94,7 @@ identifiants de jeu, finances) le fait en `ON DELETE RESTRICT`, jamais en
 - `/esport/jeux` (livrée le 8 novembre 2026, avec les équipes sous chaque jeu le même jour ; le nom d’une équipe ouvre sa fiche) : accueil d’Esport, au gabarit A, sans onglet : les sections,
   actives ou archivées, chacune avec ses équipes en dessous ; une équipe ouvre sa
   fiche en un clic, le nom du jeu ouvre la fiche jeu (décision du 8 novembre 2026).
-- `/esport/jeux/[id]` (ouverte le 8 novembre 2026, onglets Fonctions et Informations le 9) : fiche jeu, onglets Fonctions (livré ; réglage « Donne accès à son équipe » à l’étape 3), Finances ↗ (celles de ce
+- `/esport/jeux/[id]` (ouverte le 8 novembre 2026, onglets Fonctions et Informations le 9) : fiche jeu, onglets Fonctions (livré ; aucun réglage d’accès, décision du 10 novembre 2026), Finances ↗ (celles de ce
   jeu) et Informations ; l’onglet Équipes est retiré le
   8 novembre 2026, les équipes s’affichent et s’ajoutent sous chaque jeu de la
   page Jeux.
@@ -135,17 +135,26 @@ actions, filtre « Équipes », libellés des champs et fiches de page.
 
 ## Lot 3 — Accès manager
 
-**Données** : `UserPersonLink` (compte, fiche, auteur, dates), créé par une action
-explicite et tracée depuis la fiche utilisateur, jamais par rapprochement d’email.
+**Décision du propriétaire du 10 novembre 2026** : l’accès vient du **compte et de
+ses autorisations**, jamais d’une fonction dans un Roster (« c’est l’utilisateur et
+ses autorisations qui font, pas un rôle dans une équipe »). Elle remplace le
+réglage « Donne accès à son équipe » et la liaison `UserPersonLink` prévus ici le
+7 novembre pour l’accès ([rôles métier](../domaines/roles-metier.md)).
 
-**Une fonction ne donne pas d’accès par son nom.** Les fonctions se renomment, donc
-le code ne peut pas chercher le mot « Manager ». Une fonction d’équipe porte un réglage
-« Donne accès à son équipe » ; une fonction de la structure n’en a pas. Il ouvre des données personnelles : il exige un droit critique
-réservé aux Administrateurs et laisse une trace. Renommer une fonction n’y change rien.
+**Données** : une portée Esport par compte, dans ses autorisations : tous les jeux
+(par défaut), des **jeux choisis** (toutes leurs équipes, celles créées plus tard
+comprises) ou des **équipes choisies**, plusieurs possibles. Elle s’applique aux
+droits d’Esport (`games:view`, `teams:view`, `teams:manage`, puis tournois et
+entraînements) ; une portée par autorisation reste possible plus tard si un
+besoin apparaît. Chaque changement de portée est tracé dans le journal.
+
+**Une fonction ne donne jamais d’accès.** Manager, Coach ou Analyste restent des
+faits du registre : renommer une fonction, terminer un passage ou en ajouter un
+ne change rien aux droits d’un compte.
 
 **Politique** : `features/teams/server/policy.ts` expose `canViewTeam(acteur, équipe)`,
-vraie avec `teams:view`, ou avec une liaison active et un passage ouvert donnant
-accès. Elle est évaluée à chaque requête et dans chaque liste.
+vraie avec `teams:view` et une portée qui comprend l’équipe (tous les jeux, son
+jeu, ou elle-même). Elle est évaluée à chaque requête et dans chaque liste.
 
 **Ce que voit un manager** : ses équipes en lecture seule, chaque membre avec pseudo,
 fonction et dates. Il n’a ni `persons:view` ni accès au Répertoire : le serveur lui
@@ -154,9 +163,11 @@ navigation n’affiche que son équipe : sa fiche (Roster en lecture, Tournois s
 gains ni le Suivi) et, à l’étape 5, les tournois de son équipe, qu’il crée et
 remplit ; Mon compte reste accessible.
 
-**Scénarios à vérifier** : adresse d’une autre équipe, identifiant deviné, API
-appelée sans passer par l’écran, passage clôturé pendant la session, liaison retirée,
-réglage retiré de la fonction, compte désactivé, recherche rapide, totaux des listes.
+**Scénarios à vérifier** : adresse d’une équipe hors portée, identifiant deviné,
+API appelée sans passer par l’écran, portée réduite pendant la session, nouvelle
+équipe d’un jeu choisi, compte désactivé, recherche rapide, totaux des listes.
+Au départ d’un manager, sa portée se retire à la main : rien ne la lie à ses
+passages.
 
 ## Effets sur l’existant
 
