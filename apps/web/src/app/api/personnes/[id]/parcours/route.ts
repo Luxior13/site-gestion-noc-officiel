@@ -5,6 +5,7 @@ import { passagePersonIdSchema } from '$features/passages/schemas/passage.schema
 import { getPersonJourney } from '$features/passages/server/person-journey.service';
 import { requireAuth, requirePermission } from '$server/api-auth';
 import { apiErrors, apiSuccess } from '$server/api-response';
+import { readActorEsportScope } from '$server/esport-scope';
 import { serviceErrorResponse } from '$server/service-error';
 
 type RouteParams = { params: Promise<{ id: string }> };
@@ -33,7 +34,8 @@ export async function GET(
     return apiSuccess(
       await getPersonJourney(personId.data, {
         structure: structure.success,
-        teams: teams.success,
+        // Only the rosters of the teams in the reader's Esport scope.
+        teams: teams.success ? await readActorEsportScope(auth.user) : null,
       }),
     );
   } catch (error) {

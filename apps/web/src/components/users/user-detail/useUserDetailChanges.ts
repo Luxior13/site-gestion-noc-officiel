@@ -1,11 +1,19 @@
 import { useMemo } from 'react';
 
+import {
+  type EsportScopeValue,
+  FULL_ESPORT_SCOPE_VALUE,
+  isEmptyEsportScope,
+  normalizeEsportScope,
+  sameEsportScope,
+} from '$constants/esport-scope.constants';
 import type { PermissionsData } from '$constants/permissions.constants';
 import type { UserType } from '$types/auth.types';
 
 import { analyzeUserAccessMutationBatch } from './user-access-editor-policy';
 import {
   getProfileFieldErrors,
+  savedEsportScope,
   type UserDetailForm,
   userProfileSchema,
 } from './user-detail-draft';
@@ -27,9 +35,12 @@ export type UserDetailChanges = {
   accessMutationAnalysis: ReturnType<
     typeof analyzeUserAccessMutationBatch
   > | null;
+  accessSaveDisabledReason: string | undefined;
   canSaveAccess: boolean;
   canSaveAccount: boolean;
   canSaveSecurity: boolean;
+  /** The draft scope to send: changed, and not reset by a promotion. */
+  esportScopeToSave: EsportScopeValue | null;
   hasAccessChanges: boolean;
   hasAccessPermissionChanges: boolean;
   hasAccountChanges: boolean;
@@ -52,6 +63,7 @@ export type UserDetailChanges = {
 export const useUserDetailChanges = ({
   capabilities: {
     canEditTargetContact,
+    canEditTargetEsportScope,
     canEditTargetLogin,
     canEditTargetProfile,
     canEditTargetRole,
@@ -62,6 +74,7 @@ export const useUserDetailChanges = ({
     isSelf,
   },
   editForm,
+  esportScope,
   mutation,
   permissions,
   user,
@@ -69,6 +82,7 @@ export const useUserDetailChanges = ({
   capabilities: Pick<
     UserDetailCapabilities,
     | 'canEditTargetContact'
+    | 'canEditTargetEsportScope'
     | 'canEditTargetLogin'
     | 'canEditTargetProfile'
     | 'canEditTargetRole'
@@ -79,6 +93,7 @@ export const useUserDetailChanges = ({
     | 'isSelf'
   >;
   editForm: UserDetailForm;
+  esportScope: EsportScopeValue | null;
   mutation: Pick<
     ReturnType<typeof useUserMutationFeedback>,
     'feedback' | 'serverValidation'
@@ -168,7 +183,21 @@ export const useUserDetailChanges = ({
       user.permissions,
       ACCOUNT_PERMISSION_KEYS,
     );
-  const hasAccessChanges = hasRoleChanges || hasAccessPermissionChanges;
+  // An administrator always sees every game: a promotion resets the scope,
+  // the server does it.
+  const savedScope = savedEsportScope(user);
+  const draftScope =
+    editForm.role === 'ADMIN' ? FULL_ESPORT_SCOPE_VALUE : esportScope;
+  const hasEsportScopeChanges =
+    !!savedScope && !!draftScope && !sameEsportScope(draftScope, savedScope);
+  const esportScopeToSave =
+    hasEsportScopeChanges && editForm.role !== 'ADMIN' && draftScope
+      ? normalizeEsportScope(draftScope)
+      : null;
+  const esportScopeIncomplete =
+    !!esportScopeToSave && isEmptyEsportScope(esportScopeToSave);
+  const hasAccessChanges =
+    hasRoleChanges || hasAccessPermissionChanges || hasEsportScopeChanges;
   const accessMutationAnalysis = user
     ? analyzeUserAccessMutationBatch({
         currentPermissions: user.permissions,
@@ -187,11 +216,21 @@ export const useUserDetailChanges = ({
     hasAccessChanges ||
     hasAccountChanges ||
     hasSecurityChanges;
+  const permissionPartAllowed =
+    (!hasRoleChanges && !hasAccessPermissionChanges) ||
+    accessMutationAnalysis?.decision.allowed === true;
   const canSaveAccess =
     hasAccessChanges &&
     !mutation.feedback?.conflict &&
     (!hasRoleChanges || canEditTargetRole) &&
-    accessMutationAnalysis?.decision.allowed === true;
+    permissionPartAllowed &&
+    (!esportScopeToSave ||
+      (canEditTargetEsportScope && !esportScopeIncomplete));
+  const accessSaveDisabledReason = !permissionPartAllowed
+    ? accessMutationAnalysis?.decision.reason
+    : esportScopeIncomplete
+      ? 'Choisissez au moins un jeu ou une équipe.'
+      : undefined;
   const canSaveAccount =
     hasAccountPermissionChanges &&
     canManageTargetAccountPolicy &&
@@ -224,9 +263,11 @@ export const useUserDetailChanges = ({
 
   return {
     accessMutationAnalysis,
+    accessSaveDisabledReason,
     canSaveAccess,
     canSaveAccount,
     canSaveSecurity,
+    esportScopeToSave,
     hasAccessChanges,
     hasAccessPermissionChanges,
     hasAccountChanges,

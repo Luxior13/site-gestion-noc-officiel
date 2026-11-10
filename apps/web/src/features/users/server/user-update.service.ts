@@ -25,6 +25,11 @@ import {
 } from '$server/user-action-authorization';
 
 import { USER_DETAIL_SELECT } from './user-detail.service';
+import {
+  assertActorSeesEveryGame,
+  type EsportScopeRows,
+  replaceEsportScopeItems,
+} from './user-esport-scope';
 
 export class LoginNameReservationConflictError extends Error {
   constructor() {
@@ -44,14 +49,24 @@ type UserUpdateMutation = {
   beforeValues: Record<string, unknown>;
   changedKeys: string[];
   changedPermissionKeys: string[];
+  /** The chosen games or teams that replace the account's, if changed. */
+  esportScopeItems?: EsportScopeRows['items'];
   hasAuthorizationChange: boolean;
   shouldInvalidateSessions: boolean;
   updateData: Record<string, unknown>;
 };
 
+/** A scope change, said in words for the journal, and its write. */
+export type EsportScopeUpdate = Readonly<{
+  after: string;
+  before: string;
+  rows: EsportScopeRows;
+}>;
+
 export const prepareUserUpdate = (
   existingUser: UserForUpdate,
   input: UserUpdateInput,
+  esportScope?: EsportScopeUpdate,
 ): UserUpdateMutation => {
   const {
     contactEmail,
@@ -122,9 +137,16 @@ export const prepareUserUpdate = (
       updateData.permissions = permissions ?? Prisma.DbNull;
     }
   }
+  if (esportScope) {
+    beforeValues.esportScope = esportScope.before;
+    afterValues.esportScope = esportScope.after;
+    updateData.esportScope = esportScope.rows.kind;
+  }
   const changedKeys = Object.keys(afterValues);
   const hasAuthorizationChange =
-    changedKeys.includes('permissions') || changedKeys.includes('role');
+    changedKeys.includes('permissions') ||
+    changedKeys.includes('role') ||
+    changedKeys.includes('esportScope');
   const changedPermissionKeys = changedKeys.includes('permissions')
     ? getChangedPermissionKeys(
         beforeValues.permissions,
@@ -147,6 +169,7 @@ export const prepareUserUpdate = (
     beforeValues,
     changedKeys,
     changedPermissionKeys,
+    ...(esportScope ? { esportScopeItems: esportScope.rows.items } : {}),
     hasAuthorizationChange,
     shouldInvalidateSessions,
     updateData,
@@ -162,6 +185,7 @@ export const updateUserWithAudit = async ({
   expectedUpdatedAt,
   mutation,
   requiredProof,
+  requiresFullEsportScope = false,
 }: {
   actorId: string;
   authority: UserActionAuthority;
@@ -171,6 +195,8 @@ export const updateUserWithAudit = async ({
   expectedUpdatedAt: Date;
   mutation: ReturnType<typeof prepareUserUpdate>;
   requiredProof: UserActionProof;
+  /** The actor sets another account's Esport scope: they must see every game. */
+  requiresFullEsportScope?: boolean;
 }): Promise<UserForUpdate> => {
   const {
     afterValues,
@@ -285,6 +311,8 @@ export const updateUserWithAudit = async ({
       id,
     );
     assertUserActionProof(authorized, requiredProof);
+    if (requiresFullEsportScope && !authorized.user.isProtected)
+      await assertActorSeesEveryGame(transaction, actorId);
     if (changedKeys.includes('loginName')) {
       const reservation = await transaction.loginNameReservation.findUnique({
         where: { loginName: updatedLoginName },
@@ -303,6 +331,11 @@ export const updateUserWithAudit = async ({
         });
       }
     }
+
+    // Before the update, so its answer reads the new choices; rolled back
+    // with it if the account changed in between.
+    if (mutation.esportScopeItems)
+      await replaceEsportScopeItems(transaction, id, mutation.esportScopeItems);
 
     const nextUser = await transaction.user.update({
       data: updateData,

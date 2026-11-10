@@ -50,9 +50,11 @@ type PermissionsEditorProps = {
   changedPermissionKeys?: ReadonlySet<string>;
   disabled?: boolean;
   onChange: (permissions: PermissionsData | null) => void;
-  /** On a narrow screen, open the selected page instead of the page list. */
+  /** More settings of a page, under its access (the Esport scope on Jeux). */
   onSelectedPageChange: (pageKey: string) => void;
+  /** On a narrow screen, open the selected page instead of the page list. */
   openPageOnNarrow?: boolean;
+  pageAddon?: (pageKey: string) => React.ReactNode;
   permissions: PermissionsData | null;
   /** Role field, on its own line above the pages. */
   role: UserRole;
@@ -99,6 +101,7 @@ export const PermissionsEditor: FC<PermissionsEditorProps> = ({
   onChange,
   onSelectedPageChange,
   openPageOnNarrow = false,
+  pageAddon,
   permissions,
   role,
   roleControl,
@@ -538,6 +541,7 @@ export const PermissionsEditor: FC<PermissionsEditorProps> = ({
         {accessPermission &&
           shown(accessPermission) &&
           renderRow(accessPermission, category, true, pageBlockedReason)}
+        {pageAddon?.(category.key)}
         {[...groups].map(([module, items]) => (
           <section key={module} className={styles.group} aria-label={module}>
             <h4 className={styles.groupHeading}>{module}</h4>

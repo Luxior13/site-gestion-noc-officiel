@@ -35,29 +35,33 @@ enum AuditValueStorageMode {
 }
 
 model User {
-  id                     String    @id @default(cuid())
-  loginName              String    @unique
+  id                     String      @id @default(cuid())
+  loginName              String      @unique
   contactEmail           String?
   contactEmailVerifiedAt DateTime?
   passwordHash           String
   firstName              String
   lastName               String?
-  role                   UserRole  @default(USER)
+  role                   UserRole    @default(USER)
   permissions            Json?
-  isActive               Boolean   @default(true)
+  /// Which games and teams the account reaches in the Esport pole (owner,
+  /// 10 November 2026), always `ALL` for an administrator
+  /// (`User_esportScope_admin_check`).
+  esportScope            EsportScope @default(ALL)
+  isActive               Boolean     @default(true)
   /// Singleton application root. Database constraints require this account
   /// to remain active, undeleted and administrative.
-  isProtected            Boolean   @default(false)
-  mustChangePassword     Boolean   @default(false)
+  isProtected            Boolean     @default(false)
+  mustChangePassword     Boolean     @default(false)
   lastLoginAt            DateTime?
   passwordChangedAt      DateTime?
   mfaEnabledAt           DateTime?
-  securityVersion        Int       @default(0)
+  securityVersion        Int         @default(0)
   /// Irreversible deletion marker. Deleted rows are anonymous, immutable
   /// technical tombstones retained only for audit and identifier ownership.
   deletedAt              DateTime?
-  createdAt              DateTime  @default(now())
-  updatedAt              DateTime  @updatedAt
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
 
   sessions              Session[]
   auditLogs             AuditLog[]             @relation("AuditActor")
@@ -68,6 +72,7 @@ model User {
   mfaRecoveryCodes      MfaRecoveryCode[]
   mfaLoginChallenge     MfaLoginChallenge?
   updatedSystemSettings SystemSetting[]        @relation("SystemSettingUpdater")
+  esportScopeItems      UserEsportScopeItem[]
   // Search: trigram indexes on public.search_text(identity) and
   // public.search_text(contactEmail), expression indexes kept in the
   // 20261031140000_shared_search_text migration.
@@ -81,6 +86,38 @@ model User {
   @@index([deletedAt, mustChangePassword])
   @@index([deletedAt, role])
   @@index([mfaEnabledAt])
+}
+
+/// Which games and teams an account reaches in the Esport pole (owner,
+/// 10 November 2026: « c'est l'utilisateur et ses autorisations qui font, pas
+/// un rôle dans une équipe »). Set in its authorizations; a function held in a
+/// roster never opens anything.
+enum EsportScope {
+  /// Every game and every team, as before the scope existed.
+  ALL
+  /// The chosen games, with all their teams, future ones included.
+  GAMES
+  /// The chosen teams only.
+  TEAMS
+}
+
+/// A game or a team chosen in an account's Esport scope, exactly one of the
+/// two (`UserEsportScopeItem_target_check`). Only the rows of the scope's kind
+/// count; an empty list opens nothing. A game or team deleted leaves it.
+model UserEsportScopeItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gameId    String?
+  game      Game?    @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  teamId    String?
+  team      Team?    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, gameId])
+  @@unique([userId, teamId])
+  @@index([gameId])
+  @@index([teamId])
 }
 
 /// Permanent ownership history for authentication identifiers. A login name
@@ -600,21 +637,22 @@ enum DatePrecision {
 /// Esport pole (8 November 2026). Its teams sit under it, its functions in
 /// its record (9 November 2026).
 model Game {
-  id                   String           @id @default(cuid())
-  name                 String           @db.VarChar(60)
+  id                   String                @id @default(cuid())
+  name                 String                @db.VarChar(60)
   /// Shared search form of the name: « Valorant » and « VALORANT » are one game.
-  normalizedName       String           @unique @db.VarChar(120)
-  shortName            String?          @db.VarChar(12)
-  firstOpenedOn        DateTime         @db.Date
-  firstOpenedPrecision DatePrecision    @default(DAY)
+  normalizedName       String                @unique @db.VarChar(120)
+  shortName            String?               @db.VarChar(12)
+  firstOpenedOn        DateTime              @db.Date
+  firstOpenedPrecision DatePrecision         @default(DAY)
   /// Rank of the game, set by dragging, active or not (9 November 2026).
-  position             Int              @default(0)
-  isActive             Boolean          @default(true)
-  version              Int              @default(1)
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @updatedAt
+  position             Int                   @default(0)
+  isActive             Boolean               @default(true)
+  version              Int                   @default(1)
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
   teams                Team[]
   functions            MemberFunction[]
+  esportScopeItems     UserEsportScopeItem[]
 
   @@index([isActive, position])
 }
@@ -639,7 +677,8 @@ model Team {
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
-  passages PersonPassage[]
+  passages         PersonPassage[]
+  esportScopeItems UserEsportScopeItem[]
 
   @@unique([gameId, normalizedName])
   @@index([gameId, isActive, position])

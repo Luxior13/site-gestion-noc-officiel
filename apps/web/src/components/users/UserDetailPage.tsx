@@ -138,10 +138,12 @@ const UserDetailPageContent: FC<UserDetailPageProps> = ({
   const {
     clearUserState,
     editForm,
+    esportScope,
     permissions,
     restoreSavedDraft,
     restoreSavedSection,
     setEditForm,
+    setEsportScope,
     setPermissions,
     syncUserState,
     user,
@@ -167,6 +169,7 @@ const UserDetailPageContent: FC<UserDetailPageProps> = ({
     requestStepUpForResponse,
   } = adminStepUp;
 
+  const capabilities = useUserDetailCapabilities(currentUser, user);
   const {
     canEditTargetContact,
     canEditTargetLogin,
@@ -191,7 +194,7 @@ const UserDetailPageContent: FC<UserDetailPageProps> = ({
     isTargetIdentityMasked,
     loginReadOnlyHint,
     visibleUserDetailSections,
-  } = useUserDetailCapabilities(currentUser, user);
+  } = capabilities;
   const {
     fetchSecuritySessions,
     hasLoadedSecuritySessions,
@@ -244,39 +247,27 @@ const UserDetailPageContent: FC<UserDetailPageProps> = ({
   } = securityActions;
   const { clearPassword } = passwordReset;
   const isResetting = passwordReset.isResetting;
+  const changes = useUserDetailChanges({
+    capabilities,
+    editForm,
+    esportScope,
+    mutation,
+    permissions,
+    user,
+  });
   const {
     accessMutationAnalysis,
     canSaveAccess,
     canSaveAccount,
     canSaveSecurity,
     hasAccessChanges,
-    hasAccessPermissionChanges,
     hasAccountChanges,
     hasProfileChanges,
-    hasProfileContactChanges,
-    hasProfileErrors,
-    hasProfileLoginChanges,
     hasSecurityChanges,
     hasUnsavedChanges,
     profileErrors,
     railDirtySections,
-  } = useUserDetailChanges({
-    capabilities: {
-      canEditTargetContact,
-      canEditTargetLogin,
-      canEditTargetProfile,
-      canEditTargetRole,
-      canEditTargetStatus,
-      canManageTargetAccessPermissions,
-      canManageTargetAccountPolicy,
-      decideAccessPermissionMutation,
-      isSelf,
-    },
-    editForm,
-    mutation,
-    permissions,
-    user,
-  });
+  } = changes;
   const activeRailSection: UserDetailSectionId =
     activeSection === 'account' ? 'access' : activeSection;
   const resolveRailSection = useCallback(
@@ -397,27 +388,8 @@ const UserDetailPageContent: FC<UserDetailPageProps> = ({
     handleSaveSecurity,
   } = buildUserDetailSaves({
     applyUserUpdate,
-    capabilities: {
-      canEditTargetContact,
-      canEditTargetLogin,
-      canEditTargetProfile,
-      canEditTargetRole,
-      canEditTargetStatus,
-      canManageTargetAccessPermissions,
-      canManageTargetAccountPolicy,
-      isSelf,
-    },
-    changes: {
-      accessMutationAnalysis,
-      hasAccessChanges,
-      hasAccessPermissionChanges,
-      hasAccountChanges,
-      hasProfileChanges,
-      hasProfileContactChanges,
-      hasProfileErrors,
-      hasProfileLoginChanges,
-      hasSecurityChanges,
-    },
+    capabilities,
+    changes,
     context: {
       isMounted: () => mountedRef.current,
       lifetime: mutationAbortControllerRef,
@@ -427,6 +399,7 @@ const UserDetailPageContent: FC<UserDetailPageProps> = ({
     },
     currentUser,
     editForm,
+    esportScope,
     permissions,
     refreshSessions: () => void fetchSecuritySessions(),
     requestPasswordReauthenticationForResponse,
@@ -477,7 +450,12 @@ const UserDetailPageContent: FC<UserDetailPageProps> = ({
             canGrantPermissions={canGrantTargetAccessPermissions}
             canManagePermissions={canManageTargetAccessPermissions}
             mutationSummary={accessMutationAnalysis?.summary ?? null}
-            saveDisabledReason={accessMutationAnalysis?.decision.reason}
+            saveDisabledReason={changes.accessSaveDisabledReason}
+            esportScope={{
+              canEdit: capabilities.canEditTargetEsportScope,
+              onChange: setEsportScope,
+              value: esportScope,
+            }}
             isSaving={isSavingPermissions || mutation.isRefreshing}
             isRefreshing={mutation.isRefreshing}
             permissionPageKey={permissionPageKey}

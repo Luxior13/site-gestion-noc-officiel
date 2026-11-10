@@ -14,6 +14,7 @@ import {
   parseJsonBody,
   zodErrorDetails,
 } from '$server/api-response';
+import { FULL_ESPORT_SCOPE } from '$server/esport-scope';
 import { serviceErrorResponse } from '$server/service-error';
 
 /** The functions of the structure, tab of Bureau & staff (9 November 2026). */
@@ -24,7 +25,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   if (!permission.success) return permission.response;
 
   try {
-    return apiSuccess(await listFunctions(STRUCTURE_SCOPE));
+    // The structure is outside the Esport pole and its scope.
+    return apiSuccess(await listFunctions(STRUCTURE_SCOPE, FULL_ESPORT_SCOPE));
   } catch (error) {
     return serviceErrorResponse(error, { action: 'FUNCTION_LIST', request });
   }

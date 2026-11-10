@@ -14,6 +14,12 @@ import { mapUserToUserType } from '$server/user-projection';
 import { protectUserIdentityForActor } from '$server/user-visibility';
 import type { UserType } from '$types/auth.types';
 
+import {
+  canReadEsportScope,
+  ESPORT_SCOPE_SELECT,
+  storedEsportScope,
+} from './user-esport-scope';
+
 const ACCESS_PERMISSION_KEY_SET = new Set(getAccessPermissionKeys());
 const ACCOUNT_PERMISSION_KEY_SET = new Set(getAccountPermissionKeys());
 
@@ -37,6 +43,7 @@ export const USER_DETAIL_SELECT = {
   securityVersion: true,
   totpCredential: { select: { userId: true } },
   updatedAt: true,
+  ...ESPORT_SCOPE_SELECT,
 } as const satisfies Prisma.UserSelect;
 
 const getPermissionOverridesForActor = (
@@ -79,6 +86,7 @@ const getPermissionOverridesForActor = (
 type UserWithCriticalAccessReadiness = Parameters<
   typeof mapUserToUserType
 >[0] & {
+  esportScopeItems?: { gameId: string | null; teamId: string | null }[];
   totpCredential?: { userId: string } | null;
 };
 
@@ -86,7 +94,15 @@ export const mapUserForActor = (
   user: UserWithCriticalAccessReadiness,
   actor: UserType,
 ): UserType => {
-  const clientUser = mapUserToUserType(user);
+  const { esportScope, ...clientUser } = mapUserToUserType(user);
+  // The scope with its choices, for who reads the account's access.
+  const scope =
+    user.esportScope && user.esportScopeItems
+      ? storedEsportScope({
+          esportScope: user.esportScope,
+          esportScopeItems: user.esportScopeItems,
+        })
+      : null;
   const canViewContact =
     actor.id === clientUser.id ||
     actor.isProtected ||
@@ -129,6 +145,19 @@ export const mapUserForActor = (
         clientUser.permissions,
         actor,
       ),
+      ...(canReadEsportScope(actor, clientUser.id)
+        ? {
+            esportScope,
+            ...(scope
+              ? {
+                  esportScopeItems: {
+                    gameIds: scope.gameIds,
+                    teamIds: scope.teamIds,
+                  },
+                }
+              : {}),
+          }
+        : {}),
     },
     actor,
   );

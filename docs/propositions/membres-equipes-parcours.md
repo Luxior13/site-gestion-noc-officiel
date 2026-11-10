@@ -12,9 +12,9 @@
   Roster, Parcours, Bureau & staff, statut calculé ; sauvegarde v11 du
   registre) ; nationalité, contacts d’urgence et représentants légaux livrés
   le 10 novembre 2026, puis les autres pseudos et l’ID du compte Discord le
-  même jour, et les comptes de jeu ; restent les jeux pratiqués et l’adresse,
-  puis le lot 3. Les choix techniques non livrés restent à
-  valider au moment de leur lot.
+  même jour, et les comptes de jeu ; lot 3 (portée Esport) livré le
+  10 novembre 2026 ; restent les jeux pratiqués et l’adresse. Les choix
+  techniques non livrés restent à valider au moment de leur lot.
 - **Décisions déjà données** : [registre historique](../domaines/registre-historique.md)
   et [public du site](../domaines/roles-metier.md#public-du-site--décision-du-7-novembre-2026).
   Ce document ne les répète pas.
@@ -28,7 +28,7 @@ migration. Ils demandent des scénarios d’abus et une validation sur base isol
 | --- | --- | --- |
 | 1 | Listes de choix | Champ « Jeux » sur la fiche, avec ajout direct ; la page Jeux (8 novembre 2026) et l’onglet Fonctions de chaque fiche jeu (9 novembre 2026) sont livrés |
 | 2 | Équipes & parcours | Page Jeux, fiches jeu et équipe, page Bureau & staff (Effectif, Anciens membres, Fonctions ; livrée le 9 novembre 2026), onglet Parcours en lecture (livré le même jour), autres pseudos dans l’onglet En ligne (10 novembre 2026) |
-| 3 | Accès manager | Un manager se connecte et ne voit que les jeux ou équipes de sa portée, choisie dans ses autorisations |
+| 3 | Accès manager | Un manager se connecte et ne voit que les jeux ou équipes de sa portée, choisie dans ses autorisations (livré le 10 novembre 2026) |
 
 Confidentialité & conservation et Données, exports & sauvegardes complètent l’étape 2. Le lot 1 introduit TanStack Query, prévu avec son premier consommateur
 ([décision REV-20](../references/architecture-fonctionnalite.md#5-états-ux-obligatoires)).
@@ -152,20 +152,26 @@ besoin apparaît. Chaque changement de portée est tracé dans le journal.
 faits du registre : renommer une fonction, terminer un passage ou en ajouter un
 ne change rien aux droits d’un compte.
 
-**Politique** : `features/teams/server/policy.ts` expose `canViewTeam(acteur, équipe)`,
-vraie avec `teams:view` et une portée qui comprend l’équipe (tous les jeux, son
-jeu, ou elle-même). Elle est évaluée à chaque requête et dans chaque liste.
+**Politique** (livrée le 10 novembre 2026) : `$server/esport-scope` lit la portée
+du compte à chaque requête et sous le verrou de chaque mutation, filtre les
+listes et répond « introuvable » hors portée ; règles complètes dans les
+[permissions](../domaines/permissions.md#portée-esport).
 
-**Ce que voit un manager** : ses équipes en lecture seule, chaque membre avec pseudo,
-fonction et dates. Il n’a ni `persons:view` ni accès au Répertoire : le serveur lui
-renvoie uniquement cette projection, sans coordonnées et sans lien vers la fiche. La
-navigation n’affiche que son équipe : sa fiche (Roster en lecture, Tournois sans les
-gains ni le Suivi) et, à l’étape 5, les tournois de son équipe, qu’il crée et
-remplit ; Mon compte reste accessible.
+**Ce que voit un manager** : ce que ses autorisations ouvrent, dans sa portée. Avec
+`games:view` et `teams:view`, la page Jeux ne montre que ses jeux et ses équipes ;
+avec `teams:manage`, il gère le Roster de ses équipes ; sans `persons:view`, ni
+Répertoire ni lien vers une fiche (nom, pseudo, fonction et dates seulement).
+Pour ajouter quelqu’un à son Roster, il cherche une fiche par nom ou pseudo dans
+tout le Répertoire, sans coordonnées (choix A du propriétaire, 10 novembre 2026).
+À l’étape 5, les tournois de son équipe suivront la même portée.
 
-**Scénarios à vérifier** : adresse d’une équipe hors portée, identifiant deviné,
-API appelée sans passer par l’écran, portée réduite pendant la session, nouvelle
-équipe d’un jeu choisi, compte désactivé, recherche rapide, totaux des listes.
+**Scénarios vérifiés** le 10 novembre 2026 (suite `esport-scope-postgres`, banc
+réel sur build de production avec un vrai compte manager) : adresse d’une équipe
+hors portée, identifiant deviné, API appelée sans passer par l’écran, portée
+réduite pendant la session, nouvelle équipe d’un jeu choisi, portée vidée par la
+suppression de son jeu, totaux des listes. Compte désactivé : sessions fermées
+par le mécanisme commun ; recherche rapide : pages seulement, aucun jeu ni
+équipe.
 Au départ d’un manager, sa portée se retire à la main : rien ne la lie à ses
 passages.
 
@@ -189,6 +195,7 @@ import, ni traitement différé, ni gouvernance, ni montant). Hors impact : Q18,
 
 | ID | Question | Décision | Date |
 | --- | --- | --- | --- |
+| CAD-Q5 | Pour ajouter un joueur à son Roster, qui un manager peut-il chercher ? | « ok go » sur la recommandation A : tout le Répertoire par nom et pseudo, sans coordonnées, pour retrouver une fiche existante (bannis compris) au lieu de créer un doublon | 10 novembre 2026 |
 | CAD-Q4 | Où vont graphistes, monteurs et autres soutiens, et l’Effectif sépare-t-il le bureau du staff ? | « ok go » sur la recommandation : selon pour qui ils travaillent, toute la structure dans l’Effectif de Bureau & staff, une seule équipe dans son Roster avec une fonction d’encadrement du jeu ; les fonctions de la structure ont deux types, Bureau (mandats élus) et Staff, en deux groupes comme Joueurs et Encadrement ; droits propres à Bureau & staff ([fiche](../pages/structure/bureau-staff.md)) | 9 novembre 2026 |
 
 ## Questions au propriétaire

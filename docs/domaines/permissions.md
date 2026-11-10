@@ -342,6 +342,27 @@ dans la page Jeux de l’éditeur, en deux groupes (Jeux, Équipes) ; voir les
 | `teams:view` | voir les équipes sous chaque jeu, actives ou non, et leur Roster (personnes, fonctions, dates ; le lien vers une fiche suit `persons:view`) | `games:view` | défaut | Non |
 | `teams:manage` | ajouter une équipe à un jeu, la modifier, la rendre active ou non, ranger les équipes de chaque jeu par glisser-déposer, actives ou non (9 novembre 2026), supprimer une équipe qui n’a jamais servi ; ajouter, corriger, terminer et supprimer les passages de son Roster, et chercher pour cela une fiche du Répertoire par son nom (9 novembre 2026, sans droit de parcours séparé) | `teams:view` | sensible | Non |
 
+### Portée Esport
+
+Décision du propriétaire du 10 novembre 2026 (« c’est l’utilisateur et ses
+autorisations qui font, pas un rôle dans une équipe »), livrée le même jour.
+Les autorisations Esport disent **ce que** le compte peut faire, sa portée
+**où** : tous les jeux (par défaut), des **jeux choisis** (toutes leurs équipes,
+celles créées plus tard comprises) ou des **équipes choisies**. Une fonction
+tenue dans un Roster (Manager, Coach…) n’ouvre jamais rien.
+
+| Règle | Détail |
+| --- | --- |
+| Stockage | `User.esportScope` (`ALL`, `GAMES`, `TEAMS`) et `UserEsportScopeItem` (un jeu ou une équipe par ligne) ; seules les lignes du type choisi comptent ; une liste vide n’ouvre rien, jamais tout |
+| Administrateur | Toujours `ALL` (contrainte `User_esportScope_admin_check`) ; une promotion remet la portée à « Tous les jeux » |
+| Application | Relue à chaque requête et dans chaque mutation, sous le verrou du compte (`$server/esport-scope`) : listes des jeux et équipes, fiche d’un jeu et ses fonctions, fiche d’une équipe et son Roster, Parcours d’une fiche, totaux (nombre d’équipes d’un jeu) |
+| Hors portée | Répond « introuvable » (404), comme un identifiant inventé : le compte n’apprend rien de ce qu’il ne voit pas |
+| Tout un jeu | Modifier un jeu ou ses fonctions, ajouter une équipe, ordonner ses équipes : seulement avec ce jeu entier dans la portée (`ALL` ou `GAMES`) ; une portée d’équipes reçoit un refus (403) quel que soit le jeu |
+| Tous les jeux | Ajouter un jeu ou ordonner les jeux : seulement avec `ALL` |
+| Qui la règle | Un compte qui peut à la fois accorder et retirer des autorisations (`users:grant_access` et `users:revoke_access`) et voit lui-même tous les jeux ; jamais sur son propre compte ; preuve et versions comme les autres autorisations ; tracée « Autorisations modifiées » avec « Jeux et équipes visibles » avant et après, en clair |
+| Hors de son effet | Bureau & staff (droits `staff:*`), le Répertoire (le statut d’une fiche se calcule sur tous ses passages), le journal d’activité, la recherche d’une fiche pour l’ajouter à un Roster (nom et pseudo, choix A du propriétaire du 10 novembre 2026) |
+| Départ d’un manager | Rien ne se retire seul à la fin de son passage : un administrateur réduit ou retire sa portée |
+
 ### Page Bureau & staff
 
 Première page du pôle Structure (9 novembre 2026). Ses deux permissions sont

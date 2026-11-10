@@ -78,6 +78,7 @@ par responsabilité dans `shared/server` :
 | `service-error.ts` | `ServiceError`, `serviceErrors` et `serviceErrorResponse`, communs à tous les services |
 | `sensitive-action.ts` | Fraîcheur des preuves de mot de passe et de double authentification |
 | `user-permission-mutation-authorization.ts` | Frontières d’octroi, de retrait et de délégation des droits d’un compte |
+| `esport-scope.ts` | Portée Esport du compte (10 novembre 2026) : lecture à chaque requête et sous le verrou d’une mutation (`authorizeEsportAction`), filtres des jeux et équipes, refus « introuvable » ou « tout le jeu » |
 
 Ces primitives transverses restent dans `shared/server` ; les cas d’usage du
 module d’authentification relèvent de `features/auth/server` (connexion,

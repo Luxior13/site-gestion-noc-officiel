@@ -1,6 +1,7 @@
 import type { UserRole } from '@repo/shared';
 import { toast } from 'sonner';
 
+import type { EsportScopeValue } from '$constants/esport-scope.constants';
 import type { PermissionsData } from '$constants/permissions.constants';
 import type { UserType } from '$types/auth.types';
 
@@ -53,6 +54,7 @@ export const buildUserDetailSaves = ({
   },
   changes: {
     accessMutationAnalysis,
+    esportScopeToSave,
     hasAccessChanges,
     hasAccessPermissionChanges,
     hasAccountChanges,
@@ -65,6 +67,7 @@ export const buildUserDetailSaves = ({
   context,
   currentUser,
   editForm,
+  esportScope,
   permissions,
   refreshSessions,
   requestPasswordReauthenticationForResponse,
@@ -89,6 +92,7 @@ export const buildUserDetailSaves = ({
   changes: Pick<
     UserDetailChanges,
     | 'accessMutationAnalysis'
+    | 'esportScopeToSave'
     | 'hasAccessChanges'
     | 'hasAccessPermissionChanges'
     | 'hasAccountChanges'
@@ -101,6 +105,7 @@ export const buildUserDetailSaves = ({
   context: UserDetailPatchContext;
   currentUser: UserType | null | undefined;
   editForm: UserDetailForm;
+  esportScope: EsportScopeValue | null;
   permissions: PermissionsData | null;
   refreshSessions: () => void;
   requestPasswordReauthenticationForResponse: ConfirmForResponse;
@@ -209,7 +214,10 @@ export const buildUserDetailSaves = ({
       return;
     }
 
-    if (!accessMutationAnalysis?.decision.allowed) {
+    // The permissions part has its own policy; the scope alone does not.
+    const changesPermissions =
+      editForm.role !== user?.role || hasAccessPermissionChanges;
+    if (changesPermissions && !accessMutationAnalysis?.decision.allowed) {
       toast.error(
         accessMutationAnalysis?.decision.reason ?? 'Lot non autorisé',
       );
@@ -224,6 +232,7 @@ export const buildUserDetailSaves = ({
     }
 
     const payload: {
+      esportScope?: EsportScopeValue;
       expectedUpdatedAt: string;
       permissions?: PermissionsData | null;
       permissionScope?: 'access';
@@ -237,6 +246,7 @@ export const buildUserDetailSaves = ({
         ACCESS_PERMISSION_KEYS,
       );
     }
+    if (esportScopeToSave) payload.esportScope = esportScopeToSave;
 
     await runUserDetailPatch(context, {
       body: payload,
@@ -263,7 +273,12 @@ export const buildUserDetailSaves = ({
         });
       },
       setPending: setIsSavingPermissions,
-      submitted: { form: editForm, permissions, section: 'access' },
+      submitted: {
+        esportScope,
+        form: editForm,
+        permissions,
+        section: 'access',
+      },
     });
   };
 

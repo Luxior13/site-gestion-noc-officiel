@@ -46,7 +46,7 @@ d’un compte ou d’une période, sans exposer plus que le droit du lecteur.
 
 | Sujet | Décision | Motif |
 | --- | --- | --- |
-| Lecteurs | Permission `audit:view` ; les administrateurs l’ont par la règle « un ADMIN possède toutes les autorisations administratives » ; un utilisateur seulement si elle lui est accordée | Même mécanisme que les autres pages ; portée par équipe plus tard, avec les droits par périmètre |
+| Lecteurs | Permission `audit:view` ; les administrateurs l’ont par la règle « un ADMIN possède toutes les autorisations administratives » ; un utilisateur seulement si elle lui est accordée | Même mécanisme que les autres pages ; la portée Esport d’un compte ne limite pas le journal (outil du bureau) |
 | Sécurité | **Un seul journal**, filtre « Sécurité » ; l’ancienne séparation Activité / Connexions est abandonnée | Une enquête suit une seule ligne de temps (connexion, puis droits modifiés) |
 | Export | **Pas dans la première version** ; `audit:export` reste planifiée | Données personnelles hors de l’outil ; à ajouter sur besoin réel (demande RGPD, contrôle) |
 | Conservation | **Un an** (« mets 1 an pour la conservation », 30 octobre 2026) ; défaut logiciel et valeur de secours SQL à 365 jours | Repère CNIL de six mois à un an pour la journalisation |
@@ -125,7 +125,7 @@ Projection et masquage côté serveur, jamais dans le navigateur.
 
 ### Hors première version
 
-Export CSV/JSON ; portée par équipe ou entité ; alertes et tableaux
+Export CSV/JSON ; portée Esport ou par entité ; alertes et tableaux
 d’anomalies ; durées de conservation séparées par finalité (la
 [fiche Paramètres](parametres.md#portée-du-journal--constat-et-séparation-à-préparer)
 garde ce chantier). **Conservation tranchée le 30 octobre 2026 : un an**

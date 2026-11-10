@@ -10,10 +10,18 @@ import {
   isPrismaUniqueConstraintError,
 } from '$server/api-response';
 import { createAuditLogWithHeaders } from '$server/audit-log';
+import {
+  assertAllGames,
+  assertCoversGame,
+  authorizeEsportAction,
+  type EsportScope,
+  FULL_ESPORT_SCOPE,
+  gameScopeWhere,
+  teamScopeWhere,
+} from '$server/esport-scope';
 import { planManualOrder } from '$server/manual-order';
 import { prisma } from '$server/prisma';
 import { ServiceError, serviceErrors } from '$server/service-error';
-import { authorizeUserAction } from '$server/user-action-authorization';
 import { ErrorCode } from '$types/api.types';
 import type { SessionType, UserType } from '$types/auth.types';
 import { compareRank } from '$utils/active-order.utils';
@@ -61,6 +69,14 @@ const WITH_COUNTS = {
   _count: { select: { functions: true, teams: true } },
 } as const;
 type GameRow = Prisma.GameGetPayload<{ include: typeof WITH_COUNTS }>;
+
+/** A game counts only the teams of the reader's scope (10 November 2026). */
+const countsWithin = (scope: EsportScope) =>
+  ({
+    _count: {
+      select: { functions: true, teams: { where: teamScopeWhere(scope) } },
+    },
+  }) as const;
 
 const toGameItem = (game: GameRow): GameItem => ({
   firstOpened: {
@@ -145,21 +161,38 @@ const audit = async (
     { client: transaction, required: true },
   );
 
-/** Every game, in the order its managers dragged, active or not. */
+/**
+ * Every game of the scope, in the order its managers dragged, active or not
+ * (the scope since 10 November 2026).
+ */
 const readGames = async (
   client: Prisma.TransactionClient,
+  scope: EsportScope = FULL_ESPORT_SCOPE,
 ): Promise<GameItem[]> =>
-  (await client.game.findMany({ include: WITH_COUNTS }))
+  (
+    await client.game.findMany({
+      include: countsWithin(scope),
+      where: gameScopeWhere(scope),
+    })
+  )
     .map(toGameItem)
     .sort(compareRank);
 
-export const listGames = (): Promise<GameItem[]> => readGames(prisma);
+export const listGames = (scope: EsportScope): Promise<GameItem[]> =>
+  readGames(prisma, scope);
 
-/** A game with its numbers of teams and functions, for its record. */
-export const getGame = async (id: string): Promise<GameItem> => {
-  const game = await prisma.game.findUnique({
-    include: WITH_COUNTS,
-    where: { id },
+/**
+ * A game with its numbers of teams and functions, for its record. Outside
+ * the reader's scope, it answers as missing.
+ */
+export const getGame = async (
+  id: string,
+  scope: EsportScope,
+): Promise<GameItem> => {
+  const game = await prisma.game.findFirst({
+    include: countsWithin(scope),
+    // Both conditions: the scope's ids would be overwritten in one object.
+    where: { AND: [gameScopeWhere(scope), { id }] },
   });
   if (!game) throw gameMissing();
 
@@ -173,10 +206,12 @@ export const createGame = async (
 ): Promise<GameItem> => {
   try {
     return await prisma.$transaction(async (transaction) => {
-      await authorizeUserAction(
-        transaction,
-        { actorId: actor.id, session },
-        PERMISSIONS.GAMES.MANAGE,
+      assertAllGames(
+        await authorizeEsportAction(
+          transaction,
+          { actorId: actor.id, session },
+          PERMISSIONS.GAMES.MANAGE,
+        ),
       );
       const game = toGameItem(
         await transaction.game.create({
@@ -221,10 +256,14 @@ export const updateGame = async (
 ): Promise<GameItem> => {
   try {
     return await prisma.$transaction(async (transaction) => {
-      await authorizeUserAction(
-        transaction,
-        { actorId: actor.id, session },
-        PERMISSIONS.GAMES.MANAGE,
+      assertCoversGame(
+        await authorizeEsportAction(
+          transaction,
+          { actorId: actor.id, session },
+          PERMISSIONS.GAMES.MANAGE,
+        ),
+        id,
+        gameMissing,
       );
       const previous = await transaction.game.findUnique({
         include: WITH_COUNTS,
@@ -281,10 +320,12 @@ export const reorderGames = async (
   { actor, session }: GameActor,
 ): Promise<GameItem[]> =>
   prisma.$transaction(async (transaction) => {
-    await authorizeUserAction(
-      transaction,
-      { actorId: actor.id, session },
-      PERMISSIONS.GAMES.MANAGE,
+    assertAllGames(
+      await authorizeEsportAction(
+        transaction,
+        { actorId: actor.id, session },
+        PERMISSIONS.GAMES.MANAGE,
+      ),
     );
     // One reorder at a time: the second waits, then reads the first.
     await transaction.$queryRaw`SELECT "id" FROM "Game" ORDER BY "id" FOR UPDATE`;
@@ -329,10 +370,14 @@ export const deleteGame = async (
 ): Promise<{ id: string }> => {
   try {
     return await prisma.$transaction(async (transaction) => {
-      await authorizeUserAction(
-        transaction,
-        { actorId: actor.id, session },
-        PERMISSIONS.GAMES.MANAGE,
+      assertCoversGame(
+        await authorizeEsportAction(
+          transaction,
+          { actorId: actor.id, session },
+          PERMISSIONS.GAMES.MANAGE,
+        ),
+        id,
+        gameMissing,
       );
       const previous = await transaction.game.findUnique({
         include: WITH_COUNTS,

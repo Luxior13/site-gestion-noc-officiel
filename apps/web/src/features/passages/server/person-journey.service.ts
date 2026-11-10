@@ -2,6 +2,7 @@ import 'server-only';
 
 import type { Prisma } from '@prisma/client';
 
+import { type EsportScope, teamScopeWhere } from '$server/esport-scope';
 import { prisma } from '$server/prisma';
 import { serviceErrors } from '$server/service-error';
 import { normalizeApproximateDate } from '$utils/approximate-date.utils';
@@ -35,8 +36,14 @@ const JOURNEY_SELECT = {
   },
 } as const;
 
-/** Which lists the reader may see: the teams' rosters, the structure's. */
-export type JourneyReach = Readonly<{ structure: boolean; teams: boolean }>;
+/**
+ * Which lists the reader may see: the structure's, and the rosters of the
+ * teams in their Esport scope (none without `teams:view`).
+ */
+export type JourneyReach = Readonly<{
+  structure: boolean;
+  teams: EsportScope | null;
+}>;
 
 /**
  * The journey of a person (owner, 9 November 2026: « l'onglet Parcours,
@@ -50,7 +57,9 @@ export const getPersonJourney = async (
   reach: JourneyReach,
 ): Promise<PersonJourney> => {
   const places: Prisma.PersonPassageWhereInput[] = [
-    ...(reach.teams ? [{ teamId: { not: null } }] : []),
+    ...(reach.teams
+      ? [{ team: teamScopeWhere(reach.teams), teamId: { not: null } }]
+      : []),
     ...(reach.structure ? [{ teamId: null }] : []),
   ];
   const [person, rows] = await Promise.all([

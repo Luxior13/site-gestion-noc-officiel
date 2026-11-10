@@ -12,10 +12,16 @@ import {
   isPrismaUniqueConstraintError,
 } from '$server/api-response';
 import { createAuditLogWithHeaders } from '$server/audit-log';
+import {
+  assertCoversGame,
+  assertIncludesTeam,
+  authorizeEsportAction,
+  type EsportScope,
+  teamScopeWhere,
+} from '$server/esport-scope';
 import { planManualOrder } from '$server/manual-order';
 import { prisma } from '$server/prisma';
 import { ServiceError, serviceErrors } from '$server/service-error';
-import { authorizeUserAction } from '$server/user-action-authorization';
 import { ErrorCode } from '$types/api.types';
 import type { SessionType, UserType } from '$types/auth.types';
 import { compareRank } from '$utils/active-order.utils';
@@ -184,15 +190,27 @@ const audit = async (
     { client: transaction, required: true },
   );
 
-/** Every team, in its game's dragged order; the page groups them by game. */
-export const listTeams = async (): Promise<TeamItem[]> =>
-  (await prisma.team.findMany()).map(toTeamItem).sort(compareRank);
+/**
+ * Every team of the reader's Esport scope, in its game's dragged order; the
+ * page groups them by game.
+ */
+export const listTeams = async (scope: EsportScope): Promise<TeamItem[]> =>
+  (await prisma.team.findMany({ where: teamScopeWhere(scope) }))
+    .map(toTeamItem)
+    .sort(compareRank);
 
-/** A team with its game, for its record. */
-export const getTeam = async (id: string): Promise<TeamDetail> => {
-  const team = await prisma.team.findUnique({
+/**
+ * A team with its game, for its record. Outside the reader's scope, it
+ * answers as missing.
+ */
+export const getTeam = async (
+  id: string,
+  scope: EsportScope,
+): Promise<TeamDetail> => {
+  const team = await prisma.team.findFirst({
     include: WITH_GAME,
-    where: { id },
+    // Both conditions: the scope's ids would be overwritten in one object.
+    where: { AND: [teamScopeWhere(scope), { id }] },
   });
   if (!team) throw teamMissing();
 
@@ -206,10 +224,15 @@ export const createTeam = async (
 ): Promise<TeamDetail> => {
   try {
     return await prisma.$transaction(async (transaction) => {
-      await authorizeUserAction(
-        transaction,
-        { actorId: actor.id, session },
-        PERMISSIONS.TEAMS.MANAGE,
+      // A new team joins the whole game: a scope of teams cannot add one.
+      assertCoversGame(
+        await authorizeEsportAction(
+          transaction,
+          { actorId: actor.id, session },
+          PERMISSIONS.TEAMS.MANAGE,
+        ),
+        input.gameId,
+        gameMissing,
       );
       const game = await findGame(transaction, input.gameId);
       const team = toTeamDetail(
@@ -266,7 +289,7 @@ export const updateTeam = async (
 ): Promise<TeamDetail> => {
   try {
     return await prisma.$transaction(async (transaction) => {
-      await authorizeUserAction(
+      const scope = await authorizeEsportAction(
         transaction,
         { actorId: actor.id, session },
         PERMISSIONS.TEAMS.MANAGE,
@@ -276,6 +299,7 @@ export const updateTeam = async (
         where: { id },
       });
       if (!previous) throw teamMissing();
+      assertIncludesTeam(scope, previous, teamMissing);
       if (previous.version !== input.expectedVersion) throw teamChanged();
       const current = toTeamItem(previous);
       const { game } = previous;
@@ -331,10 +355,15 @@ export const reorderTeams = async (
   { actor, session }: TeamActor,
 ): Promise<TeamItem[]> =>
   prisma.$transaction(async (transaction) => {
-    await authorizeUserAction(
-      transaction,
-      { actorId: actor.id, session },
-      PERMISSIONS.TEAMS.MANAGE,
+    // The order names every team of the game: it needs the whole game.
+    assertCoversGame(
+      await authorizeEsportAction(
+        transaction,
+        { actorId: actor.id, session },
+        PERMISSIONS.TEAMS.MANAGE,
+      ),
+      gameId,
+      gameMissing,
     );
     const game = await findGame(transaction, gameId);
     // One reorder of a game's teams at a time.
@@ -383,7 +412,7 @@ export const deleteTeam = async (
 ): Promise<{ id: string }> => {
   try {
     return await prisma.$transaction(async (transaction) => {
-      await authorizeUserAction(
+      const scope = await authorizeEsportAction(
         transaction,
         { actorId: actor.id, session },
         PERMISSIONS.TEAMS.MANAGE,
@@ -393,6 +422,7 @@ export const deleteTeam = async (
         where: { id },
       });
       if (!previous) throw teamMissing();
+      assertIncludesTeam(scope, previous, teamMissing);
       if (previous.version !== expectedVersion) throw teamChanged();
       const result = await transaction.team.deleteMany({
         where: { id, version: expectedVersion },

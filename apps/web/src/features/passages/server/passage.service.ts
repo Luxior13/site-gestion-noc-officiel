@@ -9,6 +9,7 @@ import {
   toPersonRef,
 } from '$features/persons/server/person-suggestions';
 import { createAuditLogWithHeaders } from '$server/audit-log';
+import { type EsportScope, readEsportScope } from '$server/esport-scope';
 import { prisma } from '$server/prisma';
 import { authorizeUserAction } from '$server/user-action-authorization';
 import type { SessionType, UserType } from '$types/auth.types';
@@ -278,12 +279,22 @@ const openPlace = async (
     managePermissionOf(scope),
   );
 
-  return resolvePlace(transaction, scope);
+  return resolvePlace(
+    transaction,
+    scope,
+    await readEsportScope(transaction, actor),
+  );
 };
 
-/** The passages of a place, every one, and its functions. */
-export const getRoster = async (scope: PassageScope): Promise<PassageRoster> =>
-  readRoster(prisma, await resolvePlace(prisma, scope));
+/**
+ * The passages of a place, every one, and its functions; a team's within
+ * the reader's Esport scope.
+ */
+export const getRoster = async (
+  scope: PassageScope,
+  esport: EsportScope,
+): Promise<PassageRoster> =>
+  readRoster(prisma, await resolvePlace(prisma, scope, esport));
 
 /** Adds a passage: a person, a function of the place, two dates. */
 export const createPassage = async (

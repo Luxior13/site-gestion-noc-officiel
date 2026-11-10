@@ -81,7 +81,7 @@ const upsert = <
   );
 
 const GamesContent: FC<{ capabilities: GameCapabilities }> = ({
-  capabilities: { canManage, canManageTeams, canViewTeams },
+  capabilities: { canAddGames, canAddTeams, canViewTeams },
 }) => {
   const router = useRouter();
   const [games, setGames] = useState<GameItem[] | null>(null);
@@ -176,13 +176,15 @@ const GamesContent: FC<{ capabilities: GameCapabilities }> = ({
 
   const openCreate = (): void => setGameDialogOpen(true);
   // A team needs a game: without any, the page offers « Ajouter un jeu ».
-  const canAddTeam = canManageTeams && Boolean(games?.length);
+  // Both concern whole games: not with a scope of teams, and adding or
+  // ordering games needs every game (10 November 2026).
+  const canAddTeam = canAddTeams && Boolean(games?.length);
 
   return (
     <div className={cn(directoryStyles.directory, 'space-y-[18px]')}>
       <PageIdentityHero
         actions={
-          canManage || canAddTeam ? (
+          canAddGames || canAddTeam ? (
             <>
               {/* One entry for every team: its game is chosen in the window
                   (owner, 8 November 2026), instead of a line under each game. */}
@@ -196,7 +198,7 @@ const GamesContent: FC<{ capabilities: GameCapabilities }> = ({
                   Ajouter une équipe
                 </Button>
               )}
-              {canManage && (
+              {canAddGames && (
                 <Button
                   className={directoryStyles.addButton}
                   onClick={openCreate}
@@ -236,9 +238,9 @@ const GamesContent: FC<{ capabilities: GameCapabilities }> = ({
         />
       ) : games ? (
         <GamesList
-          canManage={canManage}
-          canReorderGames={canManage}
-          canReorderTeams={canManageTeams}
+          canManage={canAddGames}
+          canReorderGames={canAddGames}
+          canReorderTeams={canAddTeams}
           frozen={savingOrder}
           games={games}
           onCreate={openCreate}

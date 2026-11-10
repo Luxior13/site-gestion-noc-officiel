@@ -1,3 +1,8 @@
+import {
+  type EsportScopeValue,
+  normalizeEsportScope,
+  sameEsportScope,
+} from '$constants/esport-scope.constants';
 import type { PermissionsData } from '$constants/permissions.constants';
 import {
   createUserSchema,
@@ -20,15 +25,38 @@ export type UserDetailForm = {
   role: UserType['role'];
 };
 export type UserDetailDraft = {
+  /** Null when the reader may not see the account's Esport scope. */
+  esportScope: EsportScopeValue | null;
   form: UserDetailForm;
   permissions: PermissionsData | null;
   user: UserType | null;
 };
 export type SubmittedUserDraft = {
+  esportScope?: EsportScopeValue | null;
   form: UserDetailForm;
   permissions: PermissionsData | null;
   section: 'profile' | 'access' | 'account' | 'security';
 };
+
+/** The account's saved Esport scope, when the reader may see it. */
+export const savedEsportScope = (
+  user?: UserType | null,
+): EsportScopeValue | null =>
+  user?.esportScope
+    ? normalizeEsportScope({
+        gameIds: user.esportScopeItems?.gameIds ?? [],
+        kind: user.esportScope,
+        teamIds: user.esportScopeItems?.teamIds ?? [],
+      })
+    : null;
+
+const sameScope = (
+  first: EsportScopeValue | null,
+  second: EsportScopeValue | null,
+): boolean =>
+  first === null || second === null
+    ? first === second
+    : sameEsportScope(first, second);
 
 export const userProfileSchema = createUserSchema.omit({ role: true });
 export const getProfileFieldErrors = (
@@ -50,6 +78,7 @@ export const getProfileFieldErrors = (
 export const createUserDetailDraft = (
   user?: UserType | null,
 ): UserDetailDraft => ({
+  esportScope: savedEsportScope(user),
   form: {
     contactEmail: user?.contactEmail ?? '',
     firstName: user?.firstName ?? '',
@@ -88,6 +117,8 @@ export const restoreUserDetailSection = (
 
   return {
     ...current,
+    esportScope:
+      section === 'access' ? savedEsportScope(user) : current.esportScope,
     form:
       section === 'access'
         ? { ...current.form, role: user.role }
@@ -181,6 +212,13 @@ export const receiveUserDetail = (
     else result.set(key, local);
   }
   next.permissions = result.size ? Object.fromEntries(result) : null;
+  // A scope edited after the save, or never saved, stays as it is.
+  const scopeBase =
+    submitted?.section === 'access'
+      ? (submitted.esportScope ?? null)
+      : baseline.esportScope;
+  if (!sameScope(current.esportScope, scopeBase))
+    next.esportScope = current.esportScope;
 
   return next;
 };

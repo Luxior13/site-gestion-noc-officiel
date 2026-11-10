@@ -9,7 +9,8 @@
   ([domaines](docs/domaines/README.md)).
 - **Le site sert d’abord à la trésorerie et à la traçabilité de la structure**,
   tant qu’elle existe ([registre historique](docs/domaines/registre-historique.md)).
-  S’y connectent les membres du bureau et les managers, limités à leur équipe ;
+  S’y connectent les membres du bureau et les managers, limités aux jeux ou
+  équipes choisis dans leurs autorisations (portée Esport, 10 novembre 2026) ;
   joueurs, coachs et autres membres sont des fiches, sans compte
   ([public du site](docs/domaines/roles-metier.md#public-du-site--décision-du-7-novembre-2026),
   décisions du propriétaire du 7 novembre 2026).

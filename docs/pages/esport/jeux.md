@@ -11,7 +11,7 @@
 | Gabarit visé | [A. Liste de gestion](../../design/gabarits.md#a-liste-de-gestion), éléments sous leur parent, création et modification en fenêtre |
 | État d’harmonisation | Aligné à sa création — voir [Harmonisation](../../design/harmonisation.md#état-par-page) |
 | Point d’entrée | [page.tsx](../../../apps/web/src/app/esport/jeux/page.tsx) → [GamesPage](../../../apps/web/src/features/games/components/GamesPage.tsx) ; équipes : [TeamDialog](../../../apps/web/src/features/teams/components/TeamDialog.tsx) et [service](../../../apps/web/src/features/teams/server/team.service.ts) |
-| Contrôle d’accès | `games:view` pour voir ; `games:manage` pour ajouter, modifier et supprimer un jeu ; `teams:view` pour voir les équipes, `teams:manage` pour les gérer ; l’API refait le contrôle dans la transaction ([permissions](../../domaines/permissions.md#page-jeux)) |
+| Contrôle d’accès | `games:view` pour voir ; `games:manage` pour ajouter, modifier et supprimer un jeu ; `teams:view` pour voir les équipes, `teams:manage` pour les gérer ; l’API refait le contrôle dans la transaction ([permissions](../../domaines/permissions.md#page-jeux)). Seuls les jeux et équipes de la [portée Esport](../../domaines/permissions.md#portée-esport) du compte s’affichent (10 novembre 2026) ; « Ajouter un jeu » et l’ordre des jeux demandent tous les jeux, « Ajouter une équipe » et l’ordre des équipes le jeu entier |
 | Chargement / erreur dédiés | squelette et erreur avec « Réessayer » dans la page ; titre d’onglet déclaré par `page.tsx` |
 
 ## État courant — jeux et équipes, 8 novembre 2026

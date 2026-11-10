@@ -18,6 +18,7 @@ import {
   parseJsonBody,
   zodErrorDetails,
 } from '$server/api-response';
+import { readActorEsportScope } from '$server/esport-scope';
 import { serviceErrorResponse } from '$server/service-error';
 
 type RouteParams = { params: Promise<{ id: string }> };
@@ -34,7 +35,9 @@ export async function GET(
   if (!id.success) return apiErrors.notFound('Jeu introuvable');
 
   try {
-    return apiSuccess(await getGame(id.data));
+    return apiSuccess(
+      await getGame(id.data, await readActorEsportScope(auth.user)),
+    );
   } catch (error) {
     return serviceErrorResponse(error, { action: 'GAME_READ', request });
   }

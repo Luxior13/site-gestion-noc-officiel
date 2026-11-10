@@ -48,6 +48,7 @@ const SUITE_DATABASES = [
     database: 'person_relatives_service_test',
     variable: 'PERSON_RELATIVES_TEST_DATABASE_URL',
   },
+  { database: 'esport_scope_test', variable: 'ESPORT_SCOPE_TEST_DATABASE_URL' },
   {
     database: 'repertoire_pagination_test',
     migrate: false,

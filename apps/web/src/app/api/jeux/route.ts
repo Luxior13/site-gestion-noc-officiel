@@ -10,6 +10,7 @@ import {
   parseJsonBody,
   zodErrorDetails,
 } from '$server/api-response';
+import { readActorEsportScope } from '$server/esport-scope';
 import { serviceErrorResponse } from '$server/service-error';
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
@@ -19,7 +20,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   if (!permission.success) return permission.response;
 
   try {
-    return apiSuccess(await listGames());
+    return apiSuccess(await listGames(await readActorEsportScope(auth.user)));
   } catch (error) {
     return serviceErrorResponse(error, { action: 'GAME_LIST', request });
   }

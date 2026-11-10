@@ -1,5 +1,6 @@
 import type { UserRole } from '@repo/shared';
 
+import type { EsportScopeKind } from '$constants/esport-scope.constants';
 import { type PermissionsData } from '$constants/permissions.constants';
 
 // Session type
@@ -23,6 +24,16 @@ export type UserType = {
   createdAt: Date;
   /** Non-sensitive readiness flag for receiving critical delegated access. */
   criticalAccessReady?: boolean;
+  /**
+   * Which games and teams the account reaches in the Esport pole (10 November
+   * 2026): the kind, to show or hide the actions; the server applies it.
+   */
+  esportScope?: EsportScopeKind;
+  /** The chosen games or teams, for the authorizations editor only. */
+  esportScopeItems?: Readonly<{
+    gameIds: readonly string[];
+    teamIds: readonly string[];
+  }>;
   firstName: string;
   id: string;
   identityDetailsVisible?: boolean;

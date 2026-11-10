@@ -152,6 +152,8 @@ export const USER_FIELD_LABELS: ReadonlyArray<readonly [string, string]> = [
   ['loginName', 'Identifiant'],
   ['contactEmail', 'Email de contact'],
   ['role', 'Rôle'],
+  // Said in words when changed (10 November 2026).
+  ['esportScope', 'Jeux et équipes visibles'],
   ['isActive', 'Compte actif'],
 ];
 

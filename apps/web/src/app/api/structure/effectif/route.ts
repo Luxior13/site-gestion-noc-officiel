@@ -14,6 +14,7 @@ import {
   parseJsonBody,
   zodErrorDetails,
 } from '$server/api-response';
+import { FULL_ESPORT_SCOPE } from '$server/esport-scope';
 import { serviceErrorResponse } from '$server/service-error';
 
 /**
@@ -27,7 +28,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   if (!permission.success) return permission.response;
 
   try {
-    return apiSuccess(await getRoster(STRUCTURE_PASSAGES));
+    // The structure is outside the Esport pole and its scope.
+    return apiSuccess(await getRoster(STRUCTURE_PASSAGES, FULL_ESPORT_SCOPE));
   } catch (error) {
     return serviceErrorResponse(error, { action: 'PASSAGE_LIST', request });
   }

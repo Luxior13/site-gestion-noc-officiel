@@ -29,12 +29,14 @@ type ClientSafeUser = Pick<
   | 'permissions'
   | 'role'
 > &
-  Partial<Pick<User, 'updatedAt'>>;
+  Partial<Pick<User, 'esportScope' | 'updatedAt'>>;
 
 export const mapUserToUserType = (user: ClientSafeUser): UserType => ({
   contactEmail: user.contactEmail,
   contactEmailVerifiedAt: user.contactEmailVerifiedAt,
   createdAt: user.createdAt,
+  // The kind only: the server reads the chosen games or teams itself.
+  ...(user.esportScope ? { esportScope: user.esportScope } : {}),
   firstName: user.firstName,
   id: user.id,
   isActive: user.isActive,

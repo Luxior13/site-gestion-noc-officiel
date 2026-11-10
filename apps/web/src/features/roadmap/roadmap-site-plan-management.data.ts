@@ -594,7 +594,8 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
       {
         label: 'Autorisations',
         phase: null,
-        summary: 'Rôle et autorisations du compte.',
+        summary:
+          'Rôle et autorisations du compte, et les jeux et équipes qu’il voit dans l’Esport.',
       },
       {
         label: 'Sécurité',

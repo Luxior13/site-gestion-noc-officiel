@@ -60,6 +60,19 @@ dépliable « Voir les modifications avant enregistrement » depuis le
 
 ## Décisions retenues
 
+- **10 novembre 2026 — Jeux et équipes visibles** (décision du propriétaire,
+  « ok go »). Sur la page Jeux du pôle Esport, sous « Consulter les jeux », une
+  ligne « Jeux et équipes visibles » : un menu `Select` compact (Tous les jeux,
+  Certains jeux, Certaines équipes), comme celui du rôle, puis les cases à
+  cocher des jeux, ou des équipes groupées sous leur jeu (« (inactif) »,
+  « (inactive) » au besoin) ; point ambre tant qu’elle n’est pas enregistrée ;
+  la barre dit « jeux et équipes visibles modifiés » et refuse une liste vide
+  (« Choisissez au moins un jeu ou une équipe. »). Estompée sans « Consulter les
+  jeux » ; « Tous les jeux » figé pour un administrateur ; en lecture seule
+  (badge et noms) pour qui ne peut pas la régler. Enregistrée avec les autres
+  autorisations, dans la même requête. Règles : [permissions](../../../domaines/permissions.md#portée-esport).
+  Banc réel du 10 novembre 2026 à 1440 et 390 px, sans débordement.
+
 - **29 octobre 2026 — revue de code de la vue téléphone.** Une page ouverte
   depuis le bas de la liste s’ouvre à son début (le défilement vise la page,
   pas sa ligne de titre collée) ; la page en cours est marquée
@@ -191,12 +204,6 @@ dépliable « Voir les modifications avant enregistrement » depuis le
   18 Utilisateurs, 2 fixes de Paramètres).
 
 ## Points ouverts
-
-- **Portée Esport — décision du propriétaire du 10 novembre 2026, à
-  construire** : l’éditeur choisira, pour le compte, tous les jeux, des jeux
-  choisis ou des équipes choisies ; c’est elle qui limite un manager, jamais
-  une fonction dans un Roster ([rôles métier](../../../domaines/roles-metier.md),
-  [cadrage](../../../propositions/membres-equipes-parcours.md#lot-3--accès-manager)).
 
 - **Section fixe avec défilement par colonne — question du propriétaire du
   26 octobre 2026, d’abord non retenue, puis livrée pour l’ordinateur (voir

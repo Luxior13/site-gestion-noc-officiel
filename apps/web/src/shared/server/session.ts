@@ -43,6 +43,7 @@ const SESSION_USER_SELECT = {
   contactEmail: true,
   contactEmailVerifiedAt: true,
   createdAt: true,
+  esportScope: true,
   firstName: true,
   id: true,
   isActive: true,

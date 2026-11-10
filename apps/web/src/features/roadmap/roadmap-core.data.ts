@@ -26,11 +26,11 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     area: 'system',
     dependsOn: ['sport-teams'],
     description:
-      'Ouvrir un compte à un manager en le limitant aux jeux ou équipes choisis dans ses autorisations, sans lui montrer les autres pôles.',
+      'Relier un compte à sa fiche du Répertoire, pour l’afficher ; la portée Esport qui limite un manager est livrée (10 novembre 2026).',
     doneWhen:
-      'Le serveur contrôle la portée ; un manager ne voit ni une équipe hors de sa portée ni un autre pôle ; une fonction dans un Roster n’ouvre jamais rien.',
+      'Une fiche liée à un compte se voit sur sa fiche Utilisateur ; la liaison n’ouvre rien : seules les autorisations et la portée Esport du compte donnent accès.',
     firstRelease:
-      'Portée Esport dans les autorisations d’un compte : tous les jeux, des jeux choisis ou des équipes choisies (décision du 10 novembre 2026).',
+      'Fiche du Répertoire liée au compte, choisie à la main, jamais déduite d’un email.',
     id: 'access-scopes',
     later:
       'Portées par entité, délégations datées et revue périodique des accès, si le besoin apparaît.',

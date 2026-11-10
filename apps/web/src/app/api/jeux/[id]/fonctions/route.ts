@@ -14,6 +14,7 @@ import {
   parseJsonBody,
   zodErrorDetails,
 } from '$server/api-response';
+import { readActorEsportScope } from '$server/esport-scope';
 import { serviceErrorResponse } from '$server/service-error';
 
 type RouteParams = { params: Promise<{ id: string }> };
@@ -31,7 +32,10 @@ export async function GET(
 
   try {
     return apiSuccess(
-      await listFunctions({ gameId: gameId.data, type: 'game' }),
+      await listFunctions(
+        { gameId: gameId.data, type: 'game' },
+        await readActorEsportScope(auth.user),
+      ),
     );
   } catch (error) {
     return serviceErrorResponse(error, { action: 'FUNCTION_LIST', request });

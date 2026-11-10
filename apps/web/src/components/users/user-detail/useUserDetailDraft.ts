@@ -2,6 +2,7 @@
 
 import { type SetStateAction, useCallback, useState } from 'react';
 
+import type { EsportScopeValue } from '$constants/esport-scope.constants';
 import type { PermissionsData } from '$constants/permissions.constants';
 import type { UserType } from '$types/auth.types';
 
@@ -16,12 +17,14 @@ import {
 type UserDetailDraftController = {
   clearUserState: () => void;
   editForm: UserDetailForm;
+  esportScope: EsportScopeValue | null;
   permissions: PermissionsData | null;
   /** Drop every draft and show the saved user again. */
   restoreSavedDraft: () => void;
   /** Drop the draft of one section only. */
   restoreSavedSection: (section: SubmittedUserDraft['section']) => void;
   setEditForm: (update: SetStateAction<UserDetailForm>) => void;
+  setEsportScope: (scope: EsportScopeValue) => void;
   setPermissions: (update: SetStateAction<PermissionsData | null>) => void;
   syncUserState: (user: UserType, submitted?: SubmittedUserDraft) => void;
   user: UserType | null;
@@ -53,6 +56,9 @@ export const useUserDetailDraft = (
     },
     [],
   );
+  const setEsportScope = useCallback((esportScope: EsportScopeValue): void => {
+    setState((current) => ({ ...current, esportScope }));
+  }, []);
   const restoreSavedDraft = useCallback((): void => {
     setState((current) =>
       current.user ? createUserDetailDraft(current.user) : current,
@@ -74,10 +80,12 @@ export const useUserDetailDraft = (
   return {
     clearUserState,
     editForm: state.form,
+    esportScope: state.esportScope,
     permissions: state.permissions,
     restoreSavedDraft,
     restoreSavedSection,
     setEditForm,
+    setEsportScope,
     setPermissions,
     syncUserState,
     user: state.user,

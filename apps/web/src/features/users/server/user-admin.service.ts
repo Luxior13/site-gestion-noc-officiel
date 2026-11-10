@@ -43,6 +43,13 @@ import type { SessionType, UserType } from '$types/auth.types';
 import { createUser } from './user-create.service';
 import { mapUserForActor, USER_DETAIL_SELECT } from './user-detail.service';
 import {
+  assertEsportScopeAuthority,
+  assertEsportScopeTargets,
+  describeEsportScope,
+  esportScopeRows,
+  resolveEsportScopeChange,
+} from './user-esport-scope';
+import {
   LoginNameReservationConflictError,
   prepareUserUpdate,
   updateUserWithAudit,
@@ -153,6 +160,7 @@ export const updateUserForActor = async (
 ): Promise<UserType> => {
   const {
     contactEmail,
+    esportScope: requestedEsportScope,
     expectedUpdatedAt,
     firstName,
     isActive,
@@ -172,6 +180,7 @@ export const updateUserForActor = async (
   const isLoginUpdate = loginName !== undefined;
   const isStatusUpdate = typeof isActive === 'boolean';
   const isRoleUpdate = role !== undefined;
+  const isEsportScopeUpdate = requestedEsportScope !== undefined;
 
   if (
     !isProfileUpdate &&
@@ -179,7 +188,8 @@ export const updateUserForActor = async (
     !isLoginUpdate &&
     !isStatusUpdate &&
     !isRoleUpdate &&
-    !isPermissionsUpdate
+    !isPermissionsUpdate &&
+    !isEsportScopeUpdate
   ) {
     throw serviceErrors.validation('Aucune modification fournie');
   }
@@ -217,6 +227,7 @@ export const updateUserForActor = async (
     (isContactUpdate ||
       isLoginUpdate ||
       isPermissionsUpdate ||
+      isEsportScopeUpdate ||
       isRoleUpdate ||
       isStatusUpdate)
   ) {
@@ -245,6 +256,7 @@ export const updateUserForActor = async (
       'Seul le superadmin peut modifier un administrateur',
     );
   }
+  if (isEsportScopeUpdate) assertEsportScopeAuthority(actor, existingUser.id);
 
   if (
     expectedUpdatedAt &&
@@ -254,6 +266,14 @@ export const updateUserForActor = async (
   }
 
   const resultingRole = role ?? existingUser.role;
+  // A promotion resets the scope: an administrator sees every game.
+  const esportScopeChange = resolveEsportScopeChange(
+    existingUser,
+    requestedEsportScope,
+    resultingRole,
+  );
+  if (esportScopeChange && isEsportScopeUpdate)
+    await assertEsportScopeTargets(esportScopeChange.after);
 
   // An ADMIN holds every administrative access permission; an explicit
   // access override for it would be silently meaningless, so refuse it.
@@ -372,7 +392,17 @@ export const updateUserForActor = async (
     }
   }
 
-  const mutation = prepareUserUpdate(existingUser, { ...input, permissions });
+  const mutation = prepareUserUpdate(
+    existingUser,
+    { ...input, permissions },
+    esportScopeChange
+      ? {
+          after: await describeEsportScope(esportScopeChange.after),
+          before: await describeEsportScope(esportScopeChange.before),
+          rows: esportScopeRows(esportScopeChange.after),
+        }
+      : undefined,
+  );
   const { changedKeys, updateData } = mutation;
   if (Object.keys(updateData).length === 0)
     return mapUserForActor(existingUser, actor);
@@ -395,6 +425,7 @@ export const updateUserForActor = async (
       requiredProof: changesSensitiveIdentity
         ? 'sensitive'
         : requiredProofLevel,
+      requiresFullEsportScope: isEsportScopeUpdate && !!esportScopeChange,
     });
 
     return mapUserForActor(updatedUser, actor);

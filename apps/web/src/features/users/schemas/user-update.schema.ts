@@ -1,6 +1,12 @@
 import { z } from 'zod';
 
 import {
+  ESPORT_SCOPE_KINDS,
+  ESPORT_SCOPE_MAX_ITEMS,
+  isEmptyEsportScope,
+  normalizeEsportScope,
+} from '$constants/esport-scope.constants';
+import {
   getAccessPermissionKeys,
   getAccountPermissionKeys,
   getNonAssignablePermissionKeys,
@@ -101,9 +107,32 @@ const permissionsSchema = z
     }
   });
 
+const scopeIdsSchema = z
+  .array(z.string().trim().min(1).max(64))
+  .max(ESPORT_SCOPE_MAX_ITEMS, {
+    error: `${ESPORT_SCOPE_MAX_ITEMS} choix au plus`,
+  });
+
+/**
+ * Which games and teams the account reaches in the Esport pole (10 November
+ * 2026): a restricted scope names at least one game or team.
+ */
+const esportScopeSchema = z
+  .object({
+    gameIds: scopeIdsSchema,
+    kind: z.enum(ESPORT_SCOPE_KINDS),
+    teamIds: scopeIdsSchema,
+  })
+  .strict()
+  .transform(normalizeEsportScope)
+  .refine((value) => !isEmptyEsportScope(value), {
+    error: 'Choisissez au moins un jeu ou une équipe.',
+  });
+
 export const updateUserSchema = z
   .object({
     contactEmail: optionalEmailSchema,
+    esportScope: esportScopeSchema.optional(),
     expectedUpdatedAt: z
       .string({ error: 'La version de la fiche est requise' })
       .datetime({ offset: true })
@@ -131,6 +160,19 @@ export const updateUserSchema = z
         code: z.ZodIssueCode.custom,
         message: 'Le volet choisi exige la liste de ses autorisations',
         path: ['permissionScope'],
+      });
+    }
+
+    // The scope belongs to the administration side, as the role.
+    if (
+      value.permissionScope === 'account' &&
+      value.esportScope !== undefined
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          'Les jeux et équipes visibles se modifient dans le volet Administration',
+        path: ['esportScope'],
       });
     }
 

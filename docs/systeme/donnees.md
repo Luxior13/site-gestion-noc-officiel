@@ -25,7 +25,8 @@ Colonnes : nombre de champs (relations comprises), nombre d’`@@index` et
 
 | Modèle | Champs | Index | Relations | Rôle |
 | --- | ---: | ---: | --- | --- |
-| `User` | 30 | 9 | sessions, audit, MFA, réservations d’identifiant, paramètres | Compte de connexion, rôle `UserRole`, compte racine protégé ; recherche par deux index trigrammes d’expression sur `search_text`, absents du schéma |
+| `User` | 32 | 9 | sessions, audit, MFA, réservations d’identifiant, paramètres, portée Esport | Compte de connexion, rôle `UserRole`, compte racine protégé ; portée Esport `esportScope` (`EsportScope` : `ALL`, `GAMES`, `TEAMS`, 10 novembre 2026), toujours `ALL` pour un administrateur (`User_esportScope_admin_check`, absente de `schema.prisma`) ; recherche par deux index trigrammes d’expression sur `search_text`, absents du schéma |
+| `UserEsportScopeItem` | 8 | 4 | `User`, `Game`, `Team` (tous `ON DELETE CASCADE`) | Un jeu ou une équipe choisi dans la portée Esport d’un compte (10 novembre 2026), exactement l’un des deux (`UserEsportScopeItem_target_check`, absente de `schema.prisma`) ; seules les lignes du type de la portée comptent ; un jeu ou une équipe supprimé la quitte, une portée vidée n’ouvre rien ([permissions](../domaines/permissions.md#portée-esport)) |
 | `LoginNameReservation` | 4 | 1 | `User` | Identifiants réservés (pas de réutilisation après suppression) |
 | `Session` | 17 | 4 | `User` | Sessions avec expiration absolue et d’inactivité, preuves récentes |
 | `TotpCredential` | 10 | 1 | `User` | Secret TOTP chiffré du compte |
@@ -76,15 +77,19 @@ L’actualité interne redéfinira son stockage à sa reconstruction.
 
 ## Énumérations
 
-`UserRole`, `MfaChallengePurpose`, `MfaAuthenticationMethod`,
+`UserRole`, `EsportScope` (10 novembre 2026), `MfaChallengePurpose`, `MfaAuthenticationMethod`,
 `DatePrecision`, `AuditFieldChangeType`, `AuditValueStorageMode`,
 `AuditAction`, `AuditCategory`, `AuditEventKind`, `AuditStream`,
 `AuditOutcome`, `AuditSeverity`.
 
 ## Migrations
 
-**72 migrations** dans `packages/database/prisma/migrations`, de
-`20250723121213_init` à `20261110180000_person_other_nicknames` (table
+**73 migrations** dans `packages/database/prisma/migrations`, de
+`20250723121213_init` à `20261110220000_user_esport_scope` (type `EsportScope`,
+colonne `User.esportScope` à `ALL` par défaut, contrainte d’administrateur,
+table `UserEsportScopeItem` et ses contraintes, 10 novembre 2026 ; ajout seul,
+tous les comptes existants gardent tous les jeux). Avant elle,
+`20261110180000_person_other_nicknames` (table
 `PersonOtherNickname`, ses index de recherche et son déclencheur de
 propriétaire, 10 novembre 2026 ; ajout seul). Avant elle,
 `20261110120000_person_relatives` (colonne

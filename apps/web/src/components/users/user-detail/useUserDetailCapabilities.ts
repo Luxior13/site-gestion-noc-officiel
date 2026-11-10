@@ -23,6 +23,7 @@ export type UserDetailCapabilities = Record<
   | 'canEditTargetProfile'
   | 'canEditTargetRole'
   | 'canEditTargetStatus'
+  | 'canEditTargetEsportScope'
   | 'canGrantTargetAccessPermissions'
   | 'canManageTargetAccessPermissions'
   | 'canManageTargetAccountPolicy'
@@ -231,6 +232,14 @@ export function useUserDetailCapabilities(
     canGrantTargetAccessPermissions ||
     canRevokeTargetAccessPermissions ||
     canDelegateTargetAccessPermissions;
+  // Opening and closing at once, by an actor who sees every game, as the
+  // server requires (10 November 2026).
+  const canEditTargetEsportScope =
+    canMutateTargetAccess &&
+    (isProtectedActor ||
+      (accessCaps.canGrant &&
+        accessCaps.canRevoke &&
+        (currentUser?.esportScope ?? 'ALL') === 'ALL'));
   const canManageTargetAccountPolicy =
     !!user &&
     canManageUserAccountPolicy &&
@@ -336,6 +345,7 @@ export function useUserDetailCapabilities(
     accessCaps,
     canDeleteAccounts,
     canEditTargetContact,
+    canEditTargetEsportScope,
     canEditTargetLogin,
     canEditTargetProfile,
     canEditTargetRole,

@@ -14,6 +14,7 @@ import {
   parseJsonBody,
   zodErrorDetails,
 } from '$server/api-response';
+import { readActorEsportScope } from '$server/esport-scope';
 import { serviceErrorResponse } from '$server/service-error';
 
 type RouteParams = { params: Promise<{ id: string }> };
@@ -31,7 +32,12 @@ export async function GET(
   if (!teamId.success) return apiErrors.notFound('Équipe introuvable');
 
   try {
-    return apiSuccess(await getRoster({ teamId: teamId.data, type: 'team' }));
+    return apiSuccess(
+      await getRoster(
+        { teamId: teamId.data, type: 'team' },
+        await readActorEsportScope(auth.user),
+      ),
+    );
   } catch (error) {
     return serviceErrorResponse(error, { action: 'PASSAGE_LIST', request });
   }

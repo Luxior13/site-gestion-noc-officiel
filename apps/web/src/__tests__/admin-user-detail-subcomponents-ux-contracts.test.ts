@@ -248,8 +248,9 @@ describe('administrative user detail subcomponent UX contracts', () => {
     expect(userDetailSource).toContain(
       'accessMutationAnalysis?.decision.allowed === true',
     );
+    // The permissions part keeps its policy; the Esport scope alone has none.
     expect(userDetailSource).toContain(
-      'if (!accessMutationAnalysis?.decision.allowed)',
+      'if (changesPermissions && !accessMutationAnalysis?.decision.allowed)',
     );
     expect(userAccessSource).toContain('user.criticalAccessReady !== true');
     expect(userAccessSource).not.toContain('user.mfaEnabledAt === null');

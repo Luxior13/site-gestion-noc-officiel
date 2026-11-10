@@ -103,7 +103,7 @@ Savoir qui est passé dans la structure, à quelle fonction et dans quelle équi
 
 Ouvrir le site aux managers et garder le registre dans la durée.
 
-- **Accès & responsabilités métier** (Système) : Portée Esport dans les autorisations d’un compte : tous les jeux, des jeux choisis ou des équipes choisies ; jamais déduite d’une fonction ni d’un passage (décision du 10 novembre 2026).
+- **Accès & responsabilités métier** (Système) : Fiche du Répertoire liée au compte, choisie à la main, jamais déduite d’un email. La portée Esport (tous les jeux, des jeux choisis ou des équipes choisies, jamais déduite d’une fonction) est livrée le 10 novembre 2026.
 - **Confidentialité & conservation** (Structure) : Règles de conservation écrites, purge des coordonnées après le départ et anonymisation à la demande.
 - **Données, exports & sauvegardes** (Système) : Export lisible du registre, suivi des sauvegardes et restauration essayée.
 
@@ -220,7 +220,7 @@ Relecture du 7 novembre 2026 : chaque sujet qu’une structure esport rencontre 
 
 Toutes les pages visées, avec leurs onglets et leur contenu. Ce plan s’affiche aussi dans la vue Pages et onglets de la page Feuille de route, sans ce qui est déjà livré (seul le reste à faire d’une page existante, `upcoming`, y figure), depuis [roadmap-site-plan.data.ts](../../apps/web/src/features/roadmap/roadmap-site-plan.data.ts), où chaque page ou onglet nomme le chantier qui le construit : les modifier ensemble. Un test vérifie que chaque page à venir a un chantier et que chaque chantier a une page ou un onglet, sauf Rappels & notifications, Recherche dans les dossiers et Intégrations & publication publique. Il suit les [règles des onglets](../design/gabarits.md#onglets-dune-fiche). Un onglet marqué ↗ se lit sur sa page et se modifie sur la page nommée dans son contenu ; la vue Pages et onglets le montre de la même façon. L’état d’un onglet n’est jamais antérieur à celui de sa page ; un onglet n’apparaît qu’une fois livré et pour les comptes qui y ont droit.
 
-Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **Rappels & notifications** vit dans Mon travail et Paramètres système, **Listes de choix** en onglets des pages qui utilisent chaque liste, **Accès & responsabilités métier** vit sur la fiche utilisateur et dans la liste des fonctions, **Confidentialité & conservation** dans Paramètres système, **Gains de compétition & primes** sur la fiche tournoi, **Recherche dans les dossiers** dans la recherche de l’en-tête, **Intégrations & publication publique** n’a pas d’écran propre tant qu’elle n’est pas cadrée.
+Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **Rappels & notifications** vit dans Mon travail et Paramètres système, **Listes de choix** en onglets des pages qui utilisent chaque liste, **Accès & responsabilités métier** vit sur la fiche utilisateur (une fonction n’ouvre aucun accès, 10 novembre 2026), **Confidentialité & conservation** dans Paramètres système, **Gains de compétition & primes** sur la fiche tournoi, **Recherche dans les dossiers** dans la recherche de l’en-tête, **Intégrations & publication publique** n’a pas d’écran propre tant qu’elle n’est pas cadrée.
 
 ### Aujourd’hui
 
@@ -264,9 +264,9 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 |  | Fonctions | Premier onglet : les fonctions de ce jeu (Joueur, Remplaçant, Coach…), type Joueur ou Encadrement, active ou non, avec leur nombre de passages ; rangées par glisser-déposer selon leur importance, actives ou non, ordre repris partout ; ajout et modification en fenêtre, fonctions courantes en un clic quand la liste est vide ; une fonction inactive reste choisissable pour un passage ancien. | Livré |
 |  | Finances ↗ | Total de la section : ses équipes, plus les opérations liées au jeu lui-même (licence, matériel commun) ; détaillé par équipe. Lu ici, se modifie dans Finances. | Étape 3 |
 |  | Informations | Dernier onglet : nom, nom court, première ouverture, actif, modifiés sur place ; zone dangereuse, qui explique « rendez-le inactif » quand le jeu a des équipes. | Livré |
-| **Fiche équipe** | — | Ouverte par le nom d’une équipe sur la page Jeux, ou juste après son ajout. À venir (étape 2) : le manager de l’équipe y accède, limité à elle : Roster en lecture. | Livré |
-|  | Roster | Premier onglet : ce qui est là et ce qui arrive, joueurs puis encadrement, dans l’ordre des fonctions, avec statut (Actuel, À venir), début, fin et durée ; un passage s’ajoute, se corrige, se termine ou change de fonction en fenêtre ; la personne se cherche dans le Répertoire. À venir (étape 2) : le manager lira le Roster de son équipe, sans le modifier ; la date de fin de contrat s’y lira, venue des contrats (étape 7). | Livré |
-|  | Anciens membres | Les passages terminés, jamais mêlés au Roster : par année de fin, la plus récente d’abord, avec début, fin et durée ; recherche et filtre Joueurs ou Encadrement ; un ancien membre s’ajoute ici avec ses deux dates. À venir (étape 2) : le manager les lira pour son équipe, sans les modifier. | Livré |
+| **Fiche équipe** | — | Ouverte par le nom d’une équipe sur la page Jeux, ou juste après son ajout. Un manager y accède dans la portée Esport de son compte (10 novembre 2026). | Livré |
+|  | Roster | Premier onglet : ce qui est là et ce qui arrive, joueurs puis encadrement, dans l’ordre des fonctions, avec statut (Actuel, À venir), début, fin et durée ; un passage s’ajoute, se corrige, se termine ou change de fonction en fenêtre ; la personne se cherche dans le Répertoire. À venir (étape 7) : la date de fin de contrat s’y lira, venue des contrats. | Livré |
+|  | Anciens membres | Les passages terminés, jamais mêlés au Roster : par année de fin, la plus récente d’abord, avec début, fin et durée ; recherche et filtre Joueurs ou Encadrement ; un ancien membre s’ajoute ici avec ses deux dates. | Livré |
 |  | Tournois ↗ | Tournois joués par cette équipe, avec son classement. Un manager les voit et crée ceux de son équipe, sans les gains ni le Suivi. Lu ici, se modifie dans Tournois. | Étape 5 |
 |  | Entraînements | Séances : date, type (entraînement, scrim, bootcamp), présents, objectif ou débrief court ; nombre de séances et de présents par saison, pour le bilan et les subventions. Un manager remplit celles de son équipe. | Étape 10 |
 |  | Finances ↗ | Ce que l’équipe coûte et rapporte : inscriptions, gains, déplacements et autres opérations liées à l’équipe ; enveloppe de budget comparée au réalisé. Invisible pour un manager. Lu ici, se modifie dans Finances. | Étape 3 |
@@ -383,7 +383,7 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 | --- | --- | --- | --- |
 | **Utilisateurs** | — | Liste, sans onglet : les comptes, avec recherche et filtres. | Livré |
 | **Fiche utilisateur** | Profil | Identité, connexion, contact. À venir (étape 2) : fiche du répertoire liée au compte. | Livré |
-|  | Autorisations | Rôle et autorisations du compte. | Livré |
+|  | Autorisations | Rôle et autorisations du compte, et les jeux et équipes qu’il voit dans l’Esport. | Livré |
 |  | Sécurité | État du compte, mot de passe, double authentification, sessions. | Livré |
 | **Journal d’activité** | — | Liste, sans onglet : qui a fait quoi. À venir (étape 7) : export CSV ou JSON des résultats filtrés. | Livré |
 | **Paramètres système** | — | Réglages, sans onglet. À venir (étape 2) : conservation des coordonnées après le départ d’une personne. | Livré |

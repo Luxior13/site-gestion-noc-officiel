@@ -160,6 +160,8 @@ describe('game rights', () => {
         role: UserRole.ADMIN,
       }),
     ).toEqual({
+      canAddGames: true,
+      canAddTeams: true,
       canManage: true,
       canManageTeams: true,
       canView: true,
@@ -172,17 +174,66 @@ describe('game rights', () => {
         role: UserRole.USER,
       }),
     ).toEqual({
+      canAddGames: false,
+      canAddTeams: false,
       canManage: false,
       canManageTeams: false,
       canView: true,
       canViewTeams: false,
     });
     expect(getGameCapabilities(null)).toEqual({
+      canAddGames: false,
+      canAddTeams: false,
       canManage: false,
       canManageTeams: false,
       canView: false,
       canViewTeams: false,
     });
+  });
+
+  // The permissions say what, the Esport scope where (10 November 2026).
+  it('keeps what concerns every game, or a whole game, to the scopes that cover it', () => {
+    const all = {
+      [PERMISSIONS.GAMES.MANAGE]: true,
+      [PERMISSIONS.GAMES.VIEW]: true,
+      [PERMISSIONS.TEAMS.MANAGE]: true,
+      [PERMISSIONS.TEAMS.VIEW]: true,
+    };
+    const manager = (
+      esportScope: 'ALL' | 'GAMES' | 'TEAMS',
+    ): ReturnType<typeof getGameCapabilities> =>
+      getGameCapabilities({
+        esportScope,
+        isProtected: false,
+        permissions: all,
+        role: UserRole.USER,
+      });
+
+    expect(manager('GAMES')).toEqual({
+      canAddGames: false,
+      canAddTeams: true,
+      canManage: true,
+      canManageTeams: true,
+      canView: true,
+      canViewTeams: true,
+    });
+    expect(manager('TEAMS')).toEqual({
+      canAddGames: false,
+      canAddTeams: false,
+      canManage: false,
+      canManageTeams: true,
+      canView: true,
+      canViewTeams: true,
+    });
+    // The root always sees every game, whatever the field says.
+    expect(
+      getGameCapabilities({
+        esportScope: 'TEAMS',
+        isProtected: true,
+        permissions: null,
+        role: UserRole.ADMIN,
+      }).canAddGames,
+    ).toBe(true);
   });
 });
 

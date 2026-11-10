@@ -11,7 +11,7 @@ Le site sert d’abord à la trésorerie et à la traçabilité de la structure
 | Public | Voit | Mécanisme |
 | --- | --- | --- |
 | Membres du bureau | Ce que leurs autorisations ouvrent | Rôle et autorisations par page, déjà livrés |
-| Manager d’équipe | Seulement les jeux ou équipes que ses autorisations lui ouvrent, sans les autres pôles | Compte Utilisateur, ses autorisations et une portée Esport (jeux ou équipes choisis), à construire (décision du 10 novembre 2026) |
+| Manager d’équipe | Seulement les jeux ou équipes que ses autorisations lui ouvrent, sans les autres pôles | Compte Utilisateur, ses autorisations et sa portée Esport (jeux ou équipes choisis), livrés le 10 novembre 2026 ([permissions](permissions.md#portée-esport)) |
 
 Les joueurs, coachs et autres membres sont des fiches du
 [Répertoire](../pages/personnes/repertoire/README.md), sans compte. Valable jusqu’à
@@ -20,7 +20,8 @@ nouvelle décision ; la portée après une évolution en société reste à pré
 Conséquences :
 
 - Un manager reste un Utilisateur : aucun nouveau rôle technique. Le menu filtre
-  déjà les pôles selon les droits ; le serveur doit filtrer ses données par équipe.
+  les pôles selon les droits ; le serveur filtre les jeux, équipes, Roster et
+  Parcours selon la portée Esport du compte (livré le 10 novembre 2026).
 - Le modèle REV-15 ci-dessous se construit avec Équipes & parcours, réduit à ce
   besoin : une **portée Esport** sur le compte (voir la décision du 10 novembre
   2026 ci-dessous). Portées par entité, modèles de rôle et délégations restent
@@ -37,8 +38,8 @@ Conséquences :
   fonction et la liaison compte–fiche prévus le 7 novembre 2026 pour l’accès.
   Conséquence assumée : au départ d’un manager, un administrateur retire ou
   réduit sa portée ; rien ne se retire tout seul à la fin de son passage.
-- Les modules du bureau utilisent les autorisations actuelles : ils n’attendent
-  pas la portée par équipe.
+- Les modules du bureau utilisent les autorisations actuelles : la portée Esport
+  ne limite que le pôle Esport.
 - Les profils Joueur, Coach et Secrétariat du tableau ci-dessous ne décrivent plus
   des comptes. Les acceptations de ces personnes sont saisies par le bureau.
 - Les chantiers destinés à des personnes sans compte sont regroupés en réserve

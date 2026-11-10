@@ -4,6 +4,7 @@ import type { Prisma } from '@prisma/client';
 
 import { FEATURES } from '$constants/feature-registry.constants';
 import { PERMISSIONS } from '$constants/permissions.constants';
+import { assertIncludesTeam, type EsportScope } from '$server/esport-scope';
 import { ServiceError, serviceErrors } from '$server/service-error';
 import { ErrorCode } from '$types/api.types';
 
@@ -46,9 +47,15 @@ export const managePermissionOf = (scope: PassageScope): string =>
 const teamMissing = (): ServiceError =>
   serviceErrors.notFound('Cette équipe n’existe plus. Rechargez la page.');
 
+/**
+ * The place of a passage; a team's only within the reader's Esport scope
+ * (10 November 2026), answering as missing outside of it. The structure is
+ * outside the Esport pole.
+ */
 export const resolvePlace = async (
   client: Prisma.TransactionClient,
   scope: PassageScope,
+  esport: EsportScope,
 ): Promise<PassagePlace> => {
   if (scope.type === 'structure') return STRUCTURE_PLACE;
   const team = await client.team.findUnique({
@@ -61,6 +68,7 @@ export const resolvePlace = async (
     where: { id: scope.teamId },
   });
   if (!team) throw teamMissing();
+  assertIncludesTeam(esport, team, teamMissing);
   const ref: TeamRef = {
     gameId: team.gameId,
     gameName: team.game.name,

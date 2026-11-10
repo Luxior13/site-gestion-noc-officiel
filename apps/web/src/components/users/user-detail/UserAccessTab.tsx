@@ -6,13 +6,23 @@ import React, { type FC, useEffect, useMemo, useRef } from 'react';
 
 import { SectionActionBar } from '$components/layout/SectionActionBar';
 import { AuthorizationsHeader } from '$components/users/AuthorizationsHeader';
+import { EsportScopeEditor } from '$components/users/EsportScopeEditor';
 import {
   type PermissionMutationPolicy,
   type PermissionMutationSummary,
 } from '$components/users/permission-editor-policy';
 import { PERMISSION_EDITOR_CATEGORIES } from '$components/users/permission-editor-view';
 import { PermissionsEditor } from '$components/users/PermissionsEditor';
-import { type PermissionsData } from '$constants/permissions.constants';
+import {
+  type EsportScopeValue,
+  FULL_ESPORT_SCOPE_VALUE,
+  sameEsportScope,
+} from '$constants/esport-scope.constants';
+import {
+  hasPermission,
+  PERMISSIONS,
+  type PermissionsData,
+} from '$constants/permissions.constants';
 import { UserAccessBadge } from '$features/users/components/user-badges';
 import type { UserType } from '$types/auth.types';
 import { Badge } from '$ui/badge';
@@ -27,6 +37,7 @@ import {
 } from '$ui/select';
 import { Tooltip, TooltipContent, TooltipTrigger } from '$ui/tooltip';
 
+import { savedEsportScope } from './user-detail-draft';
 import { useWorkspaceHeight } from './useWorkspaceHeight';
 
 type UserAccessTabProps = {
@@ -35,6 +46,12 @@ type UserAccessTabProps = {
   canGrantPermissions: boolean;
   canManagePermissions: boolean;
   canSave: boolean;
+  /** The Esport scope's draft, when the reader may see it (10 November 2026). */
+  esportScope?: {
+    canEdit: boolean;
+    onChange: (value: EsportScopeValue) => void;
+    value: EsportScopeValue | null;
+  };
   hasChanges: boolean;
   isRefreshing?: boolean;
   isSaving: boolean;
@@ -53,6 +70,9 @@ type UserAccessTabProps = {
   user: UserType;
 };
 
+/** The Esport pole's page where its scope is chosen. */
+const ESPORT_SCOPE_PAGE_KEY = 'games';
+
 const roleLabel = (role: UserRole): string =>
   role === UserRole.ADMIN ? 'Administrateur' : 'Utilisateur';
 
@@ -62,6 +82,7 @@ export const UserAccessTab: FC<UserAccessTabProps> = ({
   canGrantPermissions,
   canManagePermissions,
   canSave,
+  esportScope,
   hasChanges,
   isRefreshing = false,
   isSaving,
@@ -133,22 +154,45 @@ export const UserAccessTab: FC<UserAccessTabProps> = ({
       ),
     [mutationSummary],
   );
-  const mutationSummaryLabel = mutationSummary
-    ? [
-        role !== user.role ? 'rôle modifié' : null,
-        mutationSummary.grantedCount > 0
-          ? `${mutationSummary.grantedCount} attribution${mutationSummary.grantedCount > 1 ? 's' : ''}`
-          : null,
-        mutationSummary.revokedCount > 0
-          ? `${mutationSummary.revokedCount} retrait${mutationSummary.revokedCount > 1 ? 's' : ''}`
-          : null,
-        mutationSummary.delegationChangeCount > 0
-          ? `${mutationSummary.delegationChangeCount} changement${mutationSummary.delegationChangeCount > 1 ? 's' : ''} de délégation`
-          : null,
-      ]
-        .filter(Boolean)
-        .join(' · ')
-    : '';
+  // An administrator sees every game: a promotion resets the scope.
+  const savedScope = savedEsportScope(user);
+  const draftScope =
+    role === UserRole.ADMIN ? FULL_ESPORT_SCOPE_VALUE : esportScope?.value;
+  const esportScopeChanged =
+    !!savedScope && !!draftScope && !sameEsportScope(draftScope, savedScope);
+  const esportScopeAddon =
+    esportScope?.value && savedScope
+      ? (pageKey: string): React.ReactNode =>
+          pageKey === ESPORT_SCOPE_PAGE_KEY && esportScope.value ? (
+            <EsportScopeEditor
+              active={hasPermission(role, PERMISSIONS.GAMES.VIEW, permissions)}
+              canEdit={esportScope.canEdit}
+              changed={esportScopeChanged}
+              disabled={isSaving}
+              isAdmin={role === UserRole.ADMIN}
+              onChange={esportScope.onChange}
+              value={esportScope.value}
+            />
+          ) : null
+      : undefined;
+  const mutationSummaryLabel =
+    mutationSummary || esportScopeChanged
+      ? [
+          role !== user.role ? 'rôle modifié' : null,
+          esportScopeChanged ? 'jeux et équipes visibles modifiés' : null,
+          mutationSummary && mutationSummary.grantedCount > 0
+            ? `${mutationSummary.grantedCount} attribution${mutationSummary.grantedCount > 1 ? 's' : ''}`
+            : null,
+          mutationSummary && mutationSummary.revokedCount > 0
+            ? `${mutationSummary.revokedCount} retrait${mutationSummary.revokedCount > 1 ? 's' : ''}`
+            : null,
+          mutationSummary && mutationSummary.delegationChangeCount > 0
+            ? `${mutationSummary.delegationChangeCount} changement${mutationSummary.delegationChangeCount > 1 ? 's' : ''} de délégation`
+            : null,
+        ]
+          .filter(Boolean)
+          .join(' · ')
+      : '';
 
   if (user.isProtected) {
     return (
@@ -199,6 +243,7 @@ export const UserAccessTab: FC<UserAccessTabProps> = ({
         role={role}
         permissions={permissions}
         onChange={setPermissions}
+        pageAddon={esportScopeAddon}
         selectedPageKey={permissionPageKey}
         onSelectedPageChange={onPermissionPageChange}
         changedPermissionKeys={changedPermissionKeys}

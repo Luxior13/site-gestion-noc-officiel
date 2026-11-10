@@ -10,6 +10,12 @@ import {
   isPrismaUniqueConstraintError,
 } from '$server/api-response';
 import { createAuditLogWithHeaders } from '$server/audit-log';
+import {
+  assertCoversGame,
+  authorizeEsportAction,
+  type EsportScope,
+  gameScopeWhere,
+} from '$server/esport-scope';
 import { planManualOrder } from '$server/manual-order';
 import { prisma } from '$server/prisma';
 import { ServiceError, serviceErrors } from '$server/service-error';
@@ -161,14 +167,20 @@ const editableData = (
   normalizedName: normalizeSearchText(input.name),
 });
 
+/**
+ * The list of functions; a game's only within the reader's Esport scope
+ * (10 November 2026), the structure's outside of it.
+ */
 const resolveScope = async (
   client: Prisma.TransactionClient,
   scope: FunctionScope,
+  esport: EsportScope,
 ): Promise<ScopeRef> => {
   if (scope.type === 'structure') return STRUCTURE_REF;
-  const game = await client.game.findUnique({
+  const game = await client.game.findFirst({
     select: { id: true, name: true },
-    where: { id: scope.gameId },
+    // Both conditions: the scope's ids would be overwritten in one object.
+    where: { AND: [gameScopeWhere(esport), { id: scope.gameId }] },
   });
   if (!game) throw gameMissing();
 
@@ -262,17 +274,34 @@ const audit = async (
     { client: transaction, required: true },
   );
 
-/** A game's functions follow the game, the structure's Bureau & staff. */
-const authorize = (
+/**
+ * A game's functions follow the game, the structure's Bureau & staff. A
+ * game's are shared by all its teams: changing them needs the whole game in
+ * the actor's Esport scope.
+ */
+const openScope = async (
   transaction: Prisma.TransactionClient,
   scope: FunctionScope,
   { actor, session }: MemberFunctionActor,
-): Promise<unknown> =>
-  authorizeUserAction(
+): Promise<ScopeRef> => {
+  if (scope.type === 'structure') {
+    await authorizeUserAction(
+      transaction,
+      { actorId: actor.id, session },
+      PERMISSIONS.STAFF.MANAGE,
+    );
+
+    return STRUCTURE_REF;
+  }
+  const esport = await authorizeEsportAction(
     transaction,
     { actorId: actor.id, session },
-    scope.type === 'game' ? PERMISSIONS.GAMES.MANAGE : PERMISSIONS.STAFF.MANAGE,
+    PERMISSIONS.GAMES.MANAGE,
   );
+  assertCoversGame(esport, scope.gameId, gameMissing);
+
+  return resolveScope(transaction, scope, esport);
+};
 
 const createOne = async (
   transaction: Prisma.TransactionClient,
@@ -313,8 +342,9 @@ const createOne = async (
  */
 export const listFunctions = async (
   scope: FunctionScope,
+  esport: EsportScope,
 ): Promise<MemberFunctionItem[]> =>
-  readList(prisma, await resolveScope(prisma, scope));
+  readList(prisma, await resolveScope(prisma, scope, esport));
 
 /** Adds a function to a list; its name is unique within the list. */
 export const createFunction = async (
@@ -324,8 +354,7 @@ export const createFunction = async (
 ): Promise<MemberFunctionItem> => {
   try {
     return await prisma.$transaction(async (transaction) => {
-      await authorize(transaction, scope, actor);
-      const ref = await resolveScope(transaction, scope);
+      const ref = await openScope(transaction, scope, actor);
 
       return createOne(transaction, ref, input, actor.actor.id);
     });
@@ -346,8 +375,7 @@ export const addCommonFunctions = async (
 ): Promise<MemberFunctionItem[]> => {
   try {
     return await prisma.$transaction(async (transaction) => {
-      await authorize(transaction, scope, actor);
-      const ref = await resolveScope(transaction, scope);
+      const ref = await openScope(transaction, scope, actor);
       if (
         (await transaction.memberFunction.count({
           where: { gameId: ref.gameId },
@@ -387,8 +415,7 @@ export const updateFunction = async (
 ): Promise<MemberFunctionItem> => {
   try {
     return await prisma.$transaction(async (transaction) => {
-      await authorize(transaction, scope, actor);
-      const current = await resolveScope(transaction, scope);
+      const current = await openScope(transaction, scope, actor);
       assertKind(current, input.kind);
       const previous = toItem(await findFunction(transaction, current, id));
       if (previous.version !== input.expectedVersion) throw functionChanged();
@@ -452,8 +479,7 @@ export const reorderFunctions = async (
   actor: MemberFunctionActor,
 ): Promise<MemberFunctionItem[]> =>
   prisma.$transaction(async (transaction) => {
-    await authorize(transaction, scope, actor);
-    const ref = await resolveScope(transaction, scope);
+    const ref = await openScope(transaction, scope, actor);
     assertKind(ref, input.kind);
     // One reorder of a group at a time: the second waits for the first to
     // commit, then reads its order as « before ».
@@ -517,8 +543,7 @@ export const deleteFunction = async (
 ): Promise<{ id: string }> => {
   try {
     return await prisma.$transaction(async (transaction) => {
-      await authorize(transaction, scope, actor);
-      const ref = await resolveScope(transaction, scope);
+      const ref = await openScope(transaction, scope, actor);
       const previous = toItem(await findFunction(transaction, ref, id));
       if (previous.version !== expectedVersion) throw functionChanged();
       const result = await transaction.memberFunction.deleteMany({

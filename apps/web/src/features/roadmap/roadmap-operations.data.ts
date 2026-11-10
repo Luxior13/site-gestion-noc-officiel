@@ -73,7 +73,7 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
       'Export CSV ou JSON des résultats filtrés du journal d’activité.',
     id: 'activity-journal',
     later:
-      'Rétention par catégorie, portée par équipe, tableaux de bord d’anomalies et alertes ciblées.',
+      'Rétention par catégorie, portée Esport ou par entité, tableaux de bord d’anomalies et alertes ciblées.',
     phase: 7,
     title: 'Export du journal d’activité',
   },
