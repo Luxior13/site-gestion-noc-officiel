@@ -1,6 +1,6 @@
 # Documentation des pages
 
-La référence courante est la [matrice de préparation](MATRICE_PREPARATION.md), qui distingue les pages livrées, les 38 chantiers et les anciennes destinations.
+La référence courante est la [matrice de préparation](MATRICE_PREPARATION.md), qui distingue les pages livrées, les 37 chantiers et les anciennes destinations.
 
 ## À lire avant de développer
 

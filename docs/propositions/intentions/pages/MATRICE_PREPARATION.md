@@ -31,12 +31,11 @@ Les anciennes routes prévues ne sont pas des « squelettes disponibles » : ell
 - Le catalogue ne décrit que ce qui reste à construire (décision du 8 novembre 2026) : un chantier livré est retiré ou réduit à son reste à faire, avec une mise à jour de cette matrice.
 - Chaque ligne de l’interface précise première version, prérequis, critère de livraison et suite éventuelle. Les étapes sont un ordre suggéré, pas des échéances ; le propriétaire choisit le prochain chantier.
 
-## Les 38 chantiers
+## Les 37 chantiers
 
 | Identifiant stable | Chantier | Pôle cible | Étape | Prérequis |
 | --- | --- | --- | --- | --- |
-| `sport-teams` | Équipes & parcours | Personnes | 1 | Listes de choix |
-| `reference-lists` | Listes de choix | Esport | 1 | — |
+| `sport-teams` | Équipes & parcours | Personnes | 1 | — |
 | `access-scopes` | Accès & responsabilités métier | Système | 2 | Équipes & parcours |
 | `compliance` | Confidentialité & conservation | Structure | 2 | Équipes & parcours |
 | `data` | Données, exports & sauvegardes | Système | 2 | Équipes & parcours |
@@ -73,6 +72,8 @@ Les anciennes routes prévues ne sont pas des « squelettes disponibles » : ell
 | `sports-follow-up` | Entraînement | Esport | 10 | Équipes & parcours ; Accès & responsabilités métier |
 | `events` | Déplacements | Esport | 10 | Projets & tâches ; Opérations & règlements ; Tournois ; Documents & acceptations |
 | `hr` | Salariés & paie | Personnes | 10 | Contrats & obligations |
+
+Clos le 10 novembre 2026 : `reference-lists` (Listes de choix), jeux et fonctions livrés, jeux pratiqués retirés ([feuille de route](../../feuille-de-route.md#retraits-du-10-novembre-2026)).
 
 Retiré le 7 novembre 2026 : `approvals`. Fusionnés : `governance` dans `meetings`, `notifications` dans `automations`, `sport-planning`, `debriefs`, `preparation` et `performance` dans `sports-follow-up`. Raisons : [feuille de route](../../feuille-de-route.md#retraits-et-regroupements-du-7-novembre-2026).
 

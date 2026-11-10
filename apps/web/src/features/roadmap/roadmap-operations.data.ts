@@ -2,28 +2,13 @@ import type { RoadmapItem } from './types/roadmap.types';
 
 export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
   {
-    area: 'esport',
-    dependsOn: [],
-    description:
-      'Faire évoluer les listes de choix du site sans attendre un développement.',
-    doneWhen:
-      'Ajouter, renommer ou rendre inactive une valeur ne demande aucun développement et ne réécrit pas l’historique.',
-    firstRelease:
-      'Chaque liste à côté de ce qu’elle classe (la page Jeux est livrée depuis le 8 novembre 2026, les fonctions de chaque jeu et celles de la structure depuis le 9) : fonctions de chaque jeu en onglet de sa fiche, fonctions de la structure en onglet de Bureau & staff, jeux pratiqués choisis sur la fiche ; ajout direct depuis un champ et champ à choix multiples réutilisable. Renommer corrige une faute ; une chose qui change vraiment devient une nouvelle valeur.',
-    id: 'reference-lists',
-    later:
-      'Les autres listes arrivent avec leur module : catégories et moyens de paiement dans Comptes, types de matériel dans Matériel & abonnements.',
-    phase: 1,
-    title: 'Listes de choix',
-  },
-  {
     area: 'system',
     dependsOn: ['sport-teams'],
     description: 'Garantir que le registre survit à l’outil.',
     doneWhen:
       'Un export lisible reprend tout le registre ; une restauration vérifie données, pièces et accès.',
     firstRelease:
-      'Export lisible du registre, suivi des sauvegardes et restauration essayée.',
+      'Export lisible du registre, suivi des sauvegardes et restauration essayée, juste avant la mise en production.',
     id: 'data',
     later: 'Recherche dans les archives avec les droits des modules sources.',
     legacyHrefs: ['/systeme/exports-sauvegardes', '/systeme/archives'],

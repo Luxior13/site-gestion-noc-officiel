@@ -51,26 +51,20 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'people',
-    chantier: 'sport-teams',
     name: 'Répertoire',
     phase: null,
     summary:
       'Liste, sans onglet : toutes les fiches, avec recherche et filtres.',
-    upcoming: 'Filtres par équipe, jeu et anciens membres.',
   },
   {
     area: 'people',
-    // The games a person plays: a list of choices, picked on the record.
-    chantier: 'reference-lists',
     name: 'Fiche personne',
     phase: null,
     tabs: [
       {
-        chantier: 'sport-teams',
         label: 'Identité',
         phase: null,
         summary: 'Pseudo, nom, naissance, nationalité, zone dangereuse.',
-        upcoming: 'Les jeux pratiqués.',
       },
       {
         chantier: 'sport-teams',
@@ -127,8 +121,6 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'Notes, sanctions de la structure (tous ses tournois ou un jeu, motif, durée, levée) et bans externes qui dépassent un tournoi ; les problèmes et bans d’un tournoi y figurent aussi, saisis dans sa fiche. Réservé aux personnes habilitées.',
       },
     ],
-    upcoming:
-      'Les jeux pratiqués, choisis dans Identité avec un champ à choix multiples, le jeu manquant ajouté sans quitter la fiche.',
   },
   {
     area: 'esport',
@@ -228,12 +220,10 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'Les partenaires qui soutiennent cette équipe et ce qu’elle leur doit (logo sur le maillot, publications, présence). Un manager les voit, sans les montants.',
       },
       {
-        chantier: 'sport-teams',
         label: 'Informations',
         phase: null,
         summary:
           'Dernier onglet : nom, création, active, modifiés sur place ; le jeu, fixé à la création, figure dans l’en-tête ; zone dangereuse, qui explique « rendez-la inactive » quand le Roster a des passages.',
-        upcoming: 'Anciens noms gardés au renommage.',
       },
     ],
   },

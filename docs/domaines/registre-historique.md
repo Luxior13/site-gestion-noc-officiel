@@ -37,7 +37,7 @@ Un seul objet central : le **passage**, une relation datée entre une fiche du
 | Entité juridique | Aucune : l’histoire commence en 2014, la structure en 2023 et l’association en octobre 2025 ; le registre ne porte jamais d’entité, seuls les actes (comptes, factures, contrats, adhésions) en portent une ([décisions du 9 novembre 2026](structure-juridique.md#décisions-du-9-novembre-2026)) |
 | Roster à une date | Se déduit des passages ; aucune composition d’équipe n’est stockée à part |
 | Autres pseudos | Un ancien pseudo, un compte secondaire ou un surnom (un nom en jeu est un compte de jeu, dans Coordonnées), avec une précision et une date de fin facultatives ; saisis à la main dans l’onglet En ligne de la fiche (avec le droit des coordonnées), y compris ceux d’avant le site, et trouvés par la recherche du Répertoire, pour reconnaître une personne qui a changé de nom (livré le 10 novembre 2026 ; « autres » plutôt qu’« anciens » sur la remarque du propriétaire). Un changement de pseudo sur le site n’en crée pas : le journal d’activité le garde déjà |
-| Anciens noms d’équipe | Conservés de la même façon : une équipe change de nom sans changer d’histoire |
+| Anciens noms d’équipe | Non gardés (10 novembre 2026, décision du propriétaire) : renommer change le nom partout, y compris dans les anciens passages ; un renommage fait sur le site reste lisible dans le journal d’activité. Une équipe qui change vraiment d’identité peut être créée à nouveau, l’ancienne rendue inactive |
 
 Le passage d’une équipe est livré le 9 novembre 2026 (table `PersonPassage`) :
 un début se range au premier jour de sa période, une fin au dernier ; la même
@@ -179,10 +179,14 @@ développement. Une liste fixée par une règle (statut, rôle) reste dans le co
   la base refusent de le changer ([fiche équipe](../pages/esport/equipe.md)).
 - **Ajouter depuis le champ** : un champ à choix multiples propose de créer la
   valeur manquante, pour ne pas quitter la fiche. L’ajout suit les droits de la liste.
-- Le champ à choix multiples est un nouveau composant partagé de `components/ui`,
-  créé avec son premier consommateur. Ni moteur de formulaires ni champs dynamiques.
-  Premier usage : les jeux d’une personne sur sa fiche, un champ distinct de ses
-  passages, puisqu’on peut pratiquer un jeu sans y avoir d’équipe.
+- Le champ à choix multiples sera un composant partagé de `components/ui`,
+  créé avec son premier vrai consommateur. Ni moteur de formulaires ni champs
+  dynamiques.
+- **Pas de jeux pratiqués sur la fiche** (10 novembre 2026, recommandation
+  acceptée par le propriétaire) : le jeu d’une personne se lit dans ses passages
+  (Parcours), ses comptes de jeu dans l’onglet En ligne. Une liste « joue à »
+  sans date vieillirait sans être tenue ; le recrutement, son seul usage, la
+  reprendra s’il est cadré.
 
 ## Où modifier
 

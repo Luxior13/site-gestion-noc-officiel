@@ -186,7 +186,7 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
 - **Ce que demande une création** (8 novembre 2026, pensé pour le long terme) :
   seulement ce sans quoi l’élément n’existe pas, et ce qui ne changera plus
   (le jeu d’une équipe). Le reste se complète dans la fiche qui s’ouvre
-  aussitôt : ce qui est automatique (anciens noms), daté (roster, rattachement
+  aussitôt : ce qui est daté (roster, rattachement
   à une entité), géré ailleurs (finances, partenaires), facultatif (logo, tag,
   réseaux) ou une action après coup (publication). Le choix entre fenêtre et
   page se fait sur cet inventaire de tout ce qui est prévu, pas sur les seuls

@@ -13,7 +13,9 @@
   registre) ; nationalité, contacts d’urgence et représentants légaux livrés
   le 10 novembre 2026, puis les autres pseudos et l’ID du compte Discord le
   même jour, et les comptes de jeu ; lot 3 (portée Esport) livré le
-  10 novembre 2026 ; restent les jeux pratiqués et l’adresse. Les choix
+  10 novembre 2026 ; les jeux pratiqués sont retirés le même jour, ce qui
+  clôt le lot 1, puis les anciens noms d’équipe et les filtres du Répertoire
+  par équipe et par jeu ; reste l’adresse. Les choix
   techniques non livrés restent à valider au moment de leur lot.
 - **Décisions déjà données** : [registre historique](../domaines/registre-historique.md)
   et [public du site](../domaines/roles-metier.md#public-du-site--décision-du-7-novembre-2026).
@@ -26,14 +28,22 @@ migration. Ils demandent des scénarios d’abus et une validation sur base isol
 
 | Lot | Contenu | Résultat visible |
 | --- | --- | --- |
-| 1 | Listes de choix | Champ « Jeux » sur la fiche, avec ajout direct ; la page Jeux (8 novembre 2026) et l’onglet Fonctions de chaque fiche jeu (9 novembre 2026) sont livrés |
+| 1 | Listes de choix | Clos le 10 novembre 2026 : la page Jeux (8 novembre 2026) et l’onglet Fonctions de chaque fiche jeu (9 novembre 2026) sont livrés ; le champ « Jeux » de la fiche est retiré |
 | 2 | Équipes & parcours | Page Jeux, fiches jeu et équipe, page Bureau & staff (Effectif, Anciens membres, Fonctions ; livrée le 9 novembre 2026), onglet Parcours en lecture (livré le même jour), autres pseudos dans l’onglet En ligne (10 novembre 2026) |
 | 3 | Accès manager | Un manager se connecte et ne voit que les jeux ou équipes de sa portée, choisie dans ses autorisations (livré le 10 novembre 2026) |
 
-Confidentialité & conservation et Données, exports & sauvegardes complètent l’étape 2. Le lot 1 introduit TanStack Query, prévu avec son premier consommateur
+Confidentialité & conservation et Données, exports & sauvegardes complètent l’étape 2. TanStack Query, prévu avec le lot 1, attend toujours son premier consommateur
 ([décision REV-20](../references/architecture-fonctionnalite.md#5-états-ux-obligatoires)).
 
 ## Lot 1 — Listes de choix
+
+**Clos le 10 novembre 2026** (recommandation acceptée par le propriétaire) : les
+jeux et les fonctions ont leurs tables et leurs pages ; les jeux pratiqués sont
+retirés ([retrait](feuille-de-route.md#retraits-du-10-novembre-2026)), si bien que
+la table commune `ReferenceValue`, la liaison `PersonGame`, le composant
+`MultiSelect` et le droit `reference_lists:update` ne sont pas construits. Les
+autres listes arriveront avec leur module, le champ à choix multiples avec son
+premier vrai usage. La suite garde le cadrage initial.
 
 **Données** : les jeux ont leur table `Game`, livrée le 8 novembre 2026 avec la page Jeux (nom unique, nom court, première ouverture et sa précision, actif) ; une table `ReferenceValue` pour les autres listes (`list`, `label`,
 libellé normalisé, actif, `version`) ; les fonctions ont leur table `MemberFunction`, livrée le 9 novembre 2026 (nom unique par jeu, type Joueur ou Encadrement, position posée par glisser-déposer dans chaque type, active, `version`, `gameId` vide pour les fonctions de la structure, uniques entre elles par un index partiel, de type Bureau ou Staff depuis le même jour avec Bureau & staff),
@@ -67,7 +77,7 @@ lecture des valeurs suit la page qui les affiche.
 
 | Modèle | Contenu |
 | --- | --- |
-| `Team` | Livré le 8 novembre 2026 : jeu (`ON DELETE RESTRICT`, fixé à la création, déclencheur `Team_gameId_immutable`), nom unique dans son jeu, création avec sa précision, active, `version` ; anciens noms à venir avec la fiche équipe |
+| `Team` | Livré le 8 novembre 2026 : jeu (`ON DELETE RESTRICT`, fixé à la création, déclencheur `Team_gameId_immutable`), nom unique dans son jeu, création avec sa précision, active, `version` ; anciens noms non gardés (10 novembre 2026) |
 | `PersonPassage` | Livré le 9 novembre 2026 pour les équipes : fiche, équipe facultative (vide pour une fonction de structure, à venir), fonction, début au premier jour de sa période, fin au dernier, précision de chaque date, `version` ; exclusion des passages identiques qui se chevauchent, fonction du jeu de l’équipe vérifiée par la base |
 | `PersonOtherNickname` | Livré le 10 novembre 2026 (remplace l’ancien pseudo prévu ici) : un autre pseudo de la fiche (ancien, compte secondaire, en jeu, surnom), une précision et une date de fin facultatives, version propre ; saisi à la main dans l’onglet En ligne (droit des coordonnées), cherché par le Répertoire et le choix d’une fiche avec ce droit. Pas d’écriture automatique au changement de pseudo : le journal d’activité garde déjà l’ancien |
 
@@ -102,8 +112,8 @@ identifiants de jeu, finances) le fait en `ON DELETE RESTRICT`, jamais en
   actuels et à venir), Anciens membres (passages terminés, par année de fin ;
   séparés le 9 novembre 2026, sans sélecteur « À une date »), Tournois ↗,
   Entraînements,
-  Finances ↗ (invisible pour un manager), Partenaires ↗ et Informations (nom, anciens noms,
-  archivage).
+  Finances ↗ (invisible pour un manager), Partenaires ↗ et Informations (nom,
+  archivage ; anciens noms non gardés, 10 novembre 2026).
 - Page Bureau & staff (pôle Structure, `/structure/bureau-staff`, livrée le
   9 novembre 2026, [fiche](../pages/structure/bureau-staff.md)) : onglet
   Effectif, le roster de la structure (bureau, staff, bénévoles, depuis 2014),

@@ -37,7 +37,7 @@ Champs d’une équipe :
 | Champ | Règle |
 | --- | --- |
 | Jeu | Obligatoire, choisi dans la fenêtre, sans valeur par défaut (sauf s’il n’y a qu’un jeu) puisqu’il ne changera plus ; tous les jeux, actifs d’abord, les inactifs marqués « (inactif) » et choisissables (une équipe passée ou à venir) ; la fenêtre rappelle « Le jeu ne change plus une fois l’équipe créée : un autre jeu, c’est une autre équipe. » ; l’API et la base refusent de le changer |
-| Nom | Obligatoire, 60 caractères ; unique **dans son jeu** quels que soient la casse et les accents : chaque jeu peut avoir sa « Noctambule » ; renommer corrige une faute, les anciens noms viendront avec la fiche équipe |
+| Nom | Obligatoire, 60 caractères ; unique **dans son jeu** quels que soient la casse et les accents : chaque jeu peut avoir sa « Noctambule » ; renommer change le nom partout, sans garder l’ancien (10 novembre 2026) |
 | Création | Obligatoire, préremplie avec la date du jour, même précision que la première ouverture d’un jeu ; affichée « depuis 2023 », « depuis mars 2023 », « depuis le 15 mars 2023 » sur téléphone |
 | Active | Oui ou non ; une équipe inactive reste dans l’historique |
 
@@ -129,9 +129,10 @@ ouverture, Création, Actif, Active), filtres « Jeux » et « Équipes » du
 (Valorant) ».
 
 Hors de cette version : la fiche équipe (Roster, Tournois, Informations…), la
-fiche jeu (Finances, Fonctions), les anciens noms d’une équipe, l’image de
-chaque jeu et les jeux pratiqués sur la fiche personne
-([feuille de route](../../propositions/feuille-de-route.md)).
+fiche jeu (Finances, Fonctions) et l’image de chaque jeu
+([feuille de route](../../propositions/feuille-de-route.md)) ; les jeux
+pratiqués sur la fiche personne et les anciens noms d’une équipe sont retirés
+le 10 novembre 2026.
 
 ## Décisions courantes
 

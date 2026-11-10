@@ -20,7 +20,7 @@ export const ROADMAP_COVERAGE: readonly RoadmapCoverageRow[] = [
   },
   {
     chantiers: ['sport-teams'],
-    subject: 'Roster et anciens noms des équipes de chaque jeu',
+    subject: 'Roster des équipes de chaque jeu',
   },
   {
     chantiers: ['competitions', 'prizes'],

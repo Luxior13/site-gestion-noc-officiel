@@ -179,13 +179,12 @@ describe('planned pages and tabs', () => {
     expect(tab('Fiche équipe', 'Roster')?.phase).toBeNull();
     expect(tab('Bureau & staff', 'Effectif')?.phase).toBeNull();
     // The other pseudos are in place, in their En ligne tab (10 November
-    // 2026); the games played next, in Identité.
+    // 2026); the games played are withdrawn the same day: a person's games
+    // read in their passages.
     expect(tab('Fiche personne', 'En ligne')?.summary).toContain(
       'Autres pseudos',
     );
-    expect(tab('Fiche personne', 'Identité')?.upcoming).toContain(
-      'jeux pratiqués',
-    );
+    expect(tab('Fiche personne', 'Identité')?.upcoming).toBeUndefined();
   });
 
   it('gathers the sporting activity in the Esport pole', () => {
@@ -241,12 +240,11 @@ describe('planned pages and tabs', () => {
     );
     expect(user?.tabs?.map((tab) => tab.label)).toEqual(['Profil']);
     expect(user?.phase).toBe(getRoadmapItem('access-scopes')?.phase);
-    const directory = ROADMAP_PLANNED_PAGES.find(
-      (page) => page.name === 'Répertoire',
-    );
-    expect(directory?.summary).toBe(
-      'Filtres par équipe, jeu et anciens membres.',
-    );
+    // Nothing left on the Répertoire: its team and game filters are withdrawn
+    // (10 November 2026), each team record lists its members.
+    expect(
+      ROADMAP_PLANNED_PAGES.find((page) => page.name === 'Répertoire'),
+    ).toBeUndefined();
   });
 
   // Owner's rule of 8 November 2026: a tab read here, modified elsewhere.

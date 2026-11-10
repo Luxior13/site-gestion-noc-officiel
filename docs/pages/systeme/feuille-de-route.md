@@ -153,6 +153,10 @@ Sources : [décisions produit](../../propositions/feuille-de-route.md),
   ([réorganisation](../../propositions/feuille-de-route.md#réorganisation-du-8-novembre-2026)) ;
   le filtre `pole=esport` redevient valide. Esport reprend la couleur de
   Personnes en attendant la sienne.
+- 10 novembre 2026 : jeux pratiqués retirés de la fiche personne et chantier
+  Listes de choix clos, sur recommandation acceptée ; le catalogue compte
+  37 chantiers. Le même jour, filtres du Répertoire par équipe et par jeu et
+  anciens noms d’équipe retirés, sur décision du propriétaire ([retraits](../../propositions/feuille-de-route.md#retraits-du-10-novembre-2026)).
 - 25 octobre 2026 : la page reste ouverte à tout compte connecté et figure
   dans la section « Projet » du pôle Système, plus sous « Administration »
   ([DRT-04](../../audits/2026-10-25-coherence-des-droits.md)).

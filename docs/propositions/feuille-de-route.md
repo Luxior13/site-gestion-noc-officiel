@@ -1,6 +1,6 @@
 # Feuille de route — priorités de construction
 
-Référence produit révisée le 7 novembre 2026. La page `/systeme/feuille-de-route` présente **38 chantiers, rangés dans 7 pôles cibles, avec un ordre suggéré en 10 étapes**. Un chantier peut être un module, une extension, une vue partagée ou une intégration ; ce nombre ne représente pas 38 nouvelles pages.
+Référence produit révisée le 7 novembre 2026. La page `/systeme/feuille-de-route` présente **37 chantiers, rangés dans 7 pôles cibles, avec un ordre suggéré en 10 étapes** (Listes de choix est clos le 10 novembre 2026). Un chantier peut être un module, une extension, une vue partagée ou une intégration ; ce nombre ne représente pas 37 nouvelles pages.
 
 Le catalogue exécutable se trouve dans [features/roadmap](../../apps/web/src/features/roadmap/roadmap.constants.ts). Ce document fixe les décisions ; la [matrice](intentions/pages/MATRICE_PREPARATION.md) conserve la correspondance avec les anciens projets de pages. Lors d’une modification de priorité ou de périmètre, mettre ces trois références à jour ensemble.
 
@@ -70,7 +70,7 @@ Sur décision du propriétaire (« on peut encore tout changer, mais il faut que
 | Page Entraînement | Onglet **Entraînements** de la fiche équipe : séances et présents ; le manager remplit celles de son équipe | Un entraînement appartient à une équipe ; il sert surtout à la traçabilité (bilan, subventions) |
 | Déplacements sans contenu | Page et **fiche déplacement** : Informations, Participants (mineurs sans autorisation signalés), Logistique, Budget (prévu face au réel), Documents | Responsabilité de l’association envers les mineurs ; argent d’une LAN suivi sans double saisie |
 | Suivi d’une personne, tout sur la fiche | Problèmes et bans d’un tournoi saisis dans **sa fiche tournoi** ; sur la personne : notes, **sanctions de la structure** (tous ses tournois ou un jeu) et bans externes ; une sanction en cours **refuse l’inscription** à un tournoi | Chaque chose se saisit à son endroit, et une sanction agit là où l’on inscrit |
-| Étiquettes des fiches | **Retirées** ; le Répertoire reste une liste sans onglet, et le chantier Listes de choix passe dans Esport | Tout ce qu’on y mettrait a déjà sa place : fonction, statut calculé, jeux pratiqués, adhésion, contact d’organisation, Suivi, tâche |
+| Étiquettes des fiches | **Retirées** ; le Répertoire reste une liste sans onglet, et le chantier Listes de choix passe dans Esport | Tout ce qu’on y mettrait a déjà sa place : fonction, statut calculé, jeux (lus dans le parcours depuis le [10 novembre 2026](#retraits-du-10-novembre-2026)), adhésion, contact d’organisation, Suivi, tâche |
 | Suivi sportif | **Entraînement** (Esport) | « Suivi » garde un seul sens : notes, problèmes et bans |
 | Événements & déplacements (Structure) | **Déplacements** (Esport) | Surtout LAN et bootcamps ; un événement de l’association est une réunion |
 | Page Rappels & notifications (Système) | Rappels dans **Mon travail**, règles dans **Paramètres** | Une page seulement si elle sert |
@@ -92,12 +92,21 @@ Regroupements toujours valables :
 | Accueils de pôle vides | Pas de page autonome sans synthèse utile |
 | Messagerie interne | Pas de chantier dédié actuellement |
 
+## Retraits du 10 novembre 2026
+
+Décisions du propriétaire, après revue de ce qui restait à l’étape 1 :
+
+| Avant | Après | Raison |
+| --- | --- | --- |
+| Jeux pratiqués choisis dans Identité, avec un champ à choix multiples et l’ajout du jeu manquant (« oui » au retrait recommandé) | **Retirés** ; le chantier **Listes de choix** est clos : jeux et fonctions sont livrés, il ne lui reste rien | Le jeu d’une personne se lit dans son Parcours, ses comptes de jeu dans l’onglet En ligne ; une liste « joue à » sans date vieillit sans être tenue, et son seul usage, le recrutement, est à l’étape 10. Le champ à choix multiples se créera avec un vrai premier usage ; les autres listes arrivent avec leur module |
+| Filtres du Répertoire par équipe et par jeu (« si je veux voir un jeu, je vais directement sur la fiche du jeu, non ? ») | **Retirés** ; le filtre « Ancien membre » reste | La fiche d’une équipe liste déjà ses membres actuels (Roster) et anciens (Anciens membres) ; les équipes d’un jeu s’ouvrent depuis la page Jeux, et le nombre de personnes par jeu viendra avec le Bilan annuel |
+| Anciens noms d’une équipe gardés au renommage (« pas besoin, je pense que c’est inutile ») | **Retirés** : renommer change le nom partout | Personne ne recherche une équipe par un ancien nom ; un renommage fait sur le site reste lisible dans le journal d’activité, et une équipe qui change vraiment d’identité peut être créée à nouveau, l’ancienne rendue inactive |
+
 ## 1. Listes & parcours
 
 Savoir qui est passé dans la structure, à quelle fonction et dans quelle équipe.
 
-- **Listes de choix** (Esport) : Chaque liste à côté de ce qu’elle classe : fonctions de chaque jeu en onglet de sa fiche (la page Jeux est livrée, les fonctions de chaque jeu aussi), jeux pratiqués choisis sur la fiche ; ajout direct depuis un champ et champ à choix multiples réutilisable. Renommer corrige une faute ; une chose qui change vraiment devient une nouvelle valeur.
-- **Équipes & parcours** (Personnes) : Page Jeux, fiche de chaque jeu (ses équipes) et de chaque équipe (Roster, anciens noms), page Bureau & staff ; passages datés (équipe ou structure, fonction, début, fin, dates approximatives admises) saisis dans le Roster d’une équipe ou l’Effectif de Bureau & staff, lus dans l’onglet Parcours de la fiche, membres actuels et anciens, autres pseudos. Fiche complétée : nationalité, adresse, identifiants de jeu, contact d’urgence, représentants légaux.
+- **Équipes & parcours** (Personnes) : Page Jeux, fiche de chaque jeu (ses équipes) et de chaque équipe (Roster), page Bureau & staff ; passages datés (équipe ou structure, fonction, début, fin, dates approximatives admises) saisis dans le Roster d’une équipe ou l’Effectif de Bureau & staff, lus dans l’onglet Parcours de la fiche, membres actuels et anciens, autres pseudos. Fiche complétée : nationalité, adresse, identifiants de jeu, contact d’urgence, représentants légaux.
 
 ## 2. Accès & conservation
 
@@ -105,7 +114,7 @@ Ouvrir le site aux managers et garder le registre dans la durée.
 
 - **Accès & responsabilités métier** (Système) : Fiche du Répertoire liée au compte, choisie à la main, jamais déduite d’un email. La portée Esport (tous les jeux, des jeux choisis ou des équipes choisies, jamais déduite d’une fonction) est livrée le 10 novembre 2026.
 - **Confidentialité & conservation** (Structure) : Règles de conservation écrites, purge des coordonnées après le départ et anonymisation à la demande.
-- **Données, exports & sauvegardes** (Système) : Export lisible du registre, suivi des sauvegardes et restauration essayée.
+- **Données, exports & sauvegardes** (Système) : Export lisible du registre, suivi des sauvegardes et restauration essayée, juste avant la mise en production, qui attend l’ordre explicite du propriétaire, « bien plus tard » (9 et 10 novembre 2026, [procédures](../exploitation/operations.md#avant-la-première-mise-en-production)).
 
 ## 3. Socle de trésorerie
 
@@ -189,7 +198,7 @@ Relecture du 7 novembre 2026 : chaque sujet qu’une structure esport rencontre 
 | Identité d’une personne, nationalité, adresse, identifiants de jeu, contact d’urgence | Fiche personne |
 | Mineurs : représentants légaux, autorisations, droit à l’image | Fiche personne, Confidentialité & conservation |
 | Qui a été où, à quelle fonction, de quand à quand | Effectifs des équipes et de Bureau & staff, lus dans le Parcours |
-| Roster et anciens noms des équipes de chaque jeu | Fiche équipe (Roster, Informations) |
+| Roster des équipes de chaque jeu | Fiche équipe (Roster) |
 | Tournois : frais, classement, participants, gains | Tournois, Gains de compétition & primes |
 | Notes, problèmes, bans, sanctions, signalements | Suivi, Incidents |
 | Adhésions et cotisations | Adhésions & cotisations |
@@ -220,7 +229,7 @@ Relecture du 7 novembre 2026 : chaque sujet qu’une structure esport rencontre 
 
 Toutes les pages visées, avec leurs onglets et leur contenu. Ce plan s’affiche aussi dans la vue Pages et onglets de la page Feuille de route, sans ce qui est déjà livré (seul le reste à faire d’une page existante, `upcoming`, y figure), depuis [roadmap-site-plan.data.ts](../../apps/web/src/features/roadmap/roadmap-site-plan.data.ts), où chaque page ou onglet nomme le chantier qui le construit : les modifier ensemble. Un test vérifie que chaque page à venir a un chantier et que chaque chantier a une page ou un onglet, sauf Rappels & notifications, Recherche dans les dossiers et Intégrations & publication publique. Il suit les [règles des onglets](../design/gabarits.md#onglets-dune-fiche). Un onglet marqué ↗ se lit sur sa page et se modifie sur la page nommée dans son contenu ; la vue Pages et onglets le montre de la même façon. L’état d’un onglet n’est jamais antérieur à celui de sa page ; un onglet n’apparaît qu’une fois livré et pour les comptes qui y ont droit.
 
-Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **Rappels & notifications** vit dans Mon travail et Paramètres système, **Listes de choix** en onglets des pages qui utilisent chaque liste, **Accès & responsabilités métier** vit sur la fiche utilisateur (une fonction n’ouvre aucun accès, 10 novembre 2026), **Confidentialité & conservation** dans Paramètres système, **Gains de compétition & primes** sur la fiche tournoi, **Recherche dans les dossiers** dans la recherche de l’en-tête, **Intégrations & publication publique** n’a pas d’écran propre tant qu’elle n’est pas cadrée.
+Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **Rappels & notifications** vit dans Mon travail et Paramètres système, **Accès & responsabilités métier** vit sur la fiche utilisateur (une fonction n’ouvre aucun accès, 10 novembre 2026), **Confidentialité & conservation** dans Paramètres système, **Gains de compétition & primes** sur la fiche tournoi, **Recherche dans les dossiers** dans la recherche de l’en-tête, **Intégrations & publication publique** n’a pas d’écran propre tant qu’elle n’est pas cadrée.
 
 ### Aujourd’hui
 
@@ -238,9 +247,9 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 
 | Page | Onglet | Contenu | État |
 | --- | --- | --- | --- |
-| **Répertoire** | — | Liste, sans onglet : toutes les fiches, avec recherche et filtres. À venir (étape 1) : filtres par équipe, jeu et anciens membres. | Livré |
-| **Fiche personne** | — | À venir (étape 1) : les jeux pratiqués, choisis dans Identité avec un champ à choix multiples, le jeu manquant ajouté sans quitter la fiche. | Livré |
-|  | Identité | Pseudo, nom, naissance, nationalité, zone dangereuse. À venir (étape 1) : les jeux pratiqués. | Livré |
+| **Répertoire** | — | Liste, sans onglet : toutes les fiches, avec recherche et filtres, dont « Ancien membre » (10 novembre 2026). | Livré |
+| **Fiche personne** | — | Ouverte depuis le Répertoire ; ses onglets ci-dessous. | Livré |
+|  | Identité | Pseudo, nom, naissance, nationalité, zone dangereuse. | Livré |
 |  | Coordonnées | Emails, téléphones, contacts d’urgence et représentants légaux (des fiches liées), et sur la fiche d’un représentant, qui il représente. À venir (étape 1) : l’adresse. | Livré |
 |  | En ligne | Autres pseudos (anciens, comptes secondaires, y compris ceux d’avant le site), réseaux sociaux (l’ID du compte pour Discord) et comptes de jeu par plateforme (Riot, Steam avec son ID…) : reconnaître une personne qui a changé de nom. | Livré |
 |  | Parcours ↗ | En lecture : chaque passage dans une équipe ou dans la structure (Bureau & staff), en cours et à venir puis terminés, avec la fonction, le statut, le début, la fin et la durée. Chaque ligne ouvre sa page, ses anciens membres pour un passage terminé ; seules les listes que le lecteur peut voir. À venir (étape 5) : les tournois joués. Lu ici, se modifie dans le Roster de chaque équipe et l’Effectif de Bureau & staff. | Livré |
@@ -271,7 +280,7 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 |  | Entraînements | Séances : date, type (entraînement, scrim, bootcamp), présents, objectif ou débrief court ; nombre de séances et de présents par saison, pour le bilan et les subventions. Un manager remplit celles de son équipe. | Étape 10 |
 |  | Finances ↗ | Ce que l’équipe coûte et rapporte : inscriptions, gains, déplacements et autres opérations liées à l’équipe ; enveloppe de budget comparée au réalisé. Invisible pour un manager. Lu ici, se modifie dans Finances. | Étape 3 |
 |  | Partenaires ↗ | Les partenaires qui soutiennent cette équipe et ce qu’elle leur doit (logo sur le maillot, publications, présence). Un manager les voit, sans les montants. Lu ici, se modifie dans Partenariats. | Étape 7 |
-|  | Informations | Dernier onglet : nom, création, active, modifiés sur place ; le jeu, fixé à la création, figure dans l’en-tête ; zone dangereuse, qui explique « rendez-la inactive » quand le Roster a des passages. À venir (étape 1) : anciens noms gardés au renommage. | Livré |
+|  | Informations | Dernier onglet : nom, création, active, modifiés sur place ; le jeu, fixé à la création, figure dans l’en-tête ; zone dangereuse, qui explique « rendez-la inactive » quand le Roster a des passages. | Livré |
 | **Tournois** | — | Liste, sans onglet : les tournois, filtrés par jeu, équipe, année et état (à venir, en cours, terminé, calculé depuis les dates) ; chaque ligne : nom, jeu, équipes, dates, état, classement. Création en fenêtre : nom, jeu, dates, organisateur. Un manager crée ceux de son équipe. | Étape 5 |
 | **Fiche tournoi** | Informations | Nom, jeu, organisateur (sa fiche organisation), circuit ou ligue facultatif, en ligne ou LAN (lieu et déplacement lié), dates, règles du tournoi (lien ou pièce), frais d’inscription, échéances (inscription, dépôt du roster, check-in) reprises au calendrier ; état calculé depuis les dates. | Étape 5 |
 |  | Participants | Pour chacune de nos équipes engagées : line-up (membres engagés, remplaçants compris) et classement final. Une sanction de la structure en cours refuse l’inscription, avec son motif ; un ban externe du même jeu, organisateur ou circuit avertit. Un manager remplit ceux de son équipe. | Étape 5 |

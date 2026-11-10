@@ -39,13 +39,13 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
   },
   {
     area: 'people',
-    dependsOn: ['reference-lists'],
+    dependsOn: [],
     description:
       'Savoir qui est passé dans la structure, à quelle fonction et dans quelle équipe.',
     doneWhen:
       'Retrouver qui était dans une équipe à n’importe quelle date ; corriger un passage ne crée pas une nouvelle identité.',
     firstRelease:
-      'Page Jeux, fiche de chaque jeu (ses équipes) et de chaque équipe (Roster, anciens noms), page Bureau & staff ; passages datés (équipe ou structure, fonction, début, fin, dates approximatives admises) saisis dans le Roster d’une équipe ou l’Effectif de Bureau & staff, et lus dans l’onglet Parcours de la fiche. Fiche complétée : nationalité, autres pseudos, adresse, identifiants de jeu, contact d’urgence, représentants légaux.',
+      'Page Jeux, fiche de chaque jeu (ses équipes) et de chaque équipe (Roster), page Bureau & staff ; passages datés (équipe ou structure, fonction, début, fin, dates approximatives admises) saisis dans le Roster d’une équipe ou l’Effectif de Bureau & staff, et lus dans l’onglet Parcours de la fiche. Fiche complétée : nationalité, autres pseudos, adresse, identifiants de jeu, contact d’urgence, représentants légaux.',
     id: 'sport-teams',
     later: 'Frises et synthèses de parcours si elles servent.',
     legacyHrefs: [
