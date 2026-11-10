@@ -1,17 +1,21 @@
 /**
- * Whether a record is in the structure: computed from its passages, never
- * chosen nor stored (owner's decision of 7 November 2026, built on
- * 9 November): « Dans la structure » while one of them, in a team or in the
- * structure, has begun and not ended.
+ * Where a record stands with the structure: computed from its passages,
+ * never chosen nor stored (owner's decision of 7 November 2026, built on
+ * 9 November). « Dans la structure » while one of them, in a team or in the
+ * structure, has begun and not ended; « Ancien membre » when none is under
+ * way but one has ended (10 November 2026, « ok go »); « Hors structure »
+ * otherwise, a recruit whose first passage is still to come included.
  */
 export const PERSON_STRUCTURE_STATUSES = [
   'IN_STRUCTURE',
+  'FORMER_MEMBER',
   'OUTSIDE_STRUCTURE',
 ] as const;
 
 export const PERSON_LIST_SORTS = ['name', 'updated', 'created'] as const;
 
 export const PERSON_STRUCTURE_STATUS_LABELS = {
+  FORMER_MEMBER: 'Ancien membre',
   IN_STRUCTURE: 'Dans la structure',
   OUTSIDE_STRUCTURE: 'Hors structure',
 } as const satisfies Record<(typeof PERSON_STRUCTURE_STATUSES)[number], string>;

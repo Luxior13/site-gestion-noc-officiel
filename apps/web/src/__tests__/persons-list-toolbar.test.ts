@@ -5,9 +5,10 @@ import { describe, expect, it, vi } from 'vitest';
 import { PersonsListToolbar } from '$features/persons/components/PersonsListToolbar';
 
 const overview = {
+  formerMember: 2,
   inStructure: 8,
   noContacts: 3,
-  outsideStructure: 4,
+  outsideStructure: 2,
   total: 12,
 };
 
@@ -59,7 +60,9 @@ describe('directory quick filters', () => {
     expect(quickFilters(html)).toEqual([
       { group: 'Statut', label: 'Tous 12', pressed: true },
       { group: 'Statut', label: 'Dans la structure 8', pressed: false },
-      { group: 'Statut', label: 'Hors structure 4', pressed: false },
+      // Former members apart, between the two (10 November 2026).
+      { group: 'Statut', label: 'Ancien membre 2', pressed: false },
+      { group: 'Statut', label: 'Hors structure 2', pressed: false },
       { group: 'Coordonnées', label: 'Sans coordonnées 3', pressed: false },
     ]);
     expect(html).not.toContain('Tous les statuts');
@@ -70,18 +73,20 @@ describe('directory quick filters', () => {
     const html = render({
       missingContacts: true,
       overview: {
+        formerMember: 1,
         inStructure: 2,
         noContacts: 1,
         outsideStructure: 1,
-        total: 3,
+        total: 4,
       },
-      status: 'OUTSIDE_STRUCTURE',
+      status: 'FORMER_MEMBER',
     });
 
     expect(quickFilters(html)).toEqual([
-      { group: 'Statut', label: 'Tous 3', pressed: false },
+      { group: 'Statut', label: 'Tous 4', pressed: false },
       { group: 'Statut', label: 'Dans la structure 2', pressed: false },
-      { group: 'Statut', label: 'Hors structure 1', pressed: true },
+      { group: 'Statut', label: 'Ancien membre 1', pressed: true },
+      { group: 'Statut', label: 'Hors structure 1', pressed: false },
       { group: 'Coordonnées', label: 'Sans coordonnées 1', pressed: true },
     ]);
   });
@@ -101,6 +106,7 @@ describe('directory quick filters', () => {
     expect(labels).toEqual([
       'Tous',
       'Dans la structure',
+      'Ancien membre',
       'Hors structure',
       'Sans coordonnées',
     ]);
@@ -113,6 +119,7 @@ describe('directory quick filters', () => {
     });
 
     expect(quickFilters(html).map((filter) => filter.group)).toEqual([
+      'Statut',
       'Statut',
       'Statut',
       'Statut',

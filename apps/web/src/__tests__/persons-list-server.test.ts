@@ -44,7 +44,13 @@ const reader = {
 };
 const data: PersonsListResponse = {
   items: [],
-  overview: { inStructure: 0, noContacts: 0, outsideStructure: 0, total: 0 },
+  overview: {
+    formerMember: 0,
+    inStructure: 0,
+    noContacts: 0,
+    outsideStructure: 0,
+    total: 0,
+  },
   pagination: {
     hasMore: false,
     limit: 25,

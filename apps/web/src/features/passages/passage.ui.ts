@@ -70,7 +70,8 @@ const STATE_BADGES: ReadonlyMap<
   Readonly<{ label: string; tone: StatusBadgeTone }>
 > = new Map([
   ['current', { label: 'Actuel', tone: 'success' }],
-  ['former', { label: 'Ancien', tone: 'muted' }],
+  // The mauve grey of what is past, as a former member (10 November 2026).
+  ['former', { label: 'Ancien', tone: 'former' }],
   ['upcoming', { label: 'À venir', tone: 'info' }],
 ]);
 

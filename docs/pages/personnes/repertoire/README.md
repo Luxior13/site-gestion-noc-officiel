@@ -51,9 +51,9 @@ structure » dans le journal (AC-32).
   compose `EntityDetailLayout` (bandeau compact avec statut, dates de création
   et de dernière modification ; onglets en pied, total des coordonnées sur leur
   onglet) et charge chaque section à la demande ([reprise du 22 octobre 2026](fiche-identite.md#reprise--22-octobre-2026)).
-- **Règles métier** : statut « Dans la structure » / « Hors structure »
-  calculé depuis les passages en cours, jamais saisi ni stocké (9 novembre
-  2026, [registre](../../../domaines/registre-historique.md#le-passage)) ; futures
+- **Règles métier** : statut « Dans la structure » / « Ancien membre » (depuis
+  le 10 novembre 2026) / « Hors structure » calculé depuis les passages, jamais
+  saisi ni stocké (9 novembre 2026, [registre](../../../domaines/registre-historique.md#le-passage)) ; futures
   relations datées rattachées à la personne, jamais empilées sur `Person`
   ([sujets futurs](../../../propositions/sujets-futurs.md)).
 - **Évolution décidée le 7 novembre 2026** : l’onglet Parcours, en lecture ↗,

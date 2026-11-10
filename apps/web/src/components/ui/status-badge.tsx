@@ -3,10 +3,12 @@ import React, { type ComponentProps, type FC } from 'react';
 import { cn } from '$utils/css.utils';
 
 export type StatusBadgeTone =
-  'danger' | 'info' | 'muted' | 'success' | 'warning';
+  'danger' | 'former' | 'info' | 'muted' | 'success' | 'warning';
 
 const STATUS_BADGE_TONES = new Map<StatusBadgeTone, string>([
   ['danger', 'border-destructive/40 bg-destructive/15 text-destructive'],
+  // What is past: a former member, an ended passage (10 November 2026).
+  ['former', 'border-former/40 bg-former/12 text-former'],
   ['info', 'border-info/40 bg-info/15 text-info'],
   ['muted', 'border-muted-foreground/35 bg-muted/30 text-muted-foreground'],
   ['success', 'border-success/40 bg-success/15 text-success'],
@@ -17,7 +19,8 @@ type StatusBadgeProps = ComponentProps<'span'> & { tone: StatusBadgeTone };
 
 /**
  * Status of an object: tinted surface, thin border and a leading dot, so the
- * meaning never relies on color alone. `muted` is for neutral categories.
+ * meaning never relies on color alone. `muted` is for neutral categories,
+ * `former` for what is past.
  */
 export const StatusBadge: FC<StatusBadgeProps> = ({
   children,

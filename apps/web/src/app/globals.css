@@ -33,6 +33,7 @@
   --color-warning-foreground: var(--warning-foreground);
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
+  --color-former: var(--former);
   --color-overlay: var(--overlay);
   --color-surface: var(--surface);
   --color-surface-canvas: var(--surface-canvas);
@@ -218,6 +219,9 @@
   --warning-foreground: #451a03;
   --info: #bae6fd;
   --info-foreground: #082f49;
+  /* What is past (a former member, an ended passage): a mauve grey, close to
+     the neutral grey yet told apart (owner, 10 November 2026). */
+  --former: #b5aacd;
   --border: color-mix(in srgb, var(--border-steel) 34%, var(--surface-panel));
   --border-control: #6f86a5;
   /* Softer form borders match the approved Noctambule information tab. */

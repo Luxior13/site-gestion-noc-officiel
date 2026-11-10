@@ -176,6 +176,8 @@ export type PersonsListResponse = {
 };
 
 export type PersonOverview = {
+  /** No passage under way, one ended (10 November 2026). */
+  formerMember: number;
   inStructure: number;
   noContacts: number | null;
   outsideStructure: number;

@@ -15,6 +15,7 @@ import { getPersonCapabilities } from '../person.permissions';
 import type {
   PersonListSort,
   PersonsListResponse,
+  PersonStructureStatus,
   PersonSummary,
 } from '../types/person.types';
 import { buildPersonSearchFragments } from './person-search';
@@ -28,8 +29,8 @@ type PersonListRow = {
   createdAt: Date;
   emailCount: number;
   firstName: string | null;
+  formerMemberCount: number;
   id: string;
-  inStructure: boolean;
   inStructureCount: number;
   lastModifiedByDisplayName: string | null;
   lastModifiedById: string | null;
@@ -44,6 +45,7 @@ type PersonListRow = {
   phoneCount: number;
   socialProfileCount: number;
   sortName: string;
+  structureStatus: PersonStructureStatus;
   totalCount: bigint;
   updatedAt: Date;
   version: number;
@@ -83,7 +85,7 @@ const toPersonSummary = (
   matchedByContact: person.matchedByContact,
   matchedOtherNickname: person.matchedOtherNickname,
   nickname: person.nickname,
-  structureStatus: person.inStructure ? 'IN_STRUCTURE' : 'OUTSIDE_STRUCTURE',
+  structureStatus: person.structureStatus,
   updatedAt: person.updatedAt.toISOString(),
   version: person.version,
 });
@@ -95,7 +97,7 @@ export const listPersons = async (
     limit: number;
     q: string;
     sort?: PersonListSort;
-    structureStatus?: 'IN_STRUCTURE' | 'OUTSIDE_STRUCTURE';
+    structureStatus?: PersonStructureStatus;
   },
   reader: PersonReader,
 ): Promise<PersonsListResponse> => {
@@ -130,20 +132,26 @@ export const listPersons = async (
   }
 
   // In the structure: a passage under way today, in a team or in the
-  // structure itself (computed, 9 November 2026).
+  // structure itself (computed, 9 November 2026). A former member: none
+  // under way, one ended (10 November 2026). Outside otherwise.
   const today = passageToday();
-  const inStructureCondition = Prisma.sql`EXISTS (
-        SELECT 1 FROM "PersonPassage" passage
-        WHERE passage."personId" = p."id"
-          AND passage."startOn" <= ${today}::date
-          AND (passage."endOn" IS NULL OR passage."endOn" >= ${today}::date)
-      )`;
-  const statusClause =
-    input.structureStatus === 'IN_STRUCTURE'
-      ? Prisma.sql`AND p."inStructure"`
-      : input.structureStatus === 'OUTSIDE_STRUCTURE'
-        ? Prisma.sql`AND NOT p."inStructure"`
-        : Prisma.empty;
+  const structureStatusValue = Prisma.sql`CASE
+        WHEN EXISTS (
+          SELECT 1 FROM "PersonPassage" passage
+          WHERE passage."personId" = p."id"
+            AND passage."startOn" <= ${today}::date
+            AND (passage."endOn" IS NULL OR passage."endOn" >= ${today}::date)
+        ) THEN 'IN_STRUCTURE'
+        WHEN EXISTS (
+          SELECT 1 FROM "PersonPassage" passage
+          WHERE passage."personId" = p."id"
+            AND passage."endOn" < ${today}::date
+        ) THEN 'FORMER_MEMBER'
+        ELSE 'OUTSIDE_STRUCTURE'
+      END`;
+  const statusClause = input.structureStatus
+    ? Prisma.sql`AND p."structureStatus" = ${input.structureStatus}`
+    : Prisma.empty;
   const noContactsCondition = Prisma.sql`NOT EXISTS (SELECT 1 FROM "PersonEmail" e WHERE e."personId" = p."id")
         AND NOT EXISTS (SELECT 1 FROM "PersonPhone" ph WHERE ph."personId" = p."id")
         AND NOT EXISTS (SELECT 1 FROM "PersonSocialProfile" sp WHERE sp."personId" = p."id")`;
@@ -154,11 +162,9 @@ export const listPersons = async (
   // Faceted counters of the quick filters: a status count keeps the search and
   // the missing-contact filter, the missing-contact count keeps the search and
   // the status, so each number equals the result its filter would show.
-  const statusCount = (
-    status: 'IN_STRUCTURE' | 'OUTSIDE_STRUCTURE',
-  ): Prisma.Sql =>
+  const statusCount = (status: PersonStructureStatus): Prisma.Sql =>
     Prisma.sql`COUNT(*) FILTER (
-      WHERE ${status === 'IN_STRUCTURE' ? Prisma.sql`p."inStructure"` : Prisma.sql`NOT p."inStructure"`} ${contactsClause}
+      WHERE p."structureStatus" = ${status} ${contactsClause}
     )::integer`;
   const noContactsCount = canViewContact
     ? Prisma.sql`COUNT(*) FILTER (WHERE ${noContactsCondition} ${statusClause})::integer`
@@ -200,7 +206,7 @@ export const listPersons = async (
     { [Key in keyof PersonListRow]: PersonListRow[Key] | null }[]
   >(Prisma.sql`
     WITH scope AS NOT MATERIALIZED (
-      SELECT p.*, ${inStructureCondition} AS "inStructure" FROM "Person" p
+      SELECT p.*, ${structureStatusValue} AS "structureStatus" FROM "Person" p
       WHERE ${snapshotClause}
         ${searchClause}
     ), filtered AS NOT MATERIALIZED (
@@ -213,12 +219,14 @@ export const listPersons = async (
     ), facets AS (
       SELECT
         ${statusCount('IN_STRUCTURE')} AS "inStructureCount",
+        ${statusCount('FORMER_MEMBER')} AS "formerMemberCount",
         ${statusCount('OUTSIDE_STRUCTURE')} AS "outsideStructureCount",
         ${noContactsCount} AS "noContactsCount"
       FROM scope p
     )
     SELECT p.*, totals."totalCount", facets."inStructureCount",
-      facets."outsideStructureCount", facets."noContactsCount"
+      facets."formerMemberCount", facets."outsideStructureCount",
+      facets."noContactsCount"
     FROM totals
     CROSS JOIN facets
     LEFT JOIN LATERAL (
@@ -228,7 +236,7 @@ export const listPersons = async (
       p."firstName",
       p."lastName",
       p."sortName",
-      p."inStructure",
+      p."structureStatus",
       p."version",
       p."createdAt",
       p."updatedAt",
@@ -288,15 +296,17 @@ export const listPersons = async (
 
   const facets = queryRows[0];
   const inStructure = facets?.inStructureCount ?? 0;
+  const formerMember = facets?.formerMemberCount ?? 0;
   const outsideStructure = facets?.outsideStructureCount ?? 0;
 
   return {
     items: paginated.items.map((person) => toPersonSummary(person, reader)),
     overview: {
+      formerMember,
       inStructure,
       noContacts: canViewContact ? (facets?.noContactsCount ?? 0) : null,
       outsideStructure,
-      total: inStructure + outsideStructure,
+      total: inStructure + formerMember + outsideStructure,
     },
     pagination: { ...paginated.pagination, total },
   };

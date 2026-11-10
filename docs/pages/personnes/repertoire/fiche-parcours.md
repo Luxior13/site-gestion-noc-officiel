@@ -72,7 +72,8 @@ un passage se tient dans le Roster de son équipe.
 - Les tournois joués (étape 5) s’y ajouteront ; les passages de Bureau &
   staff y sont depuis le 9 novembre 2026.
 - Le statut « Dans la structure » se calcule depuis ces passages depuis le
-  9 novembre 2026 ; tant que les membres actuels ne sont pas saisis, leur fiche
+  9 novembre 2026, « Ancien membre » (un passage terminé, aucun en cours)
+  depuis le 10 ; tant que les membres actuels ne sont pas saisis, leur fiche
   affiche « Hors structure ».
 
 ## Références

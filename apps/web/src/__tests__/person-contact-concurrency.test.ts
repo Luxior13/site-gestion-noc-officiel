@@ -578,6 +578,20 @@ describe('person contact optimistic concurrency and primary invariants', () => {
       actor as never,
     );
     expect(outside.structureStatus).toBe('OUTSIDE_STRUCTURE');
+    // None under way, one ended: a former member (10 November 2026).
+    mocks.transaction.personPassage.findFirst
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({ id: 'passage-2' });
+    const former = await mapPersonDetail(
+      mocks.transaction as never,
+      { ...personRecord([], 5), sortName: 'ada lovelace' },
+      actor as never,
+    );
+    expect(former.structureStatus).toBe('FORMER_MEMBER');
+    const ended = mocks.transaction.personPassage.findFirst.mock.calls.at(
+      -1,
+    )?.[0] as { where: { endOn: { lt: Date } } };
+    expect(ended.where.endOn.lt).toBeInstanceOf(Date);
   });
 
   it('does not complete an ordinary mutation when its mandatory audit fails', async () => {

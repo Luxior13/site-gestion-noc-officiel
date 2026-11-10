@@ -34,3 +34,10 @@ export const currentPassageWhere = (
   OR: [{ endOn: null }, { endOn: { gte: asPassageDay(day) } }],
   startOn: { lte: asPassageDay(day) },
 });
+
+/** A passage ended before that day: who had one is a former member. */
+export const endedPassageWhere = (
+  day: string,
+): Prisma.PersonPassageWhereInput => ({
+  endOn: { lt: asPassageDay(day) },
+});

@@ -102,6 +102,11 @@ export const PersonsListToolbar: FC<Props> = ({
       value: 'IN_STRUCTURE',
     },
     {
+      count: overview?.formerMember ?? null,
+      label: PERSON_STRUCTURE_STATUS_LABELS.FORMER_MEMBER,
+      value: 'FORMER_MEMBER',
+    },
+    {
       count: overview?.outsideStructure ?? null,
       label: PERSON_STRUCTURE_STATUS_LABELS.OUTSIDE_STRUCTURE,
       value: 'OUTSIDE_STRUCTURE',

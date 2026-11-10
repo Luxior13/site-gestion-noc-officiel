@@ -6,6 +6,7 @@ import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { PERMISSIONS } from '$constants/permissions.constants';
 import {
   currentPassageWhere,
+  endedPassageWhere,
   passageToday,
 } from '$features/passages/server/passage-today';
 import { prisma } from '$server/prisma';
@@ -222,17 +223,29 @@ const getLastPersonChange = async (
 /**
  * In the structure while a passage is under way today, in a team or in the
  * structure itself: computed on each read, never stored (9 November 2026).
+ * A former member when none is under way but one has ended (10 November
+ * 2026).
  */
 const readStructureStatus = async (
   client: PersonClient,
   personId: string,
-): Promise<PersonDetail['structureStatus']> =>
-  (await client.personPassage.findFirst({
+): Promise<PersonDetail['structureStatus']> => {
+  const today = passageToday();
+  if (
+    await client.personPassage.findFirst({
+      select: { id: true },
+      where: { personId, ...currentPassageWhere(today) },
+    })
+  )
+    return 'IN_STRUCTURE';
+
+  return (await client.personPassage.findFirst({
     select: { id: true },
-    where: { personId, ...currentPassageWhere(passageToday()) },
+    where: { personId, ...endedPassageWhere(today) },
   }))
-    ? 'IN_STRUCTURE'
+    ? 'FORMER_MEMBER'
     : 'OUTSIDE_STRUCTURE';
+};
 
 export const mapPersonDetail = async (
   client: PersonClient,

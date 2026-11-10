@@ -243,11 +243,18 @@ describe('person indexed search', () => {
     );
     const sql = getLastSql();
 
-    // The status is computed from a passage under way today (9 November 2026).
+    // The status is computed from the passages (9 November 2026): under way
+    // today, or ended for a former member (10 November 2026).
     expect(sql.text).toContain('FROM "PersonPassage" passage');
-    expect(sql.text).toContain('AS "inStructure"');
-    expect(sql.text).toContain('AND p."inStructure"');
-    expect(sql.text).not.toContain('"structureStatus"');
+    expect(sql.text).toContain('AS "structureStatus"');
+    expect(sql.text).toContain('AND p."structureStatus" =');
+    expect(sql.values).toEqual(
+      expect.arrayContaining([
+        'IN_STRUCTURE',
+        'FORMER_MEMBER',
+        'OUTSIDE_STRUCTURE',
+      ]),
+    );
     expect(sql.values).toContainEqual(
       expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/u),
     );
@@ -328,7 +335,7 @@ describe('person indexed search', () => {
         emailCount: 0,
         firstName: 'Ada',
         id: 'person-1',
-        inStructure: false,
+        structureStatus: 'FORMER_MEMBER',
         lastName: 'Lovelace',
         matchedByContact: false,
         nickname: null,
@@ -343,7 +350,7 @@ describe('person indexed search', () => {
         emailCount: 0,
         firstName: 'Grace',
         id: 'person-2',
-        inStructure: true,
+        structureStatus: 'IN_STRUCTURE',
         lastName: 'Hopper',
         matchedByContact: false,
         nickname: null,
@@ -382,7 +389,7 @@ describe('person indexed search', () => {
         emailCount: 1,
         firstName: 'Ada',
         id: 'person-1',
-        inStructure: false,
+        structureStatus: 'FORMER_MEMBER',
         lastModifiedByDisplayName: 'Marie Curie',
         lastModifiedByLoginName: 'mcurie',
         lastName: 'Lovelace',
@@ -401,7 +408,7 @@ describe('person indexed search', () => {
         emailCount: 0,
         firstName: 'Grace',
         id: 'person-2',
-        inStructure: true,
+        structureStatus: 'IN_STRUCTURE',
         lastName: 'Hopper',
         matchedByContact: false,
         nickname: null,
@@ -434,7 +441,7 @@ describe('person indexed search', () => {
         lastName: 'Lovelace',
         matchedByContact: true,
         nickname: null,
-        structureStatus: 'OUTSIDE_STRUCTURE',
+        structureStatus: 'FORMER_MEMBER',
         updatedAt: '2026-07-20T10:00:00.000Z',
         version: 1,
       },

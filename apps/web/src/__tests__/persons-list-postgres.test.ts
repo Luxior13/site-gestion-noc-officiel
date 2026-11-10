@@ -261,12 +261,29 @@ describe.skipIf(!target)('directory pagination on PostgreSQL', () => {
     expect(first.items[0]?.id).toBe('person-004');
     // Faceted: statuses keep the missing-contact filter (person-001 and -002
     // are in the structure, -003 outside); the missing count keeps « Tous ».
+    // A passage ended yesterday makes a former member (10 November 2026).
     expect(first.overview).toEqual({
+      formerMember: 10,
       inStructure: 38,
       noContacts: 57,
-      outsideStructure: 19,
+      outsideStructure: 9,
       total: 57,
     });
+    const former = await listPersons(
+      {
+        contacts: 'missing',
+        limit: 25,
+        q: '',
+        structureStatus: 'FORMER_MEMBER',
+      },
+      { id: 'reader', isProtected: false, permissions: null, role: 'ADMIN' },
+    );
+    expect(former.pagination.total).toBe(10);
+    expect(
+      former.items.every(
+        (person) => person.structureStatus === 'FORMER_MEMBER',
+      ),
+    ).toBe(true);
     const outside = await listPersons(
       {
         contacts: 'missing',
@@ -276,7 +293,7 @@ describe.skipIf(!target)('directory pagination on PostgreSQL', () => {
       },
       { id: 'reader', isProtected: false, permissions: null, role: 'ADMIN' },
     );
-    expect(outside.pagination.total).toBe(19);
+    expect(outside.pagination.total).toBe(9);
     expect(
       outside.items.every(
         (person) => person.structureStatus === 'OUTSIDE_STRUCTURE',
@@ -382,8 +399,8 @@ describe.skipIf(!target)('directory pagination on PostgreSQL', () => {
       },
       { id: 'reader', isProtected: false, permissions: null, role: 'ADMIN' },
     );
-    expect(first.pagination.total).toBe(20);
-    expect(next.pagination.total).toBe(20);
+    expect(first.pagination.total).toBe(10);
+    expect(next.pagination.total).toBe(10);
     expect(
       next.items.every(
         (person) => person.structureStatus === 'OUTSIDE_STRUCTURE',
@@ -394,7 +411,8 @@ describe.skipIf(!target)('directory pagination on PostgreSQL', () => {
       { ...request, q: 'membre 00' },
       { id: 'reader', isProtected: false, permissions: null, role: 'ADMIN' },
     );
-    expect(narrower.pagination.total).toBe(3);
+    // Membre 003 and 009; 006 is a former member.
+    expect(narrower.pagination.total).toBe(2);
   });
 
   it('returns an empty list and zero when nothing matches', async () => {

@@ -71,11 +71,19 @@ un retour de fiche qui conservent le contexte.
   accessible du bouton porte le nombre (« Tous, 12 fiches »).
 - Le bouton enfoncé tient lieu de filtre actif : pas d’étiquette retirable en
   plus (REP-23).
-- « Hors structure » est une catégorie neutre (ton `muted`), pas une alerte.
-- Statut calculé depuis les passages en cours, d’équipe ou de la structure
+- « Hors structure » est une catégorie neutre (ton `muted`), pas une alerte ;
+  « Ancien membre » prend le gris mauve `former` de ce qui est passé, comme la
+  pastille « Ancien » du Roster (10 novembre 2026).
+- Statut calculé depuis les passages, d’équipe ou de la structure
   (9 novembre 2026, [registre](../../../domaines/registre-historique.md#le-passage)) :
   le filtre et ses compteurs le calculent dans la même requête que la liste,
-  rien n’est stocké sur la fiche.
+  rien n’est stocké sur la fiche. Depuis le 10 novembre 2026 (« ok go »),
+  trois statuts : **Dans la structure** (un passage en cours aujourd’hui),
+  **Ancien membre** (aucun en cours, au moins un terminé), **Hors structure**
+  (sinon ; une recrue dont le premier passage commence plus tard y reste
+  jusqu’à son arrivée, « À venir » n’étant pas retenu). Filtres : Tous, Dans la
+  structure, Ancien membre, Hors structure, chacun avec son nombre ; sur
+  téléphone, la ligne défile sur le côté comme avant.
 - Coordonnées : seulement le détail email / téléphone / réseau, zéros atténués,
   « — » et « Aucune coordonnée » pour les lecteurs d’écran quand il n’y en a pas.
 - Indication « Trouvée par email, téléphone ou réseau » en gris discret.

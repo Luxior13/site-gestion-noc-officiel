@@ -66,9 +66,15 @@ export const formatPersonActor = (actor: PersonAuditActor): string =>
     ? `${actor.displayName} (${actor.loginName})`
     : actor.displayName;
 
+/** Green in the structure, mauve grey for a former member, grey otherwise. */
 export const getStructureStatusTone = (
   status: PersonStructureStatus,
-): 'muted' | 'success' => (status === 'IN_STRUCTURE' ? 'success' : 'muted');
+): 'former' | 'muted' | 'success' =>
+  status === 'IN_STRUCTURE'
+    ? 'success'
+    : status === 'FORMER_MEMBER'
+      ? 'former'
+      : 'muted';
 
 export const zodErrorMap = (error: ZodError): PersonFormErrors => {
   const errors = new Map<string, string>();
