@@ -2,6 +2,7 @@ import 'server-only';
 
 export type PersonDomainErrorCode =
   | 'PERSON_FEATURE_NOT_CONFIGURED'
+  | 'PERSON_GUARDIAN_CONFLICT'
   | 'PERSON_HAS_PASSAGES'
   | 'PERSON_NOT_FOUND'
   | 'PERSON_VERSION_CONFLICT'
@@ -24,6 +25,13 @@ export const personErrors = {
       'PERSON_FEATURE_NOT_CONFIGURED',
       'La protection des données du répertoire n’est pas configurée',
     ),
+  /**
+   * A legal representative link refused (10 November 2026): the person
+   * themselves, a representative already linked, or a record that still
+   * represents someone and so cannot be deleted.
+   */
+  guardianConflict: (message: string): PersonDomainError =>
+    new PersonDomainError('PERSON_GUARDIAN_CONFLICT', message),
   /** A record in a roster stays: the registre keeps who was there. */
   hasPassages: (count: number): PersonDomainError =>
     new PersonDomainError(

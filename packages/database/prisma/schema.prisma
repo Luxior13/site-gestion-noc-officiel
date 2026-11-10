@@ -403,14 +403,19 @@ model Person {
   normalizedLastName  String?   @db.VarChar(200)
   sortName            String    @db.VarChar(401)
   birthDate           DateTime? @db.Date
+  /// ISO 3166-1 alpha-2 code in capitals, « FR » (10 November 2026).
+  nationality         String?   @db.VarChar(2)
   version             Int       @default(1)
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
 
-  emails         PersonEmail[]
-  phones         PersonPhone[]
-  socialProfiles PersonSocialProfile[]
-  passages       PersonPassage[]
+  emails            PersonEmail[]
+  phones            PersonPhone[]
+  socialProfiles    PersonSocialProfile[]
+  emergencyContacts PersonEmergencyContact[]
+  legalGuardians    PersonLegalGuardian[]    @relation("GuardedPerson")
+  guardianOf        PersonLegalGuardian[]    @relation("Guardian")
+  passages          PersonPassage[]
 
   @@index([createdAt, id])
   @@index([updatedAt, id])
@@ -485,6 +490,54 @@ model PersonSocialProfile {
   @@index([normalizedIdentifier])
   @@index([normalizedIdentifier(ops: raw("varchar_pattern_ops"))], map: "PersonSocialProfile_normalizedIdentifier_prefix_idx")
   @@index([normalizedProfileUrlHash])
+}
+
+/// Who to call for a person in an emergency (10 November 2026): a name, the
+/// link with the person and a number, not a record of the Répertoire. SQL
+/// keeps it on its person, like the other coordinates.
+model PersonEmergencyContact {
+  id              String   @id @default(cuid())
+  personId        String
+  name            String   @db.VarChar(100)
+  /// « Mère », « Conjoint »… as typed, optional.
+  relation        String?  @db.VarChar(40)
+  phone           String   @db.VarChar(40)
+  normalizedPhone String   @db.VarChar(16)
+  version         Int      @default(1)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  person Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@index([personId])
+}
+
+/// How a legal representative stands to the person: a fixed list of the code.
+enum LegalGuardianRelation {
+  PARENT
+  TUTOR
+  OTHER
+}
+
+/// A legal representative of a person, minor in general (10 November 2026):
+/// another record of the Répertoire, linked explicitly, with its own
+/// coordinates. The link goes with the represented person; the
+/// representative's record cannot be deleted while it represents someone
+/// (`ON DELETE RESTRICT`). SQL refuses a person as their own representative
+/// and keeps both ends of a link fixed: a new representative is a new link.
+model PersonLegalGuardian {
+  id         String                @id @default(cuid())
+  personId   String
+  person     Person                @relation("GuardedPerson", fields: [personId], references: [id], onDelete: Cascade)
+  guardianId String
+  guardian   Person                @relation("Guardian", fields: [guardianId], references: [id], onDelete: Restrict)
+  relation   LegalGuardianRelation @default(PARENT)
+  version    Int                   @default(1)
+  createdAt  DateTime              @default(now())
+  updatedAt  DateTime              @updatedAt
+
+  @@unique([personId, guardianId])
+  @@index([guardianId])
 }
 
 model PersonDeletionTombstone {

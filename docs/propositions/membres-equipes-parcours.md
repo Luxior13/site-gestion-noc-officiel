@@ -10,8 +10,9 @@
 - **Statut** : en cours. Lots 1 et 2 livrés pour l’essentiel du 8 au
   9 novembre 2026 (jeux, fonctions des jeux et de la structure, équipes,
   Roster, Parcours, Bureau & staff, statut calculé ; sauvegarde v11 du
-  registre) ; restent les jeux pratiqués, les anciens pseudos et les compléments
-  de la fiche, puis le lot 3. Les choix techniques non livrés restent à
+  registre) ; nationalité, contacts d’urgence et représentants légaux livrés
+  le 10 novembre 2026 ; restent les jeux pratiqués, les anciens pseudos,
+  l’adresse et les identifiants de jeu, puis le lot 3. Les choix techniques non livrés restent à
   valider au moment de leur lot.
 - **Décisions déjà données** : [registre historique](../domaines/registre-historique.md)
   et [public du site](../domaines/roles-metier.md#public-du-site--décision-du-7-novembre-2026).
@@ -69,7 +70,7 @@ lecture des valeurs suit la page qui les affiche.
 | `PersonPassage` | Livré le 9 novembre 2026 pour les équipes : fiche, équipe facultative (vide pour une fonction de structure, à venir), fonction, début au premier jour de sa période, fin au dernier, précision de chaque date, `version` ; exclusion des passages identiques qui se chevauchent, fonction du jeu de l’équipe vérifiée par la base |
 | `PersonFormerNickname` | Ancien pseudo, date du changement ; écrit par le service quand le pseudo change, saisi à la main dans l’onglet Identité pour un pseudo d’avant le site, et cherché par le Répertoire |
 
-**Compléments de la fiche personne** : nationalité, adresse postale, identifiants de jeu (par jeu), contact d’urgence et représentants légaux, ces derniers étant des fiches du Répertoire liées explicitement. Les coordonnées nouvelles suivent `persons:view_contact`.
+**Compléments de la fiche personne** : nationalité, adresse postale, identifiants de jeu (par jeu), contact d’urgence et représentants légaux, ces derniers étant des fiches du Répertoire liées explicitement. Les coordonnées nouvelles suivent `persons:view_contact`. **Livré le 10 novembre 2026** (« fais la 2B d’abord et la nationalité ») : la nationalité dans Identité (une seule, code ISO), les contacts d’urgence (nom, lien, numéro, sans fiche) et les représentants légaux (fiches liées, lien Parent, Tuteur ou tutrice, Autre) dans Coordonnées, avec la carte « Représentant légal de » sur la fiche du représentant ; la fiche d’un représentant ne se supprime pas tant qu’elle représente quelqu’un ([fiche Coordonnées](../pages/personnes/repertoire/fiche-coordonnees.md)). L’adresse et les identifiants de jeu restent à faire, avec les adhésions et les tournois.
 
 **Dates approximatives** : une date est stockée avec sa précision (année, mois,
 jour). Un début se range au premier jour de la période et une fin au dernier :
@@ -162,7 +163,7 @@ réglage retiré de la fonction, compte désactivé, recherche rapide, totaux de
 | --- | --- |
 | Statut du Répertoire | Colonne `structureStatus` remplacée par le calcul (fait le 9 novembre 2026 : la liste, son filtre et la fiche le calculent) |
 | Suppression d’une fiche | Refus si la fiche a un passage ; [règle du Répertoire](../pages/personnes/repertoire/README.md) à actualiser |
-| Sauvegarde | Nouvelles tables dans le manifeste, format v11 (fait le 9 novembre 2026, aller-retour éprouvé ; un test refuse désormais toute table oubliée) |
+| Sauvegarde | Nouvelles tables dans le manifeste, format v11 (fait le 9 novembre 2026, aller-retour éprouvé ; un test refuse désormais toute table oubliée), puis v12 avec les contacts d’urgence et représentants légaux (10 novembre 2026) |
 | Journal d’activité | Nouvelles actions et nouveau filtre |
 | Registre, navigation, recherche rapide | Entrées et mots-clés de Listes et d’Équipes |
 | Contrôle mobile E2E | Nouvelles pages à ajouter à `mobile-layout.checks.ts` |

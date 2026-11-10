@@ -19,6 +19,7 @@ const mocks = vi.hoisted(() => {
       findUnique: vi.fn(),
     },
     // A record in a roster stays (9 November 2026).
+    personLegalGuardian: { count: vi.fn() },
     personPassage: { count: vi.fn() },
   };
 
@@ -83,6 +84,7 @@ describe('synchronous person deletion', () => {
       .mockResolvedValueOnce([{ deletedCount: 4n }]);
     mocks.transaction.person.deleteMany.mockResolvedValue({ count: 1 });
     mocks.transaction.personPassage.count.mockResolvedValue(0);
+    mocks.transaction.personLegalGuardian.count.mockResolvedValue(0);
     mocks.transaction.personDeletionTombstone.create.mockResolvedValue({
       personId: 'person-1',
     });
@@ -158,6 +160,26 @@ describe('synchronous person deletion', () => {
 
     expect(mocks.transaction.$queryRaw).not.toHaveBeenCalled();
     expect(mocks.transaction.person.deleteMany).not.toHaveBeenCalled();
+  });
+
+  // 10 November 2026: a representative's record stays while it represents
+  // someone, as the foreign key does.
+  it('keeps the record of a legal representative', async () => {
+    mocks.transaction.personLegalGuardian.count.mockResolvedValue(2);
+
+    await expect(
+      deletePerson({
+        actor: actor as never,
+        idempotencyKey: 'delete-person-guardian',
+        personId: 'person-1',
+        version: 3,
+      }),
+    ).rejects.toMatchObject({
+      code: 'PERSON_GUARDIAN_CONFLICT',
+      message: expect.stringContaining('de 2 personnes'),
+    });
+    expect(mocks.transaction.person.deleteMany).not.toHaveBeenCalled();
+    expect(mocks.createPersonAudit).not.toHaveBeenCalled();
   });
 
   it('refuses a stale version before purging personal field history', async () => {

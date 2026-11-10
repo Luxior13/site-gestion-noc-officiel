@@ -63,12 +63,12 @@ const validateLines = (
   return validator.finish();
 };
 
-test('validates the signed v11 format, ordered tables and exact counts', () => {
+test('validates the signed v12 format, ordered tables and exact counts', () => {
   const summary = validateLines(
     createBackupLines({ users: [{ id: 'user-1' }, { id: 'user-2' }] }),
   );
 
-  assert.equal(summary.manifest.formatVersion, 11);
+  assert.equal(summary.manifest.formatVersion, 12);
   assert.equal(summary.counts.users, 2);
   const tableNames: readonly string[] = DATABASE_BACKUP_TABLES.map(
     ({ tableName }) => tableName,
@@ -146,6 +146,34 @@ test('keeps the registry, parents first', () => {
   );
 });
 
+test('keeps the relatives of a person after every person', () => {
+  const tableNames: readonly string[] = DATABASE_BACKUP_TABLES.map(
+    ({ tableName }) => tableName,
+  );
+  const at = (name: string): number => {
+    const index = tableNames.indexOf(name);
+    assert.notEqual(index, -1, `${name} is backed up`);
+
+    return index;
+  };
+  // A representative is a record of the Répertoire: both ends come first.
+  assert.ok(at('Person') < at('PersonEmergencyContact'));
+  assert.ok(at('Person') < at('PersonLegalGuardian'));
+  const summary = validateLines(
+    createBackupLines({
+      personEmergencyContacts: [{ id: 'contact-1' }],
+      personLegalGuardians: [{ id: 'guardian-1' }, { id: 'guardian-2' }],
+    }),
+  );
+  assert.deepEqual(
+    [
+      summary.counts.personEmergencyContacts,
+      summary.counts.personLegalGuardians,
+    ],
+    [1, 2],
+  );
+});
+
 test('serializes bigint and bytea without loss', () => {
   assert.deepEqual(
     JSON.parse(
@@ -179,9 +207,9 @@ test('rejects truncated, reordered and count-divergent streams', () => {
 });
 
 test('rejects old manifests and unknown properties', () => {
-  // A v10 copy, from before the registry, is refused rather than restored
-  // without it.
-  const oldManifest = { ...createManifest(), formatVersion: 10 };
+  // A v11 copy, from before the relatives, is refused rather than restored
+  // without them.
+  const oldManifest = { ...createManifest(), formatVersion: 11 };
   assert.throws(
     () =>
       new BackupStreamValidator().consume(

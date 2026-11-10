@@ -1,10 +1,10 @@
+import type { PersonSuggestions } from '$features/persons/types/person.types';
 import { apiFetchJson, jsonRequest } from '$utils/api.utils';
 
 import type {
   PassageChangeInput,
   PassageCreateInput,
   PassageInput,
-  PassagePersonResults,
   PassageRoster,
   PassageScope,
   PersonJourney,
@@ -75,8 +75,8 @@ export const fetchPersonJourney = (
 export const searchPassagePersonsRequest = (
   query: string,
   signal?: AbortSignal,
-): Promise<PassagePersonResults> =>
-  apiFetchJson<PassagePersonResults>(
+): Promise<PersonSuggestions> =>
+  apiFetchJson<PersonSuggestions>(
     `/api/passages/personnes?${new URLSearchParams({ q: query })}`,
     { cache: 'no-store', signal },
   );

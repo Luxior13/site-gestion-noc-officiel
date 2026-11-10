@@ -17,19 +17,23 @@
 
 ## Rôle et tâches principales
 
-Consulter et corriger l’identité d’une personne : pseudo principal, prénom, nom
-et date de naissance civile facultative. Le statut dans la structure se lit dans
-le bandeau sans se choisir : il se calcule depuis les passages (9 novembre
-2026). La date de
-naissance se choisit dans le calendrier du site (`DatePicker`, au jour, de 1900
-à l’année en cours, avec « Effacer »), plus le sélecteur natif du navigateur
-(9 novembre 2026).
+Consulter et corriger l’identité d’une personne : pseudo principal, prénom, nom,
+date de naissance civile facultative et nationalité facultative (10 novembre
+2026). Le statut dans la structure se lit dans le bandeau sans se choisir : il
+se calcule depuis les passages (9 novembre 2026). La date de naissance se
+choisit dans le calendrier du site (`DatePicker`, au jour, de 1900 à l’année en
+cours, avec « Effacer »), plus le sélecteur natif du navigateur (9 novembre
+2026). La nationalité se choisit dans le menu du site (`SearchSelect`) : France
+en tête, puis tous les pays par leur nom, chacun avec son drapeau, avec
+recherche, et « Non renseignée » pour l’effacer ; le champ montre le drapeau du
+pays choisi.
 
 ## Composition actuelle
 
 Titre « Identité » réservé aux lecteurs d’écran, puis deux cartes titrées
 (`RubricCard`) : « Pseudo et nom » (pseudo, prénom, nom sur une ligne en grand
-écran) et « Naissance » ; champs partagés `PersonIdentityFields`
+écran) et « Naissance et nationalité » (deux champs côte à côte dès 640 px) ;
+champs partagés `PersonIdentityFields`
 (option `part`), sans icône d’historique de champ (retirée le 27 octobre 2026), `SectionActionBar` avec
 soumission native et reprise de conflit ; puis « Zone dangereuse »
 (`PersonDangerZone` sur `EntityDangerZone`). Les dates de la fiche sont dans
@@ -49,6 +53,16 @@ le bandeau, pas en pied de carte.
   « Naissance et statut » devient « Naissance » ; le statut se calcule depuis
   les passages en cours ([registre](../../../domaines/registre-historique.md#le-passage)).
   L’API refuse un statut envoyé et le journal n’en trace plus.
+- 10 novembre 2026 (« fais la 2B d’abord et la nationalité ») : la carte
+  devient « Naissance et nationalité ». Une seule nationalité, code ISO à deux
+  lettres (`Person.nationality`, contrôlé par la base), choisie parmi les pays
+  habités et le Kosovo ; la liste vit dans `countries.constants.ts`, hors de la
+  bibliothèque des téléphones (AC-49). Même droits que l’identité
+  (`persons:view`, `persons:update`) ; tracée « Identité · Nationalité » dans
+  le journal, valeur chiffrée. La création ne la demande pas (règle « Ce que
+  demande une création ») ; l’API l’accepte. Le même jour (« possible d’avoir
+  les drapeaux à l’intérieur ? »), chaque pays porte son drapeau
+  ([préférence](../../../design/preferences.md)).
 
 - 27 octobre 2026 : le propriétaire demande une revue de l’onglet, puis « ok
   go » sur quatre points. Deux cartes titrées nommées d’après leurs champs
@@ -63,6 +77,13 @@ le bandeau, pas en pied de carte.
 ## Points ouverts
 
 Aucun point propre à cette section : REP-D01 à REP-D10 sont clos au périmètre vérifié.
+Une double nationalité n’est pas prévue : à rouvrir si un tournoi ou une
+licence en a besoin.
+
+## Traces dans le journal
+
+« Fiche modifiée », rubrique Identité : pseudo, prénom, nom, date de naissance
+et nationalité, valeurs chiffrées, lues avec `persons:view`.
 
 ## Références
 
@@ -72,6 +93,7 @@ Aucun point propre à cette section : REP-D01 à REP-D10 sont clos au périmètr
 ## Historique
 
 - 19 octobre 2026 : création de la fiche lors de la réorganisation documentaire.
+- 10 novembre 2026 : nationalité ajoutée (carte « Naissance et nationalité »).
 
 ## Reprise — 22 octobre 2026
 

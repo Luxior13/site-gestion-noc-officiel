@@ -1,8 +1,9 @@
 import { Buffer } from 'node:buffer';
 
 // v11 (9 November 2026): the registry joins the copy, games, teams,
-// functions and passages, which v10 left out.
-export const DATABASE_BACKUP_FORMAT_VERSION = 11;
+// functions and passages, which v10 left out. v12 (10 November 2026): the
+// emergency contacts and legal representatives of a person.
+export const DATABASE_BACKUP_FORMAT_VERSION = 12;
 export const DATABASE_BACKUP_BATCH_SIZE = 500;
 export const MAX_DATABASE_BACKUP_BYTES = 2 * 1024 * 1024 * 1024;
 export const MAX_BACKUP_LINE_BYTES = 16 * 1024 * 1024;
@@ -109,6 +110,19 @@ export const DATABASE_BACKUP_TABLES = [
     cursorKind: 'text',
     property: 'personSocialProfiles',
     tableName: 'PersonSocialProfile',
+  },
+  // A representative is a person too, already above (10 November 2026).
+  {
+    cursorColumn: 'id',
+    cursorKind: 'text',
+    property: 'personEmergencyContacts',
+    tableName: 'PersonEmergencyContact',
+  },
+  {
+    cursorColumn: 'id',
+    cursorKind: 'text',
+    property: 'personLegalGuardians',
+    tableName: 'PersonLegalGuardian',
   },
   // The registry (8 and 9 November 2026): who was where, with which function,
   // from when to when. Games before their teams and functions, those before

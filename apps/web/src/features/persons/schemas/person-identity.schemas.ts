@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { isKnownCountry } from '$constants/countries.constants';
+
 import {
   getApplicationCivilDateParts,
   normalizePersonSearchValue,
@@ -76,6 +78,18 @@ const birthDateSchema = z
     }
   });
 
+/** A country of the site's list, by its code (10 November 2026). */
+const nationalitySchema = z
+  .string()
+  .trim()
+  .nullable()
+  .optional()
+  .transform((value) => value?.toUpperCase() || null)
+  .refine(
+    (value) => value === null || isKnownCountry(value),
+    'Nationalité inconnue',
+  );
+
 export const identityShape = {
   birthDate: birthDateSchema,
   firstName: optionalTrimmed(
@@ -83,6 +97,7 @@ export const identityShape = {
     'Le prénom ne peut pas dépasser 100 caractères',
   ),
   lastName: optionalTrimmed(100, 'Le nom ne peut pas dépasser 100 caractères'),
+  nationality: nationalitySchema,
   nickname: optionalTrimmed(80, 'Le pseudo ne peut pas dépasser 80 caractères'),
 };
 

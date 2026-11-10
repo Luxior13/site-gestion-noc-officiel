@@ -39,8 +39,9 @@ structure » dans le journal (AC-32).
 
 ## Règles communes du module
 
-- **Accès** : lecture `persons:view`, création `persons:create`, identité
-  `persons:update`, coordonnées `persons:update_contact`, suppression
+- **Accès** : lecture `persons:view`, création `persons:create`, identité et
+  nationalité `persons:update`, coordonnées, contacts d’urgence et
+  représentants légaux `persons:view_contact` / `persons:update_contact`, suppression
   `persons:delete`, parcours `persons:view` et `teams:view` ou `staff:view` ; contrôles
   serveur sous `/api/personnes`. Référence :
   [page Répertoire](../../../domaines/permissions.md#page-répertoire).
@@ -60,6 +61,10 @@ structure » dans le journal (AC-32).
   ([registre historique](../../../domaines/registre-historique.md),
   [cadrage](../../../propositions/membres-equipes-parcours.md)). Les anciens
   pseudos dans Identité restent à construire.
+- **Compléments du 10 novembre 2026** : nationalité dans Identité, contacts
+  d’urgence et représentants légaux dans Coordonnées ; la fiche d’un
+  représentant ne se supprime pas tant qu’elle représente quelqu’un. Restent
+  l’adresse et les identifiants de jeu.
 - **Points ouverts** : [registre REP](#points-ouverts) ; tous sont clos, REP-02
   (statut de structure calculé) depuis le 9 novembre 2026.
 

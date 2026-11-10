@@ -100,6 +100,15 @@ export const deletePerson = async (input: {
       where: { personId: input.personId },
     });
     if (passages > 0) throw personErrors.hasPassages(passages);
+    // A representative's record stays while it represents someone
+    // (`PersonLegalGuardian_guardianId_fkey` refuses it too).
+    const represented = await transaction.personLegalGuardian.count({
+      where: { guardianId: input.personId },
+    });
+    if (represented > 0)
+      throw personErrors.guardianConflict(
+        `Cette fiche est représentant légal ${represented > 1 ? `de ${represented} personnes` : 'd’une personne'} : retirez d’abord ce lien sur la fiche représentée.`,
+      );
 
     await transaction.$queryRaw<Array<{ deletedCount: bigint }>>`
       SELECT "public"."purge_person_audit_field_changes"(${input.personId}) AS "deletedCount"

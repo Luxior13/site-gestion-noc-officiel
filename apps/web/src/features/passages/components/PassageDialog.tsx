@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { ApproximateDateField } from '$components/forms/ApproximateDateField';
 import { personDetailPath } from '$constants/routes.constants';
 import { PersonAvatarFrame } from '$features/persons/components/PersonAvatar';
+import { PersonPicker } from '$features/persons/components/PersonPicker';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -38,6 +39,7 @@ import {
   changePassageFunctionRequest,
   createPassageRequest,
   deletePassageRequest,
+  searchPassagePersonsRequest,
   updatePassageRequest,
 } from '../passage.api';
 import { passageStateOn, placeWordsOf } from '../passage.ui';
@@ -47,7 +49,7 @@ import type {
   PassagePerson,
   PassageRoster,
 } from '../types/passage.types';
-import { FunctionSelect, PersonPicker } from './PassageFields';
+import { FunctionSelect } from './PassageFields';
 import type { PassagePlaceView } from './PassageLines';
 
 const ID = 'passage-dialog';
@@ -353,6 +355,7 @@ const PassageDialogContent: FC<Props> = ({
                       canCreatePerson={canCreatePerson}
                       disabled={busy}
                       error={errors.personId}
+                      idPrefix={ID}
                       onChange={(next) => {
                         setPerson(next);
                         setErrors((value) => ({
@@ -367,6 +370,7 @@ const PassageDialogContent: FC<Props> = ({
                             : value,
                         )
                       }
+                      search={searchPassagePersonsRequest}
                       value={person}
                     />
                   )}

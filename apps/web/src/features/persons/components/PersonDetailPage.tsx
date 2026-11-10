@@ -309,14 +309,17 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
         ).map((section) =>
           section.id === 'parcours'
             ? { ...section, managedIn: journeySourcesOf(reach) }
-            : // The tab says how many contacts there are (27 October 2026).
+            : // The tab says how many contacts there are (27 October 2026),
+              // emergency contacts and representatives included (10 November).
               section.id === 'coordonnees'
               ? {
                   ...section,
                   count:
                     person.emails.length +
                     person.phones.length +
-                    person.socialProfiles.length,
+                    person.socialProfiles.length +
+                    person.emergencyContacts.length +
+                    person.legalGuardians.length,
                 }
               : section,
         )}

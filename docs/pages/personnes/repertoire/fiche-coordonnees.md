@@ -12,13 +12,15 @@
 | Gabarit visé | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections) |
 | État d’harmonisation | Aligné ; sélecteurs en variante par défaut depuis le 17 octobre 2026 — voir [Harmonisation](../../../design/harmonisation.md#état-par-page) |
 | Point d’entrée | [PersonCollectionsSection](../../../../apps/web/src/features/persons/components/PersonCollectionsSection.tsx) |
-| Contrôle d’accès | lecture `persons:view` et `persons:view_contact` ; écriture `persons:update_contact` (routes `emails`, `telephones`, `reseaux-sociaux`) |
+| Contrôle d’accès | lecture `persons:view` et `persons:view_contact` ; écriture `persons:update_contact` (routes `emails`, `telephones`, `reseaux-sociaux`, `contacts-urgence`, `representants-legaux`, et `suggestions` pour chercher un représentant) |
 | Chargement / erreur dédiés | section chargée à la demande / commune à la fiche |
 
 ## Rôle et tâches principales
 
 Tenir à jour les emails, téléphones et réseaux sociaux d’une personne, avec un
-contact principal par type, sans écraser une modification concurrente.
+contact principal par type, sans écraser une modification concurrente. Depuis
+le 10 novembre 2026, savoir aussi qui appeler en cas d’urgence et qui
+représente légalement une personne mineure.
 
 ## Composition actuelle
 
@@ -30,6 +32,32 @@ affichage seulement). L’onglet porte le total des coordonnées
 (« Coordonnées 4 », chiffre visuel, nom accessible inchangé). Ajout,
 modification et suppression en fenêtre (`PersonChildDialog`), alerte de doublon, choix du
 contact principal ; plafonds de dix emails et dix téléphones.
+
+Puis, depuis le 10 novembre 2026 ([PersonRelativesCards](../../../../apps/web/src/features/persons/components/PersonRelativesCards.tsx)) :
+
+- **Contacts d’urgence** (bouée) : nom en gras suivi du numéro, lien d’appel
+  (`tel:`), puis le lien avec la personne en petit ; copier le numéro ; cinq au
+  plus. Un contact d’urgence n’est pas une fiche : nom, lien facultatif
+  (suggestions « Parent », « Conjoint ou conjointe »… ou texte libre) et
+  numéro avec son pays.
+- **Représentants légaux** (bouclier), affichée pour une personne mineure,
+  pour un âge inconnu (sauf sur la fiche de quelqu’un qui représente déjà une
+  autre personne), ou dès qu’un lien existe : chaque représentant est une autre
+  fiche du Répertoire, avec son avatar et son nom en gras qui ouvre sa fiche,
+  puis le lien (« Parent », « Tuteur ou tutrice », « Autre représentant »), son
+  téléphone et son email principaux ; quatre au plus.
+- **Représentant légal de**, en lecture, seulement sur la fiche d’un
+  représentant : les personnes qu’il représente, avec leur âge ; « Le lien se
+  modifie sur la fiche de la personne représentée. »
+
+Fenêtres ([PersonRelativeDialogs](../../../../apps/web/src/features/persons/components/PersonRelativeDialogs.tsx))
+au modèle de la fenêtre d’un passage : Supprimer (ou Retirer) à gauche,
+Annuler et l’action à droite, retrait confirmé à part (« Retirer Camille
+Exemple des représentants légaux de Kaiz ? », sa fiche reste). Le représentant
+se choisit avec la recherche de fiche commune (`PersonPicker`, six
+suggestions), sans la personne elle-même ni les représentants déjà liés ; une
+fois lié, il ne change plus, seul le lien se corrige. Le total de l’onglet
+compte aussi les contacts d’urgence et les représentants.
 
 ## Décisions retenues
 
@@ -45,6 +73,23 @@ contact principal ; plafonds de dix emails et dix téléphones.
   précisions de ligne qui passent à la ligne au lieu d’être tronquées.
 - 27 octobre 2026 : sur demande du propriétaire (« retire toutes les icônes qui au survol montrent qui a renseigné la donnée », puis « aucune page ne devrait avoir ça, on mettra en place les logs plus tard »), l’historique de champ disparaît de toute l’interface : horloges d’Identité, icônes des fenêtres de coordonnées, bouton « Consulter … et son origine » des lecteurs sans droit de modification, composant `PersonFieldProvenanceHint` et appel client. Le même jour (« fais ce que tu veux » du propriétaire), l’autorisation `audit:view_field_history`, la route `/api/personnes/[id]/historique-champ` et son service sont retirés ; la migration `20261027120000_remove_field_history_permission` efface la clé des autorisations individuelles enregistrées (vérifiée sur PostgreSQL local jetable, puis appliquée par le propriétaire sur la base de travail le 27 octobre 2026). Les événements d’audit et les changements de champ sont conservés pour le futur journal d’activité.
 
+- 10 novembre 2026 (« fais la 2B d’abord et la nationalité ») : contacts
+  d’urgence et représentants légaux, suivant le cadrage du 7 novembre
+  (représentants = fiches du Répertoire liées explicitement, droits des
+  coordonnées). Tables `PersonEmergencyContact` et `PersonLegalGuardian`
+  (migration `20261110120000_person_relatives`) : la base refuse une personne
+  qui se représente elle-même et le déplacement d’un lien ; la fiche d’un
+  représentant ne se supprime pas tant qu’elle représente quelqu’un (le
+  service le dit, la base le refuse aussi), celle de la personne représentée
+  emporte ses liens et ses contacts d’urgence. Pas de contrôle d’âge côté
+  serveur : un majeur protégé peut avoir un représentant.
+- 10 novembre 2026 : le menu « Pays » d’un téléphone et d’un contact d’urgence
+  porte le drapeau de chaque pays, comme la nationalité
+  ([préférence](../../../design/preferences.md)).
+- Le numéro d’un téléphone ou d’un contact d’urgence s’affiche au format
+  international avec le pays de la ligne, même tapé « 06… », et le lien
+  d’appel utilise ce format (10 novembre 2026) ; avant, un numéro tapé sans
+  indicatif s’affichait tel quel.
 - 27 octobre 2026 : fenêtres relues une par une (captures `fenetre-*` du
   banc, 390 et 1 440 px), puis « ok go » sur trois corrections. Sous le titre,
   « Si cette adresse (ce numéro, ce profil) figure déjà sur une autre fiche,
@@ -57,7 +102,26 @@ contact principal ; plafonds de dix emails et dix téléphones.
 
 ## Points ouverts
 
-Aucun point ouvert.
+- Zone dangereuse d’une fiche de représentant : avec le droit des
+  coordonnées, le bouton laisse place à l’explication (« Cette fiche
+  représente légalement … : retirez d’abord ce lien sur la fiche
+  représentée. ») ; sans ce droit, les liens ne sont pas connus de la page et
+  le serveur refuse avec le même motif. Une fiche qui a des passages garde
+  le refus après la demande (antérieur, hors de ce lot).
+- Un majeur protégé n’affiche la carte des représentants que s’il en a déjà un
+  ou si son âge est inconnu.
+- Conservation : les contacts d’urgence et les liens de représentants
+  suivent la question ouverte CAD-Q3 (délai de purge des coordonnées, à faire
+  valider), avec le chantier Confidentialité & conservation ; aucune purge
+  automatique n’est livrée.
+
+## Traces dans le journal
+
+« Fiche modifiée » sur la fiche concernée, valeurs chiffrées et lues avec
+`persons:view_contact` : « Contact d’urgence · Nom / Lien / Téléphone » (le
+numéro au format international, pour qu’un changement de pays se voie) ;
+« Représentant légal · Fiche / Lien » à l’ajout, au changement de lien et au
+retrait. Rien n’est écrit sur la fiche du représentant.
 
 ## Références
 
@@ -69,6 +133,8 @@ Aucun point ouvert.
 - 19 octobre 2026 : fiche propre à la section, créée par découpage du suivi du module.
 - 22 octobre 2026 : pied « Dernière modification » retiré, la date est dans le
   bandeau de la fiche ([reprise](fiche-identite.md#reprise--22-octobre-2026)).
+- 10 novembre 2026 : contacts d’urgence, représentants légaux et « Représentant
+  légal de ».
 
 ## Revues datées
 

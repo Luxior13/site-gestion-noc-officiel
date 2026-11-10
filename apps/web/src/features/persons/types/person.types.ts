@@ -1,4 +1,5 @@
 import type {
+  LegalGuardianRelation,
   PERSON_LIST_SORTS,
   PERSON_STRUCTURE_STATUSES,
 } from '../person.constants';
@@ -50,6 +51,61 @@ export type PersonSocialProfileItem = {
   version: number;
 };
 
+/**
+ * A record of the Répertoire by the name the site shows (« Kaiz · Prénom
+ * Nom »); the name parts give the initials of its avatar.
+ */
+export type PersonRef = Readonly<{
+  displayName: string;
+  firstName: string | null;
+  id: string;
+  lastName: string | null;
+  nickname: string | null;
+}>;
+
+/** Records proposed under a search field: six at most, and whether more exist. */
+export type PersonSuggestions = Readonly<{
+  more: boolean;
+  persons: readonly PersonRef[];
+}>;
+
+/** Who to call in an emergency (10 November 2026), not a record. */
+export type PersonEmergencyContactItem = {
+  countryCode: string;
+  createdAt: string;
+  id: string;
+  name: string;
+  phone: string;
+  relation: string | null;
+  updatedAt: string;
+  version: number;
+};
+
+/**
+ * A legal representative: another record, with its main email and number,
+ * to reach them from the represented person's record.
+ */
+export type PersonLegalGuardianItem = {
+  createdAt: string;
+  guardian: PersonRef & {
+    primaryEmail: string | null;
+    /** International form, « +33612345678 ». */
+    primaryPhone: string | null;
+  };
+  id: string;
+  relation: LegalGuardianRelation;
+  updatedAt: string;
+  version: number;
+};
+
+/** The other side of a link: whom this record represents, read only. */
+export type PersonRepresentedItem = {
+  age: number | null;
+  id: string;
+  person: PersonRef;
+  relation: LegalGuardianRelation;
+};
+
 export type PersonSummary = {
   contactCounts: {
     emails: number;
@@ -75,9 +131,15 @@ export type PersonDetail = Omit<
   age: number | null;
   birthDate: string | null;
   emails: PersonEmailItem[];
+  /** These three follow the coordinates' right, empty without it. */
+  emergencyContacts: PersonEmergencyContactItem[];
   isAdult: boolean | null;
   lastChange: PersonLastChange;
+  legalGuardians: PersonLegalGuardianItem[];
+  /** ISO code, « FR » (10 November 2026). */
+  nationality: string | null;
   phones: PersonPhoneItem[];
+  represents: PersonRepresentedItem[];
   socialProfiles: PersonSocialProfileItem[];
 };
 

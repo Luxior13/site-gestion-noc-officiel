@@ -40,7 +40,7 @@ export const PersonDangerZone: FC<PersonDangerZoneProps> = ({
     <>
       <EntityDangerZone
         key={person.id}
-        description="L’identité, les coordonnées et les profils sociaux seront supprimés sans possibilité de restauration."
+        description="L’identité, les coordonnées, les profils sociaux, les contacts d’urgence et les liens vers les représentants légaux seront supprimés sans possibilité de restauration."
         dialogDescription="Cette action est irréversible. Vérifiez la fiche avant de confirmer sa suppression."
         dialogNotice="La fiche et ses données personnelles seront effacées immédiatement et définitivement."
         dialogTitle={`Supprimer définitivement la fiche de ${getPersonDisplayName(person)} ?`}
@@ -56,6 +56,14 @@ export const PersonDangerZone: FC<PersonDangerZoneProps> = ({
         onDeletedLabel="Retour au répertoire"
         onPasswordProofRequired={(resume) => setResumeDeletion(() => resume)}
         onReloadVersion={async () => (await onReload()).version}
+        // No button the server would refuse (owner, 8 November 2026): a
+        // representative's record says why it stays. Without the right to
+        // the coordinates the links are unknown here, and the server refuses.
+        unavailableReason={
+          person.represents.length > 0
+            ? `Cette fiche représente légalement ${person.represents.map((item) => item.person.displayName).join(', ')} : retirez d’abord ce lien sur la fiche représentée.`
+            : undefined
+        }
         version={person.version}
       />
       {resumeDeletion && (

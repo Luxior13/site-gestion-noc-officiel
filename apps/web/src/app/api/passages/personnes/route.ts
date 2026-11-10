@@ -2,7 +2,7 @@ import type { NextRequest, NextResponse } from 'next/server';
 
 import { PERMISSIONS } from '$constants/permissions.constants';
 import { passagePersonQuerySchema } from '$features/passages/schemas/passage.schemas';
-import { searchPassagePersons } from '$features/passages/server/passage.service';
+import { searchPersonSuggestions } from '$features/persons/server/person-suggestions';
 import { requireAuth, requirePermission } from '$server/api-auth';
 import { apiErrors, apiSuccess } from '$server/api-response';
 import { serviceErrorResponse } from '$server/service-error';
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   if (!query.success) return apiErrors.validation('Recherche invalide');
 
   try {
-    return apiSuccess(await searchPassagePersons(query.data));
+    return apiSuccess(await searchPersonSuggestions(query.data));
   } catch (error) {
     return serviceErrorResponse(error, {
       action: 'PASSAGE_PERSON_SEARCH',

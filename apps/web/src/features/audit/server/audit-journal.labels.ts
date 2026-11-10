@@ -71,6 +71,8 @@ export const JOURNAL_ACTION_LABELS: Record<AuditAction, string> = {
 
 export const PERSON_SECTION_LABELS: Readonly<Record<string, string>> = {
   contacts: 'Coordonnées',
+  emergency: 'Contact d’urgence',
+  guardians: 'Représentant légal',
   identity: 'Identité',
   social: 'Réseaux',
   structure: 'Structure',
@@ -78,16 +80,23 @@ export const PERSON_SECTION_LABELS: Readonly<Record<string, string>> = {
 
 export const PERSON_FIELD_LABELS: Readonly<Record<string, string>> = {
   birthDate: 'Date de naissance',
+  // An emergency contact (10 November 2026).
+  contactName: 'Nom',
   email: 'Email',
   firstName: 'Prénom',
+  // A legal representative: the record linked, then how it stands.
+  guardian: 'Fiche',
+  guardianRelation: 'Lien',
   identifier: 'Identifiant',
   isPrimary: 'Principal',
   label: 'Libellé',
   lastName: 'Nom',
+  nationality: 'Nationalité',
   networkKey: 'Réseau',
   nickname: 'Pseudo',
   phone: 'Téléphone',
   profileUrl: 'Lien du profil',
+  relation: 'Lien',
   structureStatus: 'Statut dans la structure',
 };
 

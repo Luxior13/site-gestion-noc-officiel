@@ -11,6 +11,7 @@ import type {
   PersonMutationResponse,
   PersonsListResponse,
   PersonStructureStatus,
+  PersonSuggestions,
 } from './types/person.types';
 
 type ListPersonsOptions = {
@@ -113,7 +114,22 @@ export const updatePerson = async (
     ),
   );
 
-type ChildKind = 'emails' | 'reseaux-sociaux' | 'telephones';
+type ChildKind =
+  | 'contacts-urgence'
+  | 'emails'
+  | 'representants-legaux'
+  | 'reseaux-sociaux'
+  | 'telephones';
+
+/** Records to link as a legal representative (10 November 2026). */
+export const searchPersonSuggestionsRequest = (
+  query: string,
+  signal?: AbortSignal,
+): Promise<PersonSuggestions> =>
+  apiFetchJson<PersonSuggestions>(
+    `/api/personnes/suggestions?${new URLSearchParams({ q: query })}`,
+    { cache: 'no-store', signal },
+  );
 
 export const mutatePersonChild = async ({
   childId,

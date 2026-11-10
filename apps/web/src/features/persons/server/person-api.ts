@@ -54,6 +54,7 @@ export const handlePersonApiError = async (
         return correlated(
           apiError(ErrorCode.PRIMARY_CONFLICT, error.message, 409),
         );
+      case 'PERSON_GUARDIAN_CONFLICT':
       case 'PERSON_HAS_PASSAGES':
         return correlated(apiError(ErrorCode.CONFLICT, error.message, 409));
       case 'PERSON_FEATURE_NOT_CONFIGURED':
@@ -66,6 +67,10 @@ export const handlePersonApiError = async (
     const messages: Record<string, string> = {
       INVALID_CURSOR: 'Curseur de pagination invalide',
       PERSON_EMAIL_LIMIT: 'La fiche contient déjà 10 emails',
+      PERSON_EMERGENCY_CONTACT_LIMIT:
+        'La fiche contient déjà 5 contacts d’urgence',
+      PERSON_LEGAL_GUARDIAN_LIMIT:
+        'La fiche contient déjà 4 représentants légaux',
       PERSON_PHONE_LIMIT: 'La fiche contient déjà 10 téléphones',
       PERSON_SOCIAL_NETWORK_DEPRECATED:
         'Ce réseau n’accepte plus de nouveaux profils',

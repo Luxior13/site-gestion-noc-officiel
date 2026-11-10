@@ -592,6 +592,100 @@ describe('activity journal projection', () => {
         .target,
     ).toMatchObject({ href: null, name: 'Fiche supprimée' });
   });
+
+  // 10 November 2026: the nationality is read with the identity, emergency
+  // contacts and legal representatives with the coordinates.
+  it('names the relatives and the nationality, read with their right', () => {
+    const change = (
+      id: string,
+      sectionKey: string,
+      fieldKey: string,
+      afterValue: string,
+    ): JournalRow['fieldChanges'][number] => ({
+      afterHash: null,
+      afterValue,
+      auditLogId: 'event-2',
+      beforeHash: null,
+      beforeValue: null,
+      changeType: 'CREATE',
+      createdAt: new Date('2026-11-10T12:00:00Z'),
+      entityId: 'person-1',
+      entityType: 'PERSON',
+      fieldKey,
+      id,
+      recordId: sectionKey === 'identity' ? null : 'record-1',
+      sectionKey,
+      valueKeyVersion: null,
+      valueMode: 'PLAIN',
+      valuesAuthTag: null,
+      valuesCiphertext: null,
+      valuesIv: null,
+    });
+    const event = row({
+      action: 'PERSON_UPDATE',
+      category: 'PERSON',
+      entityId: 'person-1',
+      entityType: 'PERSON',
+      fieldChanges: [
+        change('change-1', 'identity', 'nationality', '"BE"'),
+        change('change-2', 'guardians', 'guardian', '"Camille Exemple"'),
+        change('change-3', 'guardians', 'guardianRelation', '"PARENT"'),
+        change('change-4', 'emergency', 'contactName', '"Lou Exemple"'),
+        change('change-5', 'emergency', 'relation', '"Sœur"'),
+      ],
+      stream: 'IDENTITY',
+      targetUserId: null,
+    });
+    const names = new Map([['person-1', 'Kaiz']]);
+
+    expect(
+      projectJournalEvent(event, getReaderRights(admin), names).changes,
+    ).toEqual([
+      {
+        after: 'Belgique',
+        before: '—',
+        field: 'Nationalité',
+        label: 'Identité · Nationalité',
+      },
+      {
+        after: 'Camille Exemple',
+        before: '—',
+        field: 'Fiche',
+        label: 'Représentant légal · Fiche',
+      },
+      {
+        after: 'Parent',
+        before: '—',
+        field: 'Lien',
+        label: 'Représentant légal · Lien',
+      },
+      {
+        after: 'Lou Exemple',
+        before: '—',
+        field: 'Nom',
+        label: 'Contact d’urgence · Nom',
+      },
+      {
+        after: 'Sœur',
+        before: '—',
+        field: 'Lien',
+        label: 'Contact d’urgence · Lien',
+      },
+    ]);
+    // A reader of the Répertoire without its coordinates.
+    const identityOnly = projectJournalEvent(
+      event,
+      getReaderRights({
+        ...auditor,
+        permissions: { 'audit:view': true, 'persons:view': true },
+      }),
+      names,
+    ).changes;
+    expect(identityOnly[0]).toMatchObject({ after: 'Belgique' });
+    expect(identityOnly.slice(1).map((entry) => entry.after)).toEqual(
+      Array.from({ length: 4 }, () => 'Valeur masquée'),
+    );
+  });
 });
 
 describe('activity journal service', () => {

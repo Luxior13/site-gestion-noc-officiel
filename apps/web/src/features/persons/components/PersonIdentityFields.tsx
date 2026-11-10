@@ -1,16 +1,35 @@
 import React, { type FC } from 'react';
 
+import { COUNTRY_OPTIONS } from '$constants/countries.constants';
+import { CountryFlag } from '$ui/country-flag';
 import { DatePicker } from '$ui/date-picker';
 import { Input } from '$ui/input';
 import { Label } from '$ui/label';
+import { SearchSelect } from '$ui/search-select';
 import { cn } from '$utils/css.utils';
 
 export type PersonIdentityFormValue = {
   birthDate: string;
   firstName: string;
   lastName: string;
+  /** A country code, empty when not given (10 November 2026). */
+  nationality: string;
   nickname: string;
 };
+
+/**
+ * « Non renseignée » first, to clear it; then France and every country, each
+ * with its flag (owner, 10 November 2026).
+ */
+const NATIONALITY_GROUPS = [
+  { options: [{ label: 'Non renseignée', value: '' }] },
+  {
+    options: COUNTRY_OPTIONS.map((option) => ({
+      ...option,
+      icon: <CountryFlag code={option.value} />,
+    })),
+  },
+];
 
 type PersonIdentityFieldsProps = {
   disabled?: boolean;
@@ -18,8 +37,8 @@ type PersonIdentityFieldsProps = {
   idPrefix: string;
   /**
    * Record view (27 October 2026): `names` (pseudo, first and last name) and
-   * `situation` (the birth date; the status is computed from the passages
-   * since 9 November 2026) go in their own rubric cards.
+   * `situation` (the birth date and, since 10 November 2026, the
+   * nationality) go in their own rubric cards.
    */
   onChange: <TKey extends keyof PersonIdentityFormValue>(
     key: TKey,
@@ -80,6 +99,7 @@ export const PersonIdentityFields: FC<PersonIdentityFieldsProps> = ({
   const firstName = field('firstName');
   const lastName = field('lastName');
   const birthDate = field('birthDate');
+  const nationality = field('nationality');
   const showNames = part !== 'situation';
   const showSituation = part !== 'names';
 
@@ -193,6 +213,33 @@ export const PersonIdentityFields: FC<PersonIdentityFieldsProps> = ({
               Facultative, utile pour l’âge légal et les anniversaires.
             </p>
           )}
+        </div>
+      )}
+      {showSituation && (
+        <div className="min-w-0 space-y-1.5">
+          <FieldLabel
+            htmlFor={nationality.id}
+            id={`${nationality.id}-label`}
+            label="Nationalité"
+          />
+          {/* A long fixed list: the site's menu, with its search. */}
+          <SearchSelect
+            aria-describedby={nationality.describedBy}
+            aria-invalid={Boolean(nationality.error)}
+            disabled={disabled}
+            emptyText="Aucun pays trouvé"
+            groups={NATIONALITY_GROUPS}
+            id={nationality.id}
+            labelId={`${nationality.id}-label`}
+            onValueChange={(next) => onChange('nationality', next)}
+            placeholder="Non renseignée"
+            searchLabel="Rechercher un pays"
+            value={value.nationality}
+          />
+          <FieldError
+            id={`${nationality.id}-error`}
+            message={nationality.error}
+          />
         </div>
       )}
     </div>

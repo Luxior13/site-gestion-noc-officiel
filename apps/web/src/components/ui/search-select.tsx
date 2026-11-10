@@ -5,6 +5,7 @@ import { CheckIcon, ChevronDownIcon, SearchIcon } from 'lucide-react';
 import React, {
   type FC,
   type KeyboardEvent,
+  type ReactNode,
   useId,
   useRef,
   useState,
@@ -23,6 +24,8 @@ import { Popover, PopoverContent, PopoverTrigger } from './popover';
 export const SEARCH_SELECT_SEARCH_FROM = 8;
 
 type SearchSelectOption = Readonly<{
+  /** Decorative, before the name, here and in the field: a flag. */
+  icon?: ReactNode;
   label: string;
   /** Said after the name, muted: « inactive ». */
   note?: string;
@@ -160,6 +163,7 @@ export const SearchSelect: FC<Props> = ({
           role="combobox"
           type="button"
         >
+          {selected?.icon}
           <span
             className={cn(
               'min-w-0 flex-1 truncate',
@@ -240,6 +244,7 @@ export const SearchSelect: FC<Props> = ({
                     onSelect={() => choose(option.value)}
                     value={option.value}
                   >
+                    {option.icon}
                     <span className="min-w-0 [overflow-wrap:anywhere]">
                       {option.label}
                       {option.note && (

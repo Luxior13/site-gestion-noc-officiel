@@ -56,6 +56,8 @@ export const PERSON_SOCIAL_LABEL_SUGGESTIONS = [
 
 export const PERSON_LIMITS = {
   emails: 10,
+  emergencyContacts: 5,
+  legalGuardians: 4,
   phones: 10,
   socialProfiles: 20,
 } as const;
@@ -64,10 +66,36 @@ export const PERSON_AUDIT_KEYS = {
   entityType: 'PERSON',
   sections: {
     contacts: 'contacts',
+    // 10 November 2026: read with the coordinates (`persons:view_contact`).
+    emergency: 'emergency',
+    guardians: 'guardians',
     identity: 'identity',
     social: 'social',
   },
 } as const;
+
+/**
+ * How a legal representative stands to the person (10 November 2026), a
+ * short fixed list: a parent, a guardian named by a judge, or another one.
+ */
+export const LEGAL_GUARDIAN_RELATIONS = ['PARENT', 'TUTOR', 'OTHER'] as const;
+
+export type LegalGuardianRelation = (typeof LEGAL_GUARDIAN_RELATIONS)[number];
+
+export const LEGAL_GUARDIAN_RELATION_LABELS = {
+  OTHER: 'Autre représentant',
+  PARENT: 'Parent',
+  TUTOR: 'Tuteur ou tutrice',
+} as const satisfies Record<LegalGuardianRelation, string>;
+
+/** Suggestions of the link with an emergency contact; any text is accepted. */
+export const EMERGENCY_RELATION_SUGGESTIONS = [
+  'Parent',
+  'Conjoint ou conjointe',
+  'Frère ou sœur',
+  'Ami ou amie',
+  'Autre',
+] as const;
 
 const SOCIAL_NETWORK_BY_KEY = new Map(
   PERSON_SOCIAL_NETWORKS.map((network) => [network.key, network]),

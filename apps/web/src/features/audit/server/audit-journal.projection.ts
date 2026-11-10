@@ -2,6 +2,7 @@ import 'server-only';
 
 import type { AuditFieldChange, AuditLog } from '@prisma/client';
 
+import { countryName } from '$constants/countries.constants';
 import { FEATURES } from '$constants/feature-registry.constants';
 import {
   getAccessLabel,
@@ -13,6 +14,7 @@ import { personDetailPath, userDetailPath } from '$constants/routes.constants';
 import { getSystemSettingDefinition } from '$constants/system-setting-catalog.constants';
 import {
   getPersonSocialNetwork,
+  LEGAL_GUARDIAN_RELATION_LABELS,
   PERSON_STRUCTURE_STATUS_LABELS,
 } from '$features/persons/person.constants';
 import {
@@ -101,6 +103,14 @@ const formatValue = (fieldKey: string, value: unknown): string => {
     );
   if (fieldKey === 'networkKey' && typeof value === 'string')
     return getPersonSocialNetwork(value)?.label ?? value;
+  if (fieldKey === 'nationality' && typeof value === 'string')
+    return countryName(value);
+  if (fieldKey === 'guardianRelation' && typeof value === 'string')
+    return (
+      LEGAL_GUARDIAN_RELATION_LABELS[
+        value as keyof typeof LEGAL_GUARDIAN_RELATION_LABELS
+      ] ?? value
+    );
   if (fieldKey === 'role' && typeof value === 'string')
     return getAccessLabel({ isProtected: false, role: value });
   if (typeof value === 'string' && DATE_ONLY.test(value))
@@ -113,12 +123,20 @@ const formatValue = (fieldKey: string, value: unknown): string => {
   return EMPTY;
 };
 
+/** Sections read with the coordinates (`persons:view_contact`). */
+const CONTACT_SECTIONS: ReadonlySet<string> = new Set([
+  'contacts',
+  'emergency',
+  'guardians',
+  'social',
+]);
+
 /** A section's values follow the right that shows them in the Répertoire. */
 const canReadPersonSection = (
   sectionKey: string,
   rights: ReaderRights,
 ): boolean =>
-  sectionKey === 'contacts' || sectionKey === 'social'
+  CONTACT_SECTIONS.has(sectionKey)
     ? rights.canViewPersonContacts
     : rights.canViewPersons;
 

@@ -11,6 +11,14 @@ export {
 export { createPerson, getPerson, updatePerson } from './person-core.service';
 export { listPersons } from './person-list.service';
 export {
+  addPersonEmergencyContact,
+  addPersonLegalGuardian,
+  deletePersonEmergencyContact,
+  deletePersonLegalGuardian,
+  updatePersonEmergencyContact,
+  updatePersonLegalGuardian,
+} from './person-relatives.service';
+export {
   addPersonSocialProfile,
   deletePersonSocialProfile,
   updatePersonSocialProfile,

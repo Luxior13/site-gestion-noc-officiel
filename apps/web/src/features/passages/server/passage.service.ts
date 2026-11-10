@@ -4,7 +4,10 @@ import type { Prisma } from '@prisma/client';
 import { AuditAction, AuditCategory } from '@repo/database';
 
 import { compareMemberFunctions } from '$features/member-functions/member-function.constants';
-import { normalizePersonSearchValue } from '$features/persons/person.utils';
+import {
+  PERSON_REF_SELECT,
+  toPersonRef,
+} from '$features/persons/server/person-suggestions';
 import { createAuditLogWithHeaders } from '$server/audit-log';
 import { prisma } from '$server/prisma';
 import { authorizeUserAction } from '$server/user-action-authorization';
@@ -22,8 +25,6 @@ import type {
   PassageFunction,
   PassageInput,
   PassageItem,
-  PassagePerson,
-  PassagePersonResults,
   PassageRoster,
   PassageScope,
 } from '../types/passage.types';
@@ -49,12 +50,6 @@ type AuditValues = Readonly<{
   team?: string;
 }>;
 
-const PERSON_REF = {
-  firstName: true,
-  id: true,
-  lastName: true,
-  nickname: true,
-} as const;
 const FUNCTION_REF = {
   gameId: true,
   id: true,
@@ -65,15 +60,12 @@ const FUNCTION_REF = {
 } as const;
 const WITH_REFS = {
   memberFunction: { select: FUNCTION_REF },
-  person: { select: PERSON_REF },
+  person: { select: PERSON_REF_SELECT },
 } as const;
 type PassageRow = Prisma.PersonPassageGetPayload<{ include: typeof WITH_REFS }>;
 type FunctionRow = Prisma.MemberFunctionGetPayload<{
   select: typeof FUNCTION_REF;
 }>;
-
-/** Suggestions shown under the person field (owner: « en afficher moins »). */
-const PICKER_LIMIT = 6;
 
 const violates = (error: unknown, name: string): boolean =>
   error instanceof Error && error.message.includes(name);
@@ -92,37 +84,6 @@ const baseRefusal = (
 
 const dateOnly = (value: Date): string => value.toISOString().slice(0, 10);
 const asDate = (value: string): Date => new Date(`${value}T00:00:00.000Z`);
-
-/** « Kaiz · Prénom Nom », as the Répertoire names a record. */
-const displayNameOf = (
-  person: Readonly<{
-    firstName: string | null;
-    lastName: string | null;
-    nickname: string | null;
-  }>,
-): string => {
-  const civil = [person.firstName, person.lastName]
-    .filter((part): part is string => Boolean(part))
-    .join(' ');
-  if (person.nickname && civil) return `${person.nickname} · ${civil}`;
-
-  return person.nickname ?? (civil || 'Fiche sans nom');
-};
-
-const toPerson = (
-  row: Readonly<{
-    firstName: string | null;
-    id: string;
-    lastName: string | null;
-    nickname: string | null;
-  }>,
-): PassagePerson => ({
-  displayName: displayNameOf(row),
-  firstName: row.firstName,
-  id: row.id,
-  lastName: row.lastName,
-  nickname: row.nickname,
-});
 
 const toFunction = (row: FunctionRow): PassageFunction => ({
   id: row.id,
@@ -143,7 +104,7 @@ const toItem = (row: PassageRow): PassageItem => ({
       : null,
   function: toFunction(row.memberFunction),
   id: row.id,
-  person: toPerson(row.person),
+  person: toPersonRef(row.person),
   start: { date: dateOnly(row.startOn), precision: row.startPrecision },
   updatedAt: row.updatedAt.toISOString(),
   version: row.version,
@@ -323,37 +284,6 @@ const openPlace = async (
 /** The passages of a place, every one, and its functions. */
 export const getRoster = async (scope: PassageScope): Promise<PassageRoster> =>
   readRoster(prisma, await resolvePlace(prisma, scope));
-
-/**
- * Records of the Répertoire whose pseudo, first name or last name contain
- * every word typed, for the person picker of a passage: six at most, and
- * whether more exist, so the picker asks for a closer search.
- */
-export const searchPassagePersons = async (
-  query: string,
-): Promise<PassagePersonResults> => {
-  const terms = normalizePersonSearchValue(query).split(' ').filter(Boolean);
-  if (terms.length === 0) return { more: false, persons: [] };
-  const rows = await prisma.person.findMany({
-    orderBy: [{ sortName: 'asc' }, { id: 'asc' }],
-    select: PERSON_REF,
-    take: PICKER_LIMIT + 1,
-    where: {
-      AND: terms.map((term) => ({
-        OR: [
-          { normalizedNickname: { contains: term } },
-          { normalizedFirstName: { contains: term } },
-          { normalizedLastName: { contains: term } },
-        ],
-      })),
-    },
-  });
-
-  return {
-    more: rows.length > PICKER_LIMIT,
-    persons: rows.slice(0, PICKER_LIMIT).map(toPerson),
-  };
-};
 
 /** Adds a passage: a person, a function of the place, two dates. */
 export const createPassage = async (

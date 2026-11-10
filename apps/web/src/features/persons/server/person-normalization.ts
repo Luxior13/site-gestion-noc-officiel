@@ -24,6 +24,7 @@ type PersonIdentityData = {
   birthDate: Date | null;
   firstName: string | null;
   lastName: string | null;
+  nationality: string | null;
   nickname: string | null;
   normalizedFirstName: string | null;
   normalizedLastName: string | null;
@@ -35,6 +36,7 @@ export const personIdentityData = (input: {
   birthDate?: string | null;
   firstName?: string | null;
   lastName?: string | null;
+  nationality?: string | null;
   nickname?: string | null;
 }): PersonIdentityData => {
   const normalizedFirstName = input.firstName
@@ -51,6 +53,7 @@ export const personIdentityData = (input: {
     birthDate: parseCivilDate(input.birthDate ?? null),
     firstName: input.firstName ?? null,
     lastName: input.lastName ?? null,
+    nationality: input.nationality ?? null,
     nickname: input.nickname ?? null,
     normalizedFirstName,
     normalizedLastName,

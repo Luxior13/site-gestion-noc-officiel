@@ -45,6 +45,10 @@ const SUITE_DATABASES = [
     variable: 'PERSON_DETAIL_TEST_DATABASE_URL',
   },
   {
+    database: 'person_relatives_service_test',
+    variable: 'PERSON_RELATIVES_TEST_DATABASE_URL',
+  },
+  {
     database: 'repertoire_pagination_test',
     migrate: false,
     variable: 'PERSONS_LIST_TEST_DATABASE_URL',

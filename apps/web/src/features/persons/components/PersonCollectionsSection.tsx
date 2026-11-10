@@ -1,12 +1,9 @@
 'use client';
 
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import {
-  Copy,
   ExternalLink,
   Mail,
   Network,
-  Pencil,
   Phone,
   Plus,
   RotateCcw,
@@ -24,9 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '$ui/alert-dialog';
-import { Badge } from '$ui/badge';
 import { Button } from '$ui/button';
-import { Card, CardContent, CardHeader } from '$ui/card';
 import {
   Select,
   SelectContent,
@@ -34,7 +29,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '$ui/select';
-import { ServiceIcon } from '$ui/service-icon';
 import { ApiClientError } from '$utils/api.utils';
 
 import { mutatePersonChild } from '../person.api';
@@ -46,6 +40,16 @@ import type {
   PersonSocialProfileItem,
 } from '../types/person.types';
 import { PersonChildDialog } from './PersonChildDialog';
+import {
+  CollectionCard,
+  CopyAction,
+  EditAction,
+  EmptyCollection,
+  formatPhoneForDisplay,
+  phoneHref,
+  RowTypeIcon,
+} from './PersonCollectionParts';
+import { PersonRelativesCards } from './PersonRelativesCards';
 import { PersonSocialNetworkIcon } from './PersonSocialNetworkIcon';
 
 type ChildKind = 'email' | 'phone' | 'social';
@@ -68,44 +72,6 @@ type PersonCollectionsSectionProps = {
   person: PersonDetail;
 };
 
-const EditAction: FC<{
-  label: string;
-  onEdit: () => void;
-}> = ({ label, onEdit }) => (
-  <Button
-    aria-label={`Modifier ${label}`}
-    onClick={onEdit}
-    size="icon"
-    type="button"
-    variant="ghost"
-  >
-    <Pencil className="size-3.5" />
-  </Button>
-);
-
-const CopyAction: FC<{ label: string; value: string }> = ({ label, value }) => {
-  const handleCopy = async (): Promise<void> => {
-    try {
-      await navigator.clipboard.writeText(value);
-      toast.success(`${label} copié`);
-    } catch {
-      toast.error('Copie impossible');
-    }
-  };
-
-  return (
-    <Button
-      aria-label={`Copier ${label.toLowerCase()}`}
-      onClick={() => void handleCopy()}
-      size="icon"
-      type="button"
-      variant="ghost"
-    >
-      <Copy className="size-3.5" />
-    </Button>
-  );
-};
-
 const ItemMetadata: FC<{ isPrimary: boolean; parts: string[] }> = ({
   isPrimary,
   parts,
@@ -121,57 +87,15 @@ const ItemMetadata: FC<{ isPrimary: boolean; parts: string[] }> = ({
   </p>
 );
 
-/** One contact collection (27 October 2026): title, count and add action. */
-const CollectionCard: FC<{
-  addAction?: React.ReactNode;
-  children: React.ReactNode;
-  count: number;
-  icon: React.ReactNode;
-  title: string;
-}> = ({ addAction, children, count, icon, title }) => (
-  <Card>
-    <CardHeader className="flex-row items-center justify-between gap-3 p-3.5 sm:p-4">
-      <div className="flex min-w-0 items-center gap-2">
-        <ServiceIcon className="border-primary/30 bg-primary/10 text-primary-emphasis size-7 [&_svg]:size-3.5">
-          {icon}
-        </ServiceIcon>
-        <h2 className="text-sm font-semibold">{title}</h2>
-        <Badge variant="outline">{count}</Badge>
-      </div>
-      {addAction}
-    </CardHeader>
-    <CardContent className="p-3 sm:p-4">{children}</CardContent>
-  </Card>
-);
-
-/** « +33 6 12 34 56 78 »: readable number, the stored value is unchanged. */
-const formatPhoneForDisplay = (phone: string): string =>
-  parsePhoneNumberFromString(phone)?.formatInternational() ?? phone;
-
 /** The value a person reads for an item: address, number or profile. */
 const getChildItemDisplay = (item: ChildItem): string =>
   'email' in item
     ? item.email
     : 'phone' in item
-      ? formatPhoneForDisplay(item.phone)
+      ? formatPhoneForDisplay(item.phone, (item as PersonPhoneItem).countryCode)
       : ((item as PersonSocialProfileItem).identifier ??
         (item as PersonSocialProfileItem).profileUrl ??
         'Profil');
-
-const RowTypeIcon: FC<{ children: React.ReactNode }> = ({ children }) => (
-  <span
-    aria-hidden="true"
-    className="text-muted-foreground shrink-0 [&_svg]:size-4"
-  >
-    {children}
-  </span>
-);
-
-const EmptyCollection: FC<{ children: React.ReactNode }> = ({ children }) => (
-  <p className="text-muted-foreground border-border-divider rounded-lg border border-dashed px-3 py-4 text-center text-sm">
-    {children}
-  </p>
-);
 
 const EmailRow: FC<{
   canUpdate: boolean;
@@ -213,9 +137,9 @@ const PhoneRow: FC<{
       <div className="flex min-w-0 flex-wrap items-center gap-1.5">
         <a
           className="hover:text-primary-emphasis -my-[13px] max-w-full truncate py-[13px] text-sm font-medium tabular-nums hover:underline sm:my-0 sm:py-0"
-          href={`tel:${item.phone}`}
+          href={phoneHref(item.phone, item.countryCode)}
         >
-          {formatPhoneForDisplay(item.phone)}
+          {formatPhoneForDisplay(item.phone, item.countryCode)}
         </a>
       </div>
       <ItemMetadata isPrimary={item.isPrimary} parts={[item.label]} />
@@ -561,6 +485,13 @@ const PersonCollectionsContent: FC<PersonCollectionsSectionProps> = ({
             </ul>
           )}
         </CollectionCard>
+
+        <PersonRelativesCards
+          canUpdate={canUpdate}
+          onChange={onChange}
+          onReload={onReload}
+          person={person}
+        />
       </div>
 
       {editor && (

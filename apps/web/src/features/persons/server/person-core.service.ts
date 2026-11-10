@@ -19,8 +19,11 @@ import type {
   PersonDetail,
   PersonDuplicateWarning,
   PersonEmailItem,
+  PersonEmergencyContactItem,
   PersonLastChange,
+  PersonLegalGuardianItem,
   PersonPhoneItem,
+  PersonRepresentedItem,
   PersonSocialProfileItem,
 } from '../types/person.types';
 import { createPersonAudit, type PersonAuditChange } from './person-audit';
@@ -37,6 +40,7 @@ import {
   normalizePersonSocialUrl,
   personIdentityData,
 } from './person-normalization';
+import { PERSON_REF_SELECT, toPersonRef } from './person-suggestions';
 import {
   type PersonReader,
   projectPersonAuditActor,
@@ -47,6 +51,32 @@ type PersonClient = Prisma.TransactionClient | PrismaClient;
 
 const PERSON_DETAIL_INCLUDE = {
   emails: { orderBy: [{ isPrimary: 'desc' }, { createdAt: 'asc' }] },
+  emergencyContacts: { orderBy: [{ createdAt: 'asc' }, { id: 'asc' }] },
+  guardianOf: {
+    include: { person: { select: { ...PERSON_REF_SELECT, birthDate: true } } },
+    orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+  },
+  // The representative's main email and number, to reach them from here.
+  legalGuardians: {
+    include: {
+      guardian: {
+        select: {
+          ...PERSON_REF_SELECT,
+          emails: {
+            select: { email: true },
+            take: 1,
+            where: { isPrimary: true },
+          },
+          phones: {
+            select: { normalizedPhone: true },
+            take: 1,
+            where: { isPrimary: true },
+          },
+        },
+      },
+    },
+    orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+  },
   phones: { orderBy: [{ isPrimary: 'desc' }, { createdAt: 'asc' }] },
   socialProfiles: {
     orderBy: [
@@ -99,6 +129,44 @@ const toSocialProfileItem = (
   profileUrl: profile.profileUrl,
   updatedAt: profile.updatedAt.toISOString(),
   version: profile.version,
+});
+
+const toEmergencyContactItem = (
+  contact: PersonDetailRecord['emergencyContacts'][number],
+): PersonEmergencyContactItem => ({
+  countryCode:
+    parsePhoneNumberFromString(contact.normalizedPhone)?.country ?? 'FR',
+  createdAt: contact.createdAt.toISOString(),
+  id: contact.id,
+  name: contact.name,
+  phone: contact.phone,
+  relation: contact.relation,
+  updatedAt: contact.updatedAt.toISOString(),
+  version: contact.version,
+});
+
+const toLegalGuardianItem = (
+  link: PersonDetailRecord['legalGuardians'][number],
+): PersonLegalGuardianItem => ({
+  createdAt: link.createdAt.toISOString(),
+  guardian: {
+    ...toPersonRef(link.guardian),
+    primaryEmail: link.guardian.emails[0]?.email ?? null,
+    primaryPhone: link.guardian.phones[0]?.normalizedPhone ?? null,
+  },
+  id: link.id,
+  relation: link.relation,
+  updatedAt: link.updatedAt.toISOString(),
+  version: link.version,
+});
+
+const toRepresentedItem = (
+  link: PersonDetailRecord['guardianOf'][number],
+): PersonRepresentedItem => ({
+  age: calculateCivilAge(serializeCivilDate(link.person.birthDate)),
+  id: link.id,
+  person: toPersonRef(link.person),
+  relation: link.relation,
 });
 
 const getLastPersonChange = async (
@@ -159,13 +227,21 @@ export const mapPersonDetail = async (
     birthDate,
     createdAt: person.createdAt.toISOString(),
     emails: canViewContact ? person.emails.map(toEmailItem) : [],
+    emergencyContacts: canViewContact
+      ? person.emergencyContacts.map(toEmergencyContactItem)
+      : [],
     firstName: person.firstName,
     id: person.id,
     isAdult: age === null ? null : age >= 18,
     lastChange: await getLastPersonChange(client, person.id, reader),
     lastName: person.lastName,
+    legalGuardians: canViewContact
+      ? person.legalGuardians.map(toLegalGuardianItem)
+      : [],
+    nationality: person.nationality,
     nickname: person.nickname,
     phones: canViewContact ? person.phones.map(toPhoneItem) : [],
+    represents: canViewContact ? person.guardianOf.map(toRepresentedItem) : [],
     socialProfiles: canViewContact
       ? person.socialProfiles.map(toSocialProfileItem)
       : [],
@@ -402,28 +478,33 @@ export const createPerson = async (
       }),
     ];
     const changes: PersonAuditChange[] = [
-      ...(['nickname', 'firstName', 'lastName', 'birthDate'] as const).flatMap(
-        (fieldKey) => {
-          // `fieldKey` comes from the closed identity tuple above.
-          /* eslint-disable security/detect-object-injection */
-          const value =
-            fieldKey === 'birthDate' ? input.birthDate : input[fieldKey];
-          /* eslint-enable security/detect-object-injection */
+      ...(
+        [
+          'nickname',
+          'firstName',
+          'lastName',
+          'birthDate',
+          'nationality',
+        ] as const
+      ).flatMap((fieldKey) => {
+        // `fieldKey` comes from the closed identity tuple above.
+        /* eslint-disable security/detect-object-injection */
+        const value = input[fieldKey];
+        /* eslint-enable security/detect-object-injection */
 
-          return value
-            ? [
-                {
-                  after: value,
-                  before: null,
-                  changeType: 'CREATE' as const,
-                  fieldKey,
-                  sectionKey: PERSON_AUDIT_KEYS.sections.identity,
-                  sensitive: true,
-                },
-              ]
-            : [];
-        },
-      ),
+        return value
+          ? [
+              {
+                after: value,
+                before: null,
+                changeType: 'CREATE' as const,
+                fieldKey,
+                sectionKey: PERSON_AUDIT_KEYS.sections.identity,
+                sensitive: true,
+              },
+            ]
+          : [];
+      }),
       ...person.emails.flatMap((email) => [
         {
           after: email.email,
@@ -571,6 +652,13 @@ export const updatePerson = async (
         'birthDate',
         serializeCivilDate(current.birthDate),
         input.birthDate,
+        true,
+        PERSON_AUDIT_KEYS.sections.identity,
+      ],
+      [
+        'nationality',
+        current.nationality,
+        input.nationality,
         true,
         PERSON_AUDIT_KEYS.sections.identity,
       ],

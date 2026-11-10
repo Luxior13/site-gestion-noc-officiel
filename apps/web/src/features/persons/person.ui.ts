@@ -86,10 +86,12 @@ export const isPersonIdentityEqual = (
     birthDate: string;
     firstName: string;
     lastName: string;
+    nationality: string;
     nickname: string;
   },
 ): boolean =>
   (person.birthDate ?? '') === form.birthDate &&
   (person.firstName ?? '') === form.firstName.trim() &&
   (person.lastName ?? '') === form.lastName.trim() &&
+  (person.nationality ?? '') === form.nationality &&
   (person.nickname ?? '') === form.nickname.trim();

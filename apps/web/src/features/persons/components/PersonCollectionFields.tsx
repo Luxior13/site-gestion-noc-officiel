@@ -1,5 +1,6 @@
 import React, { type FC } from 'react';
 
+import { CountryFlag } from '$ui/country-flag';
 import { Input } from '$ui/input';
 import { Label } from '$ui/label';
 import {
@@ -276,6 +277,7 @@ export const PhoneFields: FC<PhoneFieldsProps> = ({
           <SelectContent>
             {PHONE_COUNTRY_OPTIONS.map(([code, label]) => (
               <SelectItem key={code} value={code}>
+                <CountryFlag code={code} />
                 {label}
               </SelectItem>
             ))}

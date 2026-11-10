@@ -41,14 +41,19 @@ const getLastSql = (): { text: string; values: readonly unknown[] } => {
   return { text: query.strings.join('?'), values: query.values };
 };
 
-// eslint-disable-next-line security/detect-non-literal-fs-filename
-const collectionsSource = readFileSync(
-  new URL(
-    '../features/persons/components/PersonCollectionsSection.tsx',
-    import.meta.url,
-  ),
-  'utf8',
-);
+// The collections and the pieces their cards share (10 November 2026).
+const collectionsSource = [
+  'PersonCollectionsSection.tsx',
+  'PersonCollectionParts.tsx',
+]
+  .map((file) =>
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    readFileSync(
+      new URL(`../features/persons/components/${file}`, import.meta.url),
+      'utf8',
+    ),
+  )
+  .join('\n');
 // eslint-disable-next-line security/detect-non-literal-fs-filename
 const childDialogSource = readFileSync(
   new URL(
@@ -640,7 +645,8 @@ describe('person short-lived sensitive UX contracts', () => {
     expect(identitySectionSource).not.toContain('<CardHeader');
     // Rubrics are named after their fields, never « Identité » (27 October 2026).
     expect(identitySectionSource).toContain('title="Pseudo et nom"');
-    expect(identitySectionSource).toContain('title="Naissance"');
+    // The nationality joins the birth date (10 November 2026).
+    expect(identitySectionSource).toContain('title="Naissance et nationalité"');
     expect(identitySectionSource).not.toContain('structureStatus');
     expect(identitySectionSource).not.toContain('title="Identité"');
     expect(identitySectionSource).toContain(

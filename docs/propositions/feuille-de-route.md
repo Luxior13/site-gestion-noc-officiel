@@ -240,8 +240,8 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 | --- | --- | --- | --- |
 | **Répertoire** | — | Liste, sans onglet : toutes les fiches, avec recherche et filtres. À venir (étape 1) : filtres par équipe, jeu et anciens membres. | Livré |
 | **Fiche personne** | — | À venir (étape 1) : les jeux pratiqués, choisis dans Identité avec un champ à choix multiples, le jeu manquant ajouté sans quitter la fiche. | Livré |
-|  | Identité | Pseudo, nom, naissance, zone dangereuse. À venir (étape 1) : nationalité et anciens pseudos, y compris ceux d’avant le site. | Livré |
-|  | Coordonnées | Emails, téléphones, réseaux sociaux. À venir (étape 1) : adresse, identifiants de jeu, contact d’urgence et représentants légaux. | Livré |
+|  | Identité | Pseudo, nom, naissance, nationalité, zone dangereuse. À venir (étape 1) : les anciens pseudos, y compris ceux d’avant le site. | Livré |
+|  | Coordonnées | Emails, téléphones, réseaux sociaux, contacts d’urgence et représentants légaux (des fiches liées), et sur la fiche d’un représentant, qui il représente. À venir (étape 1) : adresse, identifiants de jeu. | Livré |
 |  | Parcours ↗ | En lecture : chaque passage dans une équipe ou dans la structure (Bureau & staff), en cours et à venir puis terminés, avec la fonction, le statut, le début, la fin et la durée. Chaque ligne ouvre sa page, ses anciens membres pour un passage terminé ; seules les listes que le lecteur peut voir. À venir (étape 5) : les tournois joués. Lu ici, se modifie dans le Roster de chaque équipe et l’Effectif de Bureau & staff. | Livré |
 |  | Adhésions ↗ | Adhésions par campagne et état de cotisation. Lu ici, se modifie dans Adhésions. | Étape 4 |
 |  | Finances ↗ | Cotisations réglées, remboursements et gains versés. Lu ici, se modifie dans Finances. | Étape 4 |

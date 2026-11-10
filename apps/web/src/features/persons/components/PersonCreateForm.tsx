@@ -40,6 +40,7 @@ const INITIAL_FORM: PersonIdentityFormValue = {
   birthDate: '',
   firstName: '',
   lastName: '',
+  nationality: '',
   nickname: '',
 };
 

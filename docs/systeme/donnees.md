@@ -46,10 +46,12 @@ Colonnes : nombre de champs (relations comprises), nombre d’`@@index` et
 
 | Modèle | Champs | Index | Relations | Rôle |
 | --- | ---: | ---: | --- | --- |
-| `Person` | 16 | 9 | emails, téléphones, profils sociaux, passages | Fiche personne, version optimiste ; le statut « Dans la structure » n’est pas une colonne, il se calcule depuis les passages en cours (9 novembre 2026) |
+| `Person` | 17 | 9 | emails, téléphones, profils sociaux, contacts d’urgence, représentants légaux (dans les deux sens), passages | Fiche personne, version optimiste ; le statut « Dans la structure » n’est pas une colonne, il se calcule depuis les passages en cours (9 novembre 2026) ; `nationality`, code ISO à deux lettres en capitales (contrainte `Person_nationality_check`, 10 novembre 2026) |
 | `PersonEmail` | 10 | 3 | `Person` | Emails, un principal |
 | `PersonPhone` | 10 | 3 | `Person` | Téléphones, un principal |
 | `PersonSocialProfile` | 14 | 5 | `Person` | Réseaux sociaux, propriétaire protégé (REP-20) |
+| `PersonEmergencyContact` | 9 | 1 | `Person` (`ON DELETE CASCADE`) | Qui appeler en cas d’urgence (10 novembre 2026) : nom, lien facultatif, numéro et sa forme internationale ; contrainte `PersonEmergencyContact_values_check` et déclencheur de propriétaire `PersonEmergencyContact_prevent_person_reassignment`, absents de `schema.prisma` |
+| `PersonLegalGuardian` | 7 | 2 | `person` (`ON DELETE CASCADE`), `guardian` (`ON DELETE RESTRICT`) | Un représentant légal (10 novembre 2026) : une autre fiche, liée avec son lien `LegalGuardianRelation` (`PARENT`, `TUTOR`, `OTHER`), un lien unique par paire ; contrainte `PersonLegalGuardian_not_self_check` et déclencheur `PersonLegalGuardian_prevent_reassignment` (les deux bouts ne changent pas), absents de `schema.prisma` |
 | `PersonDeletionTombstone` | 3 | 0 | — | Trace minimale d’une fiche supprimée |
 
 ### Esport
@@ -80,8 +82,11 @@ L’actualité interne redéfinira son stockage à sa reconstruction.
 
 ## Migrations
 
-**70 migrations** dans `packages/database/prisma/migrations`, de
-`20250723121213_init` à `20261109235800_person_status_from_passages` (colonne
+**71 migrations** dans `packages/database/prisma/migrations`, de
+`20250723121213_init` à `20261110120000_person_relatives` (colonne
+`Person.nationality`, tables `PersonEmergencyContact` et `PersonLegalGuardian`,
+type `LegalGuardianRelation`, contraintes et déclencheurs de propriétaire,
+10 novembre 2026 ; ajout seul). Avant elle, `20261109235800_person_status_from_passages` (colonne
 `Person.structureStatus`, son type `PersonStructureStatus` et ses trois index
 supprimés : le statut se calcule depuis les passages, 9 novembre 2026 ; les
 données de travail sont des essais). Avant elle, `20261109235500_structure_staff` (valeur `BOARD` de `MemberFunctionKind` et contrainte `MemberFunction_kind_scope_check`, Bureau & staff, 9 novembre 2026 ; ajout seul, aucune ligne existante touchée). Avant elle, `20261109235000_person_passages` (table `PersonPassage`, extension `btree_gist`, contraintes, déclencheurs `PersonPassage_function_scope` et `MemberFunction_gameId_immutable`, actions `PASSAGE_*` et catégorie `PASSAGE`, 9 novembre 2026). Avant elle, `20261109230000_single_rank` (rangs remis en une seule suite par liste, actifs et inactifs mélangés, dans l’ordre affiché jusque-là, 9 novembre 2026). Avant elle, `20261109190000_game_team_position` (colonnes `position` de `Game` et `Team` reprises de l’ordre affiché, contraintes positives, index par état et rang, actions `GAME_REORDER` et `TEAM_REORDER`, 9 novembre 2026). Avant elle, `20261109160000_member_function_position` (colonne `position` reprise de l’ordre affiché jusque-là, contrainte positive, index par jeu, type et position, action `FUNCTION_REORDER`, 9 novembre 2026). Avant elle, `20261109120000_member_functions` (table `MemberFunction` et type `MemberFunctionKind`, liée au jeu en `ON DELETE RESTRICT`, index partiel des fonctions de la structure, actions `FUNCTION_*` et catégorie `FUNCTION` du journal, 9 novembre 2026). Avant elle, `20261108200000_team_game_immutable` (déclencheur qui refuse de changer le jeu d’une équipe, 8 novembre 2026), puis `20261108180000_teams` (table `Team`, liée au jeu en `ON DELETE RESTRICT`, actions `TEAM_*` et catégorie `TEAM` du journal, même jour), puis `20261108120000_games` (table `Game` et précision de date, actions `GAME_*` et catégorie `GAME`, même jour), puis `20261031140000_shared_search_text` (règle de recherche commune, audit RL du 31 octobre 2026 : fonction `public.search_text`, miroir de `normalizeSearchText`, colonne `AuditLog.searchText` remplie par déclencheur, index trigrammes d’expression des utilisateurs, noms normalisés du Répertoire recalculés ; la garde d’ajout seul du journal n’est levée que dans cette migration, le temps de remplir la colonne des événements passés). Les précédentes, `20261031130000_audit_purge_action` et `20261031120000_audit_attempts_blocked`, ajoutent `AUDIT_PURGE` (« Journal purgé ») et `ATTEMPTS_BLOCKED` (tentatives bloquées par la limitation de débit). Repères :

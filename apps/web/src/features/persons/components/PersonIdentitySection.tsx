@@ -32,6 +32,7 @@ const toForm = (person: PersonDetail): PersonIdentityFormValue => ({
   birthDate: person.birthDate ?? '',
   firstName: person.firstName ?? '',
   lastName: person.lastName ?? '',
+  nationality: person.nationality ?? '',
   nickname: person.nickname ?? '',
 });
 
@@ -148,6 +149,7 @@ export const PersonIdentitySection: FC<PersonIdentitySectionProps> = ({
       birthDate: form.birthDate || null,
       firstName: form.firstName || null,
       lastName: form.lastName || null,
+      nationality: form.nationality || null,
       nickname: form.nickname || null,
       version,
     };
@@ -281,6 +283,10 @@ export const PersonIdentitySection: FC<PersonIdentitySectionProps> = ({
           form.lastName.trim() !== previous.lastName
             ? form.lastName
             : latest.lastName,
+        nationality:
+          form.nationality !== previous.nationality
+            ? form.nationality
+            : latest.nationality,
         nickname:
           form.nickname.trim() !== previous.nickname
             ? form.nickname
@@ -363,7 +369,7 @@ export const PersonIdentitySection: FC<PersonIdentitySectionProps> = ({
           <RubricCard
             icon={<CalendarDays />}
             id="person-identity-situation-title"
-            title="Naissance"
+            title="Naissance et nationalité"
           >
             <PersonIdentityFields
               disabled={!canUpdate || isBusy}

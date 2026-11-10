@@ -1,4 +1,5 @@
 import type { MemberFunctionKind } from '$features/member-functions/member-function.constants';
+import type { PersonRef } from '$features/persons/types/person.types';
 import type { ApproximateDate } from '$utils/approximate-date.utils';
 
 /** A function as a passage shows and chooses it. */
@@ -10,24 +11,8 @@ export type PassageFunction = Readonly<{
   position: number;
 }>;
 
-/**
- * A person of the Répertoire, by the name the roster shows; the name parts
- * give the initials of its avatar.
- */
-export type PassagePerson = Readonly<{
-  /** « Kaiz · Prénom Nom », or the civil name alone. */
-  displayName: string;
-  firstName: string | null;
-  id: string;
-  lastName: string | null;
-  nickname: string | null;
-}>;
-
-/** The suggestions of the person picker: six at most, and whether more exist. */
-export type PassagePersonResults = Readonly<{
-  more: boolean;
-  persons: readonly PassagePerson[];
-}>;
+/** A person of the Répertoire, by the name the roster shows. */
+export type PassagePerson = PersonRef;
 
 /**
  * Browser-safe projection of a passage (9 November 2026): who, with which
