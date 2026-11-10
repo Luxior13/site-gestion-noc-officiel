@@ -15,14 +15,17 @@ import {
 
 type RouteContext = { params: Promise<{ id: string }> };
 
-/** Adds another pseudo to a record, with the identity's right. */
+/** Adds another pseudo to a record, with the coordinates' right. */
 export async function POST(
   request: NextRequest,
   context: RouteContext,
 ): Promise<NextResponse> {
   const auth = await requireAuth();
   if (!auth.success) return auth.response;
-  const permission = requirePermission(auth.user, PERMISSIONS.PERSONS.UPDATE);
+  const permission = requirePermission(
+    auth.user,
+    PERMISSIONS.PERSONS.UPDATE_CONTACT,
+  );
   if (!permission.success) return permission.response;
   const body = await parseJsonBody(request);
   if (!body.success) return body.response;

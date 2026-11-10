@@ -430,11 +430,14 @@ async function expectPersonIdentityLifecycle(page: Page): Promise<void> {
   const primaryEmail = `person-${uniqueSuffix}@example.test`;
   const phoneDigits = String(now % 100_000_000).padStart(8, '0');
   const sharedPhone = `06${phoneDigits}`;
+  // Shown in its international form with its country (10 November 2026).
+  const sharedPhoneShown = `+33 6 ${phoneDigits.replace(/(\d{2})(?=\d)/g, '$1 ')}`;
   const primaryPhone = `07${phoneDigits}`;
   const sharedDiscord = `e2e-secondary-${uniqueSuffix}`;
   const primaryDiscord = `e2e-primary-${uniqueSuffix}`;
-  const sharedDiscordUrl = `https://discord.com/users/secondary-${uniqueSuffix}`;
-  const primaryDiscordUrl = `https://discord.com/users/primary-${uniqueSuffix}`;
+  // A Discord profile is its account ID, 17 to 20 digits (10 November 2026).
+  const sharedDiscordId = `${now}00001`;
+  const primaryDiscordId = `${now}00002`;
 
   await expect
     .poll(
@@ -512,7 +515,7 @@ async function expectPersonIdentityLifecycle(page: Page): Promise<void> {
     value: string,
     label: string,
     primary: boolean,
-    profileUrl?: string,
+    accountId?: string,
   ): Promise<PersonMutationResponse> {
     const names = {
       email: 'Ajouter un email',
@@ -540,14 +543,12 @@ async function expectPersonIdentityLifecycle(page: Page): Promise<void> {
             ? /^Email/
             : kind === 'phone'
               ? /^Numéro/
-              : /^Identifiant visible/,
+              : /^Nom d’utilisateur/,
       })
       .fill(value);
     await dialog.getByRole('combobox', { name: /^Libellé/ }).fill(label);
-    if (profileUrl)
-      await dialog
-        .getByLabel('URL du profil', { exact: true })
-        .fill(profileUrl);
+    if (accountId)
+      await dialog.getByLabel('ID du compte', { exact: true }).fill(accountId);
     const primarySwitch = dialog.getByRole('switch', {
       // eslint-disable-next-line security/detect-object-injection
       name: primaryNames[kind],
@@ -599,20 +600,23 @@ async function expectPersonIdentityLifecycle(page: Page): Promise<void> {
   await addCoordinate('email', primaryEmail, 'Personnel', false);
   await addCoordinate('phone', sharedPhone, 'Association', true);
   await addCoordinate('phone', primaryPhone, 'Personnel', true);
+  // Social networks live in the En ligne tab (10 November 2026).
+  await page.getByRole('link', { exact: true, name: 'En ligne' }).click();
   await addCoordinate(
     'social',
     sharedDiscord,
     'Secondaire',
     true,
-    sharedDiscordUrl,
+    sharedDiscordId,
   );
   await addCoordinate(
     'social',
     primaryDiscord,
     'Personnel',
     true,
-    primaryDiscordUrl,
+    primaryDiscordId,
   );
+  await page.getByRole('link', { exact: true, name: 'Coordonnées' }).click();
   const populatedPerson = await getPersonViaApi(page, personId);
   expect(populatedPerson.emails).toHaveLength(2);
   expect(populatedPerson.phones).toHaveLength(2);
@@ -706,7 +710,7 @@ async function expectPersonIdentityLifecycle(page: Page): Promise<void> {
 
   await page
     .getByRole('listitem')
-    .filter({ hasText: sharedPhone })
+    .filter({ hasText: sharedPhoneShown })
     .getByRole('button', { name: 'Modifier ce téléphone' })
     .click();
   childDialog = page.getByRole('dialog');
@@ -730,6 +734,7 @@ async function expectPersonIdentityLifecycle(page: Page): Promise<void> {
   expect(phoneUpdateResponse.status()).toBe(200);
   await expect(childDialog).toBeHidden();
 
+  await page.getByRole('link', { exact: true, name: 'En ligne' }).click();
   await page
     .getByRole('listitem')
     .filter({ hasText: sharedDiscord })

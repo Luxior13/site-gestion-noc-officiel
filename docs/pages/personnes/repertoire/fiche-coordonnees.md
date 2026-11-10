@@ -17,14 +17,15 @@
 
 ## Rôle et tâches principales
 
-Tenir à jour les emails, téléphones et réseaux sociaux d’une personne, avec un
-contact principal par type, sans écraser une modification concurrente. Depuis
-le 10 novembre 2026, savoir aussi qui appeler en cas d’urgence et qui
-représente légalement une personne mineure.
+Joindre la personne ou ses proches : emails et téléphones, avec un contact
+principal par type, sans écraser une modification concurrente ; depuis le
+10 novembre 2026, qui appeler en cas d’urgence et qui représente légalement
+une personne mineure. Les réseaux sociaux et comptes de jeu sont dans l’onglet
+[En ligne](fiche-en-ligne.md) depuis le même jour.
 
 ## Composition actuelle
 
-Trois collections en une colonne (Emails, Téléphones, Réseaux sociaux), cartes
+Collections en une colonne (Emails, Téléphones), cartes
 `CollectionCard` : icône, titre, compteur et « Ajouter », sans sous-titre ;
 chaque ligne a une icône de type (enveloppe, téléphone, plateforme), le
 numéro est affiché au format international lisible (« +33 6 12 34 56 78 »,
@@ -57,7 +58,8 @@ Exemple des représentants légaux de Kaiz ? », sa fiche reste). Le représenta
 se choisit avec la recherche de fiche commune (`PersonPicker`, six
 suggestions), sans la personne elle-même ni les représentants déjà liés ; une
 fois lié, il ne change plus, seul le lien se corrige. Le total de l’onglet
-compte aussi les contacts d’urgence et les représentants.
+compte aussi les contacts d’urgence et les représentants, plus les réseaux
+depuis le 10 novembre 2026 (ils comptent dans l’onglet En ligne).
 
 ## Décisions retenues
 
@@ -83,6 +85,10 @@ compte aussi les contacts d’urgence et les représentants.
   service le dit, la base le refuse aussi), celle de la personne représentée
   emporte ses liens et ses contacts d’urgence. Pas de contrôle d’âge côté
   serveur : un majeur protégé peut avoir un représentant.
+- 10 novembre 2026 : trois onglets (« ok go ») ; les réseaux sociaux et les
+  comptes de jeu, livrés ici le même jour, rejoignent l’onglet
+  [En ligne](fiche-en-ligne.md) avec les autres pseudos. Les décisions
+  ci-dessous restent leur origine.
 - 10 novembre 2026 (« ok go ») : pour Discord, le profil prend le **nom
   d’utilisateur** et l’**ID du compte** (17 à 20 chiffres) au lieu d’une URL.
   L’ID ne change jamais, même quand le nom change : il reconnaît un banni qui

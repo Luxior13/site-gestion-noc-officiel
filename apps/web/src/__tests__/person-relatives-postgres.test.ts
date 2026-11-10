@@ -648,9 +648,13 @@ describe.skipIf(!target)(
           matchedOtherNickname: formerName,
         }),
       ]);
-      // A reader of the Répertoire reads them; only the identity's right writes.
-      await signIn({ [PERMISSIONS.PERSONS.VIEW]: true });
-      expect((await read(person.id)).otherNicknames).toHaveLength(1);
+      // In the En ligne tab, with the coordinates' right (10 November 2026):
+      // the identity's right neither reads, writes nor finds them.
+      await signIn({
+        [PERMISSIONS.PERSONS.VIEW]: true,
+        [PERMISSIONS.PERSONS.UPDATE]: true,
+      });
+      expect((await read(person.id)).otherNicknames).toEqual([]);
       expect(
         (
           await addNickname(
@@ -659,6 +663,22 @@ describe.skipIf(!target)(
           )
         ).status,
       ).toBe(403);
+      const hidden = await answer(
+        await listPeople(
+          new NextRequest(
+            'http://localhost/api/personnes?q=' +
+              encodeURIComponent(formerName),
+          ),
+        ),
+      );
+      expect((hidden.data as unknown as { items: unknown[] }).items).toEqual(
+        [],
+      );
+      await signIn({
+        [PERMISSIONS.PERSONS.VIEW]: true,
+        [PERMISSIONS.PERSONS.VIEW_CONTACT]: true,
+      });
+      expect((await read(person.id)).otherNicknames).toHaveLength(1);
       await signIn();
       const corrected = await answer(
         await updateNickname(
@@ -696,7 +716,7 @@ describe.skipIf(!target)(
       );
       expect(removed.data?.person.otherNicknames).toEqual([]);
       expect(
-        (await changesOf(person.id, 'identity'))
+        (await changesOf(person.id, 'online'))
           .filter((change) => change.fieldKey.startsWith('otherNickname'))
           .map(
             (change) =>

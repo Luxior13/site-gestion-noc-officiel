@@ -34,10 +34,10 @@ import {
 } from './person-mutation-authorization';
 
 /*
- * The other pseudos of a record (10 November 2026, « ok go »). Written with
- * the identity's right, each with its own version: the record's version does
- * not move, so a pseudo added beside an identity being edited never turns
- * that edit into a conflict. The record's row is locked for the limit and
+ * The other pseudos of a record (10 November 2026, « ok go »), in its En
+ * ligne tab: written with the coordinates' right, each with its own version.
+ * The record's version does not move, so an identity being edited elsewhere
+ * never turns into a conflict. The record's row is locked for the limit and
  * the comparison with its main pseudo.
  */
 
@@ -88,7 +88,7 @@ const changesOf = (
             changeType,
             fieldKey,
             recordId,
-            sectionKey: PERSON_AUDIT_KEYS.sections.identity,
+            sectionKey: PERSON_AUDIT_KEYS.sections.online,
             sensitive: true,
           }),
         ];
@@ -120,7 +120,7 @@ const openRecord = async (
   await authorizePersonMutation(
     transaction,
     actor,
-    PERMISSIONS.PERSONS.UPDATE,
+    PERMISSIONS.PERSONS.UPDATE_CONTACT,
     personId,
   );
   const rows = await transaction.$queryRaw<

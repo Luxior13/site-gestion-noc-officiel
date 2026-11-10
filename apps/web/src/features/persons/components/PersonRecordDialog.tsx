@@ -211,8 +211,8 @@ export const RelativeDialogFrame: FC<{
             noValidate
             onSubmit={(event) => {
               event.preventDefault();
-              // A portal keeps React's event path: a window opened from the
-              // Identité form must not send that form too.
+              // A portal keeps React's event path: a window opened inside a
+              // form must never send that form too.
               event.stopPropagation();
               onSubmit();
             }}

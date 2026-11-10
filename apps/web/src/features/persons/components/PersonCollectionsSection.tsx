@@ -56,6 +56,7 @@ import {
   phoneHref,
   RowTypeIcon,
 } from './PersonCollectionParts';
+import { PersonOtherNicknamesCard } from './PersonOtherNicknames';
 import { PersonRelativesCards } from './PersonRelativesCards';
 import { PersonSocialNetworkIcon } from './PersonSocialNetworkIcon';
 
@@ -78,6 +79,11 @@ type PersonCollectionsSectionProps = {
   canUpdate: boolean;
   onChange: (person: PersonDetail) => void;
   onReload: () => Promise<PersonDetail>;
+  /**
+   * Coordonnées: how to reach the person or the people around them; En
+   * ligne: how the person is known online and in games (10 November 2026).
+   */
+  part: 'contacts' | 'online';
   person: PersonDetail;
 };
 
@@ -243,6 +249,7 @@ const PersonCollectionsContent: FC<PersonCollectionsSectionProps> = ({
   canUpdate,
   onChange,
   onReload,
+  part,
   person,
 }) => {
   const [conflict, setConflict] = useState(false);
@@ -425,178 +432,204 @@ const PersonCollectionsContent: FC<PersonCollectionsSectionProps> = ({
     <>
       {/* One column, like the other record tabs (27 October 2026). */}
       <div className="space-y-3">
-        <CollectionCard
-          addAction={
-            canUpdate ? (
-              <Button
-                ref={addEmailRef}
-                aria-label="Ajouter un email"
-                disabled={person.emails.length >= PERSON_LIMITS.emails}
-                onClick={() => setEditor({ item: null, kind: 'email' })}
-                size="sm"
-                type="button"
-                variant="outline"
-              >
-                <Plus className="size-4" />
-                Ajouter
-              </Button>
-            ) : undefined
-          }
-          count={person.emails.length}
-          icon={<Mail />}
-          title="Emails"
-        >
-          {person.emails.length === 0 ? (
-            <EmptyCollection>Aucun email renseigné.</EmptyCollection>
-          ) : (
-            <ul>
-              {person.emails.map((item) => (
-                <EmailRow
-                  canUpdate={canUpdate}
-                  item={item}
-                  key={item.id}
-                  onEdit={() => setEditor({ item, kind: 'email' })}
-                />
-              ))}
-            </ul>
-          )}
-        </CollectionCard>
+        {part === 'contacts' ? (
+          <>
+            <CollectionCard
+              addAction={
+                canUpdate ? (
+                  <Button
+                    ref={addEmailRef}
+                    aria-label="Ajouter un email"
+                    disabled={person.emails.length >= PERSON_LIMITS.emails}
+                    onClick={() => setEditor({ item: null, kind: 'email' })}
+                    size="sm"
+                    type="button"
+                    variant="outline"
+                  >
+                    <Plus className="size-4" />
+                    Ajouter
+                  </Button>
+                ) : undefined
+              }
+              count={person.emails.length}
+              icon={<Mail />}
+              title="Emails"
+            >
+              {person.emails.length === 0 ? (
+                <EmptyCollection>Aucun email renseigné.</EmptyCollection>
+              ) : (
+                <ul>
+                  {person.emails.map((item) => (
+                    <EmailRow
+                      canUpdate={canUpdate}
+                      item={item}
+                      key={item.id}
+                      onEdit={() => setEditor({ item, kind: 'email' })}
+                    />
+                  ))}
+                </ul>
+              )}
+            </CollectionCard>
 
-        <CollectionCard
-          addAction={
-            canUpdate ? (
-              <Button
-                ref={addPhoneRef}
-                aria-label="Ajouter un téléphone"
-                disabled={person.phones.length >= PERSON_LIMITS.phones}
-                onClick={() => setEditor({ item: null, kind: 'phone' })}
-                size="sm"
-                type="button"
-                variant="outline"
-              >
-                <Plus className="size-4" />
-                Ajouter
-              </Button>
-            ) : undefined
-          }
-          count={person.phones.length}
-          icon={<Phone />}
-          title="Téléphones"
-        >
-          {person.phones.length === 0 ? (
-            <EmptyCollection>Aucun téléphone renseigné.</EmptyCollection>
-          ) : (
-            <ul>
-              {person.phones.map((item) => (
-                <PhoneRow
-                  canUpdate={canUpdate}
-                  item={item}
-                  key={item.id}
-                  onEdit={() => setEditor({ item, kind: 'phone' })}
-                />
-              ))}
-            </ul>
-          )}
-        </CollectionCard>
+            <CollectionCard
+              addAction={
+                canUpdate ? (
+                  <Button
+                    ref={addPhoneRef}
+                    aria-label="Ajouter un téléphone"
+                    disabled={person.phones.length >= PERSON_LIMITS.phones}
+                    onClick={() => setEditor({ item: null, kind: 'phone' })}
+                    size="sm"
+                    type="button"
+                    variant="outline"
+                  >
+                    <Plus className="size-4" />
+                    Ajouter
+                  </Button>
+                ) : undefined
+              }
+              count={person.phones.length}
+              icon={<Phone />}
+              title="Téléphones"
+            >
+              {person.phones.length === 0 ? (
+                <EmptyCollection>Aucun téléphone renseigné.</EmptyCollection>
+              ) : (
+                <ul>
+                  {person.phones.map((item) => (
+                    <PhoneRow
+                      canUpdate={canUpdate}
+                      item={item}
+                      key={item.id}
+                      onEdit={() => setEditor({ item, kind: 'phone' })}
+                    />
+                  ))}
+                </ul>
+              )}
+            </CollectionCard>
 
-        <CollectionCard
-          addAction={
-            canUpdate ? (
-              <Button
-                ref={addSocialRef}
-                aria-label="Ajouter un profil social"
-                disabled={
-                  person.socialProfiles.length >= PERSON_LIMITS.socialProfiles
-                }
-                onClick={() =>
-                  setEditor({
-                    item: null,
-                    kind: 'social',
-                    networkKind: 'social',
-                  })
-                }
-                size="sm"
-                type="button"
-                variant="outline"
-              >
-                <Plus className="size-4" />
-                Ajouter
-              </Button>
-            ) : undefined
-          }
-          count={socialProfiles.length}
-          icon={<Network />}
-          title="Réseaux sociaux"
-        >
-          {socialProfiles.length === 0 ? (
-            <EmptyCollection>Aucun profil social renseigné.</EmptyCollection>
-          ) : (
-            <ul>
-              {socialProfiles.map((item) => (
-                <SocialRow
-                  canUpdate={canUpdate}
-                  item={item}
-                  key={item.id}
-                  onEdit={() =>
-                    setEditor({ item, kind: 'social', networkKind: 'social' })
-                  }
-                />
-              ))}
-            </ul>
-          )}
-        </CollectionCard>
+            <PersonRelativesCards
+              canUpdate={canUpdate}
+              onChange={onChange}
+              onReload={onReload}
+              person={person}
+            />
+          </>
+        ) : (
+          <>
+            <PersonOtherNicknamesCard
+              canUpdate={canUpdate}
+              onChange={onChange}
+              onReload={onReload}
+              person={person}
+            />
+            <CollectionCard
+              addAction={
+                canUpdate ? (
+                  <Button
+                    ref={addSocialRef}
+                    aria-label="Ajouter un profil social"
+                    disabled={
+                      person.socialProfiles.length >=
+                      PERSON_LIMITS.socialProfiles
+                    }
+                    onClick={() =>
+                      setEditor({
+                        item: null,
+                        kind: 'social',
+                        networkKind: 'social',
+                      })
+                    }
+                    size="sm"
+                    type="button"
+                    variant="outline"
+                  >
+                    <Plus className="size-4" />
+                    Ajouter
+                  </Button>
+                ) : undefined
+              }
+              count={socialProfiles.length}
+              icon={<Network />}
+              title="Réseaux sociaux"
+            >
+              {socialProfiles.length === 0 ? (
+                <EmptyCollection>
+                  Aucun profil social renseigné.
+                </EmptyCollection>
+              ) : (
+                <ul>
+                  {socialProfiles.map((item) => (
+                    <SocialRow
+                      canUpdate={canUpdate}
+                      item={item}
+                      key={item.id}
+                      onEdit={() =>
+                        setEditor({
+                          item,
+                          kind: 'social',
+                          networkKind: 'social',
+                        })
+                      }
+                    />
+                  ))}
+                </ul>
+              )}
+            </CollectionCard>
 
-        {/* A platform's account, not a game's: one Riot account plays
+            {/* A platform's account, not a game's: one Riot account plays
             several games (10 November 2026). */}
-        <CollectionCard
-          addAction={
-            canUpdate ? (
-              <Button
-                ref={addGameRef}
-                aria-label="Ajouter un compte de jeu"
-                disabled={
-                  person.socialProfiles.length >= PERSON_LIMITS.socialProfiles
-                }
-                onClick={() =>
-                  setEditor({ item: null, kind: 'social', networkKind: 'game' })
-                }
-                size="sm"
-                type="button"
-                variant="outline"
-              >
-                <Plus className="size-4" />
-                Ajouter
-              </Button>
-            ) : undefined
-          }
-          count={gameAccounts.length}
-          icon={<Gamepad2 />}
-          title="Comptes de jeu"
-        >
-          {gameAccounts.length === 0 ? (
-            <EmptyCollection>Aucun compte de jeu renseigné.</EmptyCollection>
-          ) : (
-            <ul>
-              {gameAccounts.map((item) => (
-                <SocialRow
-                  canUpdate={canUpdate}
-                  item={item}
-                  key={item.id}
-                  onEdit={() =>
-                    setEditor({ item, kind: 'social', networkKind: 'game' })
-                  }
-                />
-              ))}
-            </ul>
-          )}
-        </CollectionCard>
-
-        <PersonRelativesCards
-          canUpdate={canUpdate}
-          onChange={onChange}
-          onReload={onReload}
-          person={person}
-        />
+            <CollectionCard
+              addAction={
+                canUpdate ? (
+                  <Button
+                    ref={addGameRef}
+                    aria-label="Ajouter un compte de jeu"
+                    disabled={
+                      person.socialProfiles.length >=
+                      PERSON_LIMITS.socialProfiles
+                    }
+                    onClick={() =>
+                      setEditor({
+                        item: null,
+                        kind: 'social',
+                        networkKind: 'game',
+                      })
+                    }
+                    size="sm"
+                    type="button"
+                    variant="outline"
+                  >
+                    <Plus className="size-4" />
+                    Ajouter
+                  </Button>
+                ) : undefined
+              }
+              count={gameAccounts.length}
+              icon={<Gamepad2 />}
+              title="Comptes de jeu"
+            >
+              {gameAccounts.length === 0 ? (
+                <EmptyCollection>
+                  Aucun compte de jeu renseigné.
+                </EmptyCollection>
+              ) : (
+                <ul>
+                  {gameAccounts.map((item) => (
+                    <SocialRow
+                      canUpdate={canUpdate}
+                      item={item}
+                      key={item.id}
+                      onEdit={() =>
+                        setEditor({ item, kind: 'social', networkKind: 'game' })
+                      }
+                    />
+                  ))}
+                </ul>
+              )}
+            </CollectionCard>
+          </>
+        )}
       </div>
 
       {editor && (
@@ -735,7 +768,7 @@ export const PersonCollectionsSection: FC<PersonCollectionsSectionProps> = (
   props,
 ) => (
   <PersonCollectionsContent
-    key={`${props.person.id}:${props.canUpdate}`}
+    key={`${props.person.id}:${props.canUpdate}:${props.part}`}
     {...props}
   />
 );

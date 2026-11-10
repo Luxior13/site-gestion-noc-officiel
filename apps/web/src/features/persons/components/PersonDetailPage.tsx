@@ -1,6 +1,13 @@
 'use client';
 
-import { AtSign, Clock3, RefreshCw, Route, UserRound } from 'lucide-react';
+import {
+  AtSign,
+  Clock3,
+  Globe,
+  RefreshCw,
+  Route,
+  UserRound,
+} from 'lucide-react';
 import dynamic from 'next/dynamic';
 import React, {
   type FC,
@@ -50,11 +57,6 @@ const PersonIdentitySection = dynamic(() =>
     (module) => module.PersonIdentitySection,
   ),
 );
-const PersonOtherNicknamesCard = dynamic(() =>
-  import('./PersonOtherNicknames').then(
-    (module) => module.PersonOtherNicknamesCard,
-  ),
-);
 const PersonJourneySection = dynamic(() =>
   import('$features/passages/components/PersonJourneySection').then(
     (module) => module.PersonJourneySection,
@@ -69,7 +71,8 @@ type PersonDetailPageProps = {
   returnHref: string;
 };
 
-export type PersonDetailSection = 'coordonnees' | 'identite' | 'parcours';
+export type PersonDetailSection =
+  'coordonnees' | 'en-ligne' | 'identite' | 'parcours';
 
 const PERSON_DETAIL_SECTIONS: readonly PageSection<PersonDetailSection>[] = [
   {
@@ -82,6 +85,9 @@ const PERSON_DETAIL_SECTIONS: readonly PageSection<PersonDetailSection>[] = [
     id: 'coordonnees',
     label: 'Coordonnées',
   },
+  // How the person is known online and in games (10 November 2026, « ok
+  // go »): other pseudos, social networks, game accounts.
+  { icon: <Globe className="size-4" />, id: 'en-ligne', label: 'En ligne' },
   // Read here, kept in each team's Roster and the structure's Effectif
   // (9 November 2026); its sources follow the reader's rights.
   { icon: <Route className="size-4" />, id: 'parcours', label: 'Parcours' },
@@ -139,7 +145,7 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
   };
   const allowed = (section: PersonDetailSection): boolean =>
     section === 'identite' ||
-    (section === 'coordonnees'
+    (section === 'coordonnees' || section === 'en-ligne'
       ? canViewContact
       : reach.teams || reach.structure);
   const activeSection = allowed(requestedSection)
@@ -314,33 +320,31 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
         ).map((section) =>
           section.id === 'parcours'
             ? { ...section, managedIn: journeySourcesOf(reach) }
-            : // The tab says how many contacts there are (27 October 2026),
-              // emergency contacts and representatives included (10 November).
+            : // A tab says how many entries it holds (27 October 2026; split
+              // with En ligne on 10 November).
               section.id === 'coordonnees'
               ? {
                   ...section,
                   count:
                     person.emails.length +
                     person.phones.length +
-                    person.socialProfiles.length +
                     person.emergencyContacts.length +
                     person.legalGuardians.length,
                 }
-              : section,
+              : section.id === 'en-ligne'
+                ? {
+                    ...section,
+                    count:
+                      person.otherNicknames.length +
+                      person.socialProfiles.length,
+                  }
+                : section,
         )}
       >
         {activeSection === 'identite' ? (
           <section aria-label="Identité" className="space-y-5">
             <PersonIdentitySection
               key={person.id}
-              afterNames={
-                <PersonOtherNicknamesCard
-                  canUpdate={canUpdate}
-                  onChange={acceptPerson}
-                  onReload={load}
-                  person={person}
-                />
-              }
               canUpdate={canUpdate}
               onChange={acceptPerson}
               onDirtyChange={setIdentityDirty}
@@ -363,12 +367,23 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
               reach={reach}
             />
           </section>
+        ) : activeSection === 'en-ligne' ? (
+          <section aria-label="En ligne" className="space-y-5">
+            <PersonCollectionsSection
+              canUpdate={canUpdateContact}
+              onChange={acceptPerson}
+              onReload={load}
+              part="online"
+              person={person}
+            />
+          </section>
         ) : (
           <section aria-label="Coordonnées" className="space-y-5">
             <PersonCollectionsSection
               canUpdate={canUpdateContact}
               onChange={acceptPerson}
               onReload={load}
+              part="contacts"
               person={person}
             />
           </section>

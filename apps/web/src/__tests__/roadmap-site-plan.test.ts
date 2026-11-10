@@ -178,9 +178,10 @@ describe('planned pages and tabs', () => {
     // Both in place since 9 November 2026: the team's roster, then the structure's.
     expect(tab('Fiche équipe', 'Roster')?.phase).toBeNull();
     expect(tab('Bureau & staff', 'Effectif')?.phase).toBeNull();
-    // The other pseudos are in place (10 November 2026); the games next.
-    expect(tab('Fiche personne', 'Identité')?.summary).toContain(
-      'autres pseudos',
+    // The other pseudos are in place, in their En ligne tab (10 November
+    // 2026); the games played next, in Identité.
+    expect(tab('Fiche personne', 'En ligne')?.summary).toContain(
+      'Autres pseudos',
     );
     expect(tab('Fiche personne', 'Identité')?.upcoming).toContain(
       'jeux pratiqués',
@@ -265,8 +266,10 @@ describe('planned pages and tabs', () => {
     );
     const managedIn = (label: string): string | undefined =>
       person?.tabs?.find((tab) => tab.label === label)?.managedIn;
-    expect(managedIn('Adhésions')).toBe('Adhésions');
-    expect(managedIn('Finances')).toBe('Finances');
+    // Adhésions and Finances read in one tab since En ligne opened
+    // (10 November 2026): eight tabs at most.
+    expect(managedIn('Adhésions')).toBeUndefined();
+    expect(managedIn('Finances')).toBe('Adhésions et Finances');
     // Loans, shirts and documents live in their own modules (8 November 2026).
     expect(managedIn('Matériel')).toBe('Matériel & abonnements');
     expect(managedIn('Documents')).toBe('Documents et Contrats');

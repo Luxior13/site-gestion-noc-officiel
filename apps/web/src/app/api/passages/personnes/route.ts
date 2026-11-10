@@ -27,7 +27,14 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   if (!query.success) return apiErrors.validation('Recherche invalide');
 
   try {
-    return apiSuccess(await searchPersonSuggestions(query.data));
+    return apiSuccess(
+      await searchPersonSuggestions(query.data, {
+        otherNicknames: requirePermission(
+          auth.user,
+          PERMISSIONS.PERSONS.VIEW_CONTACT,
+        ).success,
+      }),
+    );
   } catch (error) {
     return serviceErrorResponse(error, {
       action: 'PASSAGE_PERSON_SEARCH',

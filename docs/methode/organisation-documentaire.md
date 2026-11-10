@@ -93,7 +93,8 @@ docs/pages/
 ├── accueil.md, connexion.md   pages simples hors espace
 ├── mon-compte/                README + profil, acces, securite
 ├── membres/                   README + repertoire/ (README, liste, creation,
-│                              fiche-identite, fiche-coordonnees)
+│                              fiche-identite, fiche-coordonnees,
+│                              fiche-en-ligne, fiche-parcours)
 ├── systeme/                   README + utilisateurs/ (README, liste, creation,
 │                              fiche-profil, fiche-autorisations, fiche-securite),
 │                              parametres, feuille-de-route, journal-activite

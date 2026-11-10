@@ -265,6 +265,7 @@ export async function expectMobileLayouts(
       'personne-coordonnees',
       `/personnes/repertoire/${personId}?section=coordonnees`,
     ],
+    ['personne-en-ligne', `/personnes/repertoire/${personId}?section=en-ligne`],
     ['jeux', '/esport/jeux'],
     ['bureau-staff', '/structure/bureau-staff'],
     ['utilisateurs', '/systeme/utilisateurs'],

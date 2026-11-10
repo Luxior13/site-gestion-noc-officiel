@@ -74,6 +74,7 @@ export const PERSON_SECTION_LABELS: Readonly<Record<string, string>> = {
   emergency: 'Contact d’urgence',
   guardians: 'Représentant légal',
   identity: 'Identité',
+  online: 'En ligne',
   social: 'Réseaux',
   structure: 'Structure',
 };

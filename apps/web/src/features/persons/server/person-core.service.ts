@@ -262,7 +262,9 @@ export const mapPersonDetail = async (
       : [],
     nationality: person.nationality,
     nickname: person.nickname,
-    otherNicknames: person.otherNicknames.map(toOtherNicknameItem),
+    otherNicknames: canViewContact
+      ? person.otherNicknames.map(toOtherNicknameItem)
+      : [],
     phones: canViewContact ? person.phones.map(toPhoneItem) : [],
     represents: canViewContact ? person.guardianOf.map(toRepresentedItem) : [],
     socialProfiles: canViewContact

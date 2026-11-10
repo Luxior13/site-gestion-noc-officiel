@@ -112,6 +112,8 @@ export const PERSON_AUDIT_KEYS = {
     emergency: 'emergency',
     guardians: 'guardians',
     identity: 'identity',
+    // The other pseudos, in the En ligne tab (10 November 2026).
+    online: 'online',
     social: 'social',
   },
 } as const;

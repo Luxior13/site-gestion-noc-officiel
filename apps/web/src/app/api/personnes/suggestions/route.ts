@@ -25,7 +25,10 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   if (!query.success) return apiErrors.validation('Recherche invalide');
 
   try {
-    return apiSuccess(await searchPersonSuggestions(query.data));
+    // `persons:update_contact` includes reading the coordinates.
+    return apiSuccess(
+      await searchPersonSuggestions(query.data, { otherNicknames: true }),
+    );
   } catch (error) {
     return serviceErrorResponse(error, {
       action: 'PERSON_SUGGESTION_SEARCH',

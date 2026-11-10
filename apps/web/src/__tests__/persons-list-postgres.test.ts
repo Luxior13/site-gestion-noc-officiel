@@ -431,6 +431,20 @@ describe.skipIf(!target)('directory pagination on PostgreSQL', () => {
     expect((await listPersons({ limit: 25, q: 'hado' }, reader)).items).toEqual(
       [expect.objectContaining({ id: 'person-002' })],
     );
+    // With the coordinates' right only, as the En ligne tab.
+    expect(
+      (
+        await listPersons(
+          { limit: 25, q: 'shad' },
+          {
+            id: 'identity-reader',
+            isProtected: false,
+            permissions: { 'persons:view': true },
+            role: 'USER',
+          },
+        )
+      ).items,
+    ).toEqual([]);
     const byName = await listPersons({ limit: 25, q: 'membre 003' }, reader);
     expect(byName.items[0]).toMatchObject({
       id: 'person-003',

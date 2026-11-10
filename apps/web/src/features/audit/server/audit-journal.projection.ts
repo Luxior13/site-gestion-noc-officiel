@@ -128,6 +128,7 @@ const CONTACT_SECTIONS: ReadonlySet<string> = new Set([
   'contacts',
   'emergency',
   'guardians',
+  'online',
   'social',
 ]);
 

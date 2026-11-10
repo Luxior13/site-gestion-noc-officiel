@@ -14,6 +14,7 @@ personne n’est ni un compte utilisateur, ni une adhésion, ni un rôle.
 | `/personnes/repertoire/nouveau` | — | [Nouvelle fiche](creation.md) | [C. Formulaire de création](../../../design/gabarits.md#c-formulaire-de-création) | Aligné |
 | `/personnes/repertoire/[id]` | Identité (défaut) | [Personne — Identité](fiche-identite.md) | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections) | Aligné |
 | `/personnes/repertoire/[id]` | `?section=coordonnees` | [Personne — Coordonnées](fiche-coordonnees.md) | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections) | Aligné |
+| `/personnes/repertoire/[id]` | `?section=en-ligne` | [Personne — En ligne](fiche-en-ligne.md) | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections) | Aligné |
 | `/personnes/repertoire/[id]` | `?section=parcours` | [Personne — Parcours](fiche-parcours.md) | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections), onglet en lecture | Aligné |
 
 Alias historiques `/personnes` et `/vie-interne/repertoire` : redirections
@@ -40,8 +41,9 @@ structure » dans le journal (AC-32).
 ## Règles communes du module
 
 - **Accès** : lecture `persons:view`, création `persons:create`, identité et
-  nationalité `persons:update`, coordonnées, contacts d’urgence et
-  représentants légaux `persons:view_contact` / `persons:update_contact`, suppression
+  nationalité `persons:update`, coordonnées, contacts d’urgence, représentants
+  légaux et onglet En ligne (autres pseudos, réseaux, comptes de jeu)
+  `persons:view_contact` / `persons:update_contact`, suppression
   `persons:delete`, parcours `persons:view` et `teams:view` ou `staff:view` ; contrôles
   serveur sous `/api/personnes`. Référence :
   [page Répertoire](../../../domaines/permissions.md#page-répertoire).
@@ -60,7 +62,10 @@ structure » dans le journal (AC-32).
   staff) ; une fiche qui a un parcours ne se supprime plus, depuis le même jour
   ([registre historique](../../../domaines/registre-historique.md),
   [cadrage](../../../propositions/membres-equipes-parcours.md)). Les autres
-  pseudos sont dans Identité depuis le 10 novembre 2026.
+  pseudos sont livrés le 10 novembre 2026, dans l’onglet En ligne.
+- **Onglets depuis le 10 novembre 2026** : Identité (champs principaux),
+  Coordonnées (joindre la personne ou ses proches), En ligne (la reconnaître :
+  autres pseudos, réseaux, comptes de jeu), Parcours ↗.
 - **Compléments du 10 novembre 2026** : nationalité dans Identité, contacts
   d’urgence et représentants légaux dans Coordonnées ; la fiche d’un
   représentant ne se supprime pas tant qu’elle représente quelqu’un. Restent
@@ -332,8 +337,8 @@ ne sont pas validés par ce banc visuel ; les limites ci-dessous restent datées
   `docs/propositions/sujets-futurs.md`.
 - Type de page : liste de gestion (retrouver, comparer, agir). Volume attendu :
   petit aujourd'hui, potentiellement plusieurs centaines/milliers en société.
-- Recherche par pseudo, autre pseudo (10 novembre 2026, la ligne dit « Autre
-  pseudo : … »), prénom, nom, email, téléphone, identifiant ou URL de réseau
+- Recherche par pseudo, autre pseudo (10 novembre 2026, avec le droit des
+  coordonnées ; la ligne dit « Autre pseudo : … »), prénom, nom, email, téléphone, identifiant ou URL de réseau
   social ou de compte de jeu, ou ID seul d’un compte Discord ou Steam ; mots d'identité dans n'importe quel ordre, accents/casse
   normalisés ; filtres de statut et absence de coordonnées ; tri nom / création / modification ;
   pagination par curseur de 25 lignes.

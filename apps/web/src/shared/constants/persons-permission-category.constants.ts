@@ -75,7 +75,7 @@ export const createPersonsPermissionCategory = (
       action: 'view',
       dependencies: [keys.VIEW],
       description:
-        'Consulter et rechercher les emails, téléphones et profils sociaux',
+        'Consulter et rechercher les emails, téléphones, contacts d’urgence, représentants légaux, autres pseudos, réseaux sociaux et comptes de jeu',
       grantable: true,
       key: keys.VIEW_CONTACT,
       label: 'Consulter les coordonnées',
@@ -88,7 +88,7 @@ export const createPersonsPermissionCategory = (
       action: 'update',
       dependencies: [keys.VIEW, keys.VIEW_CONTACT],
       description:
-        'Ajouter, modifier ou retirer des emails, téléphones et profils sociaux',
+        'Ajouter, modifier ou retirer ces coordonnées, proches, pseudos et comptes',
       grantable: true,
       key: keys.UPDATE_CONTACT,
       label: 'Modifier les coordonnées',

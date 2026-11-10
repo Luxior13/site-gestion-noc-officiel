@@ -69,8 +69,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         chantier: 'sport-teams',
         label: 'Identité',
         phase: null,
-        summary:
-          'Pseudo, nom, autres pseudos (anciens, comptes secondaires, y compris ceux d’avant le site), naissance, nationalité, zone dangereuse.',
+        summary: 'Pseudo, nom, naissance, nationalité, zone dangereuse.',
         upcoming: 'Les jeux pratiqués.',
       },
       {
@@ -78,8 +77,14 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         label: 'Coordonnées',
         phase: null,
         summary:
-          'Emails, téléphones, réseaux sociaux (l’ID du compte pour Discord), comptes de jeu par plateforme (Riot, Steam avec son ID…), contacts d’urgence et représentants légaux (des fiches liées), et sur la fiche d’un représentant, qui il représente.',
+          'Emails, téléphones, contacts d’urgence et représentants légaux (des fiches liées), et sur la fiche d’un représentant, qui il représente.',
         upcoming: 'L’adresse.',
+      },
+      {
+        label: 'En ligne',
+        phase: null,
+        summary:
+          'Autres pseudos (anciens, comptes secondaires, y compris ceux d’avant le site), réseaux sociaux (l’ID du compte pour Discord) et comptes de jeu par plateforme (Riot, Steam avec son ID…) : reconnaître une personne qui a changé de nom.',
       },
       {
         chantier: 'competitions',
@@ -90,19 +95,15 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'En lecture : chaque passage dans une équipe ou dans la structure (Bureau & staff), en cours et à venir puis terminés, avec la fonction, le statut, le début, la fin et la durée. Chaque ligne ouvre sa page, ses anciens membres pour un passage terminé ; seules les listes que le lecteur peut voir.',
         upcoming: 'Les tournois joués.',
       },
-      {
-        chantier: 'person-relationships',
-        label: 'Adhésions',
-        managedIn: 'Adhésions',
-        phase: 4,
-        summary: 'Adhésions par campagne et état de cotisation.',
-      },
+      // Adhésions and Finances in one tab since En ligne opened (10 November
+      // 2026, proposed to the owner): eight tabs at most on a record.
       {
         chantier: 'person-relationships',
         label: 'Finances',
-        managedIn: 'Finances',
+        managedIn: 'Adhésions et Finances',
         phase: 4,
-        summary: 'Cotisations réglées, remboursements et gains versés.',
+        summary:
+          'Adhésions par campagne et état de cotisation ; cotisations réglées, remboursements et gains versés.',
       },
       {
         chantier: 'documents',

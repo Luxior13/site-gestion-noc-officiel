@@ -240,11 +240,11 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 | --- | --- | --- | --- |
 | **Répertoire** | — | Liste, sans onglet : toutes les fiches, avec recherche et filtres. À venir (étape 1) : filtres par équipe, jeu et anciens membres. | Livré |
 | **Fiche personne** | — | À venir (étape 1) : les jeux pratiqués, choisis dans Identité avec un champ à choix multiples, le jeu manquant ajouté sans quitter la fiche. | Livré |
-|  | Identité | Pseudo, nom, autres pseudos (anciens, comptes secondaires, y compris ceux d’avant le site), naissance, nationalité, zone dangereuse. À venir (étape 1) : les jeux pratiqués. | Livré |
-|  | Coordonnées | Emails, téléphones, réseaux sociaux (l’ID du compte pour Discord), comptes de jeu par plateforme (Riot, Steam avec son ID…), contacts d’urgence et représentants légaux (des fiches liées), et sur la fiche d’un représentant, qui il représente. À venir (étape 1) : l’adresse. | Livré |
+|  | Identité | Pseudo, nom, naissance, nationalité, zone dangereuse. À venir (étape 1) : les jeux pratiqués. | Livré |
+|  | Coordonnées | Emails, téléphones, contacts d’urgence et représentants légaux (des fiches liées), et sur la fiche d’un représentant, qui il représente. À venir (étape 1) : l’adresse. | Livré |
+|  | En ligne | Autres pseudos (anciens, comptes secondaires, y compris ceux d’avant le site), réseaux sociaux (l’ID du compte pour Discord) et comptes de jeu par plateforme (Riot, Steam avec son ID…) : reconnaître une personne qui a changé de nom. | Livré |
 |  | Parcours ↗ | En lecture : chaque passage dans une équipe ou dans la structure (Bureau & staff), en cours et à venir puis terminés, avec la fonction, le statut, le début, la fin et la durée. Chaque ligne ouvre sa page, ses anciens membres pour un passage terminé ; seules les listes que le lecteur peut voir. À venir (étape 5) : les tournois joués. Lu ici, se modifie dans le Roster de chaque équipe et l’Effectif de Bureau & staff. | Livré |
-|  | Adhésions ↗ | Adhésions par campagne et état de cotisation. Lu ici, se modifie dans Adhésions. | Étape 4 |
-|  | Finances ↗ | Cotisations réglées, remboursements et gains versés. Lu ici, se modifie dans Finances. | Étape 4 |
+|  | Finances ↗ | Adhésions par campagne et état de cotisation ; cotisations réglées, remboursements et gains versés. Lu ici, se modifie dans Adhésions et Finances. *Proposition du 10 novembre 2026, à valider : les onglets Adhésions et Finances réunis depuis l’ouverture d’En ligne, pour rester à huit onglets.* | Étape 4 |
 |  | Documents ↗ | Contrats, autorisations et chartes acceptées. Lu ici, se modifie dans Documents et Contrats. | Étape 7 |
 |  | Matériel ↗ | Prêts et restitutions, taille de maillot. Lu ici, se modifie dans Matériel & abonnements. | Étape 8 |
 |  | Suivi | Notes, sanctions de la structure (tous ses tournois ou un jeu, motif, durée, levée) et bans externes qui dépassent un tournoi ; les problèmes et bans d’un tournoi y figurent aussi, saisis dans sa fiche. Réservé aux personnes habilitées. | Étape 5 |

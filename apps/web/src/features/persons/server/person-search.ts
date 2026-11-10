@@ -161,24 +161,29 @@ export const buildPersonSearchFragments = (
                 : Prisma.empty
             }
           )`;
+  // With the coordinates' right only, as the En ligne tab (10 November 2026).
+  const otherNicknameClause = includeContacts
+    ? Prisma.sql`OR EXISTS (
+          SELECT 1 FROM "PersonOtherNickname" other
+          WHERE ${otherNicknameMatch}
+        )`
+    : Prisma.empty;
   const searchClause = normalizedQuery
     ? Prisma.sql`AND (
         ${identityClause}
-        OR EXISTS (
-          SELECT 1 FROM "PersonOtherNickname" other
-          WHERE ${otherNicknameMatch}
-        )
+        ${otherNicknameClause}
         OR ${contactSearchClause}
       )`
     : Prisma.empty;
-  const matchedOtherNicknameSelect = normalizedQuery
-    ? Prisma.sql`CASE WHEN ${identityClause} THEN NULL ELSE (
+  const matchedOtherNicknameSelect =
+    normalizedQuery && includeContacts
+      ? Prisma.sql`CASE WHEN ${identityClause} THEN NULL ELSE (
         SELECT other."nickname" FROM "PersonOtherNickname" other
         WHERE ${otherNicknameMatch}
         ORDER BY other."normalizedNickname" ASC, other."id" ASC
         LIMIT 1
       ) END`
-    : Prisma.sql`NULL`;
+      : Prisma.sql`NULL`;
 
   return {
     contactSearchClause,

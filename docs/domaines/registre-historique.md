@@ -36,7 +36,7 @@ Un seul objet central : le **passage**, une relation datée entre une fiche du
 | Dates approximatives | Année, mois ou jour : une date connue à l’année se saisit à l’année, sans inventer de jour |
 | Entité juridique | Aucune : l’histoire commence en 2014, la structure en 2023 et l’association en octobre 2025 ; le registre ne porte jamais d’entité, seuls les actes (comptes, factures, contrats, adhésions) en portent une ([décisions du 9 novembre 2026](structure-juridique.md#décisions-du-9-novembre-2026)) |
 | Roster à une date | Se déduit des passages ; aucune composition d’équipe n’est stockée à part |
-| Autres pseudos | Un ancien pseudo, un compte secondaire ou un surnom (un nom en jeu est un compte de jeu, dans Coordonnées), avec une précision et une date de fin facultatives ; saisis à la main dans l’onglet Identité, y compris ceux d’avant le site, et trouvés par la recherche du Répertoire, pour reconnaître une personne qui a changé de nom (livré le 10 novembre 2026 ; « autres » plutôt qu’« anciens » sur la remarque du propriétaire). Un changement de pseudo sur le site n’en crée pas : le journal d’activité le garde déjà |
+| Autres pseudos | Un ancien pseudo, un compte secondaire ou un surnom (un nom en jeu est un compte de jeu, dans Coordonnées), avec une précision et une date de fin facultatives ; saisis à la main dans l’onglet En ligne de la fiche (avec le droit des coordonnées), y compris ceux d’avant le site, et trouvés par la recherche du Répertoire, pour reconnaître une personne qui a changé de nom (livré le 10 novembre 2026 ; « autres » plutôt qu’« anciens » sur la remarque du propriétaire). Un changement de pseudo sur le site n’en crée pas : le journal d’activité le garde déjà |
 | Anciens noms d’équipe | Conservés de la même façon : une équipe change de nom sans changer d’histoire |
 
 Le passage d’une équipe est livré le 9 novembre 2026 (table `PersonPassage`) :
@@ -193,7 +193,7 @@ Une donnée se modifie là où on la lit.
 | Ajouter ou terminer un passage dans une équipe | Fiche de l’équipe (sous son jeu), onglet Roster (début et fin), en fenêtre |
 | Ajouter ou terminer un passage dans la structure (bureau, staff, bénévoles) | Page Bureau & staff, onglet Effectif, avec la même fenêtre (livré le 9 novembre 2026) ; un passage terminé se lit dans ses Anciens membres |
 | Voir tout le parcours d’une personne | Onglet Parcours de sa fiche, en lecture ↗ (livré le 9 novembre 2026) : en cours et à venir, puis terminés ; chaque ligne ouvre son équipe ou Bureau & staff, leurs anciens membres pour un passage terminé ; seules les listes que le lecteur voit |
-| Ajouter un autre pseudo | Onglet Identité de la fiche, carte « Autres pseudos », y compris un pseudo d’avant le site |
+| Ajouter un autre pseudo | Onglet En ligne de la fiche, carte « Autres pseudos », y compris un pseudo d’avant le site |
 | Voir les membres actuels et anciens d’une équipe | Fiche de l’équipe : onglet Roster pour les actuels et ceux à venir, onglet Anciens membres pour les passages terminés, jamais mélangés (9 novembre 2026) |
 | Changer une liste de choix | Onglet de la liste, à côté de ce qu’elle classe, ou ajout direct depuis le champ |
 

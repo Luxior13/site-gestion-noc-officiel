@@ -197,10 +197,11 @@ const OtherNicknameDialog: FC<
 };
 
 /**
- * The other pseudos of a person (owner, 10 November 2026: « ok go »), under
- * « Pseudo et nom »: a former one, a second account, a name in a game. They
- * are read and written with the identity, and the Répertoire's search finds
- * the record by them, to recognize someone who changed names.
+ * The other pseudos of a person (owner, 10 November 2026: « ok go »), first
+ * card of the En ligne tab: a former one, a second account, a nickname. Read
+ * and written with the coordinates' right, as the networks and game accounts
+ * beside them; the Répertoire's search finds the record by them, to
+ * recognize someone who changed names.
  */
 export const PersonOtherNicknamesCard: FC<Props> = ({
   canUpdate,
@@ -236,7 +237,7 @@ export const PersonOtherNicknamesCard: FC<Props> = ({
         }
         contentClassName="p-3 sm:p-4"
         icon={<Tags />}
-        id="person-identity-other-nicknames-title"
+        id="person-online-other-nicknames-title"
         title="Autres pseudos"
       >
         {items.length === 0 ? (

@@ -291,11 +291,11 @@ possède implicitement.
 
 | Clé canonique | Action couverte | Dépend de | Risque | Step-up à l'usage |
 | --- | --- | --- | --- | --- |
-| `persons:view` | consulter liste, identité, autres pseudos, date de naissance, nationalité et statut | — | sensible | Non |
+| `persons:view` | consulter liste, identité, date de naissance, nationalité et statut | — | sensible | Non |
 | `persons:create` | créer une fiche avec son identité | `persons:view` | sensible | Non |
-| `persons:update` | modifier l’identité, les autres pseudos, la date de naissance et la nationalité | `persons:view` | sensible | Non |
-| `persons:view_contact` | consulter et rechercher emails, téléphones, profils sociaux et comptes de jeu ; voir les contacts d’urgence, les représentants légaux et, sur la fiche d’un représentant, qui il représente (10 novembre 2026) | `persons:view` | sensible | Non |
-| `persons:update_contact` | ajouter, modifier ou retirer ces coordonnées, les contacts d’urgence et les liens vers les représentants légaux, et chercher la fiche d’un représentant (10 novembre 2026) | `persons:view`, `persons:view_contact` | sensible | Non |
+| `persons:update` | modifier l’identité, la date de naissance et la nationalité | `persons:view` | sensible | Non |
+| `persons:view_contact` | consulter et rechercher emails, téléphones, profils sociaux, comptes de jeu et autres pseudos (onglets Coordonnées et En ligne, 10 novembre 2026) ; voir les contacts d’urgence, les représentants légaux et, sur la fiche d’un représentant, qui il représente (10 novembre 2026) | `persons:view` | sensible | Non |
+| `persons:update_contact` | ajouter, modifier ou retirer ces coordonnées, les autres pseudos, les contacts d’urgence et les liens vers les représentants légaux, et chercher la fiche d’un représentant (10 novembre 2026) | `persons:view`, `persons:view_contact` | sensible | Non |
 | `persons:delete` | supprimer définitivement une fiche et ses coordonnées | `persons:view` | critique | Oui (mot de passe de 30 minutes au plus) |
 
 L’onglet Parcours (9 novembre 2026) n’a pas de droit propre : il demande

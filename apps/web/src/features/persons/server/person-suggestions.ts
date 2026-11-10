@@ -40,6 +40,8 @@ export const toPersonRef = (
  */
 export const searchPersonSuggestions = async (
   query: string,
+  /** Other pseudos follow the coordinates' right (10 November 2026). */
+  { otherNicknames }: { otherNicknames: boolean },
 ): Promise<PersonSuggestions> => {
   const terms = normalizePersonSearchValue(query).split(' ').filter(Boolean);
   if (terms.length === 0) return { more: false, persons: [] };
@@ -54,11 +56,15 @@ export const searchPersonSuggestions = async (
           { normalizedFirstName: { contains: term } },
           { normalizedLastName: { contains: term } },
           // Another pseudo finds its record (10 November 2026).
-          {
-            otherNicknames: {
-              some: { normalizedNickname: { contains: term } },
-            },
-          },
+          ...(otherNicknames
+            ? [
+                {
+                  otherNicknames: {
+                    some: { normalizedNickname: { contains: term } },
+                  },
+                },
+              ]
+            : []),
         ],
       })),
     },
