@@ -9,6 +9,7 @@ import {
   passageToday,
 } from '$features/passages/server/passage-today';
 import { prisma } from '$server/prisma';
+import { normalizeApproximateDate } from '$utils/approximate-date.utils';
 
 import { PERSON_AUDIT_KEYS } from '../person.constants';
 import { getPersonCapabilities } from '../person.permissions';
@@ -22,6 +23,7 @@ import type {
   PersonEmergencyContactItem,
   PersonLastChange,
   PersonLegalGuardianItem,
+  PersonOtherNicknameItem,
   PersonPhoneItem,
   PersonRepresentedItem,
   PersonSocialProfileItem,
@@ -77,6 +79,7 @@ const PERSON_DETAIL_INCLUDE = {
     },
     orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
   },
+  otherNicknames: { orderBy: [{ createdAt: 'asc' }, { id: 'asc' }] },
   phones: { orderBy: [{ isPrimary: 'desc' }, { createdAt: 'asc' }] },
   socialProfiles: {
     orderBy: [
@@ -143,6 +146,25 @@ const toEmergencyContactItem = (
   relation: contact.relation,
   updatedAt: contact.updatedAt.toISOString(),
   version: contact.version,
+});
+
+const toOtherNicknameItem = (
+  row: PersonDetailRecord['otherNicknames'][number],
+): PersonOtherNicknameItem => ({
+  createdAt: row.createdAt.toISOString(),
+  id: row.id,
+  nickname: row.nickname,
+  note: row.note,
+  // Stored on the last day of its period, read at its start.
+  until:
+    row.untilOn && row.untilPrecision
+      ? normalizeApproximateDate({
+          date: row.untilOn.toISOString().slice(0, 10),
+          precision: row.untilPrecision,
+        })
+      : null,
+  updatedAt: row.updatedAt.toISOString(),
+  version: row.version,
 });
 
 const toLegalGuardianItem = (
@@ -240,6 +262,7 @@ export const mapPersonDetail = async (
       : [],
     nationality: person.nationality,
     nickname: person.nickname,
+    otherNicknames: person.otherNicknames.map(toOtherNicknameItem),
     phones: canViewContact ? person.phones.map(toPhoneItem) : [],
     represents: canViewContact ? person.guardianOf.map(toRepresentedItem) : [],
     socialProfiles: canViewContact

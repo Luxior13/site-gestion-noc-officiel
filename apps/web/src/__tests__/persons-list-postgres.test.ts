@@ -77,6 +77,9 @@ describe.skipIf(!target)('directory pagination on PostgreSQL', () => {
     await db.$executeRaw`CREATE TABLE "PersonPhone" ("id" text, "personId" text, "normalizedPhone" text)`;
     await db.$executeRaw`CREATE TABLE "PersonSocialProfile" ("id" text, "personId" text,
       "normalizedIdentifier" text, "normalizedProfileUrlHash" text, "normalizedProfileUrl" text)`;
+    // Another pseudo finds its record (10 November 2026).
+    await db.$executeRaw`CREATE TABLE "PersonOtherNickname" ("id" text, "personId" text,
+      "nickname" text NOT NULL, "normalizedNickname" text NOT NULL)`;
     await db.$executeRaw`CREATE TABLE "User" ("id" text PRIMARY KEY, "isProtected" boolean NOT NULL)`;
     await db.$executeRaw`CREATE TABLE "AuditLog" ("id" text, "userId" text, "entityType" text, "entityId" text,
       "createdAt" timestamp(3), "actorDisplayNameSnapshot" text, "actorLoginNameSnapshot" text)`;
@@ -96,6 +99,7 @@ describe.skipIf(!target)('directory pagination on PostgreSQL', () => {
     await db.$executeRaw`DELETE FROM "PersonEmail"`;
     await db.$executeRaw`DELETE FROM "PersonPhone"`;
     await db.$executeRaw`DELETE FROM "PersonSocialProfile"`;
+    await db.$executeRaw`DELETE FROM "PersonOtherNickname"`;
     await db.$executeRaw`DELETE FROM "AuditLog"`;
     await db.$executeRaw`DELETE FROM "PersonPassage"`;
     await db.$executeRaw`DELETE FROM "Person"`;
@@ -404,6 +408,39 @@ describe.skipIf(!target)('directory pagination on PostgreSQL', () => {
       nextCursor: null,
       total: 0,
     });
+  });
+
+  // 10 November 2026: someone who changed names is found by the former one,
+  // and the row says which; a match on the name itself says nothing more.
+  it('finds a record by another pseudo and says which one', async () => {
+    await db.$executeRaw`INSERT INTO "PersonOtherNickname" VALUES
+      ('o1', 'person-002', 'Shadow', 'shadow'),
+      ('o2', 'person-003', 'Membre Alpha', 'membre alpha')`;
+    const reader = {
+      id: 'reader',
+      isProtected: false,
+      permissions: null,
+      role: 'ADMIN' as const,
+    };
+    const byFormer = await listPersons({ limit: 25, q: 'shad' }, reader);
+    expect(byFormer.items.map((person) => person.id)).toEqual(['person-002']);
+    expect(byFormer.items[0]).toMatchObject({
+      matchedByContact: false,
+      matchedOtherNickname: 'Shadow',
+    });
+    expect((await listPersons({ limit: 25, q: 'hado' }, reader)).items).toEqual(
+      [expect.objectContaining({ id: 'person-002' })],
+    );
+    const byName = await listPersons({ limit: 25, q: 'membre 003' }, reader);
+    expect(byName.items[0]).toMatchObject({
+      id: 'person-003',
+      matchedOtherNickname: null,
+    });
+    expect(
+      (await listPersons({ limit: 25, q: '' }, reader)).items.every(
+        (person) => person.matchedOtherNickname === null,
+      ),
+    ).toBe(true);
   });
 
   it('finds contact matches without returning contact values and resolves the latest author stably', async () => {

@@ -39,6 +39,7 @@ describe('Person and User isolation contract', () => {
       'PersonEmail',
       'PersonPhone',
       'PersonSocialProfile',
+      'PersonOtherNickname',
       'PersonEmergencyContact',
       'PersonLegalGuardian',
       'PersonLegalGuardian',

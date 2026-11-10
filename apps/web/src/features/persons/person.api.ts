@@ -115,6 +115,7 @@ export const updatePerson = async (
   );
 
 type ChildKind =
+  | 'autres-pseudos'
   | 'contacts-urgence'
   | 'emails'
   | 'representants-legaux'

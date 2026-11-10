@@ -94,6 +94,10 @@ export const PERSON_FIELD_LABELS: Readonly<Record<string, string>> = {
   nationality: 'Nationalité',
   networkKey: 'Réseau',
   nickname: 'Pseudo',
+  // Another pseudo of the record (10 November 2026).
+  otherNickname: 'Autre pseudo',
+  otherNicknameNote: 'Précision',
+  otherNicknameUntil: 'Jusqu’à',
   phone: 'Téléphone',
   profileUrl: 'Lien du profil',
   relation: 'Lien',

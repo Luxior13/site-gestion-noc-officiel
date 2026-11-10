@@ -21,6 +21,8 @@ import {
 } from './PersonIdentityFields';
 
 type PersonIdentitySectionProps = {
+  /** Under « Pseudo et nom »: the other pseudos (10 November 2026). */
+  afterNames?: React.ReactNode;
   canUpdate: boolean;
   onChange: (person: PersonDetail) => void;
   onDirtyChange?: (dirty: boolean) => void;
@@ -41,6 +43,7 @@ const toForm = (person: PersonDetail): PersonIdentityFormValue => ({
  * d'action n'apparait que lorsqu'une valeur a change.
  */
 export const PersonIdentitySection: FC<PersonIdentitySectionProps> = ({
+  afterNames,
   canUpdate,
   onChange,
   onDirtyChange,
@@ -366,6 +369,7 @@ export const PersonIdentitySection: FC<PersonIdentitySectionProps> = ({
               part="names"
             />
           </RubricCard>
+          {afterNames}
           <RubricCard
             icon={<CalendarDays />}
             id="person-identity-situation-title"

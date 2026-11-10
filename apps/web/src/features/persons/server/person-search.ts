@@ -2,6 +2,7 @@ import 'server-only';
 
 import { Prisma } from '@prisma/client';
 
+import { accountUrlsForId } from '../person.utils';
 import {
   hashPersonNormalizedUrl,
   normalizePersonEmail,
@@ -15,6 +16,11 @@ const escapeLikePattern = (value: string): string =>
 
 export type PersonSearchFragments = {
   contactSearchClause: Prisma.Sql;
+  /**
+   * The other pseudo that matched, when the name itself did not (10 November
+   * 2026): the list says « Autre pseudo : X » under the name.
+   */
+  matchedOtherNicknameSelect: Prisma.Sql;
   normalizedQuery: string;
   searchClause: Prisma.Sql;
 };
@@ -27,18 +33,22 @@ export const buildPersonSearchFragments = (
   const normalizedEmailQuery = normalizePersonEmail(rawQuery);
   const normalizedIdentifierQuery = normalizePersonSocialIdentifier(rawQuery);
   const normalizedPhoneQuery = rawQuery.trim().replace(/[^\d+]/g, '');
-  let normalizedProfileUrl: string | null = null;
-  let normalizedProfileUrlHash: string | null = null;
+  const profileUrls: string[] = [];
   try {
     const candidateProfileUrl = normalizePersonSocialUrl(rawQuery);
     const protocol = new URL(candidateProfileUrl).protocol;
     if (protocol === 'http:' || protocol === 'https:') {
-      normalizedProfileUrl = candidateProfileUrl;
-      normalizedProfileUrlHash = hashPersonNormalizedUrl(candidateProfileUrl);
+      profileUrls.push(candidateProfileUrl);
     }
   } catch {
     // Most terms are not URLs. Valid absolute HTTP(S) URLs alone use the
     // exact hash lookup; they still participate in identity search.
+  }
+  // An account ID alone (Discord, Steam) finds the profile it identifies.
+  if (profileUrls.length === 0) {
+    profileUrls.push(
+      ...accountUrlsForId(rawQuery.trim()).map(normalizePersonSocialUrl),
+    );
   }
 
   const escapedQuery = escapeLikePattern(normalizedQuery);
@@ -66,12 +76,19 @@ export const buildPersonSearchFragments = (
         )`
     : Prisma.empty;
   const profileUrlSearchClause =
-    normalizedProfileUrlHash && normalizedProfileUrl
+    profileUrls.length > 0
       ? Prisma.sql`OR EXISTS (
           SELECT 1 FROM "PersonSocialProfile" social_url
           WHERE social_url."personId" = p."id"
-            AND social_url."normalizedProfileUrlHash" = ${normalizedProfileUrlHash}
-            AND social_url."normalizedProfileUrl" = ${normalizedProfileUrl}
+            AND (${Prisma.join(
+              profileUrls.map(
+                (url) => Prisma.sql`(
+              social_url."normalizedProfileUrlHash" = ${hashPersonNormalizedUrl(url)}
+              AND social_url."normalizedProfileUrl" = ${url}
+            )`,
+              ),
+              ' OR ',
+            )})
         )`
       : Prisma.empty;
   const contactSearchClause = includeContacts
@@ -123,8 +140,7 @@ export const buildPersonSearchFragments = (
           ' AND ',
         )})`
       : Prisma.empty;
-  const searchClause = normalizedQuery
-    ? Prisma.sql`AND (
+  const identityClause = Prisma.sql`(
         p."normalizedNickname" = ${normalizedQuery}
         OR p."normalizedFirstName" = ${normalizedQuery}
         OR p."normalizedLastName" = ${normalizedQuery}
@@ -133,9 +149,41 @@ export const buildPersonSearchFragments = (
         OR p."normalizedLastName" LIKE ${identityPrefixPattern} ESCAPE '\\'
         ${identityTrigramClause}
         ${multiwordIdentityClause}
+      )`;
+  // Another pseudo, as the main one: exact, prefix, or inside from 3 letters.
+  const otherNicknameMatch = Prisma.sql`other."personId" = p."id"
+          AND (
+            other."normalizedNickname" = ${normalizedQuery}
+            OR other."normalizedNickname" LIKE ${identityPrefixPattern} ESCAPE '\\'
+            ${
+              normalizedQuery.length >= 3
+                ? Prisma.sql`OR other."normalizedNickname" LIKE ${identityTrigramPattern} ESCAPE '\\'`
+                : Prisma.empty
+            }
+          )`;
+  const searchClause = normalizedQuery
+    ? Prisma.sql`AND (
+        ${identityClause}
+        OR EXISTS (
+          SELECT 1 FROM "PersonOtherNickname" other
+          WHERE ${otherNicknameMatch}
+        )
         OR ${contactSearchClause}
       )`
     : Prisma.empty;
+  const matchedOtherNicknameSelect = normalizedQuery
+    ? Prisma.sql`CASE WHEN ${identityClause} THEN NULL ELSE (
+        SELECT other."nickname" FROM "PersonOtherNickname" other
+        WHERE ${otherNicknameMatch}
+        ORDER BY other."normalizedNickname" ASC, other."id" ASC
+        LIMIT 1
+      ) END`
+    : Prisma.sql`NULL`;
 
-  return { contactSearchClause, normalizedQuery, searchClause };
+  return {
+    contactSearchClause,
+    matchedOtherNicknameSelect,
+    normalizedQuery,
+    searchClause,
+  };
 };

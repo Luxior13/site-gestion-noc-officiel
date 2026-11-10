@@ -3,6 +3,7 @@ import type {
   PhoneDraft,
   SocialDraft,
 } from './components/PersonCollectionFields';
+import type { PersonNetworkKind } from './person.constants';
 import type {
   PersonEmailItem,
   PersonPhoneItem,
@@ -18,6 +19,8 @@ export const getDraft = (
   kind: PersonChildKind,
   item: PersonChildItem | null,
   defaultPrimary: boolean,
+  /** A new game account starts on Riot, a new profile on Discord. */
+  networkKind: PersonNetworkKind = 'social',
 ): ChildDraft => {
   if (kind === 'email') {
     const email = item as PersonEmailItem | null;
@@ -44,7 +47,8 @@ export const getDraft = (
     identifier: social?.identifier ?? '',
     isPrimary: social?.isPrimary ?? defaultPrimary,
     label: social?.label ?? 'Personnel',
-    networkKey: social?.networkKey ?? 'discord',
+    networkKey:
+      social?.networkKey ?? (networkKind === 'game' ? 'riot' : 'discord'),
     profileUrl: social?.profileUrl ?? '',
   };
 };
@@ -85,6 +89,7 @@ export const mergeDraft = (
 
 export const getKindConfig = (
   kind: PersonChildKind,
+  networkKind: PersonNetworkKind = 'social',
 ): {
   /** Under the dialog title: duplicates are flagged, not blocked (27 October 2026). */
   duplicateHint: string;
@@ -113,13 +118,22 @@ export const getKindConfig = (
         title: 'téléphone',
       };
     case 'social':
-      return {
-        duplicateHint:
-          'Si ce profil figure déjà sur une autre fiche, vous en serez averti.',
-        plural: 'reseaux-sociaux',
-        primaryHint:
-          'C’est le profil principal pour ce réseau. Pour en changer, choisissez d’abord un autre profil comme principal.',
-        title: 'profil social',
-      };
+      return networkKind === 'game'
+        ? {
+            duplicateHint:
+              'Si ce compte figure déjà sur une autre fiche, vous en serez averti.',
+            plural: 'reseaux-sociaux',
+            primaryHint:
+              'C’est le compte principal pour cette plateforme. Pour en changer, choisissez d’abord un autre compte comme principal.',
+            title: 'compte de jeu',
+          }
+        : {
+            duplicateHint:
+              'Si ce profil figure déjà sur une autre fiche, vous en serez averti.',
+            plural: 'reseaux-sociaux',
+            primaryHint:
+              'C’est le profil principal pour ce réseau. Pour en changer, choisissez d’abord un autre profil comme principal.',
+            title: 'profil social',
+          };
   }
 };

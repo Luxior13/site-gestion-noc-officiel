@@ -30,6 +30,22 @@ export const PersonContactMatchHint: FC<{ className?: string }> = ({
   </p>
 );
 
+/** A search found the record by another pseudo (10 November 2026). */
+export const PersonOtherNicknameMatchHint: FC<{
+  className?: string;
+  nickname: string;
+}> = ({ className, nickname }) => (
+  <p
+    className={cn(
+      'text-muted-foreground mt-0.5 flex min-w-0 items-center gap-1.5 text-xs leading-5',
+      className,
+    )}
+  >
+    <Search aria-hidden="true" className="size-3 shrink-0" />
+    <span className="truncate">Autre pseudo : {nickname}</span>
+  </p>
+);
+
 const ContactCount: FC<{
   count: number;
   icon: React.ReactNode;
@@ -130,6 +146,9 @@ export const PersonIdentity: FC<{
       >
         <span className="block truncate">{getPersonDisplayName(person)}</span>
       </Link>
+      {person.matchedOtherNickname && (
+        <PersonOtherNicknameMatchHint nickname={person.matchedOtherNickname} />
+      )}
       {person.matchedByContact && <PersonContactMatchHint />}
     </div>
   </div>

@@ -143,6 +143,12 @@ Références : [liste du Répertoire](../pages/personnes/repertoire/liste.md) et
   localement et reprend les nouvelles valeurs des autres ; écrire demande ensuite
   une nouvelle confirmation.
 - Les réponses d’une ancienne cible ou tardives sont ignorées.
+- Un champ exigé seul porte l’astérisque. Deux champs dont l’un ou l’autre
+  suffit n’en portent pas : l’aide sous eux le dit, et l’erreur nomme les
+  champs par leurs libellés affichés (« Renseignez le nom du compte »), jamais
+  par un autre mot (retour du propriétaire, 10 novembre 2026). Un texte
+  indicatif qui montre un exemple commence par « Ex. », pour ne jamais passer
+  pour une valeur saisie.
 - Une règle de saisie enfreinte s’affiche comme telle (croix et texte rouges,
   « non respectée » pour les lecteurs d’écran), jamais comme une règle neutre
   en attente : un bouton désactivé a toujours sa raison visible (31 octobre

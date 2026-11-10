@@ -2,6 +2,94 @@ import { DEFAULT_APPLICATION_TIME_ZONE } from '$constants/time.constants';
 import { normalizeSearchText } from '$utils/search-text.utils';
 
 const COMBINING_MARKS_PATTERN = /[\u0300-\u036f]/g;
+
+/**
+ * The ID of an account that never changes when its owner renames (owner,
+ * 10 November 2026: « ok go »), for a platform that shows one: Discord (17 to
+ * 20 digits) and Steam (its SteamID64). Kept as the profile link, so the
+ * uniqueness per record and the duplicate warning on another record keep
+ * working on it.
+ */
+export type AccountIdRule = Readonly<{
+  /** When neither the name nor the ID is given. */
+  emptyMessage: string;
+  error: string;
+  /** Where to find it, under the field. */
+  hint: string;
+  label: string;
+  pattern: RegExp;
+  placeholder: string;
+  prefix: string;
+}>;
+
+const ACCOUNT_ID_RULES: ReadonlyMap<string, AccountIdRule> = new Map([
+  [
+    'discord',
+    {
+      emptyMessage: 'Renseignez le nom d’utilisateur ou l’ID du compte',
+      error: 'L’ID d’un compte Discord compte 17 à 20 chiffres',
+      hint: 'Renseignez au moins le nom d’utilisateur ou l’ID du compte. L’ID ne change jamais, même quand le nom change : dans Discord, Paramètres › Avancés › Mode développeur, puis clic droit sur le profil › Copier l’identifiant de l’utilisateur.',
+      label: 'ID du compte',
+      pattern: /^\d{17,20}$/,
+      placeholder: 'Ex. 123456789012345678',
+      prefix: 'https://discord.com/users/',
+    },
+  ],
+  [
+    'steam',
+    {
+      emptyMessage: 'Renseignez le nom du compte ou l’ID Steam',
+      error: 'L’ID Steam compte 17 chiffres et commence par 7656119',
+      hint: 'Renseignez au moins le nom du compte ou l’ID Steam. L’ID ne change jamais, même quand le nom change : dans Steam, menu du compte › Détails du compte, sous le nom.',
+      label: 'ID Steam',
+      pattern: /^7656119\d{10}$/,
+      placeholder: 'Ex. 76561198000000000',
+      prefix: 'https://steamcommunity.com/profiles/',
+    },
+  ],
+]);
+
+export const accountIdRule = (networkKey: string): AccountIdRule | null =>
+  ACCOUNT_ID_RULES.get(networkKey) ?? null;
+
+/** The ID of a stored profile link, or nothing for another link. */
+export const accountIdFromUrl = (
+  networkKey: string,
+  url: string | null | undefined,
+): string | null => {
+  const rule = accountIdRule(networkKey);
+  if (!rule || !url?.startsWith(rule.prefix)) return null;
+  const id = url.slice(rule.prefix.length);
+
+  return rule.pattern.test(id) ? id : null;
+};
+
+/** What the ID field shows for a stored link, even an unfinished one. */
+export const accountIdInput = (networkKey: string, url: string): string => {
+  const rule = accountIdRule(networkKey);
+
+  return rule && url.startsWith(rule.prefix)
+    ? url.slice(rule.prefix.length)
+    : url;
+};
+
+/** The link to store for what was typed: an ID, or a pasted profile link. */
+export const accountUrlFromInput = (
+  networkKey: string,
+  value: string,
+): string => {
+  const rule = accountIdRule(networkKey);
+  const typed = value.replace(/\s+/g, '');
+  if (!rule || !typed) return typed;
+
+  return typed.startsWith(rule.prefix) ? typed : `${rule.prefix}${typed}`;
+};
+
+/** The profile links a bare ID may stand for, to find it in a search. */
+export const accountUrlsForId = (value: string): string[] =>
+  [...ACCOUNT_ID_RULES.values()]
+    .filter((rule) => rule.pattern.test(value))
+    .map((rule) => `${rule.prefix}${value}`);
 const SPACE_PATTERN = /\s+/g;
 const APPLICATION_CIVIL_TIME_ZONE = DEFAULT_APPLICATION_TIME_ZONE;
 

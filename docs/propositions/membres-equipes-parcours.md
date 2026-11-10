@@ -11,8 +11,9 @@
   9 novembre 2026 (jeux, fonctions des jeux et de la structure, équipes,
   Roster, Parcours, Bureau & staff, statut calculé ; sauvegarde v11 du
   registre) ; nationalité, contacts d’urgence et représentants légaux livrés
-  le 10 novembre 2026 ; restent les jeux pratiqués, les anciens pseudos,
-  l’adresse et les identifiants de jeu, puis le lot 3. Les choix techniques non livrés restent à
+  le 10 novembre 2026, puis les autres pseudos et l’ID du compte Discord le
+  même jour, et les comptes de jeu ; restent les jeux pratiqués et l’adresse,
+  puis le lot 3. Les choix techniques non livrés restent à
   valider au moment de leur lot.
 - **Décisions déjà données** : [registre historique](../domaines/registre-historique.md)
   et [public du site](../domaines/roles-metier.md#public-du-site--décision-du-7-novembre-2026).
@@ -26,7 +27,7 @@ migration. Ils demandent des scénarios d’abus et une validation sur base isol
 | Lot | Contenu | Résultat visible |
 | --- | --- | --- |
 | 1 | Listes de choix | Champ « Jeux » sur la fiche, avec ajout direct ; la page Jeux (8 novembre 2026) et l’onglet Fonctions de chaque fiche jeu (9 novembre 2026) sont livrés |
-| 2 | Équipes & parcours | Page Jeux, fiches jeu et équipe, page Bureau & staff (Effectif, Anciens membres, Fonctions ; livrée le 9 novembre 2026), onglet Parcours en lecture (livré le même jour), anciens pseudos dans Identité |
+| 2 | Équipes & parcours | Page Jeux, fiches jeu et équipe, page Bureau & staff (Effectif, Anciens membres, Fonctions ; livrée le 9 novembre 2026), onglet Parcours en lecture (livré le même jour), autres pseudos dans Identité (10 novembre 2026) |
 | 3 | Accès manager | Un manager se connecte et ne voit que son équipe |
 
 Confidentialité & conservation et Données, exports & sauvegardes complètent l’étape 2. Le lot 1 introduit TanStack Query, prévu avec son premier consommateur
@@ -68,9 +69,9 @@ lecture des valeurs suit la page qui les affiche.
 | --- | --- |
 | `Team` | Livré le 8 novembre 2026 : jeu (`ON DELETE RESTRICT`, fixé à la création, déclencheur `Team_gameId_immutable`), nom unique dans son jeu, création avec sa précision, active, `version` ; anciens noms à venir avec la fiche équipe |
 | `PersonPassage` | Livré le 9 novembre 2026 pour les équipes : fiche, équipe facultative (vide pour une fonction de structure, à venir), fonction, début au premier jour de sa période, fin au dernier, précision de chaque date, `version` ; exclusion des passages identiques qui se chevauchent, fonction du jeu de l’équipe vérifiée par la base |
-| `PersonFormerNickname` | Ancien pseudo, date du changement ; écrit par le service quand le pseudo change, saisi à la main dans l’onglet Identité pour un pseudo d’avant le site, et cherché par le Répertoire |
+| `PersonOtherNickname` | Livré le 10 novembre 2026 (remplace l’ancien pseudo prévu ici) : un autre pseudo de la fiche (ancien, compte secondaire, en jeu, surnom), une précision et une date de fin facultatives, version propre ; saisi à la main dans l’onglet Identité, cherché par le Répertoire et le choix d’une fiche. Pas d’écriture automatique au changement de pseudo : le journal d’activité garde déjà l’ancien |
 
-**Compléments de la fiche personne** : nationalité, adresse postale, identifiants de jeu (par jeu), contact d’urgence et représentants légaux, ces derniers étant des fiches du Répertoire liées explicitement. Les coordonnées nouvelles suivent `persons:view_contact`. **Livré le 10 novembre 2026** (« fais la 2B d’abord et la nationalité ») : la nationalité dans Identité (une seule, code ISO), les contacts d’urgence (nom, lien, numéro, sans fiche) et les représentants légaux (fiches liées, lien Parent, Tuteur ou tutrice, Autre) dans Coordonnées, avec la carte « Représentant légal de » sur la fiche du représentant ; la fiche d’un représentant ne se supprime pas tant qu’elle représente quelqu’un ([fiche Coordonnées](../pages/personnes/repertoire/fiche-coordonnees.md)). L’adresse et les identifiants de jeu restent à faire, avec les adhésions et les tournois.
+**Compléments de la fiche personne** : nationalité, adresse postale, identifiants de jeu (par jeu), contact d’urgence et représentants légaux, ces derniers étant des fiches du Répertoire liées explicitement. Les coordonnées nouvelles suivent `persons:view_contact`. **Livré le 10 novembre 2026** (« fais la 2B d’abord et la nationalité ») : la nationalité dans Identité (une seule, code ISO), les contacts d’urgence (nom, lien, numéro, sans fiche) et les représentants légaux (fiches liées, lien Parent, Tuteur ou tutrice, Autre) dans Coordonnées, avec la carte « Représentant légal de » sur la fiche du représentant ; la fiche d’un représentant ne se supprime pas tant qu’elle représente quelqu’un ([fiche Coordonnées](../pages/personnes/repertoire/fiche-coordonnees.md)). Les identifiants de jeu sont livrés le même jour comme **comptes de jeu par plateforme** (Riot, Steam…), pas par jeu, sur la remarque du propriétaire ([fiche Coordonnées](../pages/personnes/repertoire/fiche-coordonnees.md)). L’adresse reste à faire, avec les adhésions.
 
 **Dates approximatives** : une date est stockée avec sa précision (année, mois,
 jour). Un début se range au premier jour de la période et une fin au dernier :
@@ -163,7 +164,7 @@ réglage retiré de la fonction, compte désactivé, recherche rapide, totaux de
 | --- | --- |
 | Statut du Répertoire | Colonne `structureStatus` remplacée par le calcul (fait le 9 novembre 2026 : la liste, son filtre et la fiche le calculent) |
 | Suppression d’une fiche | Refus si la fiche a un passage ; [règle du Répertoire](../pages/personnes/repertoire/README.md) à actualiser |
-| Sauvegarde | Nouvelles tables dans le manifeste, format v11 (fait le 9 novembre 2026, aller-retour éprouvé ; un test refuse désormais toute table oubliée), puis v12 avec les contacts d’urgence et représentants légaux (10 novembre 2026) |
+| Sauvegarde | Nouvelles tables dans le manifeste, format v11 (fait le 9 novembre 2026, aller-retour éprouvé ; un test refuse désormais toute table oubliée), puis v12 avec les contacts d’urgence et représentants légaux et v13 avec les autres pseudos (10 novembre 2026) |
 | Journal d’activité | Nouvelles actions et nouveau filtre |
 | Registre, navigation, recherche rapide | Entrées et mots-clés de Listes et d’Équipes |
 | Contrôle mobile E2E | Nouvelles pages à ajouter à `mobile-layout.checks.ts` |

@@ -553,7 +553,9 @@ describe('person short-lived sensitive UX contracts', () => {
       expect(socialNetworkIconSource).toContain(`['${networkKey}',`);
     }
     expect(socialNetworkIconSource).toContain('if (!definition)');
-    expect(socialNetworkIconSource).toContain('<Globe2');
+    // A platform without its mark takes a controller (10 November 2026).
+    expect(socialNetworkIconSource).toContain('Globe2');
+    expect(socialNetworkIconSource).toContain('Gamepad2');
     expect(socialNetworkIconSource).toContain('aria-hidden="true"');
     expect(socialNetworkIconSource).not.toContain('fetch(');
     expect(socialNetworkIconSource).not.toContain('<img');
@@ -574,7 +576,9 @@ describe('person short-lived sensitive UX contracts', () => {
     expect(collectionsSource).toContain('const CopyAction');
     expect(collectionsSource).toContain('person.emails.map');
     expect(collectionsSource).toContain('person.phones.map');
-    expect(collectionsSource).toContain('person.socialProfiles.map');
+    // Social networks and game accounts in two cards (10 November 2026).
+    expect(collectionsSource).toContain('socialProfiles.map');
+    expect(collectionsSource).toContain('gameAccounts.map');
     expect(collectionsSource).not.toContain('SecondaryItemsToggle');
     expect(collectionsSource).not.toContain('showOther');
     expect(collectionsSource).not.toContain('Masquer les autres');

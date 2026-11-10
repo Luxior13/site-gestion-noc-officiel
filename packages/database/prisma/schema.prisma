@@ -412,6 +412,7 @@ model Person {
   emails            PersonEmail[]
   phones            PersonPhone[]
   socialProfiles    PersonSocialProfile[]
+  otherNicknames    PersonOtherNickname[]
   emergencyContacts PersonEmergencyContact[]
   legalGuardians    PersonLegalGuardian[]    @relation("GuardedPerson")
   guardianOf        PersonLegalGuardian[]    @relation("Guardian")
@@ -490,6 +491,32 @@ model PersonSocialProfile {
   @@index([normalizedIdentifier])
   @@index([normalizedIdentifier(ops: raw("varchar_pattern_ops"))], map: "PersonSocialProfile_normalizedIdentifier_prefix_idx")
   @@index([normalizedProfileUrlHash])
+}
+
+/// Another pseudo of a person (10 November 2026, « ok go »): a former one, a
+/// second account, a name in a game, a nickname. The Répertoire's search finds
+/// a record by it, to recognize someone who changed names. Read and written
+/// with the identity.
+model PersonOtherNickname {
+  id                 String         @id @default(cuid())
+  personId           String
+  nickname           String         @db.VarChar(80)
+  /// Shared search form, unique within the record.
+  normalizedNickname String         @db.VarChar(160)
+  /// « Ancien pseudo », « Compte secondaire »… as typed, optional.
+  note               String?        @db.VarChar(40)
+  /// Used until then, optional: stored on the last day of its period.
+  untilOn            DateTime?      @db.Date
+  untilPrecision     DatePrecision?
+  version            Int            @default(1)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  person Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@unique([personId, normalizedNickname])
+  @@index([normalizedNickname(ops: raw("gin_trgm_ops"))], type: Gin, map: "PersonOtherNickname_normalizedNickname_trgm_idx")
+  @@index([normalizedNickname(ops: raw("varchar_pattern_ops"))], map: "PersonOtherNickname_normalizedNickname_prefix_idx")
 }
 
 /// Who to call for a person in an emergency (10 November 2026): a name, the

@@ -11,6 +11,11 @@ export {
 export { createPerson, getPerson, updatePerson } from './person-core.service';
 export { listPersons } from './person-list.service';
 export {
+  addPersonOtherNickname,
+  deletePersonOtherNickname,
+  updatePersonOtherNickname,
+} from './person-nicknames.service';
+export {
   addPersonEmergencyContact,
   addPersonLegalGuardian,
   deletePersonEmergencyContact,

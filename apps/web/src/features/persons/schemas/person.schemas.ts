@@ -13,8 +13,11 @@ import {
   PERSON_LIMITS,
   PERSON_LIST_SORTS,
   PERSON_STRUCTURE_STATUSES,
+  personNetworkKind,
 } from '../person.constants';
 import {
+  accountIdFromUrl,
+  accountIdRule,
   normalizePersonEmail,
   normalizePersonSocialIdentifier,
   normalizePersonSocialUrl,
@@ -139,13 +142,40 @@ const buildPersonSocialProfileSchema = <T extends z.ZodRawShape>(
     .superRefine((value, context) => {
       const profileValue = value as typeof value & {
         identifier: string | null;
+        networkKey: string;
         profileUrl: string | null;
       };
-      if (!profileValue.identifier && !profileValue.profileUrl) {
+      const rule = accountIdRule(profileValue.networkKey);
+      // A game platform without an ID (Riot, Xbox…) is known by its account
+      // name alone, the link is a plus (owner, 10 November 2026).
+      const nameRequired =
+        personNetworkKind(profileValue.networkKey) === 'game' && !rule;
+      if (nameRequired && !profileValue.identifier) {
         context.addIssue({
           code: 'custom',
-          message: 'Renseignez un identifiant ou une URL de profil',
+          message: 'Renseignez le nom du compte',
           path: ['identifier'],
+        });
+      } else if (!profileValue.identifier && !profileValue.profileUrl) {
+        context.addIssue({
+          code: 'custom',
+          message:
+            rule?.emptyMessage ??
+            'Renseignez un identifiant visible ou une URL de profil',
+          path: ['identifier'],
+        });
+      }
+      // The ID of a Discord or Steam account, never another link
+      // (10 November 2026).
+      if (
+        rule &&
+        profileValue.profileUrl &&
+        !accountIdFromUrl(profileValue.networkKey, profileValue.profileUrl)
+      ) {
+        context.addIssue({
+          code: 'custom',
+          message: rule.error,
+          path: ['profileUrl'],
         });
       }
       if (

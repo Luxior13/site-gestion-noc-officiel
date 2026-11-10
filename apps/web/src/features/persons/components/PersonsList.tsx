@@ -42,6 +42,7 @@ import {
   PersonContacts,
   PersonIdentity,
   PersonLastModified,
+  PersonOtherNicknameMatchHint,
 } from './PersonListCells';
 import { PersonsListSkeleton } from './PersonsListSkeleton';
 import { PersonsListToolbar } from './PersonsListToolbar';
@@ -368,6 +369,11 @@ export const PersonsList: FC<PersonsListProps> = ({
                           <h2 className="text-foreground group-hover:text-primary-emphasis min-w-0 text-sm font-semibold [overflow-wrap:anywhere] group-hover:underline group-hover:underline-offset-[3px]">
                             {getPersonDisplayName(person)}
                           </h2>
+                          {person.matchedOtherNickname && (
+                            <PersonOtherNicknameMatchHint
+                              nickname={person.matchedOtherNickname}
+                            />
+                          )}
                           {person.matchedByContact && (
                             <PersonContactMatchHint />
                           )}

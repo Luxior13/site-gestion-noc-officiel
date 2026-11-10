@@ -37,6 +37,7 @@ type PersonListRow = {
   lastModifiedByProtected: boolean | null;
   lastName: string | null;
   matchedByContact: boolean;
+  matchedOtherNickname: string | null;
   nickname: string | null;
   noContactsCount: number | null;
   outsideStructureCount: number;
@@ -80,6 +81,7 @@ const toPersonSummary = (
       : null,
   lastName: person.lastName,
   matchedByContact: person.matchedByContact,
+  matchedOtherNickname: person.matchedOtherNickname,
   nickname: person.nickname,
   structureStatus: person.inStructure ? 'IN_STRUCTURE' : 'OUTSIDE_STRUCTURE',
   updatedAt: person.updatedAt.toISOString(),
@@ -100,8 +102,12 @@ export const listPersons = async (
   requirePersonRead(reader, input.contacts === 'missing');
   const { canViewContact } = getPersonCapabilities(reader);
   const sort = input.sort ?? 'name';
-  const { contactSearchClause, normalizedQuery, searchClause } =
-    buildPersonSearchFragments(input.q, canViewContact);
+  const {
+    contactSearchClause,
+    matchedOtherNicknameSelect,
+    normalizedQuery,
+    searchClause,
+  } = buildPersonSearchFragments(input.q, canViewContact);
   const filterHash = hashCursorFilters({
     canViewContact,
     ...(input.contacts ? { contacts: input.contacts } : {}),
@@ -238,7 +244,8 @@ export const listPersons = async (
         WHERE social_count."personId" = p."id") AS "socialProfileCount",
       CASE WHEN ${normalizedQuery} <> '' THEN (
         ${contactSearchClause}
-      ) ELSE FALSE END AS "matchedByContact"
+      ) ELSE FALSE END AS "matchedByContact",
+      ${matchedOtherNicknameSelect} AS "matchedOtherNickname"
     FROM filtered p
     LEFT JOIN LATERAL (
       SELECT

@@ -56,6 +56,7 @@ export const handlePersonApiError = async (
         );
       case 'PERSON_GUARDIAN_CONFLICT':
       case 'PERSON_HAS_PASSAGES':
+      case 'PERSON_NICKNAME_CONFLICT':
         return correlated(apiError(ErrorCode.CONFLICT, error.message, 409));
       case 'PERSON_FEATURE_NOT_CONFIGURED':
         return correlated(
@@ -71,6 +72,7 @@ export const handlePersonApiError = async (
         'La fiche contient déjà 5 contacts d’urgence',
       PERSON_LEGAL_GUARDIAN_LIMIT:
         'La fiche contient déjà 4 représentants légaux',
+      PERSON_OTHER_NICKNAME_LIMIT: 'La fiche contient déjà 20 autres pseudos',
       PERSON_PHONE_LIMIT: 'La fiche contient déjà 10 téléphones',
       PERSON_SOCIAL_NETWORK_DEPRECATED:
         'Ce réseau n’accepte plus de nouveaux profils',

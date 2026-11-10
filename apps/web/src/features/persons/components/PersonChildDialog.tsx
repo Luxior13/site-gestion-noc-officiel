@@ -20,6 +20,7 @@ import {
 import { ApiClientError } from '$utils/api.utils';
 
 import { mutatePersonChild } from '../person.api';
+import type { PersonNetworkKind } from '../person.constants';
 import { zodErrorMap } from '../person.ui';
 import {
   type ChildDraft,
@@ -54,6 +55,8 @@ type PersonChildDialogProps = {
   defaultPrimary: boolean;
   item: PersonChildItem | null;
   kind: PersonChildKind;
+  /** A profile of a social network, or a game account (10 November 2026). */
+  networkKind?: PersonNetworkKind;
   onCloseAutoFocus?: (event: Event) => void;
   onDelete: () => void;
   onOpenChange: (open: boolean) => void;
@@ -72,6 +75,7 @@ const PersonChildDialogContent: FC<PersonChildDialogProps> = ({
   defaultPrimary,
   item,
   kind,
+  networkKind = 'social',
   onCloseAutoFocus,
   onDelete,
   onOpenChange,
@@ -81,7 +85,7 @@ const PersonChildDialogContent: FC<PersonChildDialogProps> = ({
   person,
 }) => {
   const [baseDraft, setBaseDraft] = useState(() =>
-    getDraft(kind, item, defaultPrimary),
+    getDraft(kind, item, defaultPrimary, networkKind),
   );
   const [baseItem, setBaseItem] = useState(item);
   const operationRef = useRef(false);
@@ -107,7 +111,7 @@ const PersonChildDialogContent: FC<PersonChildDialogProps> = ({
   const [pendingClose, setPendingClose] = useState(false);
   const [personVersion, setPersonVersion] = useState(person.version);
   const [saved, setSaved] = useState(false);
-  const config = getKindConfig(kind);
+  const config = getKindConfig(kind, networkKind);
   const isDirty = canEdit && !sameDraft(draft, baseDraft);
   const {
     cancelPendingNavigation,
@@ -368,7 +372,12 @@ const PersonChildDialogContent: FC<PersonChildDialogProps> = ({
         if (childVersion !== null && freshItem.version < childVersion) {
           throw new Error('Version de coordonnée périmée');
         }
-        const freshDraft = getDraft(kind, freshItem, defaultPrimary);
+        const freshDraft = getDraft(
+          kind,
+          freshItem,
+          defaultPrimary,
+          networkKind,
+        );
         setDraft((current) => mergeDraft(baseDraft, current, freshDraft));
         setBaseDraft(freshDraft);
         setBaseItem(freshItem);
@@ -383,7 +392,9 @@ const PersonChildDialogContent: FC<PersonChildDialogProps> = ({
         const validation = validate(getPayload());
         const matching = validation.success
           ? collection.find((candidate) =>
-              Object.entries(getDraft(kind, candidate, defaultPrimary)).every(
+              Object.entries(
+                getDraft(kind, candidate, defaultPrimary, networkKind),
+              ).every(
                 ([key, value]) =>
                   comparableValue(value) ===
                   comparableValue(
@@ -396,7 +407,7 @@ const PersonChildDialogContent: FC<PersonChildDialogProps> = ({
           : undefined;
         if (matching) {
           setBaseItem(matching);
-          setBaseDraft(getDraft(kind, matching, defaultPrimary));
+          setBaseDraft(getDraft(kind, matching, defaultPrimary, networkKind));
           setChildVersion(matching.version);
           setSaved(true);
           setSaveError(
@@ -557,6 +568,7 @@ const PersonChildDialogContent: FC<PersonChildDialogProps> = ({
                   disabled={!canEdit || busy || saved}
                   errors={errors}
                   idPrefix="person-child-social"
+                  networkKind={networkKind}
                   layout="stacked"
                   onChange={changeDraft}
                   showPrimarySwitch={showPrimarySwitch}

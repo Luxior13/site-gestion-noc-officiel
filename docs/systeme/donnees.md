@@ -46,10 +46,11 @@ Colonnes : nombre de champs (relations comprises), nombre d’`@@index` et
 
 | Modèle | Champs | Index | Relations | Rôle |
 | --- | ---: | ---: | --- | --- |
-| `Person` | 17 | 9 | emails, téléphones, profils sociaux, contacts d’urgence, représentants légaux (dans les deux sens), passages | Fiche personne, version optimiste ; le statut « Dans la structure » n’est pas une colonne, il se calcule depuis les passages en cours (9 novembre 2026) ; `nationality`, code ISO à deux lettres en capitales (contrainte `Person_nationality_check`, 10 novembre 2026) |
+| `Person` | 17 | 9 | emails, téléphones, profils sociaux, autres pseudos, contacts d’urgence, représentants légaux (dans les deux sens), passages | Fiche personne, version optimiste ; le statut « Dans la structure » n’est pas une colonne, il se calcule depuis les passages en cours (9 novembre 2026) ; `nationality`, code ISO à deux lettres en capitales (contrainte `Person_nationality_check`, 10 novembre 2026) |
 | `PersonEmail` | 10 | 3 | `Person` | Emails, un principal |
 | `PersonPhone` | 10 | 3 | `Person` | Téléphones, un principal |
 | `PersonSocialProfile` | 14 | 5 | `Person` | Réseaux sociaux, propriétaire protégé (REP-20) |
+| `PersonOtherNickname` | 10 | 3 | `Person` (`ON DELETE CASCADE`) | Un autre pseudo de la fiche (10 novembre 2026) : ancien, compte secondaire, en jeu ou surnom ; forme de recherche unique par fiche, index trigrammes et préfixe comme le pseudo principal, précision et date de fin facultatives (`untilOn` au dernier jour de sa période, `DatePrecision`), version propre ; contrainte `PersonOtherNickname_values_check` et déclencheur de propriétaire, absents de `schema.prisma` |
 | `PersonEmergencyContact` | 9 | 1 | `Person` (`ON DELETE CASCADE`) | Qui appeler en cas d’urgence (10 novembre 2026) : nom, lien facultatif, numéro et sa forme internationale ; contrainte `PersonEmergencyContact_values_check` et déclencheur de propriétaire `PersonEmergencyContact_prevent_person_reassignment`, absents de `schema.prisma` |
 | `PersonLegalGuardian` | 7 | 2 | `person` (`ON DELETE CASCADE`), `guardian` (`ON DELETE RESTRICT`) | Un représentant légal (10 novembre 2026) : une autre fiche, liée avec son lien `LegalGuardianRelation` (`PARENT`, `TUTOR`, `OTHER`), un lien unique par paire ; contrainte `PersonLegalGuardian_not_self_check` et déclencheur `PersonLegalGuardian_prevent_reassignment` (les deux bouts ne changent pas), absents de `schema.prisma` |
 | `PersonDeletionTombstone` | 3 | 0 | — | Trace minimale d’une fiche supprimée |
@@ -82,8 +83,11 @@ L’actualité interne redéfinira son stockage à sa reconstruction.
 
 ## Migrations
 
-**71 migrations** dans `packages/database/prisma/migrations`, de
-`20250723121213_init` à `20261110120000_person_relatives` (colonne
+**72 migrations** dans `packages/database/prisma/migrations`, de
+`20250723121213_init` à `20261110180000_person_other_nicknames` (table
+`PersonOtherNickname`, ses index de recherche et son déclencheur de
+propriétaire, 10 novembre 2026 ; ajout seul). Avant elle,
+`20261110120000_person_relatives` (colonne
 `Person.nationality`, tables `PersonEmergencyContact` et `PersonLegalGuardian`,
 type `LegalGuardianRelation`, contraintes et déclencheurs de propriétaire,
 10 novembre 2026 ; ajout seul). Avant elle, `20261109235800_person_status_from_passages` (colonne

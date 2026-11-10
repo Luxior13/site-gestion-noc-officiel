@@ -168,6 +168,7 @@ const personRecord = (
   normalizedFirstName: 'ada',
   normalizedLastName: 'lovelace',
   normalizedNickname: null,
+  otherNicknames: [],
   phones: options.phones ?? [],
   socialProfiles: options.socialProfiles ?? [],
   updatedAt: DATE,

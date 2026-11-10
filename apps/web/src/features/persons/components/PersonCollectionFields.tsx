@@ -14,10 +14,17 @@ import { Switch } from '$ui/switch';
 import { PHONE_COUNTRY_OPTIONS } from '$utils/phone-country-options';
 
 import {
+  getPersonSocialNetwork,
   PERSON_CONTACT_LABEL_SUGGESTIONS,
   PERSON_SOCIAL_LABEL_SUGGESTIONS,
   PERSON_SOCIAL_NETWORKS,
+  type PersonNetworkKind,
 } from '../person.constants';
+import {
+  accountIdInput,
+  accountIdRule,
+  accountUrlFromInput,
+} from '../person.utils';
 import { PersonSocialNetworkIcon } from './PersonSocialNetworkIcon';
 
 export type EmailDraft = {
@@ -338,10 +345,12 @@ export const PhoneFields: FC<PhoneFieldsProps> = ({
 
 type SocialFieldsProps = {
   disabled?: boolean;
+  /** Social networks, or game platforms (10 November 2026). */
   errors: FieldErrors;
   idPrefix: string;
   keyPrefix?: string;
   layout?: FieldsLayout;
+  networkKind?: PersonNetworkKind;
   onChange: (value: SocialDraft) => void;
   showPrimarySwitch?: boolean;
   value: SocialDraft;
@@ -354,6 +363,7 @@ export const SocialFields: FC<SocialFieldsProps> = ({
   idPrefix,
   keyPrefix = '',
   layout = 'grid',
+  networkKind = 'social',
   onChange,
   showPrimarySwitch = true,
   value,
@@ -364,6 +374,12 @@ export const SocialFields: FC<SocialFieldsProps> = ({
   const identifierWarning = fieldError(warnings, keyPrefix, 'identifier');
   const urlError = fieldError(errors, keyPrefix, 'profileUrl');
   const urlWarning = fieldError(warnings, keyPrefix, 'profileUrl');
+  // Discord, Steam: the account ID rather than a link (10 November 2026).
+  const rule = accountIdRule(value.networkKey);
+  const network = getPersonSocialNetwork(value.networkKey);
+  const game = networkKind === 'game';
+  // Required alone: a platform without an ID. Elsewhere, one of the two.
+  const nameRequired = game && !rule;
 
   return (
     <div
@@ -372,7 +388,7 @@ export const SocialFields: FC<SocialFieldsProps> = ({
       <div className="space-y-1.5">
         <div className="flex items-center gap-1.5">
           <Label htmlFor={`${idPrefix}-network`} required>
-            Réseau
+            {game ? 'Plateforme' : 'Réseau'}
           </Label>
         </div>
         <Select
@@ -393,7 +409,8 @@ export const SocialFields: FC<SocialFieldsProps> = ({
           <SelectContent>
             {PERSON_SOCIAL_NETWORKS.filter(
               (network) =>
-                network.status === 'active' || network.key === value.networkKey,
+                (network.kind === networkKind && network.status === 'active') ||
+                network.key === value.networkKey,
             ).map((network) => (
               <SelectItem
                 disabled={network.status === 'deprecated'}
@@ -426,7 +443,9 @@ export const SocialFields: FC<SocialFieldsProps> = ({
       />
       <div className="space-y-1.5">
         <div className="flex items-center gap-1.5">
-          <Label htmlFor={`${idPrefix}-identifier`}>Identifiant visible</Label>
+          <Label htmlFor={`${idPrefix}-identifier`} required={nameRequired}>
+            {network?.identifierLabel ?? 'Identifiant visible'}
+          </Label>
         </div>
         <Input
           aria-describedby={
@@ -443,7 +462,7 @@ export const SocialFields: FC<SocialFieldsProps> = ({
           onChange={(event) =>
             onChange({ ...value, identifier: event.target.value })
           }
-          placeholder="@identifiant"
+          placeholder={network?.identifierPlaceholder ?? '@identifiant'}
           value={value.identifier}
         />
         <FieldError
@@ -457,27 +476,57 @@ export const SocialFields: FC<SocialFieldsProps> = ({
       </div>
       <div className="space-y-1.5">
         <div className="flex items-center gap-1.5">
-          <Label htmlFor={`${idPrefix}-url`}>URL du profil</Label>
+          <Label htmlFor={`${idPrefix}-url`}>
+            {rule?.label ?? 'URL du profil'}
+          </Label>
         </div>
-        <Input
-          aria-describedby={
-            urlError
-              ? `${idPrefix}-url-error`
-              : urlWarning
-                ? `${idPrefix}-url-warning`
-                : `${idPrefix}-identity-hint`
-          }
-          aria-invalid={Boolean(urlError)}
-          disabled={disabled}
-          id={`${idPrefix}-url`}
-          maxLength={2_048}
-          onChange={(event) =>
-            onChange({ ...value, profileUrl: event.target.value })
-          }
-          placeholder="https://…"
-          type="url"
-          value={value.profileUrl}
-        />
+        {rule ? (
+          <Input
+            aria-describedby={
+              urlError
+                ? `${idPrefix}-url-error`
+                : urlWarning
+                  ? `${idPrefix}-url-warning`
+                  : `${idPrefix}-identity-hint`
+            }
+            aria-invalid={Boolean(urlError)}
+            disabled={disabled}
+            id={`${idPrefix}-url`}
+            inputMode="numeric"
+            maxLength={2_048}
+            onChange={(event) =>
+              onChange({
+                ...value,
+                profileUrl: accountUrlFromInput(
+                  value.networkKey,
+                  event.target.value,
+                ),
+              })
+            }
+            placeholder={rule.placeholder}
+            value={accountIdInput(value.networkKey, value.profileUrl)}
+          />
+        ) : (
+          <Input
+            aria-describedby={
+              urlError
+                ? `${idPrefix}-url-error`
+                : urlWarning
+                  ? `${idPrefix}-url-warning`
+                  : `${idPrefix}-identity-hint`
+            }
+            aria-invalid={Boolean(urlError)}
+            disabled={disabled}
+            id={`${idPrefix}-url`}
+            maxLength={2_048}
+            onChange={(event) =>
+              onChange({ ...value, profileUrl: event.target.value })
+            }
+            placeholder="https://…"
+            type="url"
+            value={value.profileUrl}
+          />
+        )}
         <FieldError id={`${idPrefix}-url-error`} message={urlError} />
         <FieldWarning id={`${idPrefix}-url-warning`} message={urlWarning} />
       </div>
@@ -485,7 +534,10 @@ export const SocialFields: FC<SocialFieldsProps> = ({
         className={`text-muted-foreground text-xs ${layout === 'grid' ? 'sm:col-span-2' : ''}`}
         id={`${idPrefix}-identity-hint`}
       >
-        Renseignez au moins un identifiant visible ou une URL de profil.
+        {rule?.hint ??
+          (nameRequired
+            ? 'L’URL du profil est facultative.'
+            : 'Renseignez au moins un identifiant visible ou une URL de profil.')}
       </p>
       {showPrimarySwitch && (
         <div className={layout === 'grid' ? 'sm:col-span-2' : undefined}>
@@ -493,7 +545,11 @@ export const SocialFields: FC<SocialFieldsProps> = ({
             checked={value.isPrimary}
             disabled={disabled || !showPrimarySwitch}
             id={`${idPrefix}-primary`}
-            label="Profil principal pour ce réseau"
+            label={
+              game
+                ? 'Compte principal pour cette plateforme'
+                : 'Profil principal pour ce réseau'
+            }
             onChange={(isPrimary) => onChange({ ...value, isPrimary })}
           />
         </div>

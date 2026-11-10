@@ -13,6 +13,11 @@ import {
 } from 'vitest';
 
 import {
+  DELETE as deleteNickname,
+  PATCH as updateNickname,
+} from '$app/api/personnes/[id]/autres-pseudos/[nicknameId]/route';
+import { POST as addNickname } from '$app/api/personnes/[id]/autres-pseudos/route';
+import {
   DELETE as deleteContact,
   PATCH as updateContact,
 } from '$app/api/personnes/[id]/contacts-urgence/[contactId]/route';
@@ -22,8 +27,9 @@ import {
   PATCH as updateGuardian,
 } from '$app/api/personnes/[id]/representants-legaux/[linkId]/route';
 import { POST as addGuardian } from '$app/api/personnes/[id]/representants-legaux/route';
+import { POST as addSocial } from '$app/api/personnes/[id]/reseaux-sociaux/route';
 import { DELETE, GET, PATCH } from '$app/api/personnes/[id]/route';
-import { POST as create } from '$app/api/personnes/route';
+import { GET as listPeople, POST as create } from '$app/api/personnes/route';
 import { GET as suggestions } from '$app/api/personnes/suggestions/route';
 import { PERMISSIONS } from '$constants/permissions.constants';
 import type { PersonDetail } from '$features/persons/types/person.types';
@@ -575,6 +581,243 @@ describe.skipIf(!target)(
         }),
       ).toBe(0);
       expect((await read(parent.id)).represents).toEqual([]);
+    });
+
+    it('keeps the other pseudos of a record, found by the Répertoire', async () => {
+      await signIn();
+      const person = await record({ nickname: 'Kaiz ' + randomUUID() });
+      const formerName = 'Shadow' + randomUUID().slice(0, 8);
+      const added = await answer(
+        await addNickname(
+          request(
+            {
+              nickname: formerName,
+              note: 'Ancien pseudo',
+              until: { date: '2023-06-15', precision: 'YEAR' },
+            },
+            'POST',
+          ),
+          params({ id: person.id }),
+        ),
+      );
+      expect(added.status).toBe(201);
+      const other = added.data?.person.otherNicknames[0];
+      expect(other).toMatchObject({
+        nickname: formerName,
+        note: 'Ancien pseudo',
+        until: { date: '2023-01-01', precision: 'YEAR' },
+      });
+      // Its own version: the record's does not move, an identity being edited
+      // beside it stays valid.
+      expect(added.data?.person.version).toBe(person.version);
+      const stored = await db.personOtherNickname.findUniqueOrThrow({
+        where: { id: other?.id ?? '' },
+      });
+      expect(stored.untilOn?.toISOString().slice(0, 10)).toBe('2023-12-31');
+      // Neither twice, nor the main pseudo.
+      for (const nickname of [formerName.toUpperCase(), person.nickname]) {
+        const refused = await answer(
+          await addNickname(
+            request({ nickname }, 'POST'),
+            params({ id: person.id }),
+          ),
+        );
+        expect(refused).toMatchObject({
+          error: { code: 'CONFLICT' },
+          status: 409,
+        });
+      }
+      // The Répertoire finds the record by it and says so.
+      const found = await answer(
+        await listPeople(
+          new NextRequest(
+            'http://localhost/api/personnes?q=' +
+              encodeURIComponent(formerName),
+          ),
+        ),
+      );
+      expect(
+        (
+          found.data as unknown as {
+            items: { id: string; matchedOtherNickname: string | null }[];
+          }
+        ).items,
+      ).toEqual([
+        expect.objectContaining({
+          id: person.id,
+          matchedOtherNickname: formerName,
+        }),
+      ]);
+      // A reader of the Répertoire reads them; only the identity's right writes.
+      await signIn({ [PERMISSIONS.PERSONS.VIEW]: true });
+      expect((await read(person.id)).otherNicknames).toHaveLength(1);
+      expect(
+        (
+          await addNickname(
+            request({ nickname: 'Autre' }, 'POST'),
+            params({ id: person.id }),
+          )
+        ).status,
+      ).toBe(403);
+      await signIn();
+      const corrected = await answer(
+        await updateNickname(
+          request({
+            nickname: formerName,
+            note: 'Compte secondaire',
+            until: null,
+            version: other?.version,
+          }),
+          params({ id: person.id, nicknameId: other?.id ?? '' }),
+        ),
+      );
+      expect(corrected.data?.person.otherNicknames[0]).toMatchObject({
+        note: 'Compte secondaire',
+        until: null,
+      });
+      const stale = await updateNickname(
+        request({
+          nickname: 'X',
+          note: null,
+          until: null,
+          version: other?.version,
+        }),
+        params({ id: person.id, nicknameId: other?.id ?? '' }),
+      );
+      expect(stale.status).toBe(409);
+      const removed = await answer(
+        await deleteNickname(
+          request(
+            { version: corrected.data?.person.otherNicknames[0]?.version },
+            'DELETE',
+          ),
+          params({ id: person.id, nicknameId: other?.id ?? '' }),
+        ),
+      );
+      expect(removed.data?.person.otherNicknames).toEqual([]);
+      expect(
+        (await changesOf(person.id, 'identity'))
+          .filter((change) => change.fieldKey.startsWith('otherNickname'))
+          .map(
+            (change) =>
+              `${change.changeType}:${change.fieldKey}:${change.valueMode}`,
+          ),
+      ).toEqual(
+        expect.arrayContaining([
+          'CREATE:otherNickname:ENCRYPTED',
+          'CREATE:otherNicknameNote:ENCRYPTED',
+          'CREATE:otherNicknameUntil:ENCRYPTED',
+          'UPDATE:otherNicknameNote:ENCRYPTED',
+          'UPDATE:otherNicknameUntil:ENCRYPTED',
+          'DELETE:otherNickname:ENCRYPTED',
+        ]),
+      );
+    });
+
+    it('recognizes a Discord account by its ID, on another record too', async () => {
+      await signIn();
+      const discordId = String(10n ** 17n + BigInt(Date.now()));
+      const first = await record();
+      const added = await answer(
+        await addSocial(
+          request(
+            {
+              identifier: 'kaiz',
+              label: 'Personnel',
+              networkKey: 'discord',
+              personVersion: first.version,
+              profileUrl: `https://discord.com/users/${discordId}`,
+            },
+            'POST',
+          ),
+          params({ id: first.id }),
+        ),
+      );
+      expect(added.status).toBe(201);
+      const wrong = await answer(
+        await addSocial(
+          request(
+            {
+              label: 'Personnel',
+              networkKey: 'discord',
+              personVersion: added.data?.person.version,
+              profileUrl: 'https://discord.gg/noctambule',
+            },
+            'POST',
+          ),
+          params({ id: first.id }),
+        ),
+      );
+      expect(wrong.status).toBe(400);
+      // The ID alone finds the record.
+      const found = await answer(
+        await listPeople(
+          new NextRequest(`http://localhost/api/personnes?q=${discordId}`),
+        ),
+      );
+      expect(
+        (
+          found.data as unknown as {
+            items: { id: string; matchedByContact: boolean }[];
+          }
+        ).items,
+      ).toEqual([
+        expect.objectContaining({ id: first.id, matchedByContact: true }),
+      ]);
+      // A game account too: its SteamID64 alone finds it, though it has the
+      // shape of a Discord ID as well (10 November 2026).
+      const steamId = `7656119${String(Date.now()).slice(-10)}`;
+      const steam = await answer(
+        await addSocial(
+          request(
+            {
+              identifier: 'Kaiz',
+              label: 'Personnel',
+              networkKey: 'steam',
+              personVersion: (await read(first.id)).version,
+              profileUrl: `https://steamcommunity.com/profiles/${steamId}`,
+            },
+            'POST',
+          ),
+          params({ id: first.id }),
+        ),
+      );
+      expect(steam.status).toBe(201);
+      const bySteam = await answer(
+        await listPeople(
+          new NextRequest(`http://localhost/api/personnes?q=${steamId}`),
+        ),
+      );
+      expect(
+        (bySteam.data as unknown as { items: { id: string }[] }).items.map(
+          (item) => item.id,
+        ),
+      ).toEqual([first.id]);
+      // Back under another name, on another record: the same account warns.
+      const second = await record();
+      const again = await answer(
+        await addSocial(
+          request(
+            {
+              identifier: 'nouveau-nom',
+              label: 'Personnel',
+              networkKey: 'discord',
+              personVersion: second.version,
+              profileUrl: `https://discord.com/users/${discordId}`,
+            },
+            'POST',
+          ),
+          params({ id: second.id }),
+        ),
+      );
+      expect(again.status).toBe(201);
+      expect(
+        (
+          again.data as unknown as {
+            duplicateWarning: { duplicateFound: boolean };
+          }
+        ).duplicateWarning.duplicateFound,
+      ).toBe(true);
     });
 
     it('lets only the writers of coordinates search records to link', async () => {

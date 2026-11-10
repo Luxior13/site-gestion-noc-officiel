@@ -1,3 +1,5 @@
+import type { ApproximateDate } from '$utils/approximate-date.utils';
+
 import type {
   LegalGuardianRelation,
   PERSON_LIST_SORTS,
@@ -69,6 +71,18 @@ export type PersonSuggestions = Readonly<{
   persons: readonly PersonRef[];
 }>;
 
+/** Another pseudo of the person (10 November 2026), read with the identity. */
+export type PersonOtherNicknameItem = {
+  createdAt: string;
+  id: string;
+  nickname: string;
+  note: string | null;
+  /** Used until then, at the start of its period. */
+  until: ApproximateDate | null;
+  updatedAt: string;
+  version: number;
+};
+
 /** Who to call in an emergency (10 November 2026), not a record. */
 export type PersonEmergencyContactItem = {
   countryCode: string;
@@ -118,6 +132,8 @@ export type PersonSummary = {
   lastModifiedBy: PersonAuditActor | null;
   lastName: string | null;
   matchedByContact: boolean;
+  /** The other pseudo a search found, when the name itself did not match. */
+  matchedOtherNickname: string | null;
   nickname: string | null;
   structureStatus: PersonStructureStatus;
   updatedAt: string;
@@ -126,7 +142,10 @@ export type PersonSummary = {
 
 export type PersonDetail = Omit<
   PersonSummary,
-  'contactCounts' | 'lastModifiedBy' | 'matchedByContact'
+  | 'contactCounts'
+  | 'lastModifiedBy'
+  | 'matchedByContact'
+  | 'matchedOtherNickname'
 > & {
   age: number | null;
   birthDate: string | null;
@@ -138,6 +157,7 @@ export type PersonDetail = Omit<
   legalGuardians: PersonLegalGuardianItem[];
   /** ISO code, « FR » (10 November 2026). */
   nationality: string | null;
+  otherNicknames: PersonOtherNicknameItem[];
   phones: PersonPhoneItem[];
   represents: PersonRepresentedItem[];
   socialProfiles: PersonSocialProfileItem[];

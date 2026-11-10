@@ -50,6 +50,11 @@ const PersonIdentitySection = dynamic(() =>
     (module) => module.PersonIdentitySection,
   ),
 );
+const PersonOtherNicknamesCard = dynamic(() =>
+  import('./PersonOtherNicknames').then(
+    (module) => module.PersonOtherNicknamesCard,
+  ),
+);
 const PersonJourneySection = dynamic(() =>
   import('$features/passages/components/PersonJourneySection').then(
     (module) => module.PersonJourneySection,
@@ -328,6 +333,14 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
           <section aria-label="Identité" className="space-y-5">
             <PersonIdentitySection
               key={person.id}
+              afterNames={
+                <PersonOtherNicknamesCard
+                  canUpdate={canUpdate}
+                  onChange={acceptPerson}
+                  onReload={load}
+                  person={person}
+                />
+              }
               canUpdate={canUpdate}
               onChange={acceptPerson}
               onDirtyChange={setIdentityDirty}

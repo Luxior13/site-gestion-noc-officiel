@@ -40,7 +40,7 @@ export const PersonDangerZone: FC<PersonDangerZoneProps> = ({
     <>
       <EntityDangerZone
         key={person.id}
-        description="L’identité, les coordonnées, les profils sociaux, les contacts d’urgence et les liens vers les représentants légaux seront supprimés sans possibilité de restauration."
+        description="L’identité, les autres pseudos, les coordonnées, les profils sociaux, les contacts d’urgence et les liens vers les représentants légaux seront supprimés sans possibilité de restauration."
         dialogDescription="Cette action est irréversible. Vérifiez la fiche avant de confirmer sa suppression."
         dialogNotice="La fiche et ses données personnelles seront effacées immédiatement et définitivement."
         dialogTitle={`Supprimer définitivement la fiche de ${getPersonDisplayName(person)} ?`}

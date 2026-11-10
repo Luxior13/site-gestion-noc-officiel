@@ -18,8 +18,8 @@
 ## Rôle et tâches principales
 
 Consulter et corriger l’identité d’une personne : pseudo principal, prénom, nom,
-date de naissance civile facultative et nationalité facultative (10 novembre
-2026). Le statut dans la structure se lit dans le bandeau sans se choisir : il
+autres pseudos, date de naissance civile facultative et nationalité facultative
+(10 novembre 2026). Le statut dans la structure se lit dans le bandeau sans se choisir : il
 se calcule depuis les passages (9 novembre 2026). La date de naissance se
 choisit dans le calendrier du site (`DatePicker`, au jour, de 1900 à l’année en
 cours, avec « Effacer »), plus le sélecteur natif du navigateur (9 novembre
@@ -32,8 +32,11 @@ pays choisi.
 
 Titre « Identité » réservé aux lecteurs d’écran, puis deux cartes titrées
 (`RubricCard`) : « Pseudo et nom » (pseudo, prénom, nom sur une ligne en grand
-écran) et « Naissance et nationalité » (deux champs côte à côte dès 640 px) ;
-champs partagés `PersonIdentityFields`
+écran), « Autres pseudos » (10 novembre 2026,
+[PersonOtherNicknames](../../../../apps/web/src/features/persons/components/PersonOtherNicknames.tsx) :
+nombre et « Ajouter » dans l’en-tête, une ligne par pseudo avec sa précision et
+« jusqu’en 2023 », modification et suppression en fenêtre) et « Naissance et
+nationalité » (deux champs côte à côte dès 640 px) ; champs partagés `PersonIdentityFields`
 (option `part`), sans icône d’historique de champ (retirée le 27 octobre 2026), `SectionActionBar` avec
 soumission native et reprise de conflit ; puis « Zone dangereuse »
 (`PersonDangerZone` sur `EntityDangerZone`). Les dates de la fiche sont dans
@@ -64,6 +67,20 @@ le bandeau, pas en pied de carte.
   les drapeaux à l’intérieur ? »), chaque pays porte son drapeau
   ([préférence](../../../design/preferences.md)).
 
+- 10 novembre 2026 (« pourquoi ancien pseudo et pas juste autre pseudo ? »,
+  puis « ok go ») : carte « Autres pseudos » sous « Pseudo et nom ». Un autre
+  pseudo couvre l’ancien, le compte secondaire (celui d’un banni qui revient)
+  et le surnom : pseudo, précision facultative (suggestions « Ancien pseudo »,
+  « Compte secondaire », « Surnom » ; « Pseudo en jeu » retiré le même jour,
+  un nom en jeu étant un compte de jeu dans Coordonnées) et
+  « Utilisé jusqu’à » facultatif, à l’année, au mois ou au jour. Saisis à la
+  main, y compris ceux d’avant le site ; un changement de pseudo n’en crée pas
+  (le journal garde déjà l’ancien). Vingt au plus, jamais deux fois le même ni
+  le pseudo principal. Ils ont leur propre version : en ajouter un ne met pas
+  en conflit une identité en cours de modification. Lus avec `persons:view`,
+  écrits avec `persons:update`. La recherche du Répertoire les trouve et la
+  ligne dit « Autre pseudo : … » ; le choix d’une fiche (passage,
+  représentant) aussi.
 - 27 octobre 2026 : le propriétaire demande une revue de l’onglet, puis « ok
   go » sur quatre points. Deux cartes titrées nommées d’après leurs champs
   (aucune ne répète l’onglet) ; pseudo, prénom et nom sur une ligne à partir de
@@ -83,7 +100,9 @@ licence en a besoin.
 ## Traces dans le journal
 
 « Fiche modifiée », rubrique Identité : pseudo, prénom, nom, date de naissance
-et nationalité, valeurs chiffrées, lues avec `persons:view`.
+et nationalité, puis « Autre pseudo », « Précision » et « Jusqu’à » de chaque
+autre pseudo à l’ajout, la correction et la suppression ; valeurs chiffrées,
+lues avec `persons:view`.
 
 ## Références
 
@@ -93,7 +112,8 @@ et nationalité, valeurs chiffrées, lues avec `persons:view`.
 ## Historique
 
 - 19 octobre 2026 : création de la fiche lors de la réorganisation documentaire.
-- 10 novembre 2026 : nationalité ajoutée (carte « Naissance et nationalité »).
+- 10 novembre 2026 : nationalité ajoutée (carte « Naissance et nationalité »),
+  puis carte « Autres pseudos ».
 
 ## Reprise — 22 octobre 2026
 

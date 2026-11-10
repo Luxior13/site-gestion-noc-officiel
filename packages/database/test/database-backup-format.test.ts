@@ -63,12 +63,12 @@ const validateLines = (
   return validator.finish();
 };
 
-test('validates the signed v12 format, ordered tables and exact counts', () => {
+test('validates the signed v13 format, ordered tables and exact counts', () => {
   const summary = validateLines(
     createBackupLines({ users: [{ id: 'user-1' }, { id: 'user-2' }] }),
   );
 
-  assert.equal(summary.manifest.formatVersion, 12);
+  assert.equal(summary.manifest.formatVersion, 13);
   assert.equal(summary.counts.users, 2);
   const tableNames: readonly string[] = DATABASE_BACKUP_TABLES.map(
     ({ tableName }) => tableName,
@@ -158,6 +158,7 @@ test('keeps the relatives of a person after every person', () => {
   };
   // A representative is a record of the Répertoire: both ends come first.
   assert.ok(at('Person') < at('PersonEmergencyContact'));
+  assert.ok(at('Person') < at('PersonOtherNickname'));
   assert.ok(at('Person') < at('PersonLegalGuardian'));
   const summary = validateLines(
     createBackupLines({
@@ -207,9 +208,9 @@ test('rejects truncated, reordered and count-divergent streams', () => {
 });
 
 test('rejects old manifests and unknown properties', () => {
-  // A v11 copy, from before the relatives, is refused rather than restored
-  // without them.
-  const oldManifest = { ...createManifest(), formatVersion: 11 };
+  // A v12 copy, from before the other pseudos, is refused rather than
+  // restored without them.
+  const oldManifest = { ...createManifest(), formatVersion: 12 };
   assert.throws(
     () =>
       new BackupStreamValidator().consume(

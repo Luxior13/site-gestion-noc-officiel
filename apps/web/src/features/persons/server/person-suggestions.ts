@@ -53,6 +53,12 @@ export const searchPersonSuggestions = async (
           { normalizedNickname: { contains: term } },
           { normalizedFirstName: { contains: term } },
           { normalizedLastName: { contains: term } },
+          // Another pseudo finds its record (10 November 2026).
+          {
+            otherNicknames: {
+              some: { normalizedNickname: { contains: term } },
+            },
+          },
         ],
       })),
     },

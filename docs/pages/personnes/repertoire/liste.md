@@ -50,6 +50,12 @@ un retour de fiche qui conservent le contexte.
   normalisés enregistrés suivent cette règle (`normalizePersonSearchValue`),
   sauf un nom fait seulement de symboles, gardé tel quel. Liste sans
   coordonnées complètes, seulement leurs compteurs.
+- 10 novembre 2026 : la recherche trouve aussi une fiche par un **autre
+  pseudo** (exact, début, ou contenu dès 3 lettres) ; quand le nom lui-même ne
+  correspond pas, la ligne dit « Autre pseudo : … » sous le nom, comme
+  « Trouvée par email, téléphone ou réseau ». L’**ID d’un compte Discord ou
+  Steam** tapé seul trouve aussi sa fiche (avec le droit des coordonnées), et
+  le nom d’un compte de jeu comme tout identifiant de réseau.
 - Retour de fiche : page, historique de curseurs, position et lien d’origine
   conservés en stockage de session (30 minutes, 64 curseurs au plus).
 - Filtres rapides (20 octobre 2026) : boutons à bascule `aria-pressed` en

@@ -69,16 +69,17 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         chantier: 'sport-teams',
         label: 'Identité',
         phase: null,
-        summary: 'Pseudo, nom, naissance, nationalité, zone dangereuse.',
-        upcoming: 'Les anciens pseudos, y compris ceux d’avant le site.',
+        summary:
+          'Pseudo, nom, autres pseudos (anciens, comptes secondaires, y compris ceux d’avant le site), naissance, nationalité, zone dangereuse.',
+        upcoming: 'Les jeux pratiqués.',
       },
       {
         chantier: 'sport-teams',
         label: 'Coordonnées',
         phase: null,
         summary:
-          'Emails, téléphones, réseaux sociaux, contacts d’urgence et représentants légaux (des fiches liées), et sur la fiche d’un représentant, qui il représente.',
-        upcoming: 'Adresse, identifiants de jeu.',
+          'Emails, téléphones, réseaux sociaux (l’ID du compte pour Discord), comptes de jeu par plateforme (Riot, Steam avec son ID…), contacts d’urgence et représentants légaux (des fiches liées), et sur la fiche d’un représentant, qui il représente.',
+        upcoming: 'L’adresse.',
       },
       {
         chantier: 'competitions',

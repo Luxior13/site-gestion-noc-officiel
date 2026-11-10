@@ -12,7 +12,7 @@
 | Gabarit visé | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections) |
 | État d’harmonisation | Aligné ; sélecteurs en variante par défaut depuis le 17 octobre 2026 — voir [Harmonisation](../../../design/harmonisation.md#état-par-page) |
 | Point d’entrée | [PersonCollectionsSection](../../../../apps/web/src/features/persons/components/PersonCollectionsSection.tsx) |
-| Contrôle d’accès | lecture `persons:view` et `persons:view_contact` ; écriture `persons:update_contact` (routes `emails`, `telephones`, `reseaux-sociaux`, `contacts-urgence`, `representants-legaux`, et `suggestions` pour chercher un représentant) |
+| Contrôle d’accès | lecture `persons:view` et `persons:view_contact` ; écriture `persons:update_contact` (routes `emails`, `telephones`, `reseaux-sociaux` pour les réseaux et les comptes de jeu, `contacts-urgence`, `representants-legaux`, et `suggestions` pour chercher un représentant) |
 | Chargement / erreur dédiés | section chargée à la demande / commune à la fiche |
 
 ## Rôle et tâches principales
@@ -83,6 +83,39 @@ compte aussi les contacts d’urgence et les représentants.
   service le dit, la base le refuse aussi), celle de la personne représentée
   emporte ses liens et ses contacts d’urgence. Pas de contrôle d’âge côté
   serveur : un majeur protégé peut avoir un représentant.
+- 10 novembre 2026 (« ok go ») : pour Discord, le profil prend le **nom
+  d’utilisateur** et l’**ID du compte** (17 à 20 chiffres) au lieu d’une URL.
+  L’ID ne change jamais, même quand le nom change : il reconnaît un banni qui
+  revient sous un autre nom. Rangé comme lien `https://discord.com/users/<ID>`
+  (un lien collé est accepté), donc l’unicité par fiche et l’alerte « figure
+  déjà sur une autre fiche » s’appliquent sans nouvelle table ; tout autre lien
+  Discord est refusé (« L’ID d’un compte Discord compte 17 à 20 chiffres »).
+  L’aide du champ dit où le trouver (Paramètres › Avancés › Mode développeur,
+  clic droit sur le profil › Copier l’identifiant de l’utilisateur). La ligne
+  montre le nom, puis « ID … » ; la copie prend l’ID ; la recherche du
+  Répertoire trouve la fiche par l’ID seul. Plusieurs comptes Discord restent
+  possibles, un principal. Le serveur Discord d’une personne n’est pas retenu
+  (il n’identifie pas la personne).
+- 10 novembre 2026 (« pour les pseudos en jeu, il faut bien sélectionner un
+  jeu, non ? », puis « ok go ») : carte **« Comptes de jeu »** après « Réseaux
+  sociaux ». Un nom en jeu est le compte d’une **plateforme**, pas d’un jeu
+  (un compte Riot joue à Valorant et à League of Legends) : on choisit la
+  plateforme (Riot Games, Steam, Epic Games, Battle.net, PlayStation Network,
+  Xbox, EA, Ubisoft Connect, FACEIT), puis le **nom du compte** (« Kaiz#EUW »
+  pour Riot), et pour **Steam** son **ID** (SteamID64, 17 chiffres commençant
+  par 7656119, rangé comme lien `https://steamcommunity.com/profiles/<ID>`),
+  comme l’ID Discord. Ce sont des profils de la fiche (`PersonSocialProfile`,
+  réseaux de type « jeu ») : mêmes droits, plafond commun de vingt, un
+  principal par plateforme, recherche et alerte de doublon sur une autre
+  fiche ; aucune migration (la base n’accepte que la forme de la clé). Icône
+  de la plateforme quand la marque existe (Steam, Battle.net, PlayStation,
+  Xbox), sinon une manette. La recherche par ID seul cherche à la fois
+  Discord et Steam. Le compteur de la liste du Répertoire compte encore ces
+  comptes avec les profils sociaux. Le même jour (« nom du compte est
+  obligatoire mais n’a pas la pastille ») : pour une plateforme sans ID, le
+  nom du compte est obligatoire seul, avec l’astérisque, l’URL facultative ;
+  pour Steam, Discord et les réseaux, l’un ou l’autre suffit, sans astérisque,
+  avec des messages qui reprennent les libellés.
 - 10 novembre 2026 : le menu « Pays » d’un téléphone et d’un contact d’urgence
   porte le drapeau de chaque pays, comme la nationalité
   ([préférence](../../../design/preferences.md)).

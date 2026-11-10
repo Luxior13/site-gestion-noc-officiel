@@ -2,6 +2,7 @@
 
 import {
   ExternalLink,
+  Gamepad2,
   Mail,
   Network,
   Phone,
@@ -32,7 +33,13 @@ import {
 import { ApiClientError } from '$utils/api.utils';
 
 import { mutatePersonChild } from '../person.api';
-import { getPersonSocialNetwork, PERSON_LIMITS } from '../person.constants';
+import {
+  getPersonSocialNetwork,
+  PERSON_LIMITS,
+  type PersonNetworkKind,
+  personNetworkKind,
+} from '../person.constants';
+import { accountIdFromUrl } from '../person.utils';
 import type {
   PersonDetail,
   PersonEmailItem,
@@ -58,6 +65,8 @@ type ChildItem = PersonEmailItem | PersonPhoneItem | PersonSocialProfileItem;
 type EditorState = {
   item: ChildItem | null;
   kind: ChildKind;
+  /** For a profile: of a social network, or a game account. */
+  networkKind?: PersonNetworkKind;
 } | null;
 
 type DeleteState = {
@@ -87,6 +96,13 @@ const ItemMetadata: FC<{ isPrimary: boolean; parts: string[] }> = ({
   </p>
 );
 
+/** « ID 123456789012345678 » for a Discord or Steam account, else nothing. */
+const accountIdLabel = (item: PersonSocialProfileItem): string | null => {
+  const id = accountIdFromUrl(item.networkKey, item.profileUrl);
+
+  return id ? `ID ${id}` : null;
+};
+
 /** The value a person reads for an item: address, number or profile. */
 const getChildItemDisplay = (item: ChildItem): string =>
   'email' in item
@@ -94,6 +110,7 @@ const getChildItemDisplay = (item: ChildItem): string =>
     : 'phone' in item
       ? formatPhoneForDisplay(item.phone, (item as PersonPhoneItem).countryCode)
       : ((item as PersonSocialProfileItem).identifier ??
+        accountIdLabel(item as PersonSocialProfileItem) ??
         (item as PersonSocialProfileItem).profileUrl ??
         'Profil');
 
@@ -157,8 +174,11 @@ const SocialRow: FC<{
   onEdit: () => void;
 }> = ({ canUpdate, item, onEdit }) => {
   const network = getPersonSocialNetwork(item.networkKey);
-  const visibleValue = item.identifier ?? item.profileUrl ?? 'Profil';
-  const copyValue = item.profileUrl ?? item.identifier;
+  // A Discord or Steam account shows its name, then its ID (10 November 2026).
+  const accountId = accountIdFromUrl(item.networkKey, item.profileUrl);
+  const visibleValue =
+    item.identifier ?? accountIdLabel(item) ?? item.profileUrl ?? 'Profil';
+  const copyValue = accountId ?? item.profileUrl ?? item.identifier;
 
   return (
     <li className="border-border-divider flex min-w-0 items-center gap-2 border-b py-2.5 last:border-0">
@@ -184,14 +204,33 @@ const SocialRow: FC<{
         </div>
         <ItemMetadata
           isPrimary={item.isPrimary}
-          parts={[network?.label ?? item.networkKey, item.label]}
+          parts={[
+            network?.label ?? item.networkKey,
+            ...(accountId && item.identifier ? [`ID ${accountId}`] : []),
+            item.label,
+          ]}
         />
       </div>
       <div className="flex shrink-0 items-center gap-1">
-        {canUpdate && <EditAction label="ce profil" onEdit={onEdit} />}
+        {canUpdate && (
+          <EditAction
+            label={
+              personNetworkKind(item.networkKey) === 'game'
+                ? 'ce compte'
+                : 'ce profil'
+            }
+            onEdit={onEdit}
+          />
+        )}
         {copyValue && (
           <CopyAction
-            label={item.profileUrl ? 'Lien du profil' : 'Identifiant'}
+            label={
+              accountId
+                ? 'ID du compte'
+                : item.profileUrl
+                  ? 'Lien du profil'
+                  : 'Identifiant'
+            }
             value={copyValue}
           />
         )}
@@ -227,6 +266,14 @@ const PersonCollectionsContent: FC<PersonCollectionsSectionProps> = ({
   const addEmailRef = useRef<HTMLButtonElement>(null);
   const addPhoneRef = useRef<HTMLButtonElement>(null);
   const addSocialRef = useRef<HTMLButtonElement>(null);
+  const addGameRef = useRef<HTMLButtonElement>(null);
+  // Game accounts have their own card (10 November 2026).
+  const socialProfiles = person.socialProfiles.filter(
+    (profile) => personNetworkKind(profile.networkKey) === 'social',
+  );
+  const gameAccounts = person.socialProfiles.filter(
+    (profile) => personNetworkKind(profile.networkKey) === 'game',
+  );
 
   const alternatives = ((): ChildItem[] => {
     if (!deleteState?.item.isPrimary) return [];
@@ -261,6 +308,9 @@ const PersonCollectionsContent: FC<PersonCollectionsSectionProps> = ({
     operationRef.current = true;
     setDeleteError(null);
     const deletedKind = deleteState.kind;
+    const deletedGame =
+      'networkKey' in deleteState.item &&
+      personNetworkKind(deleteState.item.networkKey) === 'game';
     setIsDeleting(true);
     setConflict(false);
     const controller = new AbortController();
@@ -296,7 +346,9 @@ const PersonCollectionsContent: FC<PersonCollectionsSectionProps> = ({
             ? addEmailRef.current
             : deletedKind === 'phone'
               ? addPhoneRef.current
-              : addSocialRef.current;
+              : deletedGame
+                ? addGameRef.current
+                : addSocialRef.current;
         target?.focus();
       });
     } catch (caught) {
@@ -456,7 +508,13 @@ const PersonCollectionsContent: FC<PersonCollectionsSectionProps> = ({
                 disabled={
                   person.socialProfiles.length >= PERSON_LIMITS.socialProfiles
                 }
-                onClick={() => setEditor({ item: null, kind: 'social' })}
+                onClick={() =>
+                  setEditor({
+                    item: null,
+                    kind: 'social',
+                    networkKind: 'social',
+                  })
+                }
                 size="sm"
                 type="button"
                 variant="outline"
@@ -466,20 +524,67 @@ const PersonCollectionsContent: FC<PersonCollectionsSectionProps> = ({
               </Button>
             ) : undefined
           }
-          count={person.socialProfiles.length}
+          count={socialProfiles.length}
           icon={<Network />}
           title="Réseaux sociaux"
         >
-          {person.socialProfiles.length === 0 ? (
+          {socialProfiles.length === 0 ? (
             <EmptyCollection>Aucun profil social renseigné.</EmptyCollection>
           ) : (
             <ul>
-              {person.socialProfiles.map((item) => (
+              {socialProfiles.map((item) => (
                 <SocialRow
                   canUpdate={canUpdate}
                   item={item}
                   key={item.id}
-                  onEdit={() => setEditor({ item, kind: 'social' })}
+                  onEdit={() =>
+                    setEditor({ item, kind: 'social', networkKind: 'social' })
+                  }
+                />
+              ))}
+            </ul>
+          )}
+        </CollectionCard>
+
+        {/* A platform's account, not a game's: one Riot account plays
+            several games (10 November 2026). */}
+        <CollectionCard
+          addAction={
+            canUpdate ? (
+              <Button
+                ref={addGameRef}
+                aria-label="Ajouter un compte de jeu"
+                disabled={
+                  person.socialProfiles.length >= PERSON_LIMITS.socialProfiles
+                }
+                onClick={() =>
+                  setEditor({ item: null, kind: 'social', networkKind: 'game' })
+                }
+                size="sm"
+                type="button"
+                variant="outline"
+              >
+                <Plus className="size-4" />
+                Ajouter
+              </Button>
+            ) : undefined
+          }
+          count={gameAccounts.length}
+          icon={<Gamepad2 />}
+          title="Comptes de jeu"
+        >
+          {gameAccounts.length === 0 ? (
+            <EmptyCollection>Aucun compte de jeu renseigné.</EmptyCollection>
+          ) : (
+            <ul>
+              {gameAccounts.map((item) => (
+                <SocialRow
+                  canUpdate={canUpdate}
+                  item={item}
+                  key={item.id}
+                  onEdit={() =>
+                    setEditor({ item, kind: 'social', networkKind: 'game' })
+                  }
                 />
               ))}
             </ul>
@@ -503,11 +608,14 @@ const PersonCollectionsContent: FC<PersonCollectionsSectionProps> = ({
               : editor.kind === 'phone'
                 ? person.phones.length === 0
                 : !person.socialProfiles.some(
-                    (profile) => profile.networkKey === 'discord',
+                    (profile) =>
+                      profile.networkKey ===
+                      (editor.networkKind === 'game' ? 'riot' : 'discord'),
                   )
           }
           item={editor.item}
           kind={editor.kind}
+          networkKind={editor.networkKind}
           onDelete={() => {
             if (!editor.item) return;
             const collection =

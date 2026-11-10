@@ -4,6 +4,7 @@ export type PersonDomainErrorCode =
   | 'PERSON_FEATURE_NOT_CONFIGURED'
   | 'PERSON_GUARDIAN_CONFLICT'
   | 'PERSON_HAS_PASSAGES'
+  | 'PERSON_NICKNAME_CONFLICT'
   | 'PERSON_NOT_FOUND'
   | 'PERSON_VERSION_CONFLICT'
   | 'PRIMARY_CONFLICT';
@@ -38,6 +39,9 @@ export const personErrors = {
       'PERSON_HAS_PASSAGES',
       `Cette fiche figure dans ${count > 1 ? `${count} passages` : 'un passage'} d’un Roster : elle reste dans le registre et ne se supprime pas.`,
     ),
+  /** Another pseudo already there, or the main one (10 November 2026). */
+  nicknameConflict: (message: string): PersonDomainError =>
+    new PersonDomainError('PERSON_NICKNAME_CONFLICT', message),
   notFound: (): PersonDomainError =>
     new PersonDomainError('PERSON_NOT_FOUND', 'Fiche introuvable'),
   primaryConflict: (message: string): PersonDomainError =>

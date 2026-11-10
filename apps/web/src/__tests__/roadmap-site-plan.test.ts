@@ -178,8 +178,12 @@ describe('planned pages and tabs', () => {
     // Both in place since 9 November 2026: the team's roster, then the structure's.
     expect(tab('Fiche équipe', 'Roster')?.phase).toBeNull();
     expect(tab('Bureau & staff', 'Effectif')?.phase).toBeNull();
+    // The other pseudos are in place (10 November 2026); the games next.
+    expect(tab('Fiche personne', 'Identité')?.summary).toContain(
+      'autres pseudos',
+    );
     expect(tab('Fiche personne', 'Identité')?.upcoming).toContain(
-      'anciens pseudos',
+      'jeux pratiqués',
     );
   });
 

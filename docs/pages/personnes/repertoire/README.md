@@ -59,12 +59,12 @@ structure » dans le journal (AC-32).
   saisissent dans le Roster des équipes (et plus tard l’Effectif de Bureau &
   staff) ; une fiche qui a un parcours ne se supprime plus, depuis le même jour
   ([registre historique](../../../domaines/registre-historique.md),
-  [cadrage](../../../propositions/membres-equipes-parcours.md)). Les anciens
-  pseudos dans Identité restent à construire.
+  [cadrage](../../../propositions/membres-equipes-parcours.md)). Les autres
+  pseudos sont dans Identité depuis le 10 novembre 2026.
 - **Compléments du 10 novembre 2026** : nationalité dans Identité, contacts
   d’urgence et représentants légaux dans Coordonnées ; la fiche d’un
   représentant ne se supprime pas tant qu’elle représente quelqu’un. Restent
-  l’adresse et les identifiants de jeu.
+  l’adresse ; les comptes de jeu (par plateforme) sont livrés le même jour.
 - **Points ouverts** : [registre REP](#points-ouverts) ; tous sont clos, REP-02
   (statut de structure calculé) depuis le 9 novembre 2026.
 
@@ -332,8 +332,9 @@ ne sont pas validés par ce banc visuel ; les limites ci-dessous restent datées
   `docs/propositions/sujets-futurs.md`.
 - Type de page : liste de gestion (retrouver, comparer, agir). Volume attendu :
   petit aujourd'hui, potentiellement plusieurs centaines/milliers en société.
-- Recherche par pseudo, prénom, nom, email, téléphone, identifiant ou URL de
-  réseau social ; mots d'identité dans n'importe quel ordre, accents/casse
+- Recherche par pseudo, autre pseudo (10 novembre 2026, la ligne dit « Autre
+  pseudo : … »), prénom, nom, email, téléphone, identifiant ou URL de réseau
+  social ou de compte de jeu, ou ID seul d’un compte Discord ou Steam ; mots d'identité dans n'importe quel ordre, accents/casse
   normalisés ; filtres de statut et absence de coordonnées ; tri nom / création / modification ;
   pagination par curseur de 25 lignes.
 - Accès : lecture `PERSONS.VIEW`, création `PERSONS.CREATE`. Contrôle serveur

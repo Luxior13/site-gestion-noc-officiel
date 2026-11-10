@@ -1,14 +1,20 @@
+import { faBattleNet } from '@fortawesome/free-brands-svg-icons/faBattleNet';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons/faDiscord';
 import { faFacebookF } from '@fortawesome/free-brands-svg-icons/faFacebookF';
 import { faInstagram } from '@fortawesome/free-brands-svg-icons/faInstagram';
 import { faLinkedinIn } from '@fortawesome/free-brands-svg-icons/faLinkedinIn';
+import { faPlaystation } from '@fortawesome/free-brands-svg-icons/faPlaystation';
+import { faSteam } from '@fortawesome/free-brands-svg-icons/faSteam';
 import { faTiktok } from '@fortawesome/free-brands-svg-icons/faTiktok';
 import { faTwitch } from '@fortawesome/free-brands-svg-icons/faTwitch';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons/faTwitter';
+import { faXbox } from '@fortawesome/free-brands-svg-icons/faXbox';
 import { faXTwitter } from '@fortawesome/free-brands-svg-icons/faXTwitter';
 import { faYoutube } from '@fortawesome/free-brands-svg-icons/faYoutube';
-import { Globe2 } from 'lucide-react';
+import { Gamepad2, Globe2 } from 'lucide-react';
 import React, { type FC } from 'react';
+
+import { personNetworkKind } from '../person.constants';
 
 const SOCIAL_NETWORK_ICONS = new Map([
   ['discord', faDiscord],
@@ -20,6 +26,11 @@ const SOCIAL_NETWORK_ICONS = new Map([
   ['youtube', faYoutube],
   ['facebook', faFacebookF],
   ['linkedin', faLinkedinIn],
+  // Game platforms (10 November 2026); the others take a controller.
+  ['steam', faSteam],
+  ['battlenet', faBattleNet],
+  ['playstation', faPlaystation],
+  ['xbox', faXbox],
 ]);
 
 type PersonSocialNetworkIconProps = {
@@ -38,8 +49,11 @@ export const PersonSocialNetworkIcon: FC<PersonSocialNetworkIconProps> = ({
   const definition = SOCIAL_NETWORK_ICONS.get(networkKey.trim().toLowerCase());
 
   if (!definition) {
+    const Fallback =
+      personNetworkKind(networkKey) === 'game' ? Gamepad2 : Globe2;
+
     return (
-      <Globe2 aria-hidden="true" className={className} focusable="false" />
+      <Fallback aria-hidden="true" className={className} focusable="false" />
     );
   }
 
