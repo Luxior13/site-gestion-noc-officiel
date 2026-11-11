@@ -75,7 +75,9 @@ export const organizationMissing = (): ServiceError =>
 const contactsLabel = (count: number): string =>
   count > 1 ? `ses ${count} contacts` : 'son contact';
 
-const WITH_COUNTS = { _count: { select: { contacts: true } } } as const;
+const WITH_COUNTS = {
+  _count: { select: { contacts: true, operations: true } },
+} as const;
 type OrganizationRow = Prisma.OrganizationGetPayload<{
   include: typeof WITH_COUNTS;
 }>;
@@ -93,6 +95,7 @@ const toItem = (row: OrganizationRow): OrganizationItem => ({
   id: row.id,
   kinds: row.kinds,
   name: row.name,
+  operationCount: row._count.operations,
   siretNumber: row.siretNumber,
   updatedAt: row.updatedAt.toISOString(),
   version: row.version,
@@ -340,8 +343,9 @@ export const updateOrganization = async (
 };
 
 /**
- * Deletes an organisation entered by mistake, its contacts with it. Nothing
- * else names an organisation yet; the operations will keep theirs.
+ * Deletes an organisation entered by mistake, its contacts with it. One
+ * that paid or was paid stays: refused here and by the base (`ON DELETE
+ * RESTRICT` of the operations).
  */
 export const deleteOrganization = async (
   id: string,
@@ -356,6 +360,10 @@ export const deleteOrganization = async (
     });
     if (!previous) throw organizationMissing();
     if (previous.version !== expectedVersion) throw organizationChanged();
+    if (previous._count.operations > 0)
+      throw serviceErrors.conflict(
+        'Cette organisation a des opérations : elle reste, pour l’historique de la trésorerie.',
+      );
     const result = await transaction.organization.deleteMany({
       where: { id, version: expectedVersion },
     });

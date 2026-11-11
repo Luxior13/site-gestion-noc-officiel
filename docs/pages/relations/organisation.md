@@ -20,7 +20,8 @@ Livrée le 11 novembre 2026 :
 
 1. En-tête : tuile, nom, pastilles des types, ligne « ldlc.com · 2 contacts »
    (« Aucun contact » sans site) ; onglets **Identité** puis **Contacts**
-   (avec leur nombre), point de brouillon sur Identité.
+   (avec leur nombre), point de brouillon sur Identité, puis **Règlements ↗**
+   (11 novembre 2026), pour qui consulte les opérations.
 2. **Identité**, modifiée sur place avec la barre d’enregistrement commune :
    carte « Identité » (Nom, Types en cases avec leur sens, au moins un) ;
    carte « Site, identifiants et adresse » (Site web, saisi « ldlc.com » et
@@ -39,6 +40,12 @@ Livrée le 11 novembre 2026 :
    celui de la fiche ; Fonction ; Email ; Pays du numéro et Téléphone,
    enregistré au format international. Supprimer à gauche, confirmé à part.
    Une fiche déjà reliée à l’organisation n’est pas proposée une seconde fois.
+5. **Règlements ↗** (11 novembre 2026), en lecture : la ligne « Les
+   règlements se saisissent dans Finances › Opérations : chaque ligne ouvre
+   son opération. » et « Ouvrir les opérations » ; la liste des opérations
+   qu’elle a payées ou reçues, avec recherche et filtres Entrées, Sorties.
+   Une organisation qui a des opérations ne se supprime plus : la zone
+   dangereuse le dit à la place du bouton.
 
 ## Traces dans le journal
 
@@ -61,7 +68,7 @@ nom), Nom, Fonction, Email, Téléphone. Le sujet « Contact : Léa Martin
   lien ; le créer ou le retirer demande ce droit.
 - Pas de relation datée sur la fiche : les dates d’un sponsoring sont celles
   de son accord, dans Partenariats (étape 7), et les échanges d’argent se
-  liront dans l’onglet Règlements ↗ avec les opérations.
+  lisent dans l’onglet Règlements ↗ (11 novembre 2026).
 - 50 contacts au plus par organisation, pour borner ce que charge la fiche.
 
 ## Points ouverts
@@ -77,7 +84,8 @@ supprimée, 50 contacts au plus, suppression en cascade et journal) ; parcours
 réel sur build de production : identité complétée sur place, contact par nom
 puis par fiche choisie dans les suggestions, numéro refusé sur son champ,
 journal filtré « Organisations » ; captures relues à 1 440 et 390 px, sans
-débordement ni erreur. Reprise avec l’onglet Règlements ↗ des opérations.
+débordement ni erreur. Onglet Règlements ↗ vérifié le même jour sur un
+build de production. Reprise avec les factures dans Règlements ↗.
 
 ## Historique
 

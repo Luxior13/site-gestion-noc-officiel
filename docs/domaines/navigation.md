@@ -4,14 +4,14 @@ Référence actualisée pendant la revue du 12 octobre 2026. Le catalogue des pr
 
 ## Navigation actuelle
 
-Onze entrées sont déclarées dans les sept pôles (11 novembre 2026). Leur visibilité dépend des accès de l’utilisateur. Les noms et routes actifs proviennent du registre des fonctionnalités.
+Douze entrées sont déclarées dans les sept pôles (11 novembre 2026). Leur visibilité dépend des accès de l’utilisateur. Les noms et routes actifs proviennent du registre des fonctionnalités.
 
 | Pôle actuel | Entrées actives | Placement |
 | --- | --- | --- |
 | Aujourd’hui | Mon travail `/` | Travail personnel |
 | Personnes | Répertoire `/personnes/repertoire` | Personnes et contacts de la structure |
 | Esport | Section Sections : Jeux `/esport/jeux` (8 novembre 2026) | Les jeux de la structure, une section par jeu, et leurs équipes sous chaque jeu ; la fiche équipe `/esport/equipes/[id]` garde « Jeux » comme entrée courante (`matchHrefs` de la fonctionnalité) |
-| Finances | Section Trésorerie : Comptes `/finances/comptes` (10 novembre 2026) | Les comptes bancaires, en ligne et caisses de chaque entité, avec leur solde de départ ; la fiche compte garde « Comptes » comme entrée courante ; pôle ouvert avec cette première page, entre Esport et Structure, thème `treasury` |
+| Finances | Section Trésorerie : Comptes `/finances/comptes` (10 novembre 2026), Opérations `/finances/operations` (11 novembre 2026) | Les comptes bancaires, en ligne et caisses de chaque entité, avec leur solde du jour, et en onglets les catégories et moyens de paiement ; l’argent reçu, versé ou passé d’un compte à l’autre, la fiche opération gardant « Opérations » comme entrée courante ; la fiche compte garde « Comptes » comme entrée courante ; pôle ouvert avec cette première page, entre Esport et Structure, thème `treasury` |
 | Relations | Section Annuaire : Organisations `/relations/organisations` (11 novembre 2026) | Sponsors, partenaires, fournisseurs, clients, organisateurs et financeurs publics dans une seule liste filtrée par type, et les personnes à y joindre ; la fiche organisation garde « Organisations » comme entrée courante ; pôle ouvert avec cette première page, entre Finances et Structure, thème `legal`, clé de pôle `legal` |
 | Structure | Section Organisation : Bureau & staff `/structure/bureau-staff` (9 novembre 2026), Entités `/structure/entites` (10 novembre 2026) | L’effectif de la structure hors des équipes (bureau, staff, bénévoles), ses anciens membres et ses fonctions ; pôle ouvert avec cette première page, entre Esport et Système |
 | Système | Section Administration : Utilisateurs `/systeme/utilisateurs`, Journal d’activité `/systeme/journal-activite`, Paramètres système `/systeme/parametres` ; section Projet : Feuille de route `/systeme/feuille-de-route` | Comptes, traçabilité, technique et plan produit |

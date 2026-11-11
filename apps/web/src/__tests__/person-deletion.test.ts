@@ -13,6 +13,8 @@ vi.mock('$features/persons/server/person-mutation-authorization', () => ({
 const mocks = vi.hoisted(() => {
   const transaction = {
     $queryRaw: vi.fn(),
+    // A record that paid or was paid stays (11 November 2026).
+    financialOperation: { count: vi.fn() },
     person: { deleteMany: vi.fn() },
     personDeletionTombstone: {
       create: vi.fn(),
@@ -84,6 +86,7 @@ describe('synchronous person deletion', () => {
       .mockResolvedValueOnce([{ deletedCount: 4n }]);
     mocks.transaction.person.deleteMany.mockResolvedValue({ count: 1 });
     mocks.transaction.personPassage.count.mockResolvedValue(0);
+    mocks.transaction.financialOperation.count.mockResolvedValue(0);
     mocks.transaction.personLegalGuardian.count.mockResolvedValue(0);
     mocks.transaction.personDeletionTombstone.create.mockResolvedValue({
       personId: 'person-1',

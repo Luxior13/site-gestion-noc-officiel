@@ -38,6 +38,7 @@ import {
   BLOCKED_ATTEMPT_PROOFS,
   BLOCKED_ATTEMPT_STEPS,
   FINANCIAL_ACCOUNT_FIELD_LABELS,
+  FINANCIAL_OPERATION_FIELD_LABELS,
   FUNCTION_FIELD_LABELS,
   GAME_FIELD_LABELS,
   JOURNAL_ACTION_LABELS,
@@ -50,6 +51,7 @@ import {
   PERSON_SECTION_LABELS,
   STEP_UP_FAILURE_REASONS,
   TEAM_FIELD_LABELS,
+  TREASURY_CHOICE_FIELD_LABELS,
   USER_FIELD_LABELS,
 } from './audit-journal.labels';
 
@@ -63,6 +65,8 @@ export type JournalRow = AuditLog & { fieldChanges: AuditFieldChange[] };
 type ReaderRights = {
   /** Balances and names of the accounts (10 November 2026). */
   canViewFinancialAccounts: boolean;
+  /** Amounts, labels and payers of the operations (11 November 2026). */
+  canViewOperations: boolean;
   /** Names, identifiers and contacts of the organisations (11 November 2026). */
   canViewOrganizations: boolean;
   canViewPersonContacts: boolean;
@@ -78,6 +82,7 @@ export const getReaderRights = (reader: JournalReader): ReaderRights => {
 
   return {
     canViewFinancialAccounts: can(PERMISSIONS.FINANCIAL_ACCOUNTS.VIEW),
+    canViewOperations: can(PERMISSIONS.OPERATIONS.VIEW),
     canViewOrganizations: can(PERMISSIONS.ORGANIZATIONS.VIEW),
     canViewPersonContacts: can(PERMISSIONS.PERSONS.VIEW_CONTACT),
     canViewPersons: can(PERMISSIONS.PERSONS.VIEW),
@@ -393,7 +398,12 @@ const typeLabelOf = (row: AuditLog): string => {
   if (row.category === 'TEAM') return 'Équipes';
   if (row.category === 'FUNCTION') return 'Fonctions';
   if (row.category === 'LEGAL_ENTITY') return 'Entités';
-  if (row.category === 'FINANCIAL_ACCOUNT') return 'Trésorerie';
+  if (
+    row.category === 'FINANCIAL_ACCOUNT' ||
+    row.category === 'FINANCIAL_OPERATION' ||
+    row.category === 'TREASURY_CHOICE'
+  )
+    return 'Trésorerie';
   if (row.category === 'ORGANIZATION') return 'Organisations';
   if (row.stream === 'AUTHENTICATION' || row.stream === 'SECURITY')
     return 'Sécurité';
@@ -474,6 +484,20 @@ const subjectOf = (
       typeof metadata.accountName === 'string'
       ? `Compte : ${metadata.accountName}`
       : 'Compte financier';
+  // An operation's label and amount stay with who may see the operations.
+  if (row.category === 'FINANCIAL_OPERATION')
+    return rights.canViewOperations &&
+      typeof metadata.operationLabel === 'string'
+      ? `Opération : ${metadata.operationLabel}`
+      : 'Opération';
+  // « Catégorie de sortie : Matériel », « Moyen de paiement : Carte ».
+  if (
+    row.category === 'TREASURY_CHOICE' &&
+    typeof metadata.listLabel === 'string'
+  )
+    return typeof metadata.choiceName === 'string'
+      ? `${metadata.listLabel} : ${metadata.choiceName}`
+      : metadata.listLabel;
   // An organisation and its contacts stay with who may see the organisations.
   if (row.category === 'ORGANIZATION')
     return organizationSubject(row, metadata, rights.canViewOrganizations);
@@ -582,17 +606,30 @@ export const projectJournalEvent = (
                         ),
                         rights.canViewFinancialAccounts,
                       )
-                    : row.category === 'ORGANIZATION'
+                    : row.category === 'FINANCIAL_OPERATION'
                       ? maskUnlessAllowed(
                           projectReadableChanges(
                             metadata,
-                            row.action.startsWith('ORGANIZATION_CONTACT_')
-                              ? ORGANIZATION_CONTACT_FIELD_LABELS
-                              : ORGANIZATION_FIELD_LABELS,
+                            FINANCIAL_OPERATION_FIELD_LABELS,
                           ),
-                          rights.canViewOrganizations,
+                          rights.canViewOperations,
                         )
-                      : projectUserChanges(row, metadata, rights);
+                      : row.category === 'TREASURY_CHOICE'
+                        ? projectReadableChanges(
+                            metadata,
+                            TREASURY_CHOICE_FIELD_LABELS,
+                          )
+                        : row.category === 'ORGANIZATION'
+                          ? maskUnlessAllowed(
+                              projectReadableChanges(
+                                metadata,
+                                row.action.startsWith('ORGANIZATION_CONTACT_')
+                                  ? ORGANIZATION_CONTACT_FIELD_LABELS
+                                  : ORGANIZATION_FIELD_LABELS,
+                              ),
+                              rights.canViewOrganizations,
+                            )
+                          : projectUserChanges(row, metadata, rights);
 
   return {
     actor:

@@ -14,7 +14,7 @@ Décisions du propriétaire du 7 novembre 2026, qui remplacent le plan du 9 octo
 
 ## État réel et lecture du plan
 
-Les comptes et leur sécurité, le répertoire, les paramètres techniques, le journal d’activité et la page Jeux, la fiche de chaque jeu, les équipes de chaque jeu et leur fiche (pôle Esport, 8 novembre 2026), leur Roster, le Parcours d’une fiche et Bureau & staff (pôle Structure, 9 novembre 2026), les entités (page Entités et fiche de chaque entité) et les comptes (pôle Finances, 10 novembre 2026), les organisations et leurs contacts (pôle Relations, 11 novembre 2026) existent. Les paramètres actuels ne constituent pas un profil juridique métier. La navigation rapide de l’en-tête donne un accès direct aux pages autorisées ; elle ne parcourt pas encore de dossiers métier. Le module partenaires a été retiré le 21 septembre 2026 et le module notifications le 9 octobre 2026. Les migrations historiques ne prouvent pas qu’un modèle ou un écran est encore présent.
+Les comptes et leur sécurité, le répertoire, les paramètres techniques, le journal d’activité et la page Jeux, la fiche de chaque jeu, les équipes de chaque jeu et leur fiche (pôle Esport, 8 novembre 2026), leur Roster, le Parcours d’une fiche et Bureau & staff (pôle Structure, 9 novembre 2026), les entités (page Entités et fiche de chaque entité) et les comptes (pôle Finances, 10 novembre 2026), les organisations et leurs contacts (pôle Relations, 11 novembre 2026), les opérations, leurs catégories et moyens de paiement et le solde du jour de chaque compte (11 novembre 2026) existent. Les paramètres actuels ne constituent pas un profil juridique métier. La navigation rapide de l’en-tête donne un accès direct aux pages autorisées ; elle ne parcourt pas encore de dossiers métier. Le module partenaires a été retiré le 21 septembre 2026 et le module notifications le 9 octobre 2026. Les migrations historiques ne prouvent pas qu’un modèle ou un écran est encore présent.
 
 - La feuille de route ne décrit que **ce qui reste à construire** (décision du propriétaire du 8 novembre 2026 : « tout ce qui est déjà en place peut être retiré »). Un chantier sur un module existant ne nomme que son reste à faire ; une page ou un onglet déjà livrés n’apparaissent sur la page que pour ce qu’un chantier doit encore leur ajouter.
 - Le plan se lit par pôle. Les étapes sont un **ordre suggéré** pour aider à l’implémentation, sans dates promises : **le propriétaire choisit le prochain chantier** (décision du 7 novembre 2026 : « je ne veux pas que ce soit par étape mais par pôle ; les étapes, c’est plus pour aider à l’implémentation, mais c’est moi qui choisirais »). Chaque étape reste courte et livre un ensemble utilisable.
@@ -133,7 +133,7 @@ quitte le plan et les opérations pourront nommer qui paie ou reçoit
 
 - **Entités juridiques & périmètres** (Structure) : Fiche de chaque entité : paramètres fiscaux datés, dirigeants ↗ lus dans Bureau & staff, assurances et finances ↗. La page Entités, l’identité de chaque entité, l’entité principale et la règle de déduction pour les comptes sont livrées le 10 novembre 2026.
 - **Comptes & rapprochement** (Finances) : Relevés et rapprochement de chaque compte. Les comptes bancaires, en ligne et caisses, leur entité titulaire et leur solde de départ sont livrés le 10 novembre 2026, en euro seulement ; les exercices passent à Contrôles & clôtures, les dates suffisant jusque-là (proposition acceptée le même jour).
-- **Opérations & règlements** (Finances) : Encaissements, décaissements, virements, catégories, moyens de paiement, justificatifs et affectations aux sommes dues ; lien vers une personne, une organisation, un tournoi ou une adhésion.
+- **Opérations & règlements** (Finances) : Justificatifs de chaque opération (avec le stockage des fichiers), onglets Finances ↗ des fiches jeu, équipe et personne. Les entrées, sorties, virements, catégories, moyens de paiement, le solde du jour, l’onglet Mouvements d’un compte et Règlements ↗ d’une organisation sont livrés le 11 novembre 2026 (« ok go »), saisis à un seul endroit, sans validation par le trésorier.
 
 ## 4. Trésorerie complète
 
@@ -307,18 +307,19 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 
 | Page | Onglet | Contenu | État |
 | --- | --- | --- | --- |
-| **Comptes** | — | Première page du pôle Finances (10 novembre 2026). À venir (étape 3) : la colonne « Solde » du jour à la place du solde de départ (11 novembre 2026), et les onglets Catégories et Moyens de paiement, avec les opérations ; (étape 4) Exercices avec la clôture. | Livré |
-|  | Comptes | Chaque compte bancaire, compte en ligne ou caisse, avec son établissement, son solde de départ et sa date dessous, ouvert ou clôturé ; l’entité titulaire seulement quand il y en a plusieurs ; ajout en fenêtre, l’entité déduite de la date. | Livré |
+| **Comptes** | — | Première page du pôle Finances (10 novembre 2026). À venir (étape 4) : Exercices avec la clôture. | Livré |
+|  | Comptes | Chaque compte bancaire, compte en ligne ou caisse, avec son établissement et son solde du jour (11 novembre 2026), ouvert ou clôturé ; l’entité titulaire seulement quand il y en a plusieurs ; ajout en fenêtre, l’entité déduite de la date. | Livré |
 |  | Exercices | Exercices ouverts et clôturés ; la clôture se fait ici. | Étape 4 |
-|  | Catégories | Catégories d’opération : cotisations, sponsoring, cashprize… | Étape 3 |
-|  | Moyens de paiement | Virement, espèces, carte… | Étape 3 |
-| **Fiche compte** | — | Ouverte par le nom d’un compte. À venir (étape 3) : les onglets Mouvements, avec les opérations, et Relevés. | Livré |
-|  | Mouvements | Opérations de ce compte et son solde du jour. | Étape 3 |
+|  | Catégories | Catégories d’opération en deux blocs, Entrées et Sorties, rangées par glisser-déposer, courantes en un clic (11 novembre 2026). | Livré |
+|  | Moyens de paiement | Virement, carte, espèces, chèque, PayPal…, même liste (11 novembre 2026). | Livré |
+| **Fiche compte** | — | Ouverte par le nom d’un compte ; son solde du jour sous son nom. À venir (étape 3) : l’onglet Relevés. | Livré |
+|  | Mouvements | Opérations de ce compte, signées vues de lui, et « Ajouter une opération » sur ce compte (11 novembre 2026). | Livré |
 |  | Relevés | Relevés et rapprochement. | Étape 3 |
 |  | Informations | Nom, type, établissement, solde de départ et sa date, clôture, modifiés sur place ; l’entité titulaire, fixée à l’ouverture, en lecture. | Livré |
-| **Opérations** | — | Liste, sans onglet : encaissements, décaissements et virements. Recettes et dépenses sont des filtres. | Étape 3 |
-| **Fiche opération** | Opération | Date, montant, moyen de paiement, compte, catégorie ; lien vers une personne, un jeu ou une équipe, une organisation, un tournoi ou une adhésion. | Étape 3 |
-|  | Affectations | À quelles sommes dues elle se rapporte. | Étape 3 |
+| **Opérations** | — | Liste, sans onglet : entrées, sorties et virements, la plus récente en premier ; recherche, filtres par sens (recettes et dépenses sont des filtres) ; ajout en fenêtre (11 novembre 2026). | Livré |
+| **Fiche opération** | — | Ouverte par une ligne d’opération. À venir (étape 3) : l’onglet Justificatifs ; (étape 4) Affectations avec les factures. | Livré |
+|  | Opération | Date, montant, compte(s), libellé, catégorie, moyen de paiement, payé par ou à, équipe ou jeu, note, modifiés sur place, le sens fixé (11 novembre 2026). À venir : le lien vers un tournoi ou une adhésion, avec eux. | Livré |
+|  | Affectations | À quelles sommes dues elle se rapporte. | Étape 4 |
 |  | Justificatifs | Pièces de l’opération. | Étape 3 |
 | **Factures** | — | Liste, sans onglet : ventes et achats, avec leur échéance. | Étape 4 |
 | **Fiche facture** | Facture | Lignes, montants, échéance, état. | Étape 4 |
@@ -346,10 +347,10 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 | Page | Onglet | Contenu | État |
 | --- | --- | --- | --- |
 | **Organisations** | — | Liste, sans onglet, par nom : sponsors, partenaires, fournisseurs, clients, organisateurs et financeurs publics ensemble, plusieurs types par organisation ; recherche, filtres rapides par type ; ajout en fenêtre (nom, types). | Livré |
-| **Fiche organisation** | — | Ouverte par le nom d’une organisation. À venir (étape 3) : l’onglet Règlements ↗ avec les opérations ; (étape 7) Contrats ↗. | Livré |
+| **Fiche organisation** | — | Ouverte par le nom d’une organisation. À venir (étape 4) : ses factures dans Règlements ↗ ; (étape 7) Contrats ↗. | Livré |
 |  | Identité | Nom, types, site web, SIRET et adresse, modifiés sur place. | Livré |
 |  | Contacts | Les personnes à joindre : nom, ou fiche du Répertoire pour qui en a déjà une, fonction, email, téléphone. | Livré |
-|  | Règlements ↗ | Factures et opérations liées. Lu ici, se modifie dans Finances. | Étape 3 |
+|  | Règlements ↗ | Les opérations qu’elle a payées ou reçues, en lecture (11 novembre 2026) ; ses factures avec la facturation. Lu ici, se modifie dans Finances. | Livré |
 |  | Contrats ↗ | Contrats et partenariats en cours et passés. Lu ici, se modifie dans Contrats et Partenariats. | Étape 7 |
 | **Partenariats** | — | Liste, sans onglet : opportunités et accords. | Étape 7 |
 | **Fiche partenariat** | Accord | Parties, équipe ou jeu soutenu (facultatif), période, contreparties, état. | Étape 7 |

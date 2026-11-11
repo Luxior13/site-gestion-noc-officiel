@@ -405,6 +405,29 @@ pendant l’écriture). Le journal montre à tout lecteur qu’un compte a chang
 mais son nom et ses valeurs seulement avec `financial_accounts:view`
 (« Compte financier », « Valeur masquée »).
 
+### Opérations
+
+Page Opérations du pôle Finances, livrée le 11 novembre 2026 (« ok go »). Le
+bureau saisit l’argent, pas seulement le trésorier, sans validation : deux
+permissions, comme les autres pages ; preset `false` pour USER et `true` pour
+ADMIN ; le compte racine les possède implicitement. Rangées dans l’éditeur
+sous Finances › Opérations.
+
+| Clé canonique | Action couverte | Dépend de | Risque | Step-up à l'usage |
+| --- | --- | --- | --- | --- |
+| `operations:view` | voir les opérations, leurs montants, leur catégorie et qui a payé ou reçu, ici, dans l’onglet Mouvements d’un compte et Règlements ↗ d’une organisation ; lire leurs valeurs dans le journal | — | sensible | Non |
+| `operations:manage` | saisir, corriger ou supprimer une entrée, une sortie ou un virement | `operations:view` | sensible | Non |
+
+La fiche du Répertoire qui a payé ou reçu suit `persons:view`, comme pour un
+contact d’organisation : sans ce droit, une opération dit qu’une fiche est
+liée et la garde ; la relier ou la délier le demande. Les catégories et moyens
+de paiement se lisent avec `financial_accounts:view` ou `operations:view`, et
+se tiennent avec `financial_accounts:manage` (onglets de la page Comptes). Le
+solde du jour d’un compte se lit avec `financial_accounts:view`, sans le
+détail des opérations. Chaque mutation relit le droit dans sa transaction et
+verrouille ses comptes en partage (`FOR SHARE`), pour que leur période ne
+bouge pas pendant l’écriture.
+
 ### Organisations
 
 Page Organisations, première du pôle Relations (`legal` dans
@@ -487,6 +510,7 @@ pas en droits délégables individuellement.
 | `/esport/jeux/[id]`                                  | `games:view` pour lire le jeu et ses fonctions ; `games:manage` pour les modifier (`/api/jeux/[id]/fonctions`) ; le nombre d’équipes avec `teams:view` |
 | `/structure/entites` et `/structure/entites/[id]`    | `entities:view` pour lire (`/api/structure/entites`) ; `entities:manage` pour ajouter, modifier, rendre principale ou supprimer ; l’API refait le contrôle dans sa transaction |
 | `/finances/comptes` et `/finances/comptes/[id]`      | `financial_accounts:view` pour lire les comptes et les entités qui peuvent en tenir (`/api/finances/comptes`) ; `financial_accounts:manage` pour ouvrir, modifier, clôturer ou supprimer ; l’API refait le contrôle dans sa transaction |
+| `/finances/operations` et `/finances/operations/[id]` | `operations:view` pour lire (`/api/finances/operations`) ; `operations:manage` pour saisir, modifier ou supprimer, et lire ce que propose la fenêtre (`/api/finances/operations/choix`) ; `persons:view` en plus pour relier une fiche du Répertoire ; l’API refait le contrôle dans sa transaction |
 | `/relations/organisations` et `/relations/organisations/[id]` | `organizations:view` pour lire (`/api/relations/organisations`) ; `organizations:manage` pour ajouter, modifier, supprimer une organisation et gérer ses contacts ; `persons:view` en plus pour relier ou voir la fiche du Répertoire d’un contact ; l’API refait le contrôle dans sa transaction |
 | `/structure/bureau-staff`                            | `staff:view` pour lire l’Effectif, les anciens membres et les fonctions (`/api/structure`) ; `staff:manage` pour les modifier ; la recherche d’une fiche (`/api/passages/personnes`) accepte `teams:manage` ou `staff:manage` ; l’API refait le contrôle dans sa transaction |
 | `/systeme/utilisateurs`                       | `users:view`                                                                                                                                               |

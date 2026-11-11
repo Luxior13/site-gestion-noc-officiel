@@ -291,6 +291,13 @@ enum AuditAction {
   ORGANIZATION_CONTACT_CREATE
   ORGANIZATION_CONTACT_UPDATE
   ORGANIZATION_CONTACT_DELETE
+  FINANCIAL_OPERATION_CREATE
+  FINANCIAL_OPERATION_UPDATE
+  FINANCIAL_OPERATION_DELETE
+  TREASURY_CHOICE_CREATE
+  TREASURY_CHOICE_UPDATE
+  TREASURY_CHOICE_DELETE
+  TREASURY_CHOICE_REORDER
   /// Historical only. The partner module was removed from the application on
   /// 2026-09-21; these values stay declared so older journal entries remain
   /// readable. No code produces them anymore.
@@ -321,6 +328,8 @@ enum AuditCategory {
   LEGAL_ENTITY
   FINANCIAL_ACCOUNT
   ORGANIZATION
+  FINANCIAL_OPERATION
+  TREASURY_CHOICE
   /// Historical only, kept for the same reason as `AuditAction.PARTNER_*`.
   PARTNER
 }
@@ -470,6 +479,7 @@ model Person {
   guardianOf           PersonLegalGuardian[]    @relation("Guardian")
   passages             PersonPassage[]
   organizationContacts OrganizationContact[]
+  financialOperations  FinancialOperation[]
 
   @@index([createdAt, id])
   @@index([updatedAt, id])
@@ -668,6 +678,7 @@ model Game {
   updatedAt            DateTime              @updatedAt
   teams                Team[]
   functions            MemberFunction[]
+  financialOperations  FinancialOperation[]
   esportScopeItems     UserEsportScopeItem[]
 
   @@index([isActive, position])
@@ -693,8 +704,9 @@ model Team {
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
-  passages         PersonPassage[]
-  esportScopeItems UserEsportScopeItem[]
+  passages            PersonPassage[]
+  esportScopeItems    UserEsportScopeItem[]
+  financialOperations FinancialOperation[]
 
   @@unique([gameId, normalizedName])
   @@index([gameId, isActive, position])
@@ -834,8 +846,89 @@ model FinancialAccount {
   version             Int                  @default(1)
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
+  operations          FinancialOperation[] @relation("OperationAccount")
+  incomingTransfers   FinancialOperation[] @relation("OperationToAccount")
 
   @@unique([entityId, normalizedName])
+}
+
+enum TreasuryChoiceKind {
+  INCOME_CATEGORY
+  EXPENSE_CATEGORY
+  PAYMENT_METHOD
+}
+
+/// A value of a list of the treasury, kept on the site (11 November 2026): a
+/// category of money received or paid, or a payment method; ranked by hand
+/// within its kind, inactive values still choosable. Its kind stays once an
+/// operation uses it (trigger `TreasuryChoice_kind_check`, absent here).
+model TreasuryChoice {
+  id                 String               @id @default(cuid())
+  kind               TreasuryChoiceKind
+  name               String               @db.VarChar(60)
+  normalizedName     String               @db.VarChar(120)
+  position           Int                  @default(0)
+  isActive           Boolean              @default(true)
+  version            Int                  @default(1)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  categoryOperations FinancialOperation[] @relation("OperationCategory")
+  paymentOperations  FinancialOperation[] @relation("OperationPaymentMethod")
+
+  @@unique([kind, normalizedName])
+  @@index([kind, position])
+}
+
+enum FinancialOperationKind {
+  INCOME
+  EXPENSE
+  TRANSFER
+}
+
+/// Money received, paid, or moved between two accounts of one entity (11
+/// November 2026). The amount is positive, in euro cents: the kind gives the
+/// sign. A transfer has no label, category, payer nor team; the others have a
+/// label and a category of their kind. Its accounts' periods cover its day
+/// (trigger `FinancialOperation_check` and the checks of the migration,
+/// absent here).
+model FinancialOperation {
+  id              String                 @id @default(cuid())
+  kind            FinancialOperationKind
+  occurredOn      DateTime               @db.Date
+  amountCents     Int
+  accountId       String
+  account         FinancialAccount       @relation("OperationAccount", fields: [accountId], references: [id], onDelete: Restrict)
+  toAccountId     String?
+  toAccount       FinancialAccount?      @relation("OperationToAccount", fields: [toAccountId], references: [id], onDelete: Restrict)
+  label           String?                @db.VarChar(120)
+  categoryId      String?
+  category        TreasuryChoice?        @relation("OperationCategory", fields: [categoryId], references: [id], onDelete: Restrict)
+  paymentMethodId String?
+  paymentMethod   TreasuryChoice?        @relation("OperationPaymentMethod", fields: [paymentMethodId], references: [id], onDelete: Restrict)
+  organizationId  String?
+  organization    Organization?          @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  personId        String?
+  person          Person?                @relation(fields: [personId], references: [id], onDelete: Restrict)
+  teamId          String?
+  team            Team?                  @relation(fields: [teamId], references: [id], onDelete: Restrict)
+  gameId          String?
+  game            Game?                  @relation(fields: [gameId], references: [id], onDelete: Restrict)
+  note            String?                @db.VarChar(500)
+  /// Label and note normalised for the site's search.
+  searchText      String                 @default("") @db.VarChar(700)
+  version         Int                    @default(1)
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+
+  @@index([occurredOn(sort: Desc), createdAt(sort: Desc)])
+  @@index([accountId])
+  @@index([toAccountId])
+  @@index([categoryId])
+  @@index([paymentMethodId])
+  @@index([organizationId])
+  @@index([personId])
+  @@index([teamId])
+  @@index([gameId])
 }
 
 /// What an organisation is to the structure (11 November 2026); several at
@@ -863,6 +956,7 @@ model Organization {
   createdAt      DateTime              @default(now())
   updatedAt      DateTime              @updatedAt
   contacts       OrganizationContact[]
+  operations     FinancialOperation[]
 }
 
 /// A person to reach at an organisation. Linked to a record of the Répertoire

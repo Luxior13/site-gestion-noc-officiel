@@ -10,6 +10,8 @@ export type OrganizationItem = Readonly<{
   /** In the order of `ORGANIZATION_KINDS`, each once. */
   kinds: readonly OrganizationKind[];
   name: string;
+  /** Operations it paid or was paid: an organisation that has some stays. */
+  operationCount: number;
   siretNumber: string | null;
   updatedAt: string;
   version: number;

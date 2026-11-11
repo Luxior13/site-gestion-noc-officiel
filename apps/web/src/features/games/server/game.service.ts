@@ -386,6 +386,16 @@ export const deleteGame = async (
       if (!previous) throw gameMissing();
       if (previous.version !== expectedVersion) throw gameChanged();
       if (previous._count.teams > 0) throw gameHasTeams(previous._count.teams);
+      // Money spent for the whole game stays in the treasury (11 November
+      // 2026; `FinancialOperation_gameId_fkey` refuses it too).
+      if (
+        (await transaction.financialOperation.count({
+          where: { gameId: id },
+        })) > 0
+      )
+        throw serviceErrors.conflict(
+          'Ce jeu a des opérations : rendez-le inactif plutôt que de le supprimer.',
+        );
       const functions = await transaction.memberFunction.findMany({
         orderBy: { name: 'asc' },
         select: { name: true },

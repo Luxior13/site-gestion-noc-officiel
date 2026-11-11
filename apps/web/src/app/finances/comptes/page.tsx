@@ -10,6 +10,23 @@ export const metadata: Metadata = {
   title: pageTitle(FEATURES.financialAccounts.label),
 };
 
-export default function FinancialAccountsRoute(): React.ReactNode {
-  return <FinancialAccountsPage />;
+type FinancialAccountsRouteProps = {
+  searchParams?: Promise<{ section?: string | string[] }>;
+};
+
+export default async function FinancialAccountsRoute({
+  searchParams,
+}: FinancialAccountsRouteProps): Promise<React.ReactNode> {
+  const { section } = (await searchParams) ?? {};
+
+  // The accounts first; any other value opens them too.
+  return (
+    <FinancialAccountsPage
+      activeSection={
+        section === 'categories' || section === 'moyens-de-paiement'
+          ? section
+          : 'comptes'
+      }
+    />
+  );
 }

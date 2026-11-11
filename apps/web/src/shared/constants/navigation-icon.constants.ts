@@ -1,5 +1,6 @@
 import {
   Archive,
+  ArrowLeftRight,
   Bell,
   BriefcaseBusiness,
   Building2,
@@ -28,6 +29,8 @@ import {
 
 const NAVIGATION_ICONS = {
   Archive,
+  // Opérations, in the Finances pole (11 November 2026).
+  ArrowLeftRight,
   Bell,
   BriefcaseBusiness,
   // Organisations, in the Relations pole (11 November 2026).

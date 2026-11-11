@@ -345,9 +345,8 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   // First page of the Finances pole, delivered on 10 November 2026.
   {
     area: 'finance',
-    // What it still gains: categories and payment methods with the
-    // operations, then the fiscal years with the closing.
-    chantier: 'payments',
+    // What it still gains: the fiscal years, with the closing.
+    chantier: 'finance-controls',
     name: 'Comptes',
     phase: null,
     tabs: [
@@ -355,7 +354,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         label: 'Comptes',
         phase: null,
         summary:
-          'Premier onglet : chaque compte bancaire, compte en ligne ou caisse, avec son établissement, son solde de départ et sa date dessous, ouvert ou clôturé ; l’entité titulaire, seulement quand il y en a plusieurs ; ajout en fenêtre, l’entité déduite de la date et demandée seulement si plusieurs existent ce jour-là, puis sa fiche s’ouvre.',
+          'Premier onglet : chaque compte bancaire, compte en ligne ou caisse, avec son établissement et son solde du jour (rouge s’il est négatif), ouvert ou clôturé ; l’entité titulaire, seulement quand il y en a plusieurs ; ajout en fenêtre, l’entité déduite de la date et demandée seulement si plusieurs existent ce jour-là, puis sa fiche s’ouvre.',
       },
       {
         // With the closing (10 November 2026): until then, dates suffice.
@@ -365,36 +364,34 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         summary: 'Exercices ouverts et clôturés ; la clôture se fait ici.',
       },
       {
-        chantier: 'payments',
         label: 'Catégories',
-        phase: 3,
-        summary: 'Catégories d’opération : cotisations, sponsoring, cashprize…',
+        phase: null,
+        summary:
+          'Catégories d’opération en deux blocs, Entrées et Sorties (cotisations, sponsoring, gains de tournois ; matériel, déplacements…), rangées par glisser-déposer, actives ou non, avec leur nombre d’opérations ; ajout et modification en fenêtre, catégories courantes en un clic quand la liste est vide.',
       },
       {
-        chantier: 'payments',
         label: 'Moyens de paiement',
-        phase: 3,
-        summary: 'Virement, espèces, carte…',
+        phase: null,
+        summary:
+          'Virement, carte, espèces, chèque, PayPal…, rangés par glisser-déposer, actifs ou non ; même fenêtre, moyens courants en un clic.',
       },
     ],
-    upcoming:
-      'La colonne « Solde » du jour à la place du solde de départ, et les onglets Catégories et Moyens de paiement, avec les opérations ; puis Exercices avec la clôture.',
+    upcoming: 'L’onglet Exercices, avec la clôture.',
   },
   {
     area: 'finance',
-    // What it still gains: its movements with the operations, then its
-    // statements.
-    chantier: 'payments',
+    // What it still gains: its statements.
+    chantier: 'accounts',
     name: 'Fiche compte',
     phase: null,
     summary:
-      'Ouverte par le nom d’un compte sur la page Comptes, ou juste après son ajout ; sans barre d’onglets tant que seules ses informations sont en place.',
+      'Ouverte par le nom d’un compte sur la page Comptes, ou juste après son ajout ; son solde du jour sous son nom.',
     tabs: [
       {
-        chantier: 'payments',
         label: 'Mouvements',
-        phase: 3,
-        summary: 'Opérations de ce compte et son solde du jour.',
+        phase: null,
+        summary:
+          'Premier onglet, pour qui consulte les opérations : les opérations de ce compte, la plus récente en premier, signées vues de ce compte (un virement « + » à l’arrivée, « − » au départ) ; recherche, filtres par sens, « Ajouter une opération » sur ce compte.',
       },
       {
         chantier: 'accounts',
@@ -409,39 +406,47 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'Dernier onglet : nom, type, établissement, solde de départ et sa date, clôture, modifiés sur place ; l’entité titulaire, fixée à l’ouverture, en lecture ; zone dangereuse.',
       },
     ],
-    upcoming: 'Les onglets Mouvements, avec les opérations, et Relevés.',
+    upcoming: 'L’onglet Relevés, avec le rapprochement.',
   },
+  // Delivered on 11 November 2026.
   {
     area: 'finance',
-    chantier: 'payments',
     name: 'Opérations',
-    phase: 3,
+    phase: null,
     summary:
-      'Liste, sans onglet : encaissements, décaissements et virements. Recettes et dépenses sont des filtres.',
+      'Liste, sans onglet, la plus récente en premier : entrées en vert avec « + », sorties avec « − », virements entre deux comptes ; recherche par libellé ou note, filtres rapides par sens avec leurs nombres (recettes et dépenses sont des filtres), 25 par page ; ajout en fenêtre qui laisse la liste en place.',
   },
   {
     area: 'finance',
+    // What it still gains: its supporting documents and what it settles.
     chantier: 'payments',
     name: 'Fiche opération',
-    phase: 3,
+    phase: null,
+    summary:
+      'Ouverte par une ligne d’opération ; sans barre d’onglets tant que seule l’opération est en place.',
     tabs: [
       {
+        chantier: 'payments',
         label: 'Opération',
-        phase: 3,
+        phase: null,
         summary:
-          'Date, montant, moyen de paiement, compte, catégorie ; lien vers une personne, un jeu ou une équipe, une organisation, un tournoi ou une adhésion.',
+          'Date, montant, compte (deux pour un virement), libellé, catégorie de son sens, moyen de paiement, payé par ou à (une organisation ou une fiche du Répertoire), équipe ou jeu concerné, note ; modifiés sur place, le sens fixé à la saisie ; zone dangereuse.',
+        upcoming: 'Le lien vers un tournoi ou une adhésion, avec eux.',
       },
       {
+        chantier: 'invoices',
         label: 'Affectations',
-        phase: 3,
+        phase: 4,
         summary: 'À quelles sommes dues elle se rapporte.',
       },
       {
+        chantier: 'payments',
         label: 'Justificatifs',
         phase: 3,
         summary: 'Pièces de l’opération.',
       },
     ],
+    upcoming: 'Les onglets Justificatifs, puis Affectations avec les factures.',
   },
   {
     area: 'finance',

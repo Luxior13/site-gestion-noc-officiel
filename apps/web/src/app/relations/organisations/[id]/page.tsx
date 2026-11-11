@@ -27,7 +27,11 @@ export default async function OrganizationRoute({
   // Identité first; any other value opens it too.
   return (
     <OrganizationDetailPage
-      activeSection={query.section === 'contacts' ? 'contacts' : 'identite'}
+      activeSection={
+        query.section === 'contacts' || query.section === 'reglements'
+          ? query.section
+          : 'identite'
+      }
       organizationId={id}
     />
   );

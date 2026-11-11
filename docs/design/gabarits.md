@@ -186,6 +186,9 @@ Règles du 7 novembre 2026, vérifiées par `roadmap-site-plan.test.ts` sur le
   de sélecteur « à une date ». Une liste de choix garde sa carte titrée
   (PREF-Q11).
 - **Créer** : en fenêtre pour quelques champs, sur une page pour un long formulaire.
+  Une opération, saisie souvent à la suite et entière dans sa fenêtre, laisse
+  la liste en place après l’ajout ; sa fiche s’ouvre depuis sa ligne pour la
+  corriger (adaptation du 11 novembre 2026).
   Un élément qui a sa fiche s’ouvre sur elle, jamais dans une fenêtre : la fenêtre
   ne sert qu’à le créer, puis sa fiche s’ouvre (équipe, 8 novembre 2026).
 - **Ce que demande une création** (8 novembre 2026, pensé pour le long terme) :

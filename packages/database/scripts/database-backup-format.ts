@@ -6,8 +6,9 @@ import { Buffer } from 'node:buffer';
 // day: their other pseudos; v14, the same day: the games and teams an
 // account reaches in the Esport pole; v15, the same day: the legal entities
 // and their financial accounts. v16 (11 November 2026): the organisations and
-// their contacts.
-export const DATABASE_BACKUP_FORMAT_VERSION = 16;
+// their contacts; v17, the same day: the lists of the treasury and the
+// operations.
+export const DATABASE_BACKUP_FORMAT_VERSION = 17;
 export const DATABASE_BACKUP_BATCH_SIZE = 500;
 export const MAX_DATABASE_BACKUP_BYTES = 2 * 1024 * 1024 * 1024;
 export const MAX_BACKUP_LINE_BYTES = 16 * 1024 * 1024;
@@ -195,6 +196,20 @@ export const DATABASE_BACKUP_TABLES = [
     cursorKind: 'text',
     property: 'organizationContacts',
     tableName: 'OrganizationContact',
+  },
+  // The operations (11 November 2026) after all they name: accounts, the
+  // values of the lists, organisations, records, teams and games.
+  {
+    cursorColumn: 'id',
+    cursorKind: 'text',
+    property: 'treasuryChoices',
+    tableName: 'TreasuryChoice',
+  },
+  {
+    cursorColumn: 'id',
+    cursorKind: 'text',
+    property: 'financialOperations',
+    tableName: 'FinancialOperation',
   },
   {
     cursorColumn: 'id',

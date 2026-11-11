@@ -160,7 +160,11 @@ Sources : [décisions produit](../../propositions/feuille-de-route.md),
 - 11 novembre 2026 : chantier Organisations & contacts livré et retiré du
   catalogue, qui compte 36 chantiers ; pages Organisations et fiche
   organisation en place ; les anciennes adresses des partenaires passent au
-  chantier Partenariats & opportunités.
+  chantier Partenariats & opportunités. Le même jour, pages Opérations et
+  fiche opération, onglets Catégories et Moyens de paiement de Comptes,
+  Mouvements d’un compte et Règlements ↗ d’une organisation en place ; le
+  chantier Opérations & règlements garde les justificatifs et les onglets
+  Finances ↗ des fiches jeu, équipe et personne.
 - 25 octobre 2026 : la page reste ouverte à tout compte connecté et figure
   dans la section « Projet » du pôle Système, plus sous « Administration »
   ([DRT-04](../../audits/2026-10-25-coherence-des-droits.md)).

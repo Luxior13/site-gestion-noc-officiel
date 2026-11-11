@@ -9,6 +9,7 @@ export const PAGE_PATHS = {
   login: '/login',
   newPerson: '/personnes/repertoire/nouveau',
   newUser: '/systeme/utilisateurs/nouveau',
+  operations: '/finances/operations',
   organizations: '/relations/organisations',
   persons: '/personnes/repertoire',
   roadmap: '/systeme/feuille-de-route',
@@ -114,6 +115,9 @@ export const entityDetailPath = (id: string): string =>
 
 export const financialAccountDetailPath = (id: string): string =>
   `${PAGE_PATHS.financialAccounts}/${encodeURIComponent(id)}`;
+
+export const operationDetailPath = (id: string): string =>
+  `${PAGE_PATHS.operations}/${encodeURIComponent(id)}`;
 
 export const organizationDetailPath = (id: string): string =>
   `${PAGE_PATHS.organizations}/${encodeURIComponent(id)}`;

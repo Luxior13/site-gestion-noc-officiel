@@ -234,6 +234,8 @@ describe('navigation availability', () => {
       '/esport/jeux',
       // First page of the Finances pole (10 November 2026).
       '/finances/comptes',
+      // The money itself, beside the accounts (11 November 2026).
+      '/finances/operations',
       // First page of the Relations pole (11 November 2026).
       '/relations/organisations',
       // First page of the Structure pole (9 November 2026), then Entités.

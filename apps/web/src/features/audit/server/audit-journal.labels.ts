@@ -17,6 +17,9 @@ export const JOURNAL_ACTION_LABELS: Record<AuditAction, string> = {
   FINANCIAL_ACCOUNT_CREATE: 'Compte ouvert',
   FINANCIAL_ACCOUNT_DELETE: 'Compte supprimé',
   FINANCIAL_ACCOUNT_UPDATE: 'Compte modifié',
+  FINANCIAL_OPERATION_CREATE: 'Opération ajoutée',
+  FINANCIAL_OPERATION_DELETE: 'Opération supprimée',
+  FINANCIAL_OPERATION_UPDATE: 'Opération modifiée',
   FUNCTION_CREATE: 'Fonction ajoutée',
   FUNCTION_DELETE: 'Fonction supprimée',
   FUNCTION_REORDER: 'Ordre des fonctions modifié',
@@ -74,6 +77,10 @@ export const JOURNAL_ACTION_LABELS: Record<AuditAction, string> = {
   TEAM_DELETE: 'Équipe supprimée',
   TEAM_REORDER: 'Ordre des équipes modifié',
   TEAM_UPDATE: 'Équipe modifiée',
+  TREASURY_CHOICE_CREATE: 'Valeur de liste ajoutée',
+  TREASURY_CHOICE_DELETE: 'Valeur de liste supprimée',
+  TREASURY_CHOICE_REORDER: 'Ordre d’une liste modifié',
+  TREASURY_CHOICE_UPDATE: 'Valeur de liste modifiée',
   USER_ACTIVATE: 'Compte réactivé',
   USER_CREATE: 'Compte créé',
   USER_DEACTIVATE: 'Compte désactivé',
@@ -182,6 +189,34 @@ export const FINANCIAL_ACCOUNT_FIELD_LABELS: ReadonlyArray<
   ['openingBalance', 'Solde de départ'],
   ['openingOn', 'Date du solde de départ'],
   ['closedOn', 'Clôture'],
+];
+
+/** Operation fields recorded in `before` / `after`, in display order. */
+export const FINANCIAL_OPERATION_FIELD_LABELS: ReadonlyArray<
+  readonly [string, string]
+> = [
+  ['kind', 'Sens'],
+  ['occurredOn', 'Date'],
+  ['amount', 'Montant'],
+  ['account', 'Compte'],
+  ['toAccount', 'Vers le compte'],
+  ['label', 'Libellé'],
+  ['category', 'Catégorie'],
+  ['paymentMethod', 'Moyen de paiement'],
+  ['organization', 'Organisation'],
+  ['person', 'Fiche du Répertoire'],
+  ['assignment', 'Équipe ou jeu'],
+  ['note', 'Note'],
+];
+
+/** A value of a list of the treasury: category or payment method. */
+export const TREASURY_CHOICE_FIELD_LABELS: ReadonlyArray<
+  readonly [string, string]
+> = [
+  ['kind', 'Liste'],
+  ['name', 'Nom'],
+  ['isActive', 'Active'],
+  ['order', 'Ordre'],
 ];
 
 /** Organisation fields recorded in `before` / `after`, in display order. */

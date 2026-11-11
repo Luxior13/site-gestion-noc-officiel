@@ -24,7 +24,7 @@ mention « Suivi à compléter ».
 | Hors cadre | [Connexion](connexion.md) | `/login`, double authentification |
 | Compte personnel | [Mon compte](mon-compte/README.md) | Profil, Autorisations et Sécurité |
 | Esport | [esport/](esport/README.md) | Jeux : les sections de la structure et leurs équipes ; fiche jeu ; fiche équipe |
-| Finances | [finances/](finances/README.md) | Comptes : les comptes bancaires, en ligne et caisses, avec leur solde de départ ; fiche compte |
+| Finances | [finances/](finances/README.md) | Comptes : les comptes bancaires, en ligne et caisses, avec leur solde du jour, catégories et moyens de paiement ; fiche compte ; Opérations et fiche opération |
 | Personnes | [personnes/](personnes/README.md) | Répertoire : liste de référence, création, fiche à trois sections |
 | Relations | [relations/](relations/README.md) | Organisations : sponsors, partenaires, fournisseurs, clients, organisateurs et financeurs publics dans une seule liste ; fiche organisation (Identité, Contacts) |
 | Structure | [structure/](structure/README.md) | Bureau & staff : l’effectif de la structure, ses anciens membres et ses fonctions ; Entités et fiche entité |

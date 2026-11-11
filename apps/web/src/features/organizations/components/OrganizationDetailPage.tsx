@@ -1,7 +1,14 @@
 'use client';
 
-import { Building2, RefreshCw, Users } from 'lucide-react';
+import {
+  ArrowUpRight,
+  Building2,
+  ReceiptText,
+  RefreshCw,
+  Users,
+} from 'lucide-react';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, {
   type FC,
@@ -20,6 +27,8 @@ import { AccessDeniedState, PageState } from '$components/layout/PageState';
 import { FEATURES } from '$constants/feature-registry.constants';
 import { organizationDetailPath } from '$constants/routes.constants';
 import { useUser } from '$context/UserContext';
+import { getOperationCapabilities } from '$features/operations/operation.permissions';
+import { Button } from '$ui/button';
 import { PageCanvas, PageShell } from '$ui/page-shell';
 import { ApiClientError } from '$utils/api.utils';
 
@@ -39,6 +48,11 @@ const OrganizationIdentitySection = dynamic(() =>
     (module) => module.OrganizationIdentitySection,
   ),
 );
+const OperationsList = dynamic(() =>
+  import('$features/operations/components/OperationsList').then(
+    (module) => module.OperationsList,
+  ),
+);
 const OrganizationContactsSection = dynamic(() =>
   import('./OrganizationContactsSection').then(
     (module) => module.OrganizationContactsSection,
@@ -47,12 +61,21 @@ const OrganizationContactsSection = dynamic(() =>
 
 const ORGANIZATIONS_HREF = FEATURES.organizations.href;
 
-type OrganizationDetailSection = 'contacts' | 'identite';
+type OrganizationDetailSection = 'contacts' | 'identite' | 'reglements';
 
-/** What the organisation is, then whom to reach there. */
+/**
+ * What the organisation is, whom to reach there, then the money it paid or
+ * was paid, read here and kept in Finances (11 November 2026).
+ */
 const SECTIONS: readonly PageSection<OrganizationDetailSection>[] = [
   { icon: <Building2 className="size-4" />, id: 'identite', label: 'Identité' },
   { icon: <Users className="size-4" />, id: 'contacts', label: 'Contacts' },
+  {
+    icon: <ReceiptText className="size-4" />,
+    id: 'reglements',
+    label: 'Règlements',
+    managedIn: 'Finances',
+  },
 ];
 
 /** The first tab keeps the plain address. */
@@ -99,6 +122,12 @@ const OrganizationDetailContent: FC<ContentProps> = ({
   const { userData } = useUser();
   const { canLinkPersons, canManage, canView } =
     getOrganizationCapabilities(userData);
+  const canViewOperations = getOperationCapabilities(userData).canView;
+  // Without the operations, their tab is not offered.
+  const section: OrganizationDetailSection =
+    activeSection === 'reglements' && !canViewOperations
+      ? 'identite'
+      : activeSection;
   const [organization, setOrganization] = useState<OrganizationDetail | null>(
     null,
   );
@@ -189,8 +218,8 @@ const OrganizationDetailContent: FC<ContentProps> = ({
 
     return (
       <EntityDetailLayout
-        activeSection={activeSection}
-        ariaLiveLabel={`Section ${activeSection === 'contacts' ? 'Contacts' : 'Identité'} affichée`}
+        activeSection={section}
+        ariaLiveLabel={`Section ${section === 'contacts' ? 'Contacts' : section === 'reglements' ? 'Règlements' : 'Identité'} affichée`}
         condensedAside={<OrganizationKinds kinds={organization.kinds} />}
         dirtySections={identityDirty ? ['identite'] : []}
         heroDescription={organizationContext(organization)}
@@ -199,13 +228,34 @@ const OrganizationDetailContent: FC<ContentProps> = ({
         heroTitle={organization.name}
         navigationAriaLabel="Navigation de la fiche organisation"
         sectionHref={sectionHrefOf(organization.id)}
-        sections={SECTIONS.map((section) =>
-          section.id === 'contacts'
-            ? { ...section, count: organization.contacts.length }
-            : section,
+        sections={SECTIONS.filter(
+          (entry) => entry.id !== 'reglements' || canViewOperations,
+        ).map((entry) =>
+          entry.id === 'contacts'
+            ? { ...entry, count: organization.contacts.length }
+            : entry.id === 'reglements'
+              ? { ...entry, count: organization.operationCount }
+              : entry,
         )}
       >
-        {activeSection === 'contacts' ? (
+        {section === 'reglements' ? (
+          <section aria-label="Règlements" className="space-y-3">
+            <h2 className="sr-only">Règlements</h2>
+            <OperationsList
+              action={
+                <Button asChild size="sm" variant="outline">
+                  <Link href={FEATURES.operations.href}>
+                    <ArrowUpRight aria-hidden="true" className="size-4" />
+                    Ouvrir les opérations
+                  </Link>
+                </Button>
+              }
+              emptyDescription="Les entrées et sorties d’argent qui la nomment, payée par elle ou versée à elle, s’affichent ici."
+              notice="Les règlements se saisissent dans Finances › Opérations : chaque ligne ouvre son opération."
+              organizationId={organization.id}
+            />
+          </section>
+        ) : section === 'contacts' ? (
           <section aria-label="Contacts" className="space-y-3">
             <OrganizationContactsSection
               canLinkPersons={canLinkPersons}
@@ -238,6 +288,12 @@ const OrganizationDetailContent: FC<ContentProps> = ({
                 onDeletedLabel="Retour aux organisations"
                 onReloadVersion={async () => (await load()).version}
                 triggerLabel="Supprimer l’organisation"
+                // Said instead of a deletion the server and the base refuse.
+                unavailableReason={
+                  organization.operationCount > 0
+                    ? `Cette organisation a ${organization.operationCount > 1 ? `${organization.operationCount} opérations` : 'une opération'} : elle reste, pour l’historique de la trésorerie.`
+                    : undefined
+                }
                 version={organization.version}
               />
             )}

@@ -8,7 +8,7 @@
 | --- | --- |
 | Route | `/finances/comptes` |
 | Espace | Finances, section « Trésorerie », première page du pôle |
-| Gabarit visé | [A. Liste de gestion](../../design/gabarits.md#a-liste-de-gestion), sans recherche ni filtre (quelques comptes) ; un seul onglet livré, donc sans barre d’onglets |
+| Gabarit visé | [A. Liste de gestion](../../design/gabarits.md#a-liste-de-gestion), sans recherche ni filtre (quelques comptes) ; barre d’onglets sous le bandeau depuis le 11 novembre 2026 : Comptes, Catégories, Moyens de paiement (`?section=`) |
 | État d’harmonisation | Aligné — voir [Harmonisation](../../design/harmonisation.md#état-par-page) |
 | Point d’entrée | [page.tsx](../../../apps/web/src/app/finances/comptes/page.tsx) → [FinancialAccountsPage](../../../apps/web/src/features/financial-accounts/components/FinancialAccountsPage.tsx), [FinancialAccountDialog](../../../apps/web/src/features/financial-accounts/components/FinancialAccountDialog.tsx) |
 | Contrôle d’accès | `financial_accounts:view` pour la liste ; `financial_accounts:manage` pour « Ajouter un compte » ; l’API refait le contrôle dans la transaction ([permissions](../../domaines/permissions.md#entités-et-comptes)). Le lien « Ouvrir les entités » de l’état vide suit `entities:view` |
@@ -25,18 +25,18 @@ ensuite.
 Livrée le 10 novembre 2026 (« ok pour moi ») :
 
 1. Bandeau : « Comptes », la phrase « Les comptes bancaires, comptes en ligne et
-   caisses de la structure, avec leur solde au jour où le site commence à les
-   suivre. », et « Ajouter un compte » pour qui gère, quand une entité existe.
+   caisses de la structure, avec leur solde du jour, et les listes qui classent
+   leurs opérations. », et « Ajouter un compte » pour qui gère, quand une entité
+   existe, sur l’onglet Comptes ; puis les onglets Comptes, Catégories, Moyens
+   de paiement.
 2. Liste, comptes ouverts d’abord puis par nom, sous la légende « 2 comptes »
    (« Aucun compte » vide) : Compte (nom, lien vers sa fiche, et dessous
    « Compte bancaire · Crédit Agricole », « Caisse »), Entité (seulement quand
-   plusieurs entités peuvent tenir un compte), Solde de départ (aligné à
-   droite, « 1 250,00 € », en rouge s’il est négatif, et dessous en petit
-   texte discret « au 10 novembre 2026 » ; une seule colonne depuis le 11
-   novembre 2026), État (« Ouvert »,
-   « Clôturé »). Sur
-   téléphone, une carte : nom, type, pastille et « 1 250,00 € au 10 novembre
-   2026 ».
+   plusieurs entités peuvent tenir un compte), Solde (le solde du jour :
+   départ, plus les entrées et virements reçus, moins les sorties et virements
+   faits ; aligné à droite, en rouge s’il est négatif ; le solde de départ se
+   lit sur la fiche), État (« Ouvert », « Clôturé »). Sur téléphone, une
+   carte : nom, type, pastille et « Solde : 1 550,00 € ».
 3. Sans entité : « Aucune entité pour tenir un compte », « Chaque compte
    appartient à une entité : ajoutez d’abord l’association dans Structure ›
    Entités. », et « Ouvrir les entités » pour qui les voit. Avec des entités
@@ -48,6 +48,18 @@ Livrée le 10 novembre 2026 (« ok pour moi ») :
    relevé ou caisse comptée : le site part de lui, l’historique d’avant reste
    dans votre ancien suivi. », puis l’Entité titulaire **seulement** si
    plusieurs entités existent à cette date, la principale proposée d’abord.
+
+5. Onglet **Catégories** (11 novembre 2026) : la liste de choix des
+   opérations, en deux blocs, Entrées et Sorties, avec leur nombre ; chaque
+   valeur rangée par glisser-déposer, active ou non, avec son nombre
+   d’opérations ; « Ajouter une catégorie » ; liste vide : « Ajouter les
+   catégories courantes » (Cotisations, Sponsoring, Dons, Subventions, Gains
+   de tournois, Ventes ; Inscriptions aux tournois, Matériel, Déplacements,
+   Gains reversés aux joueurs, Services et abonnements, Frais bancaires).
+   Fenêtre : Nom, Type (Entrée ou Sortie, fixé une fois utilisée), Active ;
+   Supprimer pour une valeur jamais utilisée.
+6. Onglet **Moyens de paiement** : la même liste en un bloc (Virement, Carte,
+   Espèces, Chèque, PayPal, Prélèvement en un clic), au masculin (« Actif »).
 
 ## Traces dans le journal
 
@@ -70,6 +82,10 @@ et « Valeur masquée ».
   opérations, cette colonne deviendra « Solde », le solde du jour (départ,
   plus les entrées, moins les sorties), et le solde de départ ne se lira plus
   que sur la fiche du compte.
+- 11 novembre 2026 (« ok go » sur les opérations) : la colonne devient
+  « Solde », le solde du jour, comme décidé le même jour ; catégories et
+  moyens de paiement sont des listes de choix du site, en onglets de cette
+  page, tenues par qui gère les comptes (`financial_accounts:manage`).
 - Les exercices attendent la clôture de fin d’année (chantier Contrôles &
   clôtures) ; les catégories et moyens de paiement arrivent avec les
   opérations.
@@ -90,4 +106,6 @@ avec les opérations.
 
 - 10 novembre 2026 : création de la page.
 - 11 novembre 2026 : solde de départ et sa date dans une seule colonne ;
-  solde négatif en rouge ([couleur des montants](../../design/fondations.md#hiérarchie-de-couleurs)).
+  solde négatif en rouge ([couleur des montants](../../design/fondations.md#hiérarchie-de-couleurs)) ;
+  puis, avec les opérations, colonne « Solde » du jour et onglets Catégories et
+  Moyens de paiement.

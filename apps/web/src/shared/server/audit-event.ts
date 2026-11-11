@@ -152,6 +152,16 @@ const AUDIT_EVENT_CLASSIFICATIONS = {
     AuditSeverity.WARNING,
   ),
   [AuditAction.FINANCIAL_ACCOUNT_UPDATE]: activity(AuditStream.SYSTEM),
+  [AuditAction.FINANCIAL_OPERATION_CREATE]: activity(AuditStream.SYSTEM),
+  [AuditAction.FINANCIAL_OPERATION_DELETE]: activity(
+    AuditStream.SYSTEM,
+    AuditSeverity.WARNING,
+  ),
+  [AuditAction.FINANCIAL_OPERATION_UPDATE]: activity(AuditStream.SYSTEM),
+  [AuditAction.TREASURY_CHOICE_CREATE]: activity(AuditStream.SYSTEM),
+  [AuditAction.TREASURY_CHOICE_DELETE]: activity(AuditStream.SYSTEM),
+  [AuditAction.TREASURY_CHOICE_REORDER]: activity(AuditStream.SYSTEM),
+  [AuditAction.TREASURY_CHOICE_UPDATE]: activity(AuditStream.SYSTEM),
   [AuditAction.ORGANIZATION_CREATE]: activity(AuditStream.SYSTEM),
   [AuditAction.ORGANIZATION_DELETE]: activity(
     AuditStream.SYSTEM,

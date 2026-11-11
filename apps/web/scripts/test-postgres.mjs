@@ -31,6 +31,7 @@ const SUITE_DATABASES = [
     database: 'member_functions_service_test',
     variable: 'MEMBER_FUNCTIONS_TEST_DATABASE_URL',
   },
+  { database: 'operations_test', variable: 'OPERATIONS_TEST_DATABASE_URL' },
   {
     database: 'organizations_test',
     variable: 'ORGANIZATIONS_TEST_DATABASE_URL',

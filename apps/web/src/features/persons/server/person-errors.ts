@@ -3,6 +3,7 @@ import 'server-only';
 export type PersonDomainErrorCode =
   | 'PERSON_FEATURE_NOT_CONFIGURED'
   | 'PERSON_GUARDIAN_CONFLICT'
+  | 'PERSON_HAS_OPERATIONS'
   | 'PERSON_HAS_PASSAGES'
   | 'PERSON_NICKNAME_CONFLICT'
   | 'PERSON_NOT_FOUND'
@@ -33,6 +34,15 @@ export const personErrors = {
    */
   guardianConflict: (message: string): PersonDomainError =>
     new PersonDomainError('PERSON_GUARDIAN_CONFLICT', message),
+  /**
+   * A record that paid or was paid stays: the treasury keeps who it was
+   * (11 November 2026).
+   */
+  hasOperations: (count: number): PersonDomainError =>
+    new PersonDomainError(
+      'PERSON_HAS_OPERATIONS',
+      `Cette fiche a payé ou reçu de l’argent dans ${count > 1 ? `${count} opérations` : 'une opération'} : elle reste, pour l’historique de la trésorerie.`,
+    ),
   /** A record in a roster stays: the registre keeps who was there. */
   hasPassages: (count: number): PersonDomainError =>
     new PersonDomainError(

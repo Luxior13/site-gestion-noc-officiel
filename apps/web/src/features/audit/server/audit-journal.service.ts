@@ -50,7 +50,11 @@ const TYPE_FILTERS: Record<
   security: { stream: { in: ['AUTHENTICATION', 'SECURITY'] } },
   settings: { action: 'SYSTEM_SETTING_UPDATE' },
   teams: { category: 'TEAM' },
-  treasury: { category: 'FINANCIAL_ACCOUNT' },
+  treasury: {
+    category: {
+      in: ['FINANCIAL_ACCOUNT', 'FINANCIAL_OPERATION', 'TREASURY_CHOICE'],
+    },
+  },
 };
 
 const getProtectedAccountIds = async (): Promise<string[]> =>

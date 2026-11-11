@@ -8,7 +8,7 @@
 | --- | --- |
 | Route | `/finances/comptes/[id]` |
 | Espace | Finances ; « Comptes » reste l’entrée courante de la navigation |
-| Gabarit visé | [B. Fiche à sections](../../design/gabarits.md#b-fiche-à-sections), sans barre d’onglets tant que seules les informations sont en place |
+| Gabarit visé | [B. Fiche à sections](../../design/gabarits.md#b-fiche-à-sections), onglets Mouvements et Informations (`?section=informations`) depuis le 11 novembre 2026 ; sans barre d’onglets pour qui ne consulte pas les opérations |
 | État d’harmonisation | Aligné — voir [Harmonisation](../../design/harmonisation.md#état-par-page) |
 | Point d’entrée | [page.tsx](../../../apps/web/src/app/finances/comptes/%5Bid%5D/page.tsx) → [FinancialAccountDetailPage](../../../apps/web/src/features/financial-accounts/components/FinancialAccountDetailPage.tsx) → [FinancialAccountInformationSection](../../../apps/web/src/features/financial-accounts/components/FinancialAccountInformationSection.tsx), champs de [AccountFields](../../../apps/web/src/features/financial-accounts/components/AccountFields.tsx) |
 | Contrôle d’accès | `financial_accounts:view` pour la lire ; `financial_accounts:manage` pour la modifier, la clôturer ou la supprimer ; l’API refait le contrôle dans la transaction ([permissions](../../domaines/permissions.md#entités-et-comptes)) |
@@ -21,8 +21,15 @@ Livrée le 10 novembre 2026 :
 1. En-tête : icône de son type, comme dans la liste (banque, portefeuille pour
    un compte en ligne, billets pour une caisse, 11 novembre 2026), nom,
    pastille « Ouvert » ou « Clôturé », ligne « Compte
-   bancaire · Crédit Agricole · 1 250,00 € au 10 novembre 2026 », le montant
-   en rouge s’il est négatif (11 novembre 2026).
+   bancaire · Crédit Agricole · Solde : 1 550,00 € », le solde du jour, en
+   rouge s’il est négatif (11 novembre 2026).
+   Onglets **Mouvements** (avec son nombre) puis **Informations**.
+   **Mouvements**, pour qui consulte les opérations : la liste des opérations
+   de ce compte, la plus récente en premier, signées vues de ce compte
+   (« Virement vers PayPal − 200,00 € », « Virement depuis Compte courant
+   + 200,00 € »), recherche et filtres par sens, et « Ajouter une opération »
+   qui ouvre la fenêtre sur ce compte. **Informations** : les cartes
+   ci-dessous.
 2. Carte **Compte** : Nom, Type, Établissement (pas pour une caisse), puis
    l’Entité titulaire en lecture : « Fixée à l’ouverture : un compte reste à
    l’entité qui l’a ouvert. »
@@ -32,7 +39,10 @@ Livrée le 10 novembre 2026 :
 4. Carte **Clôture** : interrupteur « Ouvert » ; le retirer découvre « Clôturé
    le » (aujourd’hui par défaut, jamais avant le solde de départ).
 5. Zone dangereuse pour qui gère : « Seul un compte ajouté par erreur se
-   supprime ; un compte fermé se clôture à sa date. »
+   supprime ; un compte fermé se clôture à sa date. » ; un compte qui a des
+   opérations dit « clôturez-le plutôt que de le supprimer » à la place du
+   bouton. Le solde de départ ne passe pas après la première opération, ni la
+   clôture avant la dernière (refus du service et de la base).
 6. Barre d’enregistrement commune ; conflit de version avec « Actualiser ».
 
 ## Traces dans le journal

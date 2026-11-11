@@ -71,8 +71,14 @@ describe('global page search', () => {
       rankSearchResults(catalog, normalizeSearchText('compte')).map(
         (item) => item.href,
       ),
-      // The bank accounts are « Comptes » too (10 November 2026).
-    ).toEqual(['/mon-compte', '/finances/comptes', '/systeme/utilisateurs']);
+      // The bank accounts are « Comptes » too (10 November 2026), and the
+      // operations move money from one to another (11 November 2026).
+    ).toEqual([
+      '/mon-compte',
+      '/finances/comptes',
+      '/finances/operations',
+      '/systeme/utilisateurs',
+    ]);
     expect(
       rankSearchResults(catalog, normalizeSearchText('SYSTÈME')).map(
         (item) => item.href,

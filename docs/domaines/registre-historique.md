@@ -126,6 +126,9 @@ cours : la mémoire ne doit pas dépendre d’une personne.
   sont à faire valider par une personne compétente
   ([confidentialité](../references/confidentialite.md)). Une demande d’effacement
   anonymise la fiche et garde le passage.
+- **L’argent garde ce qu’il nomme** (11 novembre 2026) : un compte, une
+  organisation, une fiche, une équipe ou un jeu qui a des opérations ne se
+  supprime plus ; un compte se clôture, une équipe ou un jeu devient inactif.
 - **Les contacts d’une organisation ne sont pas des membres** (11 novembre
   2026) : nom, fonction, email et téléphone professionnels, sur la fiche de
   l’organisation et hors du Répertoire. Un contact parti se supprime ; leur

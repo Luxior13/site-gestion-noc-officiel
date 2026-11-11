@@ -6,7 +6,7 @@
 [Schéma Prisma](../../packages/database/prisma/schema.prisma)
 
 Relevé du 10 novembre 2026 dans `packages/database/prisma/schema.prisma` :
-**29 modèles, 18 énumérations, PostgreSQL**. Les migrations contiennent aussi
+**31 modèles, 20 énumérations, PostgreSQL**. Les migrations contiennent aussi
 des contraintes `CHECK`, des déclencheurs et des index partiels absents du
 schéma Prisma : ne pas les retirer parce qu’ils n’y figurent pas. La revue
 complète du schéma est celle du [13 octobre 2026](../audits/2026-10-13-schema-prisma.md).
@@ -47,7 +47,7 @@ Colonnes : nombre de champs (relations comprises), nombre d’`@@index` et
 
 | Modèle | Champs | Index | Relations | Rôle |
 | --- | ---: | ---: | --- | --- |
-| `Person` | 18 | 9 | emails, téléphones, profils sociaux, autres pseudos, contacts d’urgence, représentants légaux (dans les deux sens), passages, contacts d’une organisation (11 novembre 2026) | Fiche personne, version optimiste ; le statut « Dans la structure » n’est pas une colonne, il se calcule depuis les passages en cours (9 novembre 2026) ; `nationality`, code ISO à deux lettres en capitales (contrainte `Person_nationality_check`, 10 novembre 2026) |
+| `Person` | 19 | 9 | emails, téléphones, profils sociaux, autres pseudos, contacts d’urgence, représentants légaux (dans les deux sens), passages, contacts d’une organisation (11 novembre 2026) | Fiche personne, version optimiste ; le statut « Dans la structure » n’est pas une colonne, il se calcule depuis les passages en cours (9 novembre 2026) ; `nationality`, code ISO à deux lettres en capitales (contrainte `Person_nationality_check`, 10 novembre 2026) |
 | `PersonEmail` | 10 | 3 | `Person` | Emails, un principal |
 | `PersonPhone` | 10 | 3 | `Person` | Téléphones, un principal |
 | `PersonSocialProfile` | 14 | 5 | `Person` | Réseaux sociaux, propriétaire protégé (REP-20) |
@@ -60,8 +60,8 @@ Colonnes : nombre de champs (relations comprises), nombre d’`@@index` et
 
 | Modèle | Champs | Index | Relations | Rôle |
 | --- | ---: | ---: | --- | --- |
-| `Game` | 11 | 1 | `teams`, `functions` | Un jeu, une section : nom unique (`normalizedName`), nom court, première ouverture avec sa précision `DatePrecision`, actif, version optimiste (8 novembre 2026) ; `position` dans la liste des jeux, actifs ou non, posée par glisser-déposer (positive, hors version, 9 novembre 2026) |
-| `Team` | 11 | 2 | `game` (`ON DELETE RESTRICT`) | Une équipe d’un jeu : nom unique dans son jeu (`gameId` + `normalizedName`), création avec sa précision, active, version optimiste (8 novembre 2026), `position` parmi les équipes de son jeu, actives ou non (9 novembre 2026) ; un jeu qui a des équipes ne se supprime pas ; le jeu d’une équipe ne change pas (déclencheur `Team_gameId_immutable`, absent de `schema.prisma`) |
+| `Game` | 12 | 1 | `teams`, `functions`, opérations (11 novembre 2026) | Un jeu, une section : nom unique (`normalizedName`), nom court, première ouverture avec sa précision `DatePrecision`, actif, version optimiste (8 novembre 2026) ; `position` dans la liste des jeux, actifs ou non, posée par glisser-déposer (positive, hors version, 9 novembre 2026) |
+| `Team` | 12 | 2 | `game` (`ON DELETE RESTRICT`), opérations (11 novembre 2026) | Une équipe d’un jeu : nom unique dans son jeu (`gameId` + `normalizedName`), création avec sa précision, active, version optimiste (8 novembre 2026), `position` parmi les équipes de son jeu, actives ou non (9 novembre 2026) ; un jeu qui a des équipes ne se supprime pas ; le jeu d’une équipe ne change pas (déclencheur `Team_gameId_immutable`, absent de `schema.prisma`) |
 | `PersonPassage` | 12 | 3 | `person`, `team` (facultative), `memberFunction`, toutes en `ON DELETE RESTRICT` | Un passage (9 novembre 2026) : une fiche dans une équipe, ou dans la structure (`teamId` vide, Effectif de Bureau & staff, même jour), avec une fonction, un début (`startOn`, premier jour de sa période) et une fin facultative (`endOn`, dernier jour), chacun avec sa précision, version optimiste ; contraintes `PersonPassage_*_check`, exclusion `PersonPassage_no_overlap` (extension `btree_gist`) et déclencheur `PersonPassage_function_scope`, absents de `schema.prisma` |
 | `MemberFunction` | 10 | 2 | `game` (facultatif, `ON DELETE RESTRICT`) | Une fonction d’un jeu (Joueur, Coach…) ou de la structure (`gameId` vide : Président, Graphiste…, Bureau & staff) : nom unique dans son jeu (`gameId` + `normalizedName`), ou dans la structure par l’index partiel `MemberFunction_structure_normalizedName_key`, absent de `schema.prisma` ; type `MemberFunctionKind` (`PLAYER` Joueur et `STAFF` Encadrement dans un jeu ; `BOARD` Bureau et `STAFF` Staff dans la structure, la contrainte `MemberFunction_kind_scope_check` refusant les autres), `position` posée par glisser-déposer dans sa liste et son type (positive, hors version), active, version optimiste (9 novembre 2026) ; un jeu supprimé par erreur emporte ses fonctions par le service, jamais par `CASCADE` |
 
@@ -70,13 +70,15 @@ Colonnes : nombre de champs (relations comprises), nombre d’`@@index` et
 | Modèle | Champs | Index | Relations | Rôle |
 | --- | ---: | ---: | --- | --- |
 | `LegalEntity` | 17 | 1 | `accounts` | Une entité juridique (10 novembre 2026) : dénomination unique (`normalizedName`), forme `LegalForm` (`NONE` pour la période d’avant l’association, `OTHER` avec `otherForm`), début et fin facultative avec leur précision, numéro RNA, SIRET, siège, entité principale (une au plus, index partiel `LegalEntity_principal_key`), version optimiste ; contraintes `LegalEntity_*_check` (formats RNA et SIRET, période d’avant sans identifiant ni marque principale) et déclencheur `LegalEntity_form_check` (une entité qui tient des comptes garde une forme), absents de `schema.prisma` |
-| `FinancialAccount` | 13 | 1 | `entity` (`ON DELETE RESTRICT`) | Un compte bancaire, en ligne ou une caisse (`FinancialAccountKind`, 10 novembre 2026) : nom unique dans son entité, établissement (jamais pour une caisse), solde de départ en centimes d’euro à un jour (`openingOn`), clôture facultative, version optimiste ; contraintes `FinancialAccount_*_check` (dix millions d’euros au plus, caisse jamais négative, clôture après le départ) et déclencheur `FinancialAccount_entity_check` (entité fixée à l’ouverture, jamais sans forme juridique), absents de `schema.prisma` |
+| `FinancialAccount` | 15 | 1 | `entity` (`ON DELETE RESTRICT`), opérations au départ et à l’arrivée (11 novembre 2026) | Un compte bancaire, en ligne ou une caisse (`FinancialAccountKind`, 10 novembre 2026) : nom unique dans son entité, établissement (jamais pour une caisse), solde de départ en centimes d’euro à un jour (`openingOn`), clôture facultative, version optimiste ; contraintes `FinancialAccount_*_check` (dix millions d’euros au plus, caisse jamais négative, clôture après le départ) et déclencheur `FinancialAccount_entity_check` (entité fixée à l’ouverture, jamais sans forme juridique), absents de `schema.prisma` ; déclencheur `FinancialAccount_operations_check` (11 novembre 2026) : sa période couvre toujours ses opérations |
+| `TreasuryChoice` | 12 | 2 | opérations par catégorie et par moyen de paiement (`ON DELETE RESTRICT`) | Une valeur des listes de la trésorerie (11 novembre 2026) : type `TreasuryChoiceKind` (catégorie d’entrée, de sortie, moyen de paiement), nom unique dans son type, position posée par glisser-déposer, active ou non, version optimiste ; une valeur utilisée garde son type (déclencheur `TreasuryChoice_kind_check`, absent de `schema.prisma`) |
+| `FinancialOperation` | 27 | 9 | `account`, `toAccount`, `category`, `paymentMethod`, `organization`, `person`, `team`, `game`, toutes en `ON DELETE RESTRICT` | Une opération (11 novembre 2026) : sens `FinancialOperationKind` (entrée, sortie, virement), jour, montant positif en centimes d’euro (le sens donne le signe), compte, compte d’arrivée pour un virement, libellé et catégorie de son sens sauf pour un virement, moyen de paiement, payé par ou à (une organisation ou une fiche, l’une ou l’autre), équipe ou jeu, note, texte de recherche normalisé, version optimiste ; contraintes `FinancialOperation_*_check` et déclencheur `FinancialOperation_check` (période des comptes, virement dans une seule entité, catégorie du bon sens), absents de `schema.prisma` |
 
 ### Relations
 
 | Modèle | Champs | Index | Relations | Rôle |
 | --- | ---: | ---: | --- | --- |
-| `Organization` | 11 | 0 | `contacts` | Une organisation (11 novembre 2026) : nom unique (`normalizedName`), types `OrganizationKind[]` (Sponsor, Partenaire, Fournisseur, Client, Organisateur, Financeur public), un au moins, chacun une fois (contrainte `Organization_kinds_check` et fonction `organization_kinds_are_valid`, absentes de `schema.prisma`), site web en `http(s)://`, SIRET de 14 chiffres, adresse, version optimiste |
+| `Organization` | 12 | 0 | `contacts`, opérations (11 novembre 2026) | Une organisation (11 novembre 2026) : nom unique (`normalizedName`), types `OrganizationKind[]` (Sponsor, Partenaire, Fournisseur, Client, Organisateur, Financeur public), un au moins, chacun une fois (contrainte `Organization_kinds_check` et fonction `organization_kinds_are_valid`, absentes de `schema.prisma`), site web en `http(s)://`, SIRET de 14 chiffres, adresse, version optimiste |
 | `OrganizationContact` | 12 | 2 | `organization` (`ON DELETE CASCADE`), `person` (facultative, `ON DELETE SET NULL`) | Une personne à joindre dans une organisation : nom (celui de la fiche du Répertoire quand une est reliée, gardé après sa suppression), fonction, email en minuscules, téléphone au format international ; une fiche reliée une fois par organisation (index partiel `OrganizationContact_organizationId_personId_key`) ; version optimiste propre, hors version de l’organisation |
 
 ### Système et préparation
@@ -91,15 +93,21 @@ L’actualité interne redéfinira son stockage à sa reconstruction.
 
 ## Énumérations
 
-`UserRole`, `EsportScope`, `LegalForm` et `FinancialAccountKind` (10 novembre 2026), `OrganizationKind` (11 novembre 2026), `MfaChallengePurpose`, `MfaAuthenticationMethod`,
+`UserRole`, `EsportScope`, `LegalForm` et `FinancialAccountKind` (10 novembre 2026), `OrganizationKind`, `TreasuryChoiceKind` et `FinancialOperationKind` (11 novembre 2026), `MfaChallengePurpose`, `MfaAuthenticationMethod`,
 `DatePrecision`, `AuditFieldChangeType`, `AuditValueStorageMode`,
 `AuditAction`, `AuditCategory`, `AuditEventKind`, `AuditStream`,
 `AuditOutcome`, `AuditSeverity`.
 
 ## Migrations
 
-**77 migrations** dans `packages/database/prisma/migrations`, de
-`20250723121213_init` à `20261111090000_organizations` (type
+**78 migrations** dans `packages/database/prisma/migrations`, de
+`20250723121213_init` à `20261111120000_financial_operations` (types
+`TreasuryChoiceKind` et `FinancialOperationKind`, tables `TreasuryChoice` et
+`FinancialOperation`, leurs contraintes et index, déclencheurs
+`FinancialOperation_check`, `TreasuryChoice_kind_check` et
+`FinancialAccount_operations_check`, actions `FINANCIAL_OPERATION_*` et
+`TREASURY_CHOICE_*`, catégories `FINANCIAL_OPERATION` et `TREASURY_CHOICE`,
+11 novembre 2026 ; ajout seul). Avant elle, `20261111090000_organizations` (type
 `OrganizationKind`, fonction `organization_kinds_are_valid`, tables
 `Organization` et `OrganizationContact`, leurs contraintes et index partiel,
 actions `ORGANIZATION_*` et `ORGANIZATION_CONTACT_*`, catégorie

@@ -3,6 +3,7 @@ import { createFinancialAccountsPermissionCategory } from '$constants/financial-
 import { createGamesPermissionCategory } from '$constants/games-permission-category.constants';
 import type { NavigationIconName } from '$constants/navigation-icon.constants';
 import type { NavigationSpaceTone } from '$constants/navigation-theme.constants';
+import { createOperationsPermissionCategory } from '$constants/operations-permission-category.constants';
 import { createOrganizationsPermissionCategory } from '$constants/organizations-permission-category.constants';
 import { createPersonsPermissionCategory } from '$constants/persons-permission-category.constants';
 import { PAGE_PATHS } from '$constants/routes.constants';
@@ -49,6 +50,11 @@ export const PERMISSIONS = {
   GAMES: {
     MANAGE: 'games:manage',
     VIEW: 'games:view',
+  },
+  // Money received, paid or moved between accounts (11 November 2026).
+  OPERATIONS: {
+    MANAGE: 'operations:manage',
+    VIEW: 'operations:view',
   },
   // Sponsors, partners, suppliers, clients, organisers and public funders in
   // one list, first page of the Relations pole (11 November 2026).
@@ -459,6 +465,7 @@ export const PERMISSION_CATEGORIES: PermissionCategory[] = [
   createPersonsPermissionCategory(PERMISSIONS.PERSONS),
   createGamesPermissionCategory(PERMISSIONS.GAMES, PERMISSIONS.TEAMS),
   createFinancialAccountsPermissionCategory(PERMISSIONS.FINANCIAL_ACCOUNTS),
+  createOperationsPermissionCategory(PERMISSIONS.OPERATIONS),
   createOrganizationsPermissionCategory(PERMISSIONS.ORGANIZATIONS),
   createStaffPermissionCategory(PERMISSIONS.STAFF),
   createEntitiesPermissionCategory(PERMISSIONS.ENTITIES),

@@ -126,6 +126,36 @@ export const FEATURES = {
     permissionMode: 'all',
     requiredPermissions: [PERMISSIONS.GAMES.VIEW],
   }),
+  // The money of the structure, in the Finances pole (11 November 2026).
+  operations: defineFeature({
+    audit: {
+      pageKey: 'operations',
+      pageLabel: 'Opérations',
+      poleKey: 'finance',
+      poleLabel: 'Finances',
+    },
+    availability: 'live',
+    description:
+      'L’argent reçu, versé ou passé d’un compte à l’autre, avec sa catégorie.',
+    href: PAGE_PATHS.operations,
+    icon: 'ArrowLeftRight',
+    id: 'operations',
+    keywords: [
+      'recette',
+      'dépense',
+      'entrée',
+      'sortie',
+      'virement',
+      'encaissement',
+      'paiement',
+      'cotisation',
+      'cashprize',
+      'argent',
+    ],
+    label: 'Opérations',
+    permissionMode: 'all',
+    requiredPermissions: [PERMISSIONS.OPERATIONS.VIEW],
+  }),
   // First page of the Relations pole (11 November 2026).
   organizations: defineFeature({
     audit: {

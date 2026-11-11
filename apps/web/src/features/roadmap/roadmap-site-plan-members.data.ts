@@ -330,8 +330,8 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'relations',
-    // What it still gains: the money paid or received, then the contracts.
-    chantier: 'payments',
+    // What it still gains: its invoices, then the contracts.
+    chantier: 'invoices',
     name: 'Fiche organisation',
     phase: null,
     summary:
@@ -350,11 +350,14 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'Les personnes à joindre : nom, ou fiche du Répertoire pour qui en a déjà une, fonction, email et téléphone ; ajout et modification en fenêtre.',
       },
       {
-        chantier: 'payments',
+        // The invoices come with their own module.
+        chantier: 'invoices',
         label: 'Règlements',
         managedIn: 'Finances',
-        phase: 3,
-        summary: 'Factures et opérations liées.',
+        phase: null,
+        summary:
+          'Pour qui consulte les opérations : celles qu’elle a payées ou reçues, en lecture, chaque ligne ouvrant son opération ; une ligne en tête dit qu’elles se saisissent dans Finances › Opérations.',
+        upcoming: 'Ses factures, avec la facturation.',
       },
       {
         chantier: 'contracts',
@@ -364,7 +367,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         summary: 'Contrats et partenariats en cours et passés.',
       },
     ],
-    upcoming: 'Les onglets Règlements ↗, avec les opérations, puis Contrats ↗.',
+    upcoming: 'Ses factures dans Règlements ↗, puis l’onglet Contrats ↗.',
   },
   {
     area: 'relations',

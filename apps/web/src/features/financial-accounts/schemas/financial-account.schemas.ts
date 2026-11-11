@@ -16,7 +16,7 @@ import {
 } from '../financial-account.constants';
 
 /** A real day of the calendar: balances are known to the day. */
-const daySchema = z.string().superRefine((value, context) => {
+export const daySchema = z.string().superRefine((value, context) => {
   const parts = parseDateOnly(value);
   if (!parts) {
     context.addIssue({ code: 'custom', message: 'Date invalide' });

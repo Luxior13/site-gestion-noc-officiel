@@ -4,6 +4,11 @@ import type { FinancialAccountKind } from '../financial-account.constants';
 
 /** Browser-safe projection of a financial account (10 November 2026). */
 export type FinancialAccountItem = Readonly<{
+  /**
+   * The balance on this day: the opening one, plus the money received and
+   * transfers in, minus the money paid and transfers out (11 November 2026).
+   */
+  balanceCents: number;
   /** The day it was closed; null while it is open. */
   closedOn: string | null;
   /** The entity that holds it, fixed at its opening (cadrage, règle 2). */
@@ -15,6 +20,8 @@ export type FinancialAccountItem = Readonly<{
   /** The balance on `openingOn`, where the site's figures start, in cents. */
   openingBalanceCents: number;
   openingOn: string;
+  /** Its operations, a transfer counting on both accounts. */
+  operationCount: number;
   updatedAt: string;
   version: number;
 }>;

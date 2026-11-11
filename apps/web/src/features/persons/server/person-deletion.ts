@@ -100,6 +100,12 @@ export const deletePerson = async (input: {
       where: { personId: input.personId },
     });
     if (passages > 0) throw personErrors.hasPassages(passages);
+    // A record that paid or was paid stays (11 November 2026;
+    // `FinancialOperation_personId_fkey` refuses it too).
+    const operations = await transaction.financialOperation.count({
+      where: { personId: input.personId },
+    });
+    if (operations > 0) throw personErrors.hasOperations(operations);
     // A representative's record stays while it represents someone
     // (`PersonLegalGuardian_guardianId_fkey` refuses it too).
     const represented = await transaction.personLegalGuardian.count({

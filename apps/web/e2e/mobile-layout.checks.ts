@@ -268,6 +268,8 @@ export async function expectMobileLayouts(
     ['personne-en-ligne', `/personnes/repertoire/${personId}?section=en-ligne`],
     ['jeux', '/esport/jeux'],
     ['comptes', '/finances/comptes'],
+    ['operations', '/finances/operations'],
+    ['categories', '/finances/comptes?section=categories'],
     ['organisations', '/relations/organisations'],
     ['bureau-staff', '/structure/bureau-staff'],
     ['entites', '/structure/entites'],

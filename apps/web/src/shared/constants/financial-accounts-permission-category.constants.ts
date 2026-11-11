@@ -37,7 +37,7 @@ export const createFinancialAccountsPermissionCategory = (
     permission({
       action: 'view',
       description:
-        'Consulter les comptes, leur établissement, leur entité et leur solde de départ',
+        'Consulter les comptes, leur établissement, leur entité, leur solde de départ et du jour, les catégories et moyens de paiement',
       grantable: true,
       key: keys.VIEW,
       label: 'Consulter les comptes',
@@ -50,7 +50,7 @@ export const createFinancialAccountsPermissionCategory = (
       action: 'manage',
       dependencies: [keys.VIEW],
       description:
-        'Ouvrir, corriger, clôturer ou supprimer un compte et fixer son solde de départ',
+        'Ouvrir, corriger, clôturer ou supprimer un compte et fixer son solde de départ ; tenir les catégories et moyens de paiement',
       grantable: true,
       key: keys.MANAGE,
       label: 'Gérer les comptes',

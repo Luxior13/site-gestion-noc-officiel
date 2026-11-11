@@ -1,6 +1,6 @@
 'use client';
 
-import { Landmark, Plus, Wallet } from 'lucide-react';
+import { CreditCard, Landmark, Plus, Tags, Wallet } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -9,9 +9,16 @@ import React, { type FC, useCallback, useEffect, useState } from 'react';
 import AuthenticatedLayout from '$components/AuthenticatedLayout';
 import { ContentState } from '$components/layout/ContentState';
 import { PageIdentityHero } from '$components/layout/PageIdentityHero';
+import {
+  type PageSection,
+  PageSectionNavigation,
+} from '$components/layout/PageSectionNavigation';
 import { AccessDeniedState } from '$components/layout/PageState';
 import { FEATURES } from '$constants/feature-registry.constants';
-import { financialAccountDetailPath } from '$constants/routes.constants';
+import {
+  financialAccountDetailPath,
+  PAGE_PATHS,
+} from '$constants/routes.constants';
 import { useUser } from '$context/UserContext';
 import { Button } from '$ui/button';
 import {
@@ -31,7 +38,6 @@ import {
   TableHeader,
   TableRow,
 } from '$ui/table';
-import { formatApproximateDate } from '$utils/approximate-date.utils';
 import { cn } from '$utils/css.utils';
 
 import { fetchFinancialAccounts } from '../financial-account.api';
@@ -48,6 +54,31 @@ import { AccountKindIcon } from './AccountKindIcon';
 import { AccountState } from './AccountState';
 import { Balance } from './Balance';
 
+// The lists of the treasury load with their tab: they bring the dragging.
+const TreasuryChoicesSection = dynamic(() =>
+  import('$features/treasury-lists/components/TreasuryChoicesSection').then(
+    (module) => module.TreasuryChoicesSection,
+  ),
+);
+
+export type AccountsSection = 'categories' | 'comptes' | 'moyens-de-paiement';
+
+/** The accounts, then the lists that class their operations (11 November). */
+const SECTIONS: readonly PageSection<AccountsSection>[] = [
+  { icon: <Wallet className="size-4" />, id: 'comptes', label: 'Comptes' },
+  { icon: <Tags className="size-4" />, id: 'categories', label: 'Catégories' },
+  {
+    icon: <CreditCard className="size-4" />,
+    id: 'moyens-de-paiement',
+    label: 'Moyens de paiement',
+  },
+];
+
+const sectionHref = (section: AccountsSection): string =>
+  section === 'comptes'
+    ? PAGE_PATHS.financialAccounts
+    : `${PAGE_PATHS.financialAccounts}?section=${section}`;
+
 // The window loads when it opens: its date field stays off the page.
 const FinancialAccountDialog = dynamic(() =>
   import('./FinancialAccountDialog').then(
@@ -62,9 +93,6 @@ const LINE_FOCUS =
 /** A name that opens its record, its link covering the whole line. */
 const NAME_LINK =
   'text-foreground hover:text-primary-emphasis block min-w-0 outline-none after:absolute after:inset-0 hover:underline hover:underline-offset-[3px]';
-
-const day = (value: string): string =>
-  formatApproximateDate({ date: value, precision: 'DAY' });
 
 const AccountAvatar: FC<{ account: FinancialAccountItem }> = ({ account }) => (
   <span
@@ -126,8 +154,7 @@ const AccountsList: FC<{
       <DataTableDesktop>
         <Table aria-label="Liste des comptes" className={directoryStyles.table}>
           <TableCaption className="sr-only">
-            Les comptes de la structure, leur solde de départ et sa date, et
-            leur état
+            Les comptes de la structure, leur solde du jour et leur état
           </TableCaption>
           <TableHeader>
             <TableRow>
@@ -135,9 +162,7 @@ const AccountsList: FC<{
               {showEntity && (
                 <TableHead className="w-[200px]">Entité</TableHead>
               )}
-              <TableHead className="w-[200px] text-right">
-                Solde de départ
-              </TableHead>
+              <TableHead className="w-[200px] text-right">Solde</TableHead>
               <TableHead className="w-[140px] pl-8">État</TableHead>
             </TableRow>
           </TableHeader>
@@ -167,13 +192,10 @@ const AccountsList: FC<{
                       {account.entity.name}
                     </TableCell>
                   )}
-                  {/* The amount, its day under it (owner, 11 November
-                      2026: one column rather than « Au » apart). */}
+                  {/* The balance of the day (owner, 11 November 2026): the
+                      opening one is read on the account's record. */}
                   <TableCell className="pointer-events-none text-right tabular-nums">
-                    <Balance cents={account.openingBalanceCents} />
-                    <span className="text-muted-foreground block text-xs">
-                      au {day(account.openingOn)}
-                    </span>
+                    <Balance cents={account.balanceCents} />
                   </TableCell>
                   <TableCell className="pointer-events-none pl-8">
                     <AccountState account={account} />
@@ -209,8 +231,7 @@ const AccountsList: FC<{
                   <div className="text-muted-foreground mt-2 flex flex-wrap items-center gap-2 text-xs">
                     <AccountState account={account} />
                     <span className="tabular-nums">
-                      <Balance cents={account.openingBalanceCents} /> au{' '}
-                      {day(account.openingOn)}
+                      Solde : <Balance cents={account.balanceCents} />
                     </span>
                   </div>
                 </div>
@@ -230,8 +251,9 @@ const ListSkeleton: FC = () => (
 );
 
 const FinancialAccountsContent: FC<{
+  activeSection: AccountsSection;
   capabilities: FinancialAccountCapabilities;
-}> = ({ capabilities: { canManage, canViewEntities } }) => {
+}> = ({ activeSection, capabilities: { canManage, canViewEntities } }) => {
   const router = useRouter();
   const [overview, setOverview] = useState<FinancialAccountsOverview | null>(
     null,
@@ -267,7 +289,7 @@ const FinancialAccountsContent: FC<{
     <div className={cn(directoryStyles.directory, 'space-y-[18px]')}>
       <PageIdentityHero
         actions={
-          canAdd ? (
+          canAdd && activeSection === 'comptes' ? (
             <Button
               className={directoryStyles.addButton}
               onClick={() => setDialogOpen(true)}
@@ -277,11 +299,24 @@ const FinancialAccountsContent: FC<{
             </Button>
           ) : undefined
         }
-        description="Les comptes bancaires, comptes en ligne et caisses de la structure, avec leur solde au jour où le site commence à les suivre."
+        description="Les comptes bancaires, comptes en ligne et caisses de la structure, avec leur solde du jour, et les listes qui classent leurs opérations."
         icon={<Wallet aria-hidden="true" />}
         title={FEATURES.financialAccounts.label}
       />
-      {loadError ? (
+      <PageSectionNavigation
+        activeSection={activeSection}
+        ariaLabel="Onglets de la page Comptes"
+        getSectionHref={sectionHref}
+        sections={SECTIONS}
+      />
+      {activeSection !== 'comptes' ? (
+        <TreasuryChoicesSection
+          canManage={canManage}
+          list={
+            activeSection === 'categories' ? 'categories' : 'payment-methods'
+          }
+        />
+      ) : loadError ? (
         <ContentState
           action={
             <Button
@@ -342,9 +377,12 @@ const FinancialAccountsContent: FC<{
 
 /**
  * Comptes, first page of the Finances pole (10 November 2026): each account
- * with its opening balance; the operations will move it.
+ * with its balance of the day (11 November 2026), then the categories and
+ * payment methods of the operations in their own tabs.
  */
-export const FinancialAccountsPage: FC = () => {
+export const FinancialAccountsPage: FC<{ activeSection: AccountsSection }> = ({
+  activeSection,
+}) => {
   const { authorizationRevision, userData } = useUser();
   const capabilities = getFinancialAccountCapabilities(userData);
 
@@ -359,6 +397,7 @@ export const FinancialAccountsPage: FC = () => {
         <PageShell className="py-0">
           <PageCanvas contentClassName="py-6">
             <FinancialAccountsContent
+              activeSection={activeSection}
               capabilities={capabilities}
               key={`${userData?.id ?? ''}:${authorizationRevision}`}
             />

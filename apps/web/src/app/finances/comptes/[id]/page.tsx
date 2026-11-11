@@ -10,12 +10,27 @@ export const metadata: Metadata = {
   title: pageTitle('Fiche compte', FEATURES.financialAccounts.label),
 };
 
-type FinancialAccountRouteProps = { params: Promise<{ id: string }> };
+type FinancialAccountRouteProps = {
+  params: Promise<{ id: string }>;
+  searchParams?: Promise<{ section?: string | string[] }>;
+};
 
 export default async function FinancialAccountRoute({
   params,
+  searchParams,
 }: FinancialAccountRouteProps): Promise<React.ReactNode> {
-  const { id } = await params;
+  const [{ id }, query] = await Promise.all([
+    params,
+    searchParams ?? Promise.resolve<{ section?: string | string[] }>({}),
+  ]);
 
-  return <FinancialAccountDetailPage accountId={id} />;
+  // Its movements first (11 November 2026); any other value opens them too.
+  return (
+    <FinancialAccountDetailPage
+      accountId={id}
+      activeSection={
+        query.section === 'informations' ? 'informations' : 'mouvements'
+      }
+    />
+  );
 }

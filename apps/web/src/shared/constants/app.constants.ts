@@ -116,7 +116,10 @@ export const NAV_SPACES: NavigationSpace[] = [
     sections: [
       {
         id: 'treasury',
-        items: [featureNavigation(FEATURES.financialAccounts)],
+        items: [
+          featureNavigation(FEATURES.financialAccounts),
+          featureNavigation(FEATURES.operations),
+        ],
         label: 'Trésorerie',
         position: 'top',
       },

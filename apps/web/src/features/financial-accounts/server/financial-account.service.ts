@@ -5,6 +5,7 @@ import { AuditAction, AuditCategory } from '@repo/database';
 
 import { FEATURES } from '$constants/feature-registry.constants';
 import { PERMISSIONS } from '$constants/permissions.constants';
+import { readBalances } from '$features/operations/server/operation.service';
 import { isPrismaUniqueConstraintError } from '$server/api-response';
 import { createAuditLogWithHeaders } from '$server/audit-log';
 import { prisma } from '$server/prisma';
@@ -65,6 +66,7 @@ const accountMissing = (): ServiceError =>
   serviceErrors.notFound('Ce compte n’existe plus. Rechargez la liste.');
 
 const WITH_ENTITY = {
+  _count: { select: { incomingTransfers: true, operations: true } },
   entity: { select: { id: true, name: true } },
 } as const;
 type AccountRow = Prisma.FinancialAccountGetPayload<{
@@ -76,7 +78,12 @@ const asDate = (value: string): Date => new Date(`${value}T00:00:00.000Z`);
 const formatDay = (day: string): string =>
   formatApproximateDate({ date: day, precision: 'DAY' });
 
-const toItem = (row: AccountRow): FinancialAccountItem => ({
+/** With its balance of the day; none moved yet, the opening one. */
+const toItem = (
+  row: AccountRow,
+  balances?: ReadonlyMap<string, number>,
+): FinancialAccountItem => ({
+  balanceCents: balances?.get(row.id) ?? row.openingBalanceCents,
   closedOn: row.closedOn ? dateOnly(row.closedOn) : null,
   entity: { id: row.entity.id, name: row.entity.name },
   id: row.id,
@@ -85,6 +92,7 @@ const toItem = (row: AccountRow): FinancialAccountItem => ({
   name: row.name,
   openingBalanceCents: row.openingBalanceCents,
   openingOn: dateOnly(row.openingOn),
+  operationCount: row._count.operations + row._count.incomingTransfers,
   updatedAt: row.updatedAt.toISOString(),
   version: row.version,
 });
@@ -234,8 +242,12 @@ export const getFinancialAccountsOverview =
       prisma.financialAccount.findMany({ include: WITH_ENTITY }),
       readHolders(prisma),
     ]);
+    const balances = await readBalances(prisma, rows);
 
-    return { accounts: rows.map(toItem).sort(compareAccounts), holders };
+    return {
+      accounts: rows.map((row) => toItem(row, balances)).sort(compareAccounts),
+      holders,
+    };
   };
 
 export const getFinancialAccount = async (
@@ -247,7 +259,44 @@ export const getFinancialAccount = async (
   });
   if (!row) throw accountMissing();
 
-  return toItem(row);
+  return toItem(row, await readBalances(prisma, [row]));
+};
+
+/**
+ * The period of an account keeps covering its operations: its opening day
+ * never after the first, its closing day never before the last (also kept
+ * by `FinancialAccount_operations_check`).
+ */
+const assertCoversOperations = async (
+  transaction: Prisma.TransactionClient,
+  id: string,
+  input: FinancialAccountInput,
+): Promise<void> => {
+  const where = { OR: [{ accountId: id }, { toAccountId: id }] };
+  const [first, last] = await Promise.all([
+    transaction.financialOperation.findFirst({
+      orderBy: { occurredOn: 'asc' },
+      select: { occurredOn: true },
+      where,
+    }),
+    transaction.financialOperation.findFirst({
+      orderBy: { occurredOn: 'desc' },
+      select: { occurredOn: true },
+      where,
+    }),
+  ]);
+  if (first && dateOnly(first.occurredOn) < input.openingOn)
+    throw fieldError(
+      'openingOn',
+      `Une opération date du ${formatDay(dateOnly(first.occurredOn))} : le solde de départ ne peut pas être plus tard.`,
+      409,
+    );
+  if (last && input.closedOn && dateOnly(last.occurredOn) > input.closedOn)
+    throw fieldError(
+      'closedOn',
+      `Une opération date du ${formatDay(dateOnly(last.occurredOn))} : la clôture ne peut pas être plus tôt.`,
+      409,
+    );
 };
 
 /**
@@ -357,17 +406,17 @@ export const updateFinancialAccount = async (
           `${holder.name} n’existe pas à cette date : choisissez un jour de sa période.`,
           400,
         );
+      await assertCoversOperations(transaction, id, input);
       const result = await transaction.financialAccount.updateMany({
         data: { ...writeData(input), version: { increment: 1 } },
         where: { id, version: input.expectedVersion },
       });
       if (result.count !== 1) throw accountChanged();
-      const account = toItem(
-        await transaction.financialAccount.findUniqueOrThrow({
-          include: WITH_ENTITY,
-          where: { id },
-        }),
-      );
+      const row = await transaction.financialAccount.findUniqueOrThrow({
+        include: WITH_ENTITY,
+        where: { id },
+      });
+      const account = toItem(row, await readBalances(transaction, [row]));
       await audit(transaction, {
         account,
         action: 'FINANCIAL_ACCOUNT_UPDATE',
@@ -387,8 +436,8 @@ export const updateFinancialAccount = async (
 };
 
 /**
- * Deletes an account opened by mistake. Once operations exist, one that has
- * some will be closed instead.
+ * Deletes an account opened by mistake. One that has operations is closed
+ * instead: refused here and by the base (`ON DELETE RESTRICT`).
  */
 export const deleteFinancialAccount = async (
   id: string,
@@ -403,6 +452,10 @@ export const deleteFinancialAccount = async (
     });
     if (!previous) throw accountMissing();
     if (previous.version !== expectedVersion) throw accountChanged();
+    if (previous._count.operations + previous._count.incomingTransfers > 0)
+      throw serviceErrors.conflict(
+        'Ce compte a des opérations : clôturez-le plutôt que de le supprimer.',
+      );
     const result = await transaction.financialAccount.deleteMany({
       where: { id, version: expectedVersion },
     });
