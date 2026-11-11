@@ -64,26 +64,7 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
   },
   {
     area: 'relations',
-    dependsOn: [],
-    description:
-      'Retrouver partenaires, sponsors, clients et fournisseurs au même endroit.',
-    doneWhen:
-      'Une organisation peut être fournisseur et sponsor sans dupliquer sa fiche.',
-    firstRelease:
-      'Identité de l’organisation, interlocuteurs du répertoire et relations datées.',
-    id: 'organizations',
-    later:
-      'Relations simultanées, demandes de subvention et fusion contrôlée des doublons.',
-    legacyHrefs: [
-      '/bureau-juridique/partenaires',
-      '/bureau-juridique/sponsors',
-    ],
-    phase: 3,
-    title: 'Organisations & contacts',
-  },
-  {
-    area: 'relations',
-    dependsOn: ['organizations', 'contracts', 'tasks'],
+    dependsOn: ['contracts', 'tasks'],
     description:
       'Suivre les accords et ce qui est promis, livré ou à renouveler.',
     doneWhen:
@@ -92,6 +73,12 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
       'Opportunités, responsables, engagements, livrables et échéances liés aux contrats ; un partenariat peut soutenir une équipe ou un jeu précis, et apparaît alors sur sa fiche.',
     id: 'partnerships',
     later: 'Bilans partenaires, suivi des contreparties et renouvellements.',
+    // The former partner pages; the organisations are delivered (11
+    // November 2026), the agreements remain.
+    legacyHrefs: [
+      '/bureau-juridique/partenaires',
+      '/bureau-juridique/sponsors',
+    ],
     phase: 7,
     title: 'Partenariats & opportunités',
   },
@@ -111,7 +98,7 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
   },
   {
     area: 'finance',
-    dependsOn: ['accounts', 'organizations'],
+    dependsOn: ['accounts'],
     description: 'Suivre l’argent réellement reçu ou versé et son origine.',
     doneWhen:
       'Engagement, somme due et règlement sont distincts ; les corrections sont tracées.',
@@ -314,7 +301,7 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
   },
   {
     area: 'finance',
-    dependsOn: ['organizations', 'payments'],
+    dependsOn: ['payments'],
     description: 'Suivre les aides reçues et ce qu’elles obligent à justifier.',
     doneWhen:
       'Une subvention conserve demande, décision, versements et justification ; un don garde son reçu.',

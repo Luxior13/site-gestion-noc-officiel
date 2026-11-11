@@ -1,3 +1,10 @@
+> **Remplacé en partie le 11 novembre 2026.** Les organisations et leurs
+> contacts sont livrés dans le pôle Relations sous une autre forme : une seule
+> liste filtrée par type, un contact étant un nom sur la fiche et une fiche du
+> Répertoire seulement si la personne en a déjà une ; ni statut, ni période,
+> ni fil de suivi ([Relations](../pages/relations/README.md)). Les accords
+> restent pour le chantier Partenariats & opportunités.
+
 > **Module retire le 21 septembre 2026.** Les cases cochees ci-dessous
 
 > Document de conception. Son statut et sa source courante sont précisés dans

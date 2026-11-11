@@ -39,6 +39,12 @@ export const JOURNAL_ACTION_LABELS: Record<AuditAction, string> = {
   MFA_RECOVERY_CODES_REGENERATED: 'Codes de secours renouvelés',
   MFA_RESET: 'Double authentification réinitialisée',
   NOTIFICATION_SEND: 'Notification envoyée',
+  ORGANIZATION_CONTACT_CREATE: 'Contact ajouté',
+  ORGANIZATION_CONTACT_DELETE: 'Contact supprimé',
+  ORGANIZATION_CONTACT_UPDATE: 'Contact modifié',
+  ORGANIZATION_CREATE: 'Organisation ajoutée',
+  ORGANIZATION_DELETE: 'Organisation supprimée',
+  ORGANIZATION_UPDATE: 'Organisation modifiée',
   PARTNER_CONTACTS_UPDATE: 'Contacts partenaire modifiés',
   PARTNER_CREATE: 'Partenaire créé',
   PARTNER_DELETE: 'Partenaire supprimé',
@@ -176,6 +182,28 @@ export const FINANCIAL_ACCOUNT_FIELD_LABELS: ReadonlyArray<
   ['openingBalance', 'Solde de départ'],
   ['openingOn', 'Date du solde de départ'],
   ['closedOn', 'Clôture'],
+];
+
+/** Organisation fields recorded in `before` / `after`, in display order. */
+export const ORGANIZATION_FIELD_LABELS: ReadonlyArray<
+  readonly [string, string]
+> = [
+  ['name', 'Nom'],
+  ['kinds', 'Types'],
+  ['website', 'Site web'],
+  ['siretNumber', 'SIRET'],
+  ['address', 'Adresse'],
+];
+
+/** Contact fields of an organisation, in display order. */
+export const ORGANIZATION_CONTACT_FIELD_LABELS: ReadonlyArray<
+  readonly [string, string]
+> = [
+  ['person', 'Fiche du Répertoire'],
+  ['name', 'Nom'],
+  ['role', 'Fonction'],
+  ['email', 'Email'],
+  ['phone', 'Téléphone'],
 ];
 
 /** Account fields recorded in `before` / `after`, in display order. */

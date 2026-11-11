@@ -3,6 +3,7 @@ import { createFinancialAccountsPermissionCategory } from '$constants/financial-
 import { createGamesPermissionCategory } from '$constants/games-permission-category.constants';
 import type { NavigationIconName } from '$constants/navigation-icon.constants';
 import type { NavigationSpaceTone } from '$constants/navigation-theme.constants';
+import { createOrganizationsPermissionCategory } from '$constants/organizations-permission-category.constants';
 import { createPersonsPermissionCategory } from '$constants/persons-permission-category.constants';
 import { PAGE_PATHS } from '$constants/routes.constants';
 import { createStaffPermissionCategory } from '$constants/staff-permission-category.constants';
@@ -48,6 +49,12 @@ export const PERMISSIONS = {
   GAMES: {
     MANAGE: 'games:manage',
     VIEW: 'games:view',
+  },
+  // Sponsors, partners, suppliers, clients, organisers and public funders in
+  // one list, first page of the Relations pole (11 November 2026).
+  ORGANIZATIONS: {
+    MANAGE: 'organizations:manage',
+    VIEW: 'organizations:view',
   },
   PERSONS: {
     CREATE: 'persons:create',
@@ -225,6 +232,7 @@ export const PERMISSION_POLES = [
     label: 'Finances',
     tone: 'treasury',
   },
+  // Opened with its first page, Organisations (11 November 2026).
   {
     icon: 'Handshake',
     key: 'legal',
@@ -451,6 +459,7 @@ export const PERMISSION_CATEGORIES: PermissionCategory[] = [
   createPersonsPermissionCategory(PERMISSIONS.PERSONS),
   createGamesPermissionCategory(PERMISSIONS.GAMES, PERMISSIONS.TEAMS),
   createFinancialAccountsPermissionCategory(PERMISSIONS.FINANCIAL_ACCOUNTS),
+  createOrganizationsPermissionCategory(PERMISSIONS.ORGANIZATIONS),
   createStaffPermissionCategory(PERMISSIONS.STAFF),
   createEntitiesPermissionCategory(PERMISSIONS.ENTITIES),
   {

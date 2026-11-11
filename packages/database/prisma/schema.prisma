@@ -285,6 +285,12 @@ enum AuditAction {
   FINANCIAL_ACCOUNT_CREATE
   FINANCIAL_ACCOUNT_UPDATE
   FINANCIAL_ACCOUNT_DELETE
+  ORGANIZATION_CREATE
+  ORGANIZATION_UPDATE
+  ORGANIZATION_DELETE
+  ORGANIZATION_CONTACT_CREATE
+  ORGANIZATION_CONTACT_UPDATE
+  ORGANIZATION_CONTACT_DELETE
   /// Historical only. The partner module was removed from the application on
   /// 2026-09-21; these values stay declared so older journal entries remain
   /// readable. No code produces them anymore.
@@ -314,6 +320,7 @@ enum AuditCategory {
   PASSAGE
   LEGAL_ENTITY
   FINANCIAL_ACCOUNT
+  ORGANIZATION
   /// Historical only, kept for the same reason as `AuditAction.PARTNER_*`.
   PARTNER
 }
@@ -454,14 +461,15 @@ model Person {
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
 
-  emails            PersonEmail[]
-  phones            PersonPhone[]
-  socialProfiles    PersonSocialProfile[]
-  otherNicknames    PersonOtherNickname[]
-  emergencyContacts PersonEmergencyContact[]
-  legalGuardians    PersonLegalGuardian[]    @relation("GuardedPerson")
-  guardianOf        PersonLegalGuardian[]    @relation("Guardian")
-  passages          PersonPassage[]
+  emails               PersonEmail[]
+  phones               PersonPhone[]
+  socialProfiles       PersonSocialProfile[]
+  otherNicknames       PersonOtherNickname[]
+  emergencyContacts    PersonEmergencyContact[]
+  legalGuardians       PersonLegalGuardian[]    @relation("GuardedPerson")
+  guardianOf           PersonLegalGuardian[]    @relation("Guardian")
+  passages             PersonPassage[]
+  organizationContacts OrganizationContact[]
 
   @@index([createdAt, id])
   @@index([updatedAt, id])
@@ -828,6 +836,56 @@ model FinancialAccount {
   updatedAt           DateTime             @updatedAt
 
   @@unique([entityId, normalizedName])
+}
+
+/// What an organisation is to the structure (11 November 2026); several at
+/// once (`Organization_kinds_check`, absent from this schema).
+enum OrganizationKind {
+  SPONSOR
+  PARTNER
+  SUPPLIER
+  CLIENT
+  ORGANIZER
+  FUNDER
+}
+
+/// An organisation the structure deals with (11 November 2026): one record
+/// whatever it is to the structure, its kinds listed together.
+model Organization {
+  id             String                @id @default(cuid())
+  name           String                @db.VarChar(120)
+  normalizedName String                @unique @db.VarChar(240)
+  kinds          OrganizationKind[]
+  website        String?               @db.VarChar(200)
+  siretNumber    String?               @db.VarChar(14)
+  address        String?               @db.VarChar(300)
+  version        Int                   @default(1)
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  contacts       OrganizationContact[]
+}
+
+/// A person to reach at an organisation. Linked to a record of the Répertoire
+/// only when the person has one (one link per organisation, partial unique
+/// index absent from this schema); the name is then the record's.
+model OrganizationContact {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  personId       String?
+  person         Person?      @relation(fields: [personId], references: [id], onDelete: SetNull)
+  name           String       @db.VarChar(100)
+  role           String?      @db.VarChar(80)
+  /// Lower case.
+  email          String?      @db.VarChar(254)
+  /// International form, « +33612345678 ».
+  phone          String?      @db.VarChar(16)
+  version        Int          @default(1)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([organizationId])
+  @@index([personId])
 }
 
 model SystemSetting {

@@ -15,6 +15,7 @@ export const JOURNAL_TYPES = [
   'passages',
   'entities',
   'treasury',
+  'organizations',
   'settings',
 ] as const;
 export type JournalType = (typeof JOURNAL_TYPES)[number];
@@ -39,6 +40,7 @@ export const JOURNAL_TYPE_LABELS: Record<JournalType, string> = {
   entities: 'Entités',
   functions: 'Fonctions',
   games: 'Jeux',
+  organizations: 'Organisations',
   passages: 'Parcours',
   persons: 'Personnes',
   security: 'Sécurité',

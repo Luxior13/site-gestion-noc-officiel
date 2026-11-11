@@ -1,6 +1,6 @@
 'use client';
 
-import { Banknote, Landmark, Plus, Wallet } from 'lucide-react';
+import { Landmark, Plus, Wallet } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -33,7 +33,6 @@ import {
 } from '$ui/table';
 import { formatApproximateDate } from '$utils/approximate-date.utils';
 import { cn } from '$utils/css.utils';
-import { formatEuros } from '$utils/money.utils';
 
 import { fetchFinancialAccounts } from '../financial-account.api';
 import {
@@ -45,7 +44,9 @@ import type {
   FinancialAccountItem,
   FinancialAccountsOverview,
 } from '../types/financial-account.types';
+import { AccountKindIcon } from './AccountKindIcon';
 import { AccountState } from './AccountState';
+import { Balance } from './Balance';
 
 // The window loads when it opens: its date field stays off the page.
 const FinancialAccountDialog = dynamic(() =>
@@ -70,13 +71,7 @@ const AccountAvatar: FC<{ account: FinancialAccountItem }> = ({ account }) => (
     aria-hidden="true"
     className="rounded-tile border-border-default bg-surface-inset text-muted-foreground flex size-9 shrink-0 items-center justify-center border"
   >
-    {account.kind === 'CASH' ? (
-      <Banknote className="size-4" />
-    ) : account.kind === 'BANK' ? (
-      <Landmark className="size-4" />
-    ) : (
-      <Wallet className="size-4" />
-    )}
+    <AccountKindIcon className="size-4" kind={account.kind} />
   </span>
 );
 
@@ -95,7 +90,7 @@ const AccountsList: FC<{
 }> = ({ canAdd, onCreate, overview: { accounts, holders } }) => {
   // The holder is said only when there is more than one to tell apart.
   const showEntity = holders.length > 1;
-  const columns = showEntity ? 5 : 4;
+  const columns = showEntity ? 4 : 3;
   const emptyState = (
     <ContentState
       action={
@@ -131,7 +126,7 @@ const AccountsList: FC<{
       <DataTableDesktop>
         <Table aria-label="Liste des comptes" className={directoryStyles.table}>
           <TableCaption className="sr-only">
-            Les comptes de la structure, leur solde de départ, depuis quand et
+            Les comptes de la structure, leur solde de départ et sa date, et
             leur état
           </TableCaption>
           <TableHeader>
@@ -140,11 +135,10 @@ const AccountsList: FC<{
               {showEntity && (
                 <TableHead className="w-[200px]">Entité</TableHead>
               )}
-              <TableHead className="w-[170px] text-right">
+              <TableHead className="w-[200px] text-right">
                 Solde de départ
               </TableHead>
-              <TableHead className="w-[170px]">Au</TableHead>
-              <TableHead className="w-[120px]">État</TableHead>
+              <TableHead className="w-[140px] pl-8">État</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -173,13 +167,15 @@ const AccountsList: FC<{
                       {account.entity.name}
                     </TableCell>
                   )}
+                  {/* The amount, its day under it (owner, 11 November
+                      2026: one column rather than « Au » apart). */}
                   <TableCell className="pointer-events-none text-right tabular-nums">
-                    {formatEuros(account.openingBalanceCents)}
+                    <Balance cents={account.openingBalanceCents} />
+                    <span className="text-muted-foreground block text-xs">
+                      au {day(account.openingOn)}
+                    </span>
                   </TableCell>
-                  <TableCell className="pointer-events-none tabular-nums">
-                    {day(account.openingOn)}
-                  </TableCell>
-                  <TableCell className="pointer-events-none">
+                  <TableCell className="pointer-events-none pl-8">
                     <AccountState account={account} />
                   </TableCell>
                 </TableRow>
@@ -213,7 +209,7 @@ const AccountsList: FC<{
                   <div className="text-muted-foreground mt-2 flex flex-wrap items-center gap-2 text-xs">
                     <AccountState account={account} />
                     <span className="tabular-nums">
-                      {formatEuros(account.openingBalanceCents)} au{' '}
+                      <Balance cents={account.openingBalanceCents} /> au{' '}
                       {day(account.openingOn)}
                     </span>
                   </div>

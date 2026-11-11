@@ -31,7 +31,10 @@ Livrée le 10 novembre 2026 (« ok pour moi ») :
    (« Aucun compte » vide) : Compte (nom, lien vers sa fiche, et dessous
    « Compte bancaire · Crédit Agricole », « Caisse »), Entité (seulement quand
    plusieurs entités peuvent tenir un compte), Solde de départ (aligné à
-   droite, « 1 250,00 € »), Au (sa date), État (« Ouvert », « Clôturé »). Sur
+   droite, « 1 250,00 € », en rouge s’il est négatif, et dessous en petit
+   texte discret « au 10 novembre 2026 » ; une seule colonne depuis le 11
+   novembre 2026), État (« Ouvert »,
+   « Clôturé »). Sur
    téléphone, une carte : nom, type, pastille et « 1 250,00 € au 10 novembre
    2026 ».
 3. Sans entité : « Aucune entité pour tenir un compte », « Chaque compte
@@ -61,6 +64,12 @@ et « Valeur masquée ».
   jour choisi plutôt qu’un historique repris ; euro seulement ; pas de colonne
   « Solde » tant qu’aucune opération ne le fait bouger, pour ne pas faire
   passer le solde de départ pour celui du jour.
+- 11 novembre 2026 (« la colonne solde de départ est bien comme ça ? », puis
+  « ok go » sur la recommandation) : le solde de départ et sa date tiennent
+  dans une colonne, la date dessous ; la colonne « Au » est retirée. Avec les
+  opérations, cette colonne deviendra « Solde », le solde du jour (départ,
+  plus les entrées, moins les sorties), et le solde de départ ne se lira plus
+  que sur la fiche du compte.
 - Les exercices attendent la clôture de fin d’année (chantier Contrôles &
   clôtures) ; les catégories et moyens de paiement arrivent avec les
   opérations.
@@ -80,3 +89,5 @@ avec les opérations.
 ## Historique
 
 - 10 novembre 2026 : création de la page.
+- 11 novembre 2026 : solde de départ et sa date dans une seule colonne ;
+  solde négatif en rouge ([couleur des montants](../../design/fondations.md#hiérarchie-de-couleurs)).

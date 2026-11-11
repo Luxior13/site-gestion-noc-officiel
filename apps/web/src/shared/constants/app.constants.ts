@@ -125,6 +125,26 @@ export const NAV_SPACES: NavigationSpace[] = [
     tone: 'treasury',
   },
   {
+    // Opened with its first page, Organisations (11 November 2026).
+    description:
+      'Avec qui la structure travaille : organisations, puis partenariats et communication.',
+    href: PAGE_PATHS.organizations,
+    icon: 'Handshake',
+    id: 'relations',
+    label: 'Relations',
+    matchHrefs: ['/relations'],
+    sections: [
+      {
+        id: 'directory',
+        items: [featureNavigation(FEATURES.organizations)],
+        label: 'Annuaire',
+        position: 'top',
+      },
+    ],
+    summary: 'Avec qui à l’extérieur',
+    tone: 'legal',
+  },
+  {
     // Opened with its first page, Bureau & staff (9 November 2026).
     description:
       'L’association et sa mémoire : son effectif, puis son identité, ses décisions et ses documents.',

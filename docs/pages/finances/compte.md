@@ -18,8 +18,11 @@
 
 Livrée le 10 novembre 2026 :
 
-1. En-tête : icône, nom, pastille « Ouvert » ou « Clôturé », ligne « Compte
-   bancaire · Crédit Agricole · 1 250,00 € au 10 novembre 2026 ».
+1. En-tête : icône de son type, comme dans la liste (banque, portefeuille pour
+   un compte en ligne, billets pour une caisse, 11 novembre 2026), nom,
+   pastille « Ouvert » ou « Clôturé », ligne « Compte
+   bancaire · Crédit Agricole · 1 250,00 € au 10 novembre 2026 », le montant
+   en rouge s’il est négatif (11 novembre 2026).
 2. Carte **Compte** : Nom, Type, Établissement (pas pour une caisse), puis
    l’Entité titulaire en lecture : « Fixée à l’ouverture : un compte reste à
    l’entité qui l’a ouvert. »
@@ -63,3 +66,5 @@ erreur. Reprise avec les opérations.
 ## Historique
 
 - 10 novembre 2026 : création de la fiche.
+- 11 novembre 2026 : solde de départ négatif en rouge dans l’en-tête ; icône
+  de son type, partagée avec la liste (`AccountKindIcon`).

@@ -2,6 +2,7 @@ import {
   Archive,
   Bell,
   BriefcaseBusiness,
+  Building2,
   CheckCircle2,
   CircleDollarSign,
   ClipboardList,
@@ -29,6 +30,8 @@ const NAVIGATION_ICONS = {
   Archive,
   Bell,
   BriefcaseBusiness,
+  // Organisations, in the Relations pole (11 November 2026).
+  Building2,
   CheckCircle2,
   CircleDollarSign,
   ClipboardList,

@@ -320,29 +320,34 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
       },
     ],
   },
+  // Delivered on 11 November 2026.
   {
     area: 'relations',
-    chantier: 'organizations',
     name: 'Organisations',
-    phase: 3,
+    phase: null,
     summary:
-      'Liste, sans onglet : partenaires, sponsors, clients et fournisseurs.',
+      'Liste, sans onglet, par nom : sponsors, partenaires, fournisseurs, clients, organisateurs et financeurs publics ensemble, une organisation pouvant être plusieurs à la fois ; recherche par nom, site ou SIRET, filtres rapides par type avec leurs nombres ; ajout en fenêtre (nom, types), puis sa fiche s’ouvre.',
   },
   {
     area: 'relations',
-    chantier: 'organizations',
+    // What it still gains: the money paid or received, then the contracts.
+    chantier: 'payments',
     name: 'Fiche organisation',
-    phase: 3,
+    phase: null,
+    summary:
+      'Ouverte par le nom d’une organisation sur la page Organisations, ou juste après son ajout.',
     tabs: [
       {
         label: 'Identité',
-        phase: 3,
-        summary: 'Nom, type, adresse, identifiants.',
+        phase: null,
+        summary:
+          'Nom et types, site web, SIRET et adresse, modifiés sur place ; zone dangereuse pour une organisation ajoutée par erreur ou en double.',
       },
       {
         label: 'Contacts',
-        phase: 3,
-        summary: 'Interlocuteurs, liés aux fiches du Répertoire.',
+        phase: null,
+        summary:
+          'Les personnes à joindre : nom, ou fiche du Répertoire pour qui en a déjà une, fonction, email et téléphone ; ajout et modification en fenêtre.',
       },
       {
         chantier: 'payments',
@@ -359,6 +364,7 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         summary: 'Contrats et partenariats en cours et passés.',
       },
     ],
+    upcoming: 'Les onglets Règlements ↗, avec les opérations, puis Contrats ↗.',
   },
   {
     area: 'relations',

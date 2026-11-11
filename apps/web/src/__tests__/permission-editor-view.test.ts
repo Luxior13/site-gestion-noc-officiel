@@ -100,6 +100,7 @@ describe('permission editor configured and effective access', () => {
       'persons',
       'games',
       'financial-accounts',
+      'organizations',
       'staff',
       'entities',
       'users',
@@ -112,7 +113,7 @@ describe('permission editor configured and effective access', () => {
       ),
     ).toBe(false);
   });
-  it('ignores the retired field history key and presents 38 current capabilities', () => {
+  it('ignores the retired field history key and presents 40 current capabilities', () => {
     // Field history left the catalogue on 27 October 2026.
     const state = buildPermissionEditorState(UserRole.USER, {
       'audit:view_field_history': true,
@@ -122,7 +123,7 @@ describe('permission editor configured and effective access', () => {
     expect(
       PERMISSION_EDITOR_CATEGORIES.flatMap((category) => category.permissions),
       // Bureau & staff brought two (9 November 2026), Comptes and Entités
-      // two each (10 November 2026).
-    ).toHaveLength(38);
+      // two each (10 November 2026), Organisations two (11 November 2026).
+    ).toHaveLength(40);
   });
 });

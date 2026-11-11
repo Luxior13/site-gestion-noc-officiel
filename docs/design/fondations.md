@@ -205,6 +205,14 @@ Règles : une couleur de statut n'est jamais utilisée pour décorer ; un texte
 secondaire ne descend jamais sous le contraste minimal ; le fond et le texte ne
 vivent jamais en dur dans un composant.
 
+**Montants** (décision du propriétaire du 11 novembre 2026, « oui go ») : un
+montant garde la couleur du texte autour de lui ; un **solde négatif**
+(découvert) passe en `text-destructive`, parce qu’il demande de l’attention
+(`Balance` de `features/financial-accounts`). Avec les opérations, une
+**entrée** s’écrira en `text-success` avec un « + », une **sortie** dans la
+couleur du texte avec un « − » : une dépense est normale, pas une erreur, et le
+rouge garde son sens. Le signe dit toujours le sens sans la couleur.
+
 Les classes de texte courantes sont `text-foreground` et `text-muted-foreground`.
 `text-primary-emphasis` désigne l'accent de marque, pas le texte courant.
 Ne pas diminuer l'opacité d'un texte secondaire informatif. Vérifier son

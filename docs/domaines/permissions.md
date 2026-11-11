@@ -405,12 +405,39 @@ pendant l’écriture). Le journal montre à tout lecteur qu’un compte a chang
 mais son nom et ses valeurs seulement avec `financial_accounts:view`
 (« Compte financier », « Valeur masquée »).
 
-### Page Sponsors & partenaires (planifiée)
+### Organisations
 
-Le module a été retiré le 21 septembre 2026 et sera reconstruit plus tard. Ses
-trois clés sont réservées dans `ROADMAP_PERMISSIONS` : elles ne sont connues ni
-de `hasPermission`, ni des presets, ni des surcharges acceptées, et la page
-correspondante n'existe plus. La spécification complète est conservée dans
+Page Organisations, première du pôle Relations (`legal` dans
+`PERMISSION_POLES`), livrée le 11 novembre 2026 (« oui go »). Deux permissions,
+comme les autres pages du bureau ; accordables individuellement à un USER ;
+preset `false` pour USER et `true` pour ADMIN, sans retrait possible ; le
+compte racine les possède implicitement. Rangées dans l’éditeur sous
+Relations › Organisations.
+
+| Clé canonique | Action couverte | Dépend de | Risque | Step-up à l'usage |
+| --- | --- | --- | --- | --- |
+| `organizations:view` | voir les organisations, leurs types, site, SIRET et adresse, et leurs contacts (nom, fonction, email, téléphone) ; lire leurs valeurs dans le journal d’activité | — | défaut | Non |
+| `organizations:manage` | ajouter, corriger et supprimer une organisation et ses contacts | `organizations:view` | sensible | Non |
+
+La fiche du Répertoire reliée à un contact suit `persons:view` : sans ce droit,
+la fiche organisation dit seulement qu’une fiche est liée, et la recherche de
+fiches (`/api/relations/organisations/personnes`, qui demande les deux droits)
+est refusée. Relier ou délier une fiche demande `persons:view` ; modifier un
+contact sans ce droit garde son lien. Chaque mutation relit le droit dans sa
+transaction ; un contact verrouille son organisation (`FOR UPDATE`). Le journal
+montre à tout lecteur qu’une organisation ou un contact a changé, mais leurs
+noms et valeurs seulement avec `organizations:view` (« Organisation »,
+« Contact d’une organisation », « Valeur masquée ») ; la fiche reliée n’y est
+jamais nommée (« Liée »).
+
+### Page Partenariats (planifiée)
+
+L’ancien module Sponsors & partenaires a été retiré le 21 septembre 2026 ; les
+organisations elles-mêmes sont livrées le 11 novembre 2026 (section
+précédente). Ses trois clés `partners:*` restent réservées dans
+`ROADMAP_PERMISSIONS` pour les accords (chantier Partenariats & opportunités) :
+elles ne sont connues ni de `hasPermission`, ni des presets, ni des surcharges
+acceptées. L’ancienne spécification est conservée dans
 `docs/propositions/intentions/pages/bureau-juridique/sponsors-partenaires.md`.
 
 ### Auteur protégé et anciennes capacités d'activité
@@ -460,6 +487,7 @@ pas en droits délégables individuellement.
 | `/esport/jeux/[id]`                                  | `games:view` pour lire le jeu et ses fonctions ; `games:manage` pour les modifier (`/api/jeux/[id]/fonctions`) ; le nombre d’équipes avec `teams:view` |
 | `/structure/entites` et `/structure/entites/[id]`    | `entities:view` pour lire (`/api/structure/entites`) ; `entities:manage` pour ajouter, modifier, rendre principale ou supprimer ; l’API refait le contrôle dans sa transaction |
 | `/finances/comptes` et `/finances/comptes/[id]`      | `financial_accounts:view` pour lire les comptes et les entités qui peuvent en tenir (`/api/finances/comptes`) ; `financial_accounts:manage` pour ouvrir, modifier, clôturer ou supprimer ; l’API refait le contrôle dans sa transaction |
+| `/relations/organisations` et `/relations/organisations/[id]` | `organizations:view` pour lire (`/api/relations/organisations`) ; `organizations:manage` pour ajouter, modifier, supprimer une organisation et gérer ses contacts ; `persons:view` en plus pour relier ou voir la fiche du Répertoire d’un contact ; l’API refait le contrôle dans sa transaction |
 | `/structure/bureau-staff`                            | `staff:view` pour lire l’Effectif, les anciens membres et les fonctions (`/api/structure`) ; `staff:manage` pour les modifier ; la recherche d’une fiche (`/api/passages/personnes`) accepte `teams:manage` ou `staff:manage` ; l’API refait le contrôle dans sa transaction |
 | `/systeme/utilisateurs`                       | `users:view`                                                                                                                                               |
 | `/systeme/utilisateurs/nouveau`               | `users:create`, donc aussi `users:view`                                                                                                                    |

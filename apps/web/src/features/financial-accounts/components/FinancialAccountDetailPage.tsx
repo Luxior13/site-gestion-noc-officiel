@@ -1,6 +1,6 @@
 'use client';
 
-import { RefreshCw, Wallet } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import React, {
@@ -21,7 +21,6 @@ import { useUser } from '$context/UserContext';
 import { PageCanvas, PageShell } from '$ui/page-shell';
 import { ApiClientError } from '$utils/api.utils';
 import { formatApproximateDate } from '$utils/approximate-date.utils';
-import { formatEuros } from '$utils/money.utils';
 
 import {
   deleteFinancialAccountRequest,
@@ -31,7 +30,9 @@ import { FINANCIAL_ACCOUNT_ACTION_BAR_SLOT } from '../financial-account.constant
 import { getFinancialAccountCapabilities } from '../financial-account.permissions';
 import { accountKindLine } from '../financial-account.ui';
 import type { FinancialAccountItem } from '../types/financial-account.types';
+import { AccountKindIcon } from './AccountKindIcon';
 import { AccountState } from './AccountState';
+import { Balance } from './Balance';
 
 // The form loads with its own code, as a game's tabs do (page budget).
 const FinancialAccountInformationSection = dynamic(() =>
@@ -43,8 +44,12 @@ const FinancialAccountInformationSection = dynamic(() =>
 const ACCOUNTS_HREF = FEATURES.financialAccounts.href;
 
 /** « Compte bancaire · Crédit Agricole · 1 250,00 € au 1er janvier 2027 ». */
-const accountContext = (account: FinancialAccountItem): string =>
-  `${accountKindLine(account)} · ${formatEuros(account.openingBalanceCents)} au ${formatApproximateDate({ date: account.openingOn, precision: 'DAY' })}`;
+const AccountContext: FC<{ account: FinancialAccountItem }> = ({ account }) => (
+  <>
+    {accountKindLine(account)} · <Balance cents={account.openingBalanceCents} />{' '}
+    au {formatApproximateDate({ date: account.openingOn, precision: 'DAY' })}
+  </>
+);
 
 type ContentProps = { accountId: string };
 
@@ -138,10 +143,10 @@ const FinancialAccountDetailContent: FC<ContentProps> = ({ accountId }) => {
     return (
       <EntityDetailLayout
         condensedAside={<AccountState account={account} />}
-        heroDescription={accountContext(account)}
+        heroDescription={<AccountContext account={account} />}
         heroIcon={
           <span className="bg-surface-inset text-muted-foreground flex size-full items-center justify-center rounded-md">
-            <Wallet aria-hidden="true" className="size-6" />
+            <AccountKindIcon className="size-6" kind={account.kind} />
           </span>
         }
         heroMeta={<AccountState account={account} />}

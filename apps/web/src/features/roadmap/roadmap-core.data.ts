@@ -111,7 +111,7 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
   },
   {
     area: 'esport',
-    dependsOn: ['sport-teams', 'access-scopes', 'organizations'],
+    dependsOn: ['sport-teams', 'access-scopes'],
     description:
       'Garder la trace de chaque tournoi : qui y a participé, ce qu’il a rapporté et ce qui s’y est mal passé.',
     doneWhen:

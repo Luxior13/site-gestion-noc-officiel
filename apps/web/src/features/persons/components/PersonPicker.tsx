@@ -20,30 +20,39 @@ import { PersonAvatarFrame } from './PersonAvatar';
  * The field keeps the focus: arrows, Entrée to choose, Échap to close. A
  * missing record is created in the Répertoire, in another tab. Used for a
  * passage, and for a legal representative (10 November 2026), each with the
- * search its right allows.
+ * search its right allows; optional for a contact of an organisation (11
+ * November 2026), which names its own hint and keeps the focus on its name.
  */
 export const PersonPicker: FC<{
+  /** The field takes the focus when the window opens. */
+  autoFocus?: boolean;
   canCreatePerson: boolean;
   disabled: boolean;
   error?: string;
   /** Records that cannot be chosen here: they are left out of the list. */
   exclude?: readonly string[];
+  /** What the field is for, under it. */
+  hint?: string;
   idPrefix: string;
   label?: string;
   onChange: (person: PersonRef | null) => void;
   /** A new search clears the « choose a person » error. */
   onSearch: () => void;
+  required?: boolean;
   search: (query: string, signal: AbortSignal) => Promise<PersonSuggestions>;
   value: PersonRef | null;
 }> = ({
+  autoFocus = true,
   canCreatePerson,
   disabled,
   error,
   exclude = [],
+  hint = 'Une fiche du Répertoire.',
   idPrefix: ID,
   label = 'Personne',
   onChange,
   onSearch,
+  required = true,
   search,
   value,
 }) => {
@@ -136,7 +145,7 @@ export const PersonPicker: FC<{
 
   return (
     <div className="space-y-1.5">
-      <Label htmlFor={`${ID}-person`} required>
+      <Label htmlFor={`${ID}-person`} required={required}>
         {label}
       </Label>
       <Popover open={expanded} onOpenChange={setOpen}>
@@ -156,7 +165,7 @@ export const PersonPicker: FC<{
               aria-expanded={expanded}
               aria-invalid={Boolean(error)}
               autoComplete="off"
-              autoFocus
+              autoFocus={autoFocus}
               className="pl-9"
               disabled={disabled}
               id={`${ID}-person`}
@@ -227,7 +236,7 @@ export const PersonPicker: FC<{
         </PopoverContent>
       </Popover>
       <p className="text-muted-foreground text-xs" id={`${ID}-person-hint`}>
-        Une fiche du Répertoire.{' '}
+        {hint}{' '}
         {canCreatePerson && (
           <>
             Absente ?{' '}

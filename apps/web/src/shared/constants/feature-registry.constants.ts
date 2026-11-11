@@ -126,6 +126,36 @@ export const FEATURES = {
     permissionMode: 'all',
     requiredPermissions: [PERMISSIONS.GAMES.VIEW],
   }),
+  // First page of the Relations pole (11 November 2026).
+  organizations: defineFeature({
+    audit: {
+      pageKey: 'organizations',
+      pageLabel: 'Organisations',
+      poleKey: 'legal',
+      poleLabel: 'Relations',
+    },
+    availability: 'live',
+    description:
+      'Sponsors, partenaires, fournisseurs, clients, organisateurs et financeurs publics, avec leurs contacts.',
+    href: PAGE_PATHS.organizations,
+    icon: 'Building2',
+    id: 'organizations',
+    keywords: [
+      'sponsor',
+      'partenaire',
+      'fournisseur',
+      'client',
+      'organisateur',
+      'financeur',
+      'subvention',
+      'tiers',
+      'société',
+      'contact',
+    ],
+    label: 'Organisations',
+    permissionMode: 'all',
+    requiredPermissions: [PERMISSIONS.ORGANIZATIONS.VIEW],
+  }),
   persons: defineFeature({
     audit: {
       pageKey: 'persons',

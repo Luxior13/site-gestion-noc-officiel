@@ -126,6 +126,11 @@ cours : la mémoire ne doit pas dépendre d’une personne.
   sont à faire valider par une personne compétente
   ([confidentialité](../references/confidentialite.md)). Une demande d’effacement
   anonymise la fiche et garde le passage.
+- **Les contacts d’une organisation ne sont pas des membres** (11 novembre
+  2026) : nom, fonction, email et téléphone professionnels, sur la fiche de
+  l’organisation et hors du Répertoire. Un contact parti se supprime ; leur
+  durée de conservation suit les mêmes règles de Confidentialité &
+  conservation, à faire valider.
 - **Le registre doit survivre à l’outil** : un export lisible le reprend en entier,
   indépendamment du format des sauvegardes.
 

@@ -44,6 +44,7 @@ const TYPE_FILTERS: Record<
   entities: { category: 'LEGAL_ENTITY' },
   functions: { category: 'FUNCTION' },
   games: { category: 'GAME' },
+  organizations: { category: 'ORGANIZATION' },
   passages: { category: 'PASSAGE' },
   persons: { category: 'PERSON' },
   security: { stream: { in: ['AUTHENTICATION', 'SECURITY'] } },

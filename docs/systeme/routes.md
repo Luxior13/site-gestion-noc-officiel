@@ -48,6 +48,8 @@ Ce relevé ne remplace pas la [référence des permissions](../domaines/permissi
 | `/structure/entites/[id]` | Page | Session, `entities:view` (`entities:manage` pour modifier, rendre principale, supprimer) | oui | [Fiche entité](../pages/structure/entite.md) |
 | `/finances/comptes` | Page | Session, `financial_accounts:view` (`financial_accounts:manage` pour ouvrir un compte) ; première page du pôle Finances (10 novembre 2026) | oui | [Comptes](../pages/finances/comptes.md) |
 | `/finances/comptes/[id]` | Page | Session, `financial_accounts:view` (`financial_accounts:manage` pour modifier, clôturer, supprimer) | oui | [Fiche compte](../pages/finances/compte.md) |
+| `/relations/organisations` | Page | Session, `organizations:view` (`organizations:manage` pour ajouter) ; première page du pôle Relations (11 novembre 2026) | oui | [Organisations](../pages/relations/organisations.md) |
+| `/relations/organisations/[id]` | Page | Session, `organizations:view` (`organizations:manage` pour modifier, supprimer, gérer les contacts ; `persons:view` pour la fiche du Répertoire d’un contact) ; `?section=contacts` | oui | [Fiche organisation](../pages/relations/organisation.md) |
 | `/esport/jeux` | Page | Session, `games:view` (`games:manage` pour modifier ; `teams:view` et `teams:manage` pour les équipes) | intégré | [Jeux](../pages/esport/jeux.md) |
 | `/systeme/utilisateurs` | Page | Session, `users:view` | oui | [Liste des utilisateurs](../pages/systeme/utilisateurs/liste.md) |
 | `/systeme/utilisateurs/nouveau` | Page | Session, `users:create` | intégré | [Nouvel utilisateur](../pages/systeme/utilisateurs/creation.md) |

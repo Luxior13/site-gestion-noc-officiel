@@ -15,6 +15,7 @@ Référence révisée le 7 novembre 2026. Les chantiers proviennent du [catalogu
 | `/esport/equipes/[id]` | Fiche équipe ouverte le 8 novembre 2026 (Roster, Anciens membres et Informations depuis le 9 novembre 2026 ; Tournois ↗, Entraînements, Finances ↗, Partenaires ↗ à venir) | Esport |
 | `/esport/jeux` | Page Jeux livrée le 8 novembre 2026, avec les équipes sous chaque jeu | Esport |
 | `/finances/comptes`, `/[id]` sous ce chemin | Page Comptes et fiche compte livrées le 10 novembre 2026 (solde de départ ; opérations à venir) | Finances |
+| `/relations/organisations`, `/[id]` sous ce chemin | Page Organisations et fiche organisation livrées le 11 novembre 2026 (Identité, Contacts ; Règlements ↗ avec les opérations) | Relations |
 | `/structure/entites`, `/[id]` sous ce chemin | Page Entités et fiche entité livrées le 10 novembre 2026 (identité ; paramètres fiscaux, dirigeants, assurances à venir) | Structure |
 | `/activite/actualites` | Ancienne page ; redirige vers la feuille de route | — |
 | `/systeme/utilisateurs`, `/nouveau`, `/[id]` sous ce chemin | Liste, création et fiche Utilisateur livrées | Système |
@@ -33,7 +34,7 @@ Les anciennes routes prévues ne sont pas des « squelettes disponibles » : ell
 - Le catalogue ne décrit que ce qui reste à construire (décision du 8 novembre 2026) : un chantier livré est retiré ou réduit à son reste à faire, avec une mise à jour de cette matrice.
 - Chaque ligne de l’interface précise première version, prérequis, critère de livraison et suite éventuelle. Les étapes sont un ordre suggéré, pas des échéances ; le propriétaire choisit le prochain chantier.
 
-## Les 37 chantiers
+## Les 36 chantiers
 
 | Identifiant stable | Chantier | Pôle cible | Étape | Prérequis |
 | --- | --- | --- | --- | --- |
@@ -42,15 +43,14 @@ Les anciennes routes prévues ne sont pas des « squelettes disponibles » : ell
 | `compliance` | Confidentialité & conservation | Structure | 2 | Équipes & parcours |
 | `data` | Données, exports & sauvegardes | Système | 2 | Équipes & parcours |
 | `legal-entities` | Entités juridiques & périmètres | Structure | 3 | — |
-| `organizations` | Organisations & contacts | Relations | 3 | — |
 | `accounts` | Comptes & rapprochement | Finances | 3 | Entités juridiques & périmètres |
-| `payments` | Opérations & règlements | Finances | 3 | Comptes & rapprochement ; Organisations & contacts |
+| `payments` | Opérations & règlements | Finances | 3 | Comptes & rapprochement |
 | `person-relationships` | Adhésions & cotisations | Personnes | 4 | Entités juridiques & périmètres ; Équipes & parcours |
 | `invoices` | Facturation & achats | Finances | 4 | Opérations & règlements |
 | `expenses` | Notes de frais & remboursements | Finances | 4 | Opérations & règlements |
 | `finance-controls` | Contrôles & clôtures | Finances | 4 | Opérations & règlements |
-| `grants` | Subventions & dons | Finances | 4 | Organisations & contacts ; Opérations & règlements |
-| `competitions` | Tournois | Esport | 5 | Équipes & parcours ; Accès & responsabilités métier ; Organisations & contacts |
+| `grants` | Subventions & dons | Finances | 4 | Opérations & règlements |
+| `competitions` | Tournois | Esport | 5 | Équipes & parcours ; Accès & responsabilités métier |
 | `incidents` | Suivi, incidents & sanctions | Structure | 5 | Équipes & parcours ; Confidentialité & conservation ; Tournois |
 | `prizes` | Gains de compétition & primes | Finances | 5 | Tournois ; Opérations & règlements |
 | `tasks` | Projets & tâches | Aujourd’hui | 6 | — |
@@ -60,7 +60,7 @@ Les anciennes routes prévues ne sont pas des « squelettes disponibles » : ell
 | `documents` | Documents & acceptations | Structure | 7 | Entités juridiques & périmètres |
 | `contracts` | Contrats & obligations | Structure | 7 | Documents & acceptations ; Entités juridiques & périmètres |
 | `activity-journal` | Export du journal d’activité | Système | 7 | — |
-| `partnerships` | Partenariats & opportunités | Relations | 7 | Organisations & contacts ; Contrats & obligations ; Projets & tâches |
+| `partnerships` | Partenariats & opportunités | Relations | 7 | Contrats & obligations ; Projets & tâches |
 | `onboarding` | Arrivées, départs & passations | Personnes | 8 | Équipes & parcours ; Documents & acceptations ; Projets & tâches |
 | `logistics` | Matériel & abonnements | Structure | 8 | — |
 | `internal-news` | Chronologie de la structure | Structure | 8 | Équipes & parcours |
@@ -92,8 +92,8 @@ Les références suivantes préservent le périmètre des anciennes propositions
 | `/systeme/exports-sauvegardes` | Système → Données, exports & sauvegardes | 2 |
 | `/systeme/archives` | Système → Données, exports & sauvegardes | 2 |
 | `/tresorerie/comptes` | Finances → Comptes & rapprochement | 3 |
-| `/bureau-juridique/partenaires` | Relations → Organisations & contacts | 3 |
-| `/bureau-juridique/sponsors` | Relations → Organisations & contacts | 3 |
+| `/bureau-juridique/partenaires` | Relations → Partenariats & opportunités (organisations livrées le 11 novembre 2026) | 7 |
+| `/bureau-juridique/sponsors` | Relations → Partenariats & opportunités (organisations livrées le 11 novembre 2026) | 7 |
 | `/tresorerie/operations` | Finances → Opérations & règlements | 3 |
 | `/tresorerie/recettes` | Finances → Opérations & règlements | 3 |
 | `/tresorerie/depenses` | Finances → Opérations & règlements | 3 |

@@ -54,7 +54,7 @@ Le profil métier vit dans Structure. Les paramètres de sécurité, d’accès 
 | Personne | Identité durable ; ne vaut pas compte de connexion |
 | Compte utilisateur | Authentification, accès, préférences et actions |
 | Engagement ou relation datée | Adhésion, mandat, bénévolat, contrat, affectation à une équipe |
-| Organisation externe | Identité d’un partenaire, fournisseur ou autre tiers |
+| Organisation externe | Identité d’un partenaire, fournisseur ou autre tiers, une seule fiche quels que soient ses types ; livrée le 11 novembre 2026 ([Organisations](../pages/relations/organisations.md)) |
 | Entité juridique interne | Partie responsable de ses dossiers et engagements |
 
 Une personne peut cumuler des relations et changer de rôle. Un adhérent ne devient pas automatiquement client ou associé. La nature de sa relation est une donnée métier explicite, avec ses dates et son historique.

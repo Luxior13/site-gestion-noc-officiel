@@ -34,7 +34,8 @@ describe('Person and User isolation contract', () => {
       .map((field) => field.type);
 
     // Its passages (9 November 2026) tie it to teams, its representatives
-    // (10 November 2026) to other records, never to an account.
+    // (10 November 2026) to other records, a contact of an organisation (11
+    // November 2026) to its organisation, never to an account.
     expect(personRelations).toEqual([
       'PersonEmail',
       'PersonPhone',
@@ -44,6 +45,7 @@ describe('Person and User isolation contract', () => {
       'PersonLegalGuardian',
       'PersonLegalGuardian',
       'PersonPassage',
+      'OrganizationContact',
     ]);
     expect(personRelations).not.toContain('User');
     expect(userRelations).not.toContain('Person');

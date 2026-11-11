@@ -39,6 +39,11 @@ Cadre privé (sidebar 264 px, header 56 px)
   dont la place reste réservée quand elle est masquée, vient avant les menus.
 - Une ligne : identité à gauche (avatar, nom, contexte en dessous), puis
   colonnes de données autorisées, statut en badge à pastille, date.
+- Une valeur à un jour (un solde de départ) tient dans sa colonne, alignée à
+  droite, sa date dessous en petit texte discret (« au 11 novembre 2026 ») :
+  jamais une colonne « Au » à part. Une liste montre d’abord ce qu’on vient y
+  chercher (le solde du jour, une fois les opérations là) ; le point de
+  départ reste sur la fiche (décision du 11 novembre 2026, page Comptes).
 - Les colonnes dépendent des droits ; leurs seuils de passage en cartes sont
   propres à la liste (Utilisateurs : 48, 52, 56 ou 64 rem).
 - Quand on vient surtout pour les éléments d’une ligne, ils s’affichent sur des

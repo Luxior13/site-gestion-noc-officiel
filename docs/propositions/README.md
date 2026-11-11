@@ -12,7 +12,7 @@ concernées.
 
 | Document | Rôle | Statut au 19 octobre 2026 |
 | --- | --- | --- |
-| [Feuille de route](feuille-de-route.md) | Chantiers prévus : 37 chantiers dans 7 pôles cibles (Listes de choix clos le 10 novembre 2026), ordre suggéré en 10 étapes, prochain chantier choisi par le propriétaire (révision du 7 novembre 2026) ; catalogue exécutable dans `roadmap.constants.ts` | Référence produit courante ; seule source des priorités |
+| [Feuille de route](feuille-de-route.md) | Chantiers prévus : 36 chantiers dans 7 pôles cibles (Listes de choix clos le 10 novembre 2026, Organisations & contacts livré le 11 novembre 2026), ordre suggéré en 10 étapes, prochain chantier choisi par le propriétaire (révision du 7 novembre 2026) ; catalogue exécutable dans `roadmap.constants.ts` | Référence produit courante ; seule source des priorités |
 | [Matrice de préparation](intentions/pages/MATRICE_PREPARATION.md) | Pages livrées, chantiers et anciennes destinations | Référence de correspondance courante |
 | [Sujets futurs](sujets-futurs.md) | Fiches transversales à rédiger quand leur module existera (SEO, médias, audience, notifications, compétitions, sanctions…) | Candidats, aucune fiche à créer avant le module |
 
@@ -24,7 +24,7 @@ concernées.
 | [Entités juridiques](structure-entites-juridiques.md) | Association aujourd’hui, société peut-être demain : ce qui porte une entité, principe de déduction pour la trésorerie, page Entités (étape 3) | Adopté le 9 novembre 2026 ; rien n’est construit (étape 3) |
 | [Personnes et identité](membres-personnes-identite.md) | Répertoire, identité, relations | Plan d’origine ; confronter chaque reste à faire aux [fiches du Répertoire](../pages/personnes/repertoire/README.md) et au modèle actuel |
 | [Réunions](vie-interne-reunions.md) | Pôle Activité | Conception future ; aucun module livré déduit de ce plan |
-| [Sponsors et partenaires](relations-sponsors-partenaires.md) | Pôle Relations | Conception historique ; module retiré le 21 septembre 2026, reconstruction à cadrer |
+| [Sponsors et partenaires](relations-sponsors-partenaires.md) | Pôle Relations | Conception historique ; module retiré le 21 septembre 2026 ; les organisations et leurs contacts sont livrés autrement le 11 novembre 2026 (une seule liste filtrée par type, contacts par nom), les accords restent pour Partenariats & opportunités |
 | [Proposition UX/UI](interface-proposition-ux-ui.md) | Interface générale, 23 septembre 2026 | Proposition datée ; les décisions courantes sont dans le [design](../design/README.md) et les fiches |
 | [Catalogue initial](catalogue-initial.md) | Anciennes familles de fonctionnalités | Historique ; ne pas appliquer sa navigation comme règle courante |
 

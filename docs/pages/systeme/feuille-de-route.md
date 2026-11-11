@@ -157,6 +157,10 @@ Sources : [décisions produit](../../propositions/feuille-de-route.md),
   Listes de choix clos, sur recommandation acceptée ; le catalogue compte
   37 chantiers. Le même jour, filtres du Répertoire par équipe et par jeu et
   anciens noms d’équipe retirés, sur décision du propriétaire ([retraits](../../propositions/feuille-de-route.md#retraits-du-10-novembre-2026)).
+- 11 novembre 2026 : chantier Organisations & contacts livré et retiré du
+  catalogue, qui compte 36 chantiers ; pages Organisations et fiche
+  organisation en place ; les anciennes adresses des partenaires passent au
+  chantier Partenariats & opportunités.
 - 25 octobre 2026 : la page reste ouverte à tout compte connecté et figure
   dans la section « Projet » du pôle Système, plus sous « Administration »
   ([DRT-04](../../audits/2026-10-25-coherence-des-droits.md)).

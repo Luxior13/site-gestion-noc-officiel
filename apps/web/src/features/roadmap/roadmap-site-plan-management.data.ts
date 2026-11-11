@@ -355,7 +355,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         label: 'Comptes',
         phase: null,
         summary:
-          'Premier onglet : chaque compte bancaire, compte en ligne ou caisse, avec son établissement, son solde de départ et sa date, ouvert ou clôturé ; l’entité titulaire, seulement quand il y en a plusieurs ; ajout en fenêtre, l’entité déduite de la date et demandée seulement si plusieurs existent ce jour-là, puis sa fiche s’ouvre.',
+          'Premier onglet : chaque compte bancaire, compte en ligne ou caisse, avec son établissement, son solde de départ et sa date dessous, ouvert ou clôturé ; l’entité titulaire, seulement quand il y en a plusieurs ; ajout en fenêtre, l’entité déduite de la date et demandée seulement si plusieurs existent ce jour-là, puis sa fiche s’ouvre.',
       },
       {
         // With the closing (10 November 2026): until then, dates suffice.
@@ -378,7 +378,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
       },
     ],
     upcoming:
-      'Les onglets Catégories et Moyens de paiement avec les opérations, puis Exercices avec la clôture.',
+      'La colonne « Solde » du jour à la place du solde de départ, et les onglets Catégories et Moyens de paiement, avec les opérations ; puis Exercices avec la clôture.',
   },
   {
     area: 'finance',

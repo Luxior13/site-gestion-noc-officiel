@@ -4,7 +4,7 @@ Référence actualisée pendant la revue du 12 octobre 2026. Le catalogue des pr
 
 ## Navigation actuelle
 
-Huit entrées sont déclarées dans cinq pôles. Leur visibilité dépend des accès de l’utilisateur. Les noms et routes actifs proviennent du registre des fonctionnalités.
+Onze entrées sont déclarées dans les sept pôles (11 novembre 2026). Leur visibilité dépend des accès de l’utilisateur. Les noms et routes actifs proviennent du registre des fonctionnalités.
 
 | Pôle actuel | Entrées actives | Placement |
 | --- | --- | --- |
@@ -12,6 +12,7 @@ Huit entrées sont déclarées dans cinq pôles. Leur visibilité dépend des ac
 | Personnes | Répertoire `/personnes/repertoire` | Personnes et contacts de la structure |
 | Esport | Section Sections : Jeux `/esport/jeux` (8 novembre 2026) | Les jeux de la structure, une section par jeu, et leurs équipes sous chaque jeu ; la fiche équipe `/esport/equipes/[id]` garde « Jeux » comme entrée courante (`matchHrefs` de la fonctionnalité) |
 | Finances | Section Trésorerie : Comptes `/finances/comptes` (10 novembre 2026) | Les comptes bancaires, en ligne et caisses de chaque entité, avec leur solde de départ ; la fiche compte garde « Comptes » comme entrée courante ; pôle ouvert avec cette première page, entre Esport et Structure, thème `treasury` |
+| Relations | Section Annuaire : Organisations `/relations/organisations` (11 novembre 2026) | Sponsors, partenaires, fournisseurs, clients, organisateurs et financeurs publics dans une seule liste filtrée par type, et les personnes à y joindre ; la fiche organisation garde « Organisations » comme entrée courante ; pôle ouvert avec cette première page, entre Finances et Structure, thème `legal`, clé de pôle `legal` |
 | Structure | Section Organisation : Bureau & staff `/structure/bureau-staff` (9 novembre 2026), Entités `/structure/entites` (10 novembre 2026) | L’effectif de la structure hors des équipes (bureau, staff, bénévoles), ses anciens membres et ses fonctions ; pôle ouvert avec cette première page, entre Esport et Système |
 | Système | Section Administration : Utilisateurs `/systeme/utilisateurs`, Journal d’activité `/systeme/journal-activite`, Paramètres système `/systeme/parametres` ; section Projet : Feuille de route `/systeme/feuille-de-route` | Comptes, traçabilité, technique et plan produit |
 
@@ -37,14 +38,14 @@ Révision du 8 novembre 2026, sur décision du propriétaire (« on peut encore 
 | Structure | Qu’est-ce que l’association, qu’a-t-elle décidé et gardé ? | Bureau & staff (effectif et fonctions de la structure), entités juridiques (leur suite dans le temps et la fiche de chacune, 9 novembre 2026), chronologie, réunions et décisions, documents, contrats, incidents, matériel et abonnements (onglet Types de matériel), bilan annuel |
 | Système | Comment marche l’outil ? | Comptes et accès, journal, paramètres (dont les règles de rappel), données, intégrations, feuille de route |
 
-Ce tableau décrit les lieux logiques, pas un engagement à créer autant d’entrées. Les vues rares deviennent des onglets ou actions contextuelles. Le pôle Relations s’ouvre seulement avec son premier module utilisable ; Structure s’est ouvert le 9 novembre 2026 avec Bureau & staff, Finances le 10 novembre 2026 avec Comptes.
+Ce tableau décrit les lieux logiques, pas un engagement à créer autant d’entrées. Les vues rares deviennent des onglets ou actions contextuelles. Chaque pôle s’ouvre seulement avec son premier module utilisable : Structure le 9 novembre 2026 avec Bureau & staff, Finances le 10 novembre 2026 avec Comptes, Relations le 11 novembre 2026 avec Organisations.
 
 ## Règles de placement
 
 - **Une donnée se modifie là où on la lit** (décision du 7 novembre 2026). Une action que porte déjà une fiche ne reçoit pas de page dédiée : un passage se saisit dans le Roster de son équipe ou l’Effectif de Bureau & staff, avec la même fenêtre, et la fiche personne les lit tous dans son onglet Parcours (décision du 8 novembre 2026) ([où modifier](registre-historique.md#où-modifier)). Un manque de place se règle par un onglet ou une fenêtre avant une page.
 - **Une liste de choix qui peut évoluer se gère sur le site**, jamais dans le code, en onglet à côté de ce qu’elle classe et jamais dans Système ([listes de choix](registre-historique.md#listes-de-choix)).
 - Une donnée a un module propriétaire. Les vues personnelles, synthèses et recherches ne créent pas de copies concurrentes.
-- Structure contient les contrats et décisions de gouvernance ; Relations suit les engagements des partenaires. Une fiche partenaire peut afficher ses contrats autorisés.
+- Structure contient les contrats et décisions de gouvernance ; Relations suit les organisations et les engagements des partenaires. Une organisation a une seule fiche, quels que soient ses types (11 novembre 2026) ; elle pourra afficher ses contrats autorisés.
 - Une fiche Personne garde l’identité ; les mandats, adhésions, contrats et passages sont datés. Personne et Utilisateur ne fusionnent pas.
 - Les incidents sont confidentiels dans Structure. Les notes de recrutement et les dossiers RH ont aussi leur propre périmètre.
 - Les demandes de frais et factures gardent leur parcours distinct des paiements ; les filtres recettes/dépenses ne les remplacent pas.

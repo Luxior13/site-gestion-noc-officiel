@@ -43,6 +43,8 @@ import {
   JOURNAL_ACTION_LABELS,
   LEGAL_ENTITY_FIELD_LABELS,
   LOGIN_FAILURE_REASONS,
+  ORGANIZATION_CONTACT_FIELD_LABELS,
+  ORGANIZATION_FIELD_LABELS,
   PASSAGE_FIELD_LABELS,
   PERSON_FIELD_LABELS,
   PERSON_SECTION_LABELS,
@@ -61,6 +63,8 @@ export type JournalRow = AuditLog & { fieldChanges: AuditFieldChange[] };
 type ReaderRights = {
   /** Balances and names of the accounts (10 November 2026). */
   canViewFinancialAccounts: boolean;
+  /** Names, identifiers and contacts of the organisations (11 November 2026). */
+  canViewOrganizations: boolean;
   canViewPersonContacts: boolean;
   canViewPersons: boolean;
   canViewUserContacts: boolean;
@@ -74,6 +78,7 @@ export const getReaderRights = (reader: JournalReader): ReaderRights => {
 
   return {
     canViewFinancialAccounts: can(PERMISSIONS.FINANCIAL_ACCOUNTS.VIEW),
+    canViewOrganizations: can(PERMISSIONS.ORGANIZATIONS.VIEW),
     canViewPersonContacts: can(PERMISSIONS.PERSONS.VIEW_CONTACT),
     canViewPersons: can(PERMISSIONS.PERSONS.VIEW),
     canViewUserContacts: can(PERMISSIONS.USERS.VIEW_CONTACT),
@@ -389,6 +394,7 @@ const typeLabelOf = (row: AuditLog): string => {
   if (row.category === 'FUNCTION') return 'Fonctions';
   if (row.category === 'LEGAL_ENTITY') return 'Entités';
   if (row.category === 'FINANCIAL_ACCOUNT') return 'Trésorerie';
+  if (row.category === 'ORGANIZATION') return 'Organisations';
   if (row.stream === 'AUTHENTICATION' || row.stream === 'SECURITY')
     return 'Sécurité';
   if (row.category === 'USER' || row.category === 'PERMISSION')
@@ -396,6 +402,29 @@ const typeLabelOf = (row: AuditLog): string => {
   if (row.action === 'SYSTEM_SETTING_UPDATE') return 'Paramètres';
 
   return 'Autres';
+};
+
+/**
+ * « Organisation : Red Bull », « Contact : Léa Martin (Red Bull) »; without
+ * the right, only what kind of line it is (11 November 2026).
+ */
+const organizationSubject = (
+  row: JournalRow,
+  metadata: Record<string, unknown>,
+  allowed: boolean,
+): string => {
+  const isContact = row.action.startsWith('ORGANIZATION_CONTACT_');
+  const organization =
+    typeof metadata.organizationName === 'string'
+      ? metadata.organizationName
+      : null;
+  if (!allowed || !organization)
+    return isContact ? 'Contact d’une organisation' : 'Organisation';
+  if (!isContact) return `Organisation : ${organization}`;
+
+  return typeof metadata.contactName === 'string'
+    ? `Contact : ${metadata.contactName} (${organization})`
+    : `Contact : ${organization}`;
 };
 
 /**
@@ -445,6 +474,9 @@ const subjectOf = (
       typeof metadata.accountName === 'string'
       ? `Compte : ${metadata.accountName}`
       : 'Compte financier';
+  // An organisation and its contacts stay with who may see the organisations.
+  if (row.category === 'ORGANIZATION')
+    return organizationSubject(row, metadata, rights.canViewOrganizations);
   if (row.category === 'TEAM' && typeof metadata.teamName === 'string')
     return typeof metadata.gameName === 'string'
       ? `Équipe : ${metadata.teamName} (${metadata.gameName})`
@@ -550,7 +582,17 @@ export const projectJournalEvent = (
                         ),
                         rights.canViewFinancialAccounts,
                       )
-                    : projectUserChanges(row, metadata, rights);
+                    : row.category === 'ORGANIZATION'
+                      ? maskUnlessAllowed(
+                          projectReadableChanges(
+                            metadata,
+                            row.action.startsWith('ORGANIZATION_CONTACT_')
+                              ? ORGANIZATION_CONTACT_FIELD_LABELS
+                              : ORGANIZATION_FIELD_LABELS,
+                          ),
+                          rights.canViewOrganizations,
+                        )
+                      : projectUserChanges(row, metadata, rights);
 
   return {
     actor:

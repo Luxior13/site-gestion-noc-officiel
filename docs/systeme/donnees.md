@@ -6,7 +6,7 @@
 [Schéma Prisma](../../packages/database/prisma/schema.prisma)
 
 Relevé du 10 novembre 2026 dans `packages/database/prisma/schema.prisma` :
-**27 modèles, 17 énumérations, PostgreSQL**. Les migrations contiennent aussi
+**29 modèles, 18 énumérations, PostgreSQL**. Les migrations contiennent aussi
 des contraintes `CHECK`, des déclencheurs et des index partiels absents du
 schéma Prisma : ne pas les retirer parce qu’ils n’y figurent pas. La revue
 complète du schéma est celle du [13 octobre 2026](../audits/2026-10-13-schema-prisma.md).
@@ -47,7 +47,7 @@ Colonnes : nombre de champs (relations comprises), nombre d’`@@index` et
 
 | Modèle | Champs | Index | Relations | Rôle |
 | --- | ---: | ---: | --- | --- |
-| `Person` | 17 | 9 | emails, téléphones, profils sociaux, autres pseudos, contacts d’urgence, représentants légaux (dans les deux sens), passages | Fiche personne, version optimiste ; le statut « Dans la structure » n’est pas une colonne, il se calcule depuis les passages en cours (9 novembre 2026) ; `nationality`, code ISO à deux lettres en capitales (contrainte `Person_nationality_check`, 10 novembre 2026) |
+| `Person` | 18 | 9 | emails, téléphones, profils sociaux, autres pseudos, contacts d’urgence, représentants légaux (dans les deux sens), passages, contacts d’une organisation (11 novembre 2026) | Fiche personne, version optimiste ; le statut « Dans la structure » n’est pas une colonne, il se calcule depuis les passages en cours (9 novembre 2026) ; `nationality`, code ISO à deux lettres en capitales (contrainte `Person_nationality_check`, 10 novembre 2026) |
 | `PersonEmail` | 10 | 3 | `Person` | Emails, un principal |
 | `PersonPhone` | 10 | 3 | `Person` | Téléphones, un principal |
 | `PersonSocialProfile` | 14 | 5 | `Person` | Réseaux sociaux, propriétaire protégé (REP-20) |
@@ -72,6 +72,13 @@ Colonnes : nombre de champs (relations comprises), nombre d’`@@index` et
 | `LegalEntity` | 17 | 1 | `accounts` | Une entité juridique (10 novembre 2026) : dénomination unique (`normalizedName`), forme `LegalForm` (`NONE` pour la période d’avant l’association, `OTHER` avec `otherForm`), début et fin facultative avec leur précision, numéro RNA, SIRET, siège, entité principale (une au plus, index partiel `LegalEntity_principal_key`), version optimiste ; contraintes `LegalEntity_*_check` (formats RNA et SIRET, période d’avant sans identifiant ni marque principale) et déclencheur `LegalEntity_form_check` (une entité qui tient des comptes garde une forme), absents de `schema.prisma` |
 | `FinancialAccount` | 13 | 1 | `entity` (`ON DELETE RESTRICT`) | Un compte bancaire, en ligne ou une caisse (`FinancialAccountKind`, 10 novembre 2026) : nom unique dans son entité, établissement (jamais pour une caisse), solde de départ en centimes d’euro à un jour (`openingOn`), clôture facultative, version optimiste ; contraintes `FinancialAccount_*_check` (dix millions d’euros au plus, caisse jamais négative, clôture après le départ) et déclencheur `FinancialAccount_entity_check` (entité fixée à l’ouverture, jamais sans forme juridique), absents de `schema.prisma` |
 
+### Relations
+
+| Modèle | Champs | Index | Relations | Rôle |
+| --- | ---: | ---: | --- | --- |
+| `Organization` | 11 | 0 | `contacts` | Une organisation (11 novembre 2026) : nom unique (`normalizedName`), types `OrganizationKind[]` (Sponsor, Partenaire, Fournisseur, Client, Organisateur, Financeur public), un au moins, chacun une fois (contrainte `Organization_kinds_check` et fonction `organization_kinds_are_valid`, absentes de `schema.prisma`), site web en `http(s)://`, SIRET de 14 chiffres, adresse, version optimiste |
+| `OrganizationContact` | 12 | 2 | `organization` (`ON DELETE CASCADE`), `person` (facultative, `ON DELETE SET NULL`) | Une personne à joindre dans une organisation : nom (celui de la fiche du Répertoire quand une est reliée, gardé après sa suppression), fonction, email en minuscules, téléphone au format international ; une fiche reliée une fois par organisation (index partiel `OrganizationContact_organizationId_personId_key`) ; version optimiste propre, hors version de l’organisation |
+
 ### Système et préparation
 
 | Modèle | Champs | Index | Relations | Rôle |
@@ -84,16 +91,20 @@ L’actualité interne redéfinira son stockage à sa reconstruction.
 
 ## Énumérations
 
-`UserRole`, `EsportScope`, `LegalForm` et `FinancialAccountKind` (10 novembre 2026), `MfaChallengePurpose`, `MfaAuthenticationMethod`,
+`UserRole`, `EsportScope`, `LegalForm` et `FinancialAccountKind` (10 novembre 2026), `OrganizationKind` (11 novembre 2026), `MfaChallengePurpose`, `MfaAuthenticationMethod`,
 `DatePrecision`, `AuditFieldChangeType`, `AuditValueStorageMode`,
 `AuditAction`, `AuditCategory`, `AuditEventKind`, `AuditStream`,
 `AuditOutcome`, `AuditSeverity`.
 
 ## Migrations
 
-**76 migrations** dans `packages/database/prisma/migrations`, de
-`20250723121213_init` à `20261110230000_legal_entities_financial_accounts`
-(types `LegalForm` et `FinancialAccountKind`, tables `LegalEntity` et
+**77 migrations** dans `packages/database/prisma/migrations`, de
+`20250723121213_init` à `20261111090000_organizations` (type
+`OrganizationKind`, fonction `organization_kinds_are_valid`, tables
+`Organization` et `OrganizationContact`, leurs contraintes et index partiel,
+actions `ORGANIZATION_*` et `ORGANIZATION_CONTACT_*`, catégorie
+`ORGANIZATION`, 11 novembre 2026 ; ajout seul). Avant elle,
+`20261110230000_legal_entities_financial_accounts` (types `LegalForm` et `FinancialAccountKind`, tables `LegalEntity` et
 `FinancialAccount`, leurs contraintes, l’index partiel de l’entité principale,
 les déclencheurs `FinancialAccount_entity_check` et `LegalEntity_form_check`,
 actions `LEGAL_ENTITY_*` et `FINANCIAL_ACCOUNT_*` et leurs catégories du
