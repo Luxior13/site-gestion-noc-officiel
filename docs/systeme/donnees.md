@@ -5,8 +5,8 @@
 [Guide de la base](../../packages/database/prisma/README.md) ·
 [Schéma Prisma](../../packages/database/prisma/schema.prisma)
 
-Relevé du 19 octobre 2026 dans `packages/database/prisma/schema.prisma` :
-**17 modèles, 12 énumérations, PostgreSQL**. Les migrations contiennent aussi
+Relevé du 10 novembre 2026 dans `packages/database/prisma/schema.prisma` :
+**27 modèles, 17 énumérations, PostgreSQL**. Les migrations contiennent aussi
 des contraintes `CHECK`, des déclencheurs et des index partiels absents du
 schéma Prisma : ne pas les retirer parce qu’ils n’y figurent pas. La revue
 complète du schéma est celle du [13 octobre 2026](../audits/2026-10-13-schema-prisma.md).
@@ -65,6 +65,13 @@ Colonnes : nombre de champs (relations comprises), nombre d’`@@index` et
 | `PersonPassage` | 12 | 3 | `person`, `team` (facultative), `memberFunction`, toutes en `ON DELETE RESTRICT` | Un passage (9 novembre 2026) : une fiche dans une équipe, ou dans la structure (`teamId` vide, Effectif de Bureau & staff, même jour), avec une fonction, un début (`startOn`, premier jour de sa période) et une fin facultative (`endOn`, dernier jour), chacun avec sa précision, version optimiste ; contraintes `PersonPassage_*_check`, exclusion `PersonPassage_no_overlap` (extension `btree_gist`) et déclencheur `PersonPassage_function_scope`, absents de `schema.prisma` |
 | `MemberFunction` | 10 | 2 | `game` (facultatif, `ON DELETE RESTRICT`) | Une fonction d’un jeu (Joueur, Coach…) ou de la structure (`gameId` vide : Président, Graphiste…, Bureau & staff) : nom unique dans son jeu (`gameId` + `normalizedName`), ou dans la structure par l’index partiel `MemberFunction_structure_normalizedName_key`, absent de `schema.prisma` ; type `MemberFunctionKind` (`PLAYER` Joueur et `STAFF` Encadrement dans un jeu ; `BOARD` Bureau et `STAFF` Staff dans la structure, la contrainte `MemberFunction_kind_scope_check` refusant les autres), `position` posée par glisser-déposer dans sa liste et son type (positive, hors version), active, version optimiste (9 novembre 2026) ; un jeu supprimé par erreur emporte ses fonctions par le service, jamais par `CASCADE` |
 
+### Trésorerie
+
+| Modèle | Champs | Index | Relations | Rôle |
+| --- | ---: | ---: | --- | --- |
+| `LegalEntity` | 17 | 1 | `accounts` | Une entité juridique (10 novembre 2026) : dénomination unique (`normalizedName`), forme `LegalForm` (`NONE` pour la période d’avant l’association, `OTHER` avec `otherForm`), début et fin facultative avec leur précision, numéro RNA, SIRET, siège, entité principale (une au plus, index partiel `LegalEntity_principal_key`), version optimiste ; contraintes `LegalEntity_*_check` (formats RNA et SIRET, période d’avant sans identifiant ni marque principale) et déclencheur `LegalEntity_form_check` (une entité qui tient des comptes garde une forme), absents de `schema.prisma` |
+| `FinancialAccount` | 13 | 1 | `entity` (`ON DELETE RESTRICT`) | Un compte bancaire, en ligne ou une caisse (`FinancialAccountKind`, 10 novembre 2026) : nom unique dans son entité, établissement (jamais pour une caisse), solde de départ en centimes d’euro à un jour (`openingOn`), clôture facultative, version optimiste ; contraintes `FinancialAccount_*_check` (dix millions d’euros au plus, caisse jamais négative, clôture après le départ) et déclencheur `FinancialAccount_entity_check` (entité fixée à l’ouverture, jamais sans forme juridique), absents de `schema.prisma` |
+
 ### Système et préparation
 
 | Modèle | Champs | Index | Relations | Rôle |
@@ -77,15 +84,21 @@ L’actualité interne redéfinira son stockage à sa reconstruction.
 
 ## Énumérations
 
-`UserRole`, `EsportScope` (10 novembre 2026), `MfaChallengePurpose`, `MfaAuthenticationMethod`,
+`UserRole`, `EsportScope`, `LegalForm` et `FinancialAccountKind` (10 novembre 2026), `MfaChallengePurpose`, `MfaAuthenticationMethod`,
 `DatePrecision`, `AuditFieldChangeType`, `AuditValueStorageMode`,
 `AuditAction`, `AuditCategory`, `AuditEventKind`, `AuditStream`,
 `AuditOutcome`, `AuditSeverity`.
 
 ## Migrations
 
-**73 migrations** dans `packages/database/prisma/migrations`, de
-`20250723121213_init` à `20261110220000_user_esport_scope` (type `EsportScope`,
+**76 migrations** dans `packages/database/prisma/migrations`, de
+`20250723121213_init` à `20261110230000_legal_entities_financial_accounts`
+(types `LegalForm` et `FinancialAccountKind`, tables `LegalEntity` et
+`FinancialAccount`, leurs contraintes, l’index partiel de l’entité principale,
+les déclencheurs `FinancialAccount_entity_check` et `LegalEntity_form_check`,
+actions `LEGAL_ENTITY_*` et `FINANCIAL_ACCOUNT_*` et leurs catégories du
+journal, 10 novembre 2026 ; ajout seul). Avant elle,
+`20261110220000_user_esport_scope` (type `EsportScope`,
 colonne `User.esportScope` à `ALL` par défaut, contrainte d’administrateur,
 table `UserEsportScopeItem` et ses contraintes, 10 novembre 2026 ; ajout seul,
 tous les comptes existants gardent tous les jeux). Avant elle,

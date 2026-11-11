@@ -14,6 +14,8 @@ Référence révisée le 7 novembre 2026. Les chantiers proviennent du [catalogu
 | `/esport/jeux/[id]` | Fiche jeu ouverte le 8 novembre 2026 (Fonctions et Informations depuis le 9 novembre 2026 ; Finances ↗ à venir) | Esport |
 | `/esport/equipes/[id]` | Fiche équipe ouverte le 8 novembre 2026 (Roster, Anciens membres et Informations depuis le 9 novembre 2026 ; Tournois ↗, Entraînements, Finances ↗, Partenaires ↗ à venir) | Esport |
 | `/esport/jeux` | Page Jeux livrée le 8 novembre 2026, avec les équipes sous chaque jeu | Esport |
+| `/finances/comptes`, `/[id]` sous ce chemin | Page Comptes et fiche compte livrées le 10 novembre 2026 (solde de départ ; opérations à venir) | Finances |
+| `/structure/entites`, `/[id]` sous ce chemin | Page Entités et fiche entité livrées le 10 novembre 2026 (identité ; paramètres fiscaux, dirigeants, assurances à venir) | Structure |
 | `/activite/actualites` | Ancienne page ; redirige vers la feuille de route | — |
 | `/systeme/utilisateurs`, `/nouveau`, `/[id]` sous ce chemin | Liste, création et fiche Utilisateur livrées | Système |
 | `/systeme/journal-activite` | Vue globale reconstruite le 30 octobre 2026 | Système |

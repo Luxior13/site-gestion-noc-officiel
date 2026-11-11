@@ -44,6 +44,10 @@ Ce relevé ne remplace pas la [référence des permissions](../domaines/permissi
 | `/esport/equipes/[id]` | Page | Session, `teams:view` (`teams:manage` pour modifier, supprimer et tenir le Roster) ; onglet Roster par défaut, `?section=anciens` (Anciens membres), `?section=informations` | intégré | [Fiche équipe](../pages/esport/equipe.md) |
 | `/esport/jeux/[id]` | Page | Session, `games:view` (`games:manage` pour modifier et supprimer le jeu et ses fonctions) ; onglet Fonctions par défaut, `?section=informations` | intégré | [Fiche jeu](../pages/esport/jeu.md) |
 | `/structure/bureau-staff` | Page | Session, `staff:view` (`staff:manage` pour tenir l’Effectif et les fonctions) ; onglet Effectif par défaut, `?section=anciens`, `?section=fonctions` ; première page du pôle Structure (9 novembre 2026) | intégré | [Bureau & staff](../pages/structure/bureau-staff.md) |
+| `/structure/entites` | Page | Session, `entities:view` (`entities:manage` pour ajouter) ; deuxième page du pôle Structure (10 novembre 2026) | oui | [Entités](../pages/structure/entites.md) |
+| `/structure/entites/[id]` | Page | Session, `entities:view` (`entities:manage` pour modifier, rendre principale, supprimer) | oui | [Fiche entité](../pages/structure/entite.md) |
+| `/finances/comptes` | Page | Session, `financial_accounts:view` (`financial_accounts:manage` pour ouvrir un compte) ; première page du pôle Finances (10 novembre 2026) | oui | [Comptes](../pages/finances/comptes.md) |
+| `/finances/comptes/[id]` | Page | Session, `financial_accounts:view` (`financial_accounts:manage` pour modifier, clôturer, supprimer) | oui | [Fiche compte](../pages/finances/compte.md) |
 | `/esport/jeux` | Page | Session, `games:view` (`games:manage` pour modifier ; `teams:view` et `teams:manage` pour les équipes) | intégré | [Jeux](../pages/esport/jeux.md) |
 | `/systeme/utilisateurs` | Page | Session, `users:view` | oui | [Liste des utilisateurs](../pages/systeme/utilisateurs/liste.md) |
 | `/systeme/utilisateurs/nouveau` | Page | Session, `users:create` | intégré | [Nouvel utilisateur](../pages/systeme/utilisateurs/creation.md) |

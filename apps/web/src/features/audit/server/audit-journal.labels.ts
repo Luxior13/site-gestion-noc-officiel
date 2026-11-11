@@ -14,6 +14,9 @@ export const JOURNAL_ACTION_LABELS: Record<AuditAction, string> = {
   AUDIT_PURGE: 'Journal purgé',
   AUDIT_VIEW: 'Journal consulté',
   BACKGROUND_JOB_UPDATE: 'Tâche de fond modifiée',
+  FINANCIAL_ACCOUNT_CREATE: 'Compte ouvert',
+  FINANCIAL_ACCOUNT_DELETE: 'Compte supprimé',
+  FINANCIAL_ACCOUNT_UPDATE: 'Compte modifié',
   FUNCTION_CREATE: 'Fonction ajoutée',
   FUNCTION_DELETE: 'Fonction supprimée',
   FUNCTION_REORDER: 'Ordre des fonctions modifié',
@@ -24,6 +27,9 @@ export const JOURNAL_ACTION_LABELS: Record<AuditAction, string> = {
   GAME_UPDATE: 'Jeu modifié',
   INTERNAL_ANNOUNCEMENT_PIN_UPDATE: 'Annonce épinglée ou désépinglée',
   INTERNAL_ANNOUNCEMENT_PUBLISH: 'Annonce publiée',
+  LEGAL_ENTITY_CREATE: 'Entité ajoutée',
+  LEGAL_ENTITY_DELETE: 'Entité supprimée',
+  LEGAL_ENTITY_UPDATE: 'Entité modifiée',
   LOGIN_FAILED: 'Connexion échouée',
   LOGIN_SUCCESS: 'Connexion',
   LOGOUT: 'Déconnexion',
@@ -143,6 +149,33 @@ export const PASSAGE_FIELD_LABELS: ReadonlyArray<readonly [string, string]> = [
   ['function', 'Fonction'],
   ['start', 'Début'],
   ['end', 'Fin'],
+];
+
+/** Legal entity fields recorded in `before` / `after`, in display order. */
+export const LEGAL_ENTITY_FIELD_LABELS: ReadonlyArray<
+  readonly [string, string]
+> = [
+  ['name', 'Dénomination'],
+  ['form', 'Forme'],
+  ['start', 'Début'],
+  ['end', 'Fin'],
+  ['rnaNumber', 'Numéro RNA'],
+  ['siretNumber', 'SIRET'],
+  ['headOffice', 'Siège'],
+  ['isPrincipal', 'Entité principale'],
+];
+
+/** Financial account fields recorded in `before` / `after`, in display order. */
+export const FINANCIAL_ACCOUNT_FIELD_LABELS: ReadonlyArray<
+  readonly [string, string]
+> = [
+  ['entity', 'Entité'],
+  ['name', 'Nom'],
+  ['kind', 'Type'],
+  ['institution', 'Établissement'],
+  ['openingBalance', 'Solde de départ'],
+  ['openingOn', 'Date du solde de départ'],
+  ['closedOn', 'Clôture'],
 ];
 
 /** Account fields recorded in `before` / `after`, in display order. */

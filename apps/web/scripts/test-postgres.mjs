@@ -56,6 +56,7 @@ const SUITE_DATABASES = [
   },
   { database: 'settings_service_test', variable: 'SETTINGS_TEST_DATABASE_URL' },
   { database: 'staff_service_test', variable: 'STAFF_TEST_DATABASE_URL' },
+  { database: 'treasury_test', variable: 'TREASURY_TEST_DATABASE_URL' },
   {
     database: 'user_detail_service_test',
     variable: 'USER_DETAIL_TEST_DATABASE_URL',

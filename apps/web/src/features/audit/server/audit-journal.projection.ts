@@ -37,9 +37,11 @@ import type {
 import {
   BLOCKED_ATTEMPT_PROOFS,
   BLOCKED_ATTEMPT_STEPS,
+  FINANCIAL_ACCOUNT_FIELD_LABELS,
   FUNCTION_FIELD_LABELS,
   GAME_FIELD_LABELS,
   JOURNAL_ACTION_LABELS,
+  LEGAL_ENTITY_FIELD_LABELS,
   LOGIN_FAILURE_REASONS,
   PASSAGE_FIELD_LABELS,
   PERSON_FIELD_LABELS,
@@ -57,6 +59,8 @@ export type JournalReader = Pick<
 export type JournalRow = AuditLog & { fieldChanges: AuditFieldChange[] };
 
 type ReaderRights = {
+  /** Balances and names of the accounts (10 November 2026). */
+  canViewFinancialAccounts: boolean;
   canViewPersonContacts: boolean;
   canViewPersons: boolean;
   canViewUserContacts: boolean;
@@ -69,6 +73,7 @@ export const getReaderRights = (reader: JournalReader): ReaderRights => {
     reader.isProtected || hasPermission(reader.role, key, reader.permissions);
 
   return {
+    canViewFinancialAccounts: can(PERMISSIONS.FINANCIAL_ACCOUNTS.VIEW),
     canViewPersonContacts: can(PERMISSIONS.PERSONS.VIEW_CONTACT),
     canViewPersons: can(PERMISSIONS.PERSONS.VIEW),
     canViewUserContacts: can(PERMISSIONS.USERS.VIEW_CONTACT),
@@ -251,6 +256,15 @@ const projectReadableChanges = (
   });
 };
 
+/** Which fields changed stays readable; their values need the right. */
+const maskUnlessAllowed = (
+  changes: JournalChange[],
+  allowed: boolean,
+): JournalChange[] =>
+  allowed
+    ? changes
+    : changes.map(({ label }) => ({ after: MASKED, before: MASKED, label }));
+
 const permissionLabels = (value: unknown): string | null => {
   if (!Array.isArray(value) || value.length === 0) return null;
 
@@ -373,6 +387,8 @@ const typeLabelOf = (row: AuditLog): string => {
   if (row.category === 'GAME') return 'Jeux';
   if (row.category === 'TEAM') return 'Équipes';
   if (row.category === 'FUNCTION') return 'Fonctions';
+  if (row.category === 'LEGAL_ENTITY') return 'Entités';
+  if (row.category === 'FINANCIAL_ACCOUNT') return 'Trésorerie';
   if (row.stream === 'AUTHENTICATION' || row.stream === 'SECURITY')
     return 'Sécurité';
   if (row.category === 'USER' || row.category === 'PERMISSION')
@@ -390,6 +406,7 @@ const typeLabelOf = (row: AuditLog): string => {
 const subjectOf = (
   row: JournalRow,
   metadata: Record<string, unknown>,
+  rights: ReaderRights,
 ): string | null => {
   if (typeof metadata.loginName === 'string' && metadata.loginName.trim())
     return `Identifiant : ${metadata.loginName.trim()}`;
@@ -417,6 +434,17 @@ const subjectOf = (
     return `Passage : ${metadata.functionName}, ${metadata.scopeName}`;
   if (row.category === 'GAME' && typeof metadata.gameName === 'string')
     return `Jeu : ${metadata.gameName}`;
+  if (
+    row.category === 'LEGAL_ENTITY' &&
+    typeof metadata.entityName === 'string'
+  )
+    return `Entité : ${metadata.entityName}`;
+  // An account's name stays with who may see the accounts.
+  if (row.category === 'FINANCIAL_ACCOUNT')
+    return rights.canViewFinancialAccounts &&
+      typeof metadata.accountName === 'string'
+      ? `Compte : ${metadata.accountName}`
+      : 'Compte financier';
   if (row.category === 'TEAM' && typeof metadata.teamName === 'string')
     return typeof metadata.gameName === 'string'
       ? `Équipe : ${metadata.teamName} (${metadata.gameName})`
@@ -512,7 +540,17 @@ export const projectJournalEvent = (
               ? projectReadableChanges(metadata, TEAM_FIELD_LABELS)
               : row.category === 'FUNCTION'
                 ? projectReadableChanges(metadata, FUNCTION_FIELD_LABELS)
-                : projectUserChanges(row, metadata, rights);
+                : row.category === 'LEGAL_ENTITY'
+                  ? projectReadableChanges(metadata, LEGAL_ENTITY_FIELD_LABELS)
+                  : row.category === 'FINANCIAL_ACCOUNT'
+                    ? maskUnlessAllowed(
+                        projectReadableChanges(
+                          metadata,
+                          FINANCIAL_ACCOUNT_FIELD_LABELS,
+                        ),
+                        rights.canViewFinancialAccounts,
+                      )
+                    : projectUserChanges(row, metadata, rights);
 
   return {
     actor:
@@ -550,7 +588,9 @@ export const projectJournalEvent = (
         : JOURNAL_ACTION_LABELS[row.action],
     // A passage keeps its team and function beside its record.
     subject:
-      target && row.category !== 'PASSAGE' ? null : subjectOf(row, metadata),
+      target && row.category !== 'PASSAGE'
+        ? null
+        : subjectOf(row, metadata, rights),
     target,
     tone: toneOf(row),
     typeLabel: typeLabelOf(row),

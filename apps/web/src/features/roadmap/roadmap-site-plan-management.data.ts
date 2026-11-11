@@ -30,27 +30,34 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   // The legal forms over time (owner, 9 November 2026: « ok pour moi »):
   // the association today, maybe a company tomorrow, each act keeping its own.
+  // Delivered on 10 November 2026.
   {
     area: 'structure',
-    chantier: 'legal-entities',
     name: 'Entités',
-    phase: 3,
+    phase: null,
     summary:
-      'Liste, sans onglet : la suite des formes juridiques de la structure, dans le temps : « Avant l’association » (depuis 2014, sans entité), l’association, demain peut-être une société ; chacune avec sa forme, ses dates, son état et la pastille « Principale ».',
+      'Liste, sans onglet, la plus ancienne en premier : la période d’avant l’association (forme « Sans forme juridique »), l’association, demain peut-être une société ; chacune avec sa forme, sa période, son état calculé (À venir, Active, Dissoute) et la pastille « Principale » ; ajout en fenêtre (dénomination, forme, début, fin), puis sa fiche s’ouvre.',
   },
   {
     area: 'structure',
+    // What it still gains: its leaders, insurances and finances.
     chantier: 'legal-entities',
     name: 'Fiche entité',
-    phase: 3,
+    phase: null,
+    summary:
+      'Ouverte par le nom d’une entité sur la page Entités, ou juste après son ajout ; sans barre d’onglets tant que seule son identité est en place.',
     tabs: [
       {
+        chantier: 'legal-entities',
         label: 'Identité',
-        phase: 3,
+        phase: null,
         summary:
-          'Dénomination, forme, dates, identifiants, siège, entité principale ; paramètres fiscaux datés (TVA, reçus de dons), appliqués d’office à ses actes.',
+          'Dénomination, forme, période, numéro RNA, SIRET, siège et entité principale (une seule, jamais la période sans forme juridique), modifiés sur place ; zone dangereuse, qui explique « indiquez sa date de fin » quand elle a des comptes.',
+        upcoming:
+          'Les paramètres fiscaux datés (TVA, reçus de dons), appliqués d’office à ses actes.',
       },
       {
+        chantier: 'legal-entities',
         label: 'Dirigeants',
         managedIn: 'Bureau & staff',
         phase: 3,
@@ -58,6 +65,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'Les mandats de son bureau ou de sa direction, avec leurs dates.',
       },
       {
+        chantier: 'legal-entities',
         label: 'Assurances',
         phase: 3,
         summary:
@@ -78,6 +86,7 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'Ses comptes et ses exercices, jamais mêlés à ceux d’une autre entité.',
       },
     ],
+    upcoming: 'Les onglets Dirigeants ↗, Assurances et Finances ↗.',
   },
   {
     area: 'structure',
@@ -333,20 +342,26 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
       },
     ],
   },
+  // First page of the Finances pole, delivered on 10 November 2026.
   {
     area: 'finance',
-    chantier: 'accounts',
+    // What it still gains: categories and payment methods with the
+    // operations, then the fiscal years with the closing.
+    chantier: 'payments',
     name: 'Comptes',
-    phase: 3,
+    phase: null,
     tabs: [
       {
         label: 'Comptes',
-        phase: 3,
-        summary: 'Comptes bancaires et caisses, avec leur solde.',
+        phase: null,
+        summary:
+          'Premier onglet : chaque compte bancaire, compte en ligne ou caisse, avec son établissement, son solde de départ et sa date, ouvert ou clôturé ; l’entité titulaire, seulement quand il y en a plusieurs ; ajout en fenêtre, l’entité déduite de la date et demandée seulement si plusieurs existent ce jour-là, puis sa fiche s’ouvre.',
       },
       {
+        // With the closing (10 November 2026): until then, dates suffice.
+        chantier: 'finance-controls',
         label: 'Exercices',
-        phase: 3,
+        phase: 4,
         summary: 'Exercices ouverts et clôturés ; la clôture se fait ici.',
       },
       {
@@ -362,29 +377,39 @@ export const MANAGEMENT_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         summary: 'Virement, espèces, carte…',
       },
     ],
+    upcoming:
+      'Les onglets Catégories et Moyens de paiement avec les opérations, puis Exercices avec la clôture.',
   },
   {
     area: 'finance',
-    chantier: 'accounts',
+    // What it still gains: its movements with the operations, then its
+    // statements.
+    chantier: 'payments',
     name: 'Fiche compte',
-    phase: 3,
+    phase: null,
+    summary:
+      'Ouverte par le nom d’un compte sur la page Comptes, ou juste après son ajout ; sans barre d’onglets tant que seules ses informations sont en place.',
     tabs: [
       {
+        chantier: 'payments',
         label: 'Mouvements',
         phase: 3,
-        summary: 'Opérations de ce compte.',
+        summary: 'Opérations de ce compte et son solde du jour.',
       },
       {
+        chantier: 'accounts',
         label: 'Relevés',
         phase: 3,
         summary: 'Relevés et rapprochement.',
       },
       {
         label: 'Informations',
-        phase: 3,
-        summary: 'Titulaire, devise, solde initial.',
+        phase: null,
+        summary:
+          'Dernier onglet : nom, type, établissement, solde de départ et sa date, clôture, modifiés sur place ; l’entité titulaire, fixée à l’ouverture, en lecture ; zone dangereuse.',
       },
     ],
+    upcoming: 'Les onglets Mouvements, avec les opérations, et Relevés.',
   },
   {
     area: 'finance',

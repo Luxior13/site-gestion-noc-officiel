@@ -475,8 +475,12 @@ describe('permission catalogue', () => {
       'games:manage',
       'teams:view',
       'teams:manage',
+      'financial_accounts:view',
+      'financial_accounts:manage',
       'staff:view',
       'staff:manage',
+      'entities:view',
+      'entities:manage',
       'users:view',
       'users:create',
       'users:view_contact',
@@ -511,14 +515,24 @@ describe('permission catalogue', () => {
     expect(PERMISSION_CATEGORIES.map((category) => category.key)).toEqual([
       'persons',
       'games',
+      'financial-accounts',
       'staff',
+      'entities',
       'users',
       'system-activity',
       'system-settings',
     ]);
     expect(
       DELEGABLE_PERMISSION_CATEGORIES.map((category) => category.key),
-    ).toEqual(['persons', 'games', 'staff', 'users', 'system-activity']);
+    ).toEqual([
+      'persons',
+      'games',
+      'financial-accounts',
+      'staff',
+      'entities',
+      'users',
+      'system-activity',
+    ]);
     expect(getAccessPermissionKeys()).toEqual(
       DELEGABLE_PERMISSION_CATEGORIES.flatMap((category) =>
         category.permissions.map((permission) => permission.key),
@@ -577,6 +591,7 @@ describe('permission catalogue', () => {
     expect(PERMISSION_POLES).toMatchObject([
       { key: 'internal', label: 'Personnes' },
       { key: 'esport', label: 'Esport' },
+      { key: 'finance', label: 'Finances' },
       { key: 'legal', label: 'Relations' },
       { key: 'structure', label: 'Structure' },
       { key: 'system', label: 'Système' },
@@ -584,7 +599,9 @@ describe('permission catalogue', () => {
     expect(PERMISSION_CATEGORIES.map((category) => category.label)).toEqual([
       'Répertoire',
       'Jeux',
+      'Comptes',
       'Bureau & staff',
+      'Entités',
       'Utilisateurs',
       'Journal d’activité',
       'Paramètres système',

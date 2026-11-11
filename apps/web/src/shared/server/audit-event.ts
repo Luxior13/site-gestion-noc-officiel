@@ -140,6 +140,18 @@ const AUDIT_EVENT_CLASSIFICATIONS = {
     AuditSeverity.WARNING,
   ),
   [AuditAction.PASSAGE_UPDATE]: activity(AuditStream.IDENTITY),
+  [AuditAction.LEGAL_ENTITY_CREATE]: activity(AuditStream.SYSTEM),
+  [AuditAction.LEGAL_ENTITY_DELETE]: activity(
+    AuditStream.SYSTEM,
+    AuditSeverity.WARNING,
+  ),
+  [AuditAction.LEGAL_ENTITY_UPDATE]: activity(AuditStream.SYSTEM),
+  [AuditAction.FINANCIAL_ACCOUNT_CREATE]: activity(AuditStream.SYSTEM),
+  [AuditAction.FINANCIAL_ACCOUNT_DELETE]: activity(
+    AuditStream.SYSTEM,
+    AuditSeverity.WARNING,
+  ),
+  [AuditAction.FINANCIAL_ACCOUNT_UPDATE]: activity(AuditStream.SYSTEM),
   [AuditAction.PARTNER_CONTACTS_UPDATE]: activity(AuditStream.SYSTEM),
   [AuditAction.PARTNER_CREATE]: activity(AuditStream.SYSTEM),
   [AuditAction.PARTNER_DELETE]: activity(

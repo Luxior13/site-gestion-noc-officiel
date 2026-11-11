@@ -106,7 +106,7 @@ Valeurs de `:root` (portée par défaut).
 | Pôle Esport | `--nav-esport` `#a78bfa` (icône `#c4b5fd`), violet fixé avec la page Jeux le 8 novembre 2026 |
 | Pôle Structure (thème `legal`) | `--nav-legal` `#facc15` (icône `#fde047`), ouvert le 9 novembre 2026 avec Bureau & staff ; la structure a pour vignette une mallette à ce ton (`StructureAvatar`), comme une équipe son écusson au ton Esport |
 | Pôle Système | `--nav-system` `#94a3b8` (icône `#cbd5e1`) |
-| Pôle Finances (thème `treasury`) | `--nav-treasury` `#4ade80` (icône `#86efac`) |
+| Pôle Finances (thème `treasury`) | `--nav-treasury` `#4ade80` (icône `#86efac`), ouvert le 10 novembre 2026 avec Comptes, icône portefeuille |
 
 Le fond d’un avatar de compte porte le niveau de droit avec les tons d’état :
 `destructive` pour le superadmin, `warning` pour un Administrateur, `info` pour

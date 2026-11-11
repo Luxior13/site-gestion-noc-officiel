@@ -41,6 +41,7 @@ const TYPE_FILTERS: Record<
     category: { in: ['USER', 'PERMISSION'] },
     stream: { in: ['IDENTITY', 'AUTHORIZATION'] },
   },
+  entities: { category: 'LEGAL_ENTITY' },
   functions: { category: 'FUNCTION' },
   games: { category: 'GAME' },
   passages: { category: 'PASSAGE' },
@@ -48,6 +49,7 @@ const TYPE_FILTERS: Record<
   security: { stream: { in: ['AUTHENTICATION', 'SECURITY'] } },
   settings: { action: 'SYSTEM_SETTING_UPDATE' },
   teams: { category: 'TEAM' },
+  treasury: { category: 'FINANCIAL_ACCOUNT' },
 };
 
 const getProtectedAccountIds = async (): Promise<string[]> =>

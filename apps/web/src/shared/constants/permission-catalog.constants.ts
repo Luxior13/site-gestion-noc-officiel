@@ -1,3 +1,5 @@
+import { createEntitiesPermissionCategory } from '$constants/entities-permission-category.constants';
+import { createFinancialAccountsPermissionCategory } from '$constants/financial-accounts-permission-category.constants';
 import { createGamesPermissionCategory } from '$constants/games-permission-category.constants';
 import type { NavigationIconName } from '$constants/navigation-icon.constants';
 import type { NavigationSpaceTone } from '$constants/navigation-theme.constants';
@@ -31,6 +33,17 @@ export const PERMISSIONS = {
   },
   DASHBOARD: {
     VIEW: 'dashboard:view',
+  },
+  // The legal entities, in the Structure pole (10 November 2026).
+  ENTITIES: {
+    MANAGE: 'entities:manage',
+    VIEW: 'entities:view',
+  },
+  // The bank accounts, online accounts and cash boxes (10 November 2026);
+  // « account » alone names the signed-in user's own account.
+  FINANCIAL_ACCOUNTS: {
+    MANAGE: 'financial_accounts:manage',
+    VIEW: 'financial_accounts:view',
   },
   GAMES: {
     MANAGE: 'games:manage',
@@ -204,6 +217,13 @@ export const PERMISSION_POLES = [
     key: 'esport',
     label: 'Esport',
     tone: 'esport',
+  },
+  // Opened with its first page, Comptes (10 November 2026).
+  {
+    icon: 'Wallet',
+    key: 'finance',
+    label: 'Finances',
+    tone: 'treasury',
   },
   {
     icon: 'Handshake',
@@ -430,7 +450,9 @@ export const ACCOUNT_PERMISSION_CATEGORIES: AccountPermissionCategory[] = [
 export const PERMISSION_CATEGORIES: PermissionCategory[] = [
   createPersonsPermissionCategory(PERMISSIONS.PERSONS),
   createGamesPermissionCategory(PERMISSIONS.GAMES, PERMISSIONS.TEAMS),
+  createFinancialAccountsPermissionCategory(PERMISSIONS.FINANCIAL_ACCOUNTS),
   createStaffPermissionCategory(PERMISSIONS.STAFF),
+  createEntitiesPermissionCategory(PERMISSIONS.ENTITIES),
   {
     accessPermissionKey: PERMISSIONS.USERS.VIEW,
     assignment: 'delegable',

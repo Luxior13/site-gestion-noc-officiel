@@ -4,8 +4,9 @@ import { Buffer } from 'node:buffer';
 // functions and passages, which v10 left out. v12 (10 November 2026): the
 // emergency contacts and legal representatives of a person; v13, the same
 // day: their other pseudos; v14, the same day: the games and teams an
-// account reaches in the Esport pole.
-export const DATABASE_BACKUP_FORMAT_VERSION = 14;
+// account reaches in the Esport pole; v15, the same day: the legal entities
+// and their financial accounts.
+export const DATABASE_BACKUP_FORMAT_VERSION = 15;
 export const DATABASE_BACKUP_BATCH_SIZE = 500;
 export const MAX_DATABASE_BACKUP_BYTES = 2 * 1024 * 1024 * 1024;
 export const MAX_BACKUP_LINE_BYTES = 16 * 1024 * 1024;
@@ -165,6 +166,20 @@ export const DATABASE_BACKUP_TABLES = [
     cursorKind: 'text',
     property: 'userEsportScopeItems',
     tableName: 'UserEsportScopeItem',
+  },
+  // The treasury (10 November 2026): the entities before the accounts they
+  // hold.
+  {
+    cursorColumn: 'id',
+    cursorKind: 'text',
+    property: 'legalEntities',
+    tableName: 'LegalEntity',
+  },
+  {
+    cursorColumn: 'id',
+    cursorKind: 'text',
+    property: 'financialAccounts',
+    tableName: 'FinancialAccount',
   },
   {
     cursorColumn: 'id',

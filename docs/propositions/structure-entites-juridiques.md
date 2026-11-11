@@ -12,7 +12,10 @@
   construit ; aucune donnée actuelle n’en dépend. Les règles ci-dessous sont
   reportées dans le [domaine Structure](../domaines/structure-juridique.md#décisions-du-9-novembre-2026)
   et le plan de la [feuille de route](feuille-de-route.md) (page Entités et
-  fiche entité, à la place de « Identité juridique »).
+  fiche entité, à la place de « Identité juridique »). **Livré en partie le
+  10 novembre 2026** (« ok pour moi ») : page Entités, fiche de chaque entité
+  (identité, identifiants, siège, entité principale) et comptes tenus par une
+  entité déduite ; voir « Réalisation » ci-dessous.
 - **Risque : sensible** (argent, obligations juridiques). Les règles
   juridiques et fiscales réelles (TVA, reçus de dons, transfert d’activité,
   forme d’une société) se valident avec un professionnel au moment où elles
@@ -200,12 +203,33 @@ les effets, comme un fait de la Chronologie.
 
 ## Ordre
 
-1. **Maintenant** : rien dans le code ; le registre n’en a pas besoin.
+1. **Jusqu’au 10 novembre 2026** : rien dans le code ; le registre n’en a pas
+  besoin.
 2. **Étape 3, en premier** : la page Entités et l’association, avant Comptes
   (déjà prérequis dans la feuille de route), puis chaque module de trésorerie
-  avec son entité dès sa première version.
+  avec son entité dès sa première version. Fait le 10 novembre 2026 pour les
+  entités et les comptes.
 3. **Le jour d’une société** : la créer, choisir la principale, rattacher les
   équipes et les fonctions du Bureau, ouvrir ses comptes. Rien d’autre.
+
+## Réalisation du 10 novembre 2026
+
+- **La période d’avant est une ligne** de forme « Sans forme juridique » : ni
+  identifiant, ni siège, ni compte, jamais principale ; la base le garde
+  (`LegalEntity_none_check`).
+- **La première entité avec une forme devient principale d’elle-même**, et une
+  entité qui gagne une forme quand aucune ne l’est aussi : avec une seule,
+  personne ne choisit. La marque ne se retire jamais seule ; la rendre à une
+  autre entité l’ôte à la précédente, tracé sur les deux.
+- **Un compte prend l’entité qui existe à son jour de départ** ; le choix n’est
+  demandé qu’entre plusieurs, la principale proposée d’abord ; l’entité ne
+  change plus (`FinancialAccount_entity_check`). La période d’une entité doit
+  couvrir le départ de ses comptes ; une entité qui en tient garde une forme.
+- **Reportés** : paramètres fiscaux datés (avec les factures et les reçus de
+  dons), dirigeants ↗, assurances, onglet Finances ↗ de l’entité ; les
+  exercices passent à la clôture (Contrôles & clôtures) ; euro seulement.
+- Vérifié par la suite `treasury-postgres` et un parcours réel sur build de
+  production ([fiches](../pages/structure/entites.md)).
 
 ## Points examinés
 

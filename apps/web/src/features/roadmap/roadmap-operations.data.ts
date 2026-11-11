@@ -102,7 +102,7 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     doneWhen:
       'Un virement entre comptes ne crée pas de recette supplémentaire.',
     firstRelease:
-      'Exercices, comptes bancaires et caisses, titulaire, devise, soldes initiaux et relevés.',
+      'Relevés et rapprochement de chaque compte. Les comptes bancaires, en ligne et caisses, leur entité titulaire et leur solde de départ sont livrés le 10 novembre 2026 (euro seulement) ; les exercices passent à Contrôles & clôtures.',
     id: 'accounts',
     later: 'Rapprochement assisté avec les paiements importés.',
     legacyHrefs: ['/tresorerie/comptes'],
@@ -167,7 +167,7 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     doneWhen:
       'Exports et archives respectent entité, période et autorisations.',
     firstRelease:
-      'Validations, pièces manquantes, historique, exports et clôture d’exercice.',
+      'Exercices de chaque entité (depuis Comptes & rapprochement, 10 novembre 2026), validations, pièces manquantes, historique, exports et clôture d’exercice.',
     id: 'finance-controls',
     later: 'Transmissions comptables et contrôles de cohérence renforcés.',
     legacyHrefs: [

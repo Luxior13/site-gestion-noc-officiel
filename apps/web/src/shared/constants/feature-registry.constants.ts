@@ -52,6 +52,62 @@ export const FEATURES = {
     permissionMode: 'all',
     requiredPermissions: [PERMISSIONS.DASHBOARD.VIEW],
   }),
+  // The legal entities, second page of the Structure pole (10 November 2026).
+  entities: defineFeature({
+    audit: {
+      pageKey: 'entities',
+      pageLabel: 'Entités',
+      poleKey: 'structure',
+      poleLabel: 'Structure',
+    },
+    availability: 'live',
+    description:
+      'Les formes juridiques de la structure dans le temps : l’association et la période d’avant.',
+    href: PAGE_PATHS.entities,
+    icon: 'Landmark',
+    id: 'entities',
+    keywords: [
+      'association',
+      'société',
+      'forme juridique',
+      'identité juridique',
+      'SIRET',
+      'RNA',
+      'siège',
+      'entité principale',
+    ],
+    label: 'Entités',
+    permissionMode: 'all',
+    requiredPermissions: [PERMISSIONS.ENTITIES.VIEW],
+  }),
+  // First page of the Finances pole (10 November 2026).
+  financialAccounts: defineFeature({
+    audit: {
+      pageKey: 'financial-accounts',
+      pageLabel: 'Comptes',
+      poleKey: 'finance',
+      poleLabel: 'Finances',
+    },
+    availability: 'live',
+    description:
+      'Les comptes bancaires, comptes en ligne et caisses, avec leur solde de départ.',
+    href: PAGE_PATHS.financialAccounts,
+    icon: 'Wallet',
+    id: 'financial-accounts',
+    keywords: [
+      'trésorerie',
+      'banque',
+      'compte bancaire',
+      'caisse',
+      'PayPal',
+      'HelloAsso',
+      'solde',
+      'argent',
+    ],
+    label: 'Comptes',
+    permissionMode: 'all',
+    requiredPermissions: [PERMISSIONS.FINANCIAL_ACCOUNTS.VIEW],
+  }),
   games: defineFeature({
     audit: {
       pageKey: 'games',

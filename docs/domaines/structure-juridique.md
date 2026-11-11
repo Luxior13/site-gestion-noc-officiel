@@ -28,6 +28,8 @@ Adoptées par le propriétaire (« ok pour moi ; de toute façon on met des date
    période « Avant l’association ») et fiche de chaque entité, à la place de
    la page « Identité juridique » ; chaque module de trésorerie naît avec son
    entité, remplie d’office, la page Entités venant avant les comptes.
+   Livré le 10 novembre 2026 : page Entités, fiche de chaque entité et comptes
+   ([réalisation](../propositions/structure-entites-juridiques.md#réalisation-du-10-novembre-2026)).
 
 ## Entité juridique et structure esport
 

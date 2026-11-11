@@ -1,6 +1,8 @@
 /** Stable page destinations, independent of navigation labels and API paths. */
 export const PAGE_PATHS = {
   account: '/mon-compte',
+  entities: '/structure/entites',
+  financialAccounts: '/finances/comptes',
   games: '/esport/jeux',
   home: '/',
   internalNews: '/activite/actualites',
@@ -105,6 +107,12 @@ export const getCanonicalPagePathname = (pathname: string): string => {
     ? `${alias.destination}${pathname.slice(alias.source.length)}`
     : pathname;
 };
+
+export const entityDetailPath = (id: string): string =>
+  `${PAGE_PATHS.entities}/${encodeURIComponent(id)}`;
+
+export const financialAccountDetailPath = (id: string): string =>
+  `${PAGE_PATHS.financialAccounts}/${encodeURIComponent(id)}`;
 
 export const gameDetailPath = (id: string): string =>
   `${PAGE_PATHS.games}/${encodeURIComponent(id)}`;

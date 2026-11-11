@@ -105,6 +105,26 @@ export const NAV_SPACES: NavigationSpace[] = [
     tone: 'esport',
   },
   {
+    // Opened with its first page, Comptes (10 November 2026).
+    description:
+      'Les comptes et l’argent de la structure : soldes, puis opérations, factures et budgets.',
+    href: PAGE_PATHS.financialAccounts,
+    icon: 'Wallet',
+    id: 'finance',
+    label: 'Finances',
+    matchHrefs: ['/finances'],
+    sections: [
+      {
+        id: 'treasury',
+        items: [featureNavigation(FEATURES.financialAccounts)],
+        label: 'Trésorerie',
+        position: 'top',
+      },
+    ],
+    summary: 'Où en est l’argent',
+    tone: 'treasury',
+  },
+  {
     // Opened with its first page, Bureau & staff (9 November 2026).
     description:
       'L’association et sa mémoire : son effectif, puis son identité, ses décisions et ses documents.',
@@ -116,7 +136,10 @@ export const NAV_SPACES: NavigationSpace[] = [
     sections: [
       {
         id: 'organisation',
-        items: [featureNavigation(FEATURES.staff)],
+        items: [
+          featureNavigation(FEATURES.staff),
+          featureNavigation(FEATURES.entities),
+        ],
         label: 'Organisation',
         position: 'top',
       },

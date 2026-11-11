@@ -232,8 +232,11 @@ describe('navigation availability', () => {
       '/',
       '/personnes/repertoire',
       '/esport/jeux',
-      // First page of the Structure pole (9 November 2026).
+      // First page of the Finances pole (10 November 2026).
+      '/finances/comptes',
+      // First page of the Structure pole (9 November 2026), then Entités.
       '/structure/bureau-staff',
+      '/structure/entites',
       '/systeme/utilisateurs',
       '/systeme/journal-activite',
       '/systeme/parametres',

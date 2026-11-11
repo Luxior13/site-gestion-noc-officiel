@@ -95,7 +95,7 @@ Système › Journal d’activité
   personnalisée bornée à la conservation) ; type, regroupant les flux
   existants (`AUTHENTICATION` + `SECURITY` → Sécurité ; `IDENTITY` comptes +
   `AUTHORIZATION` → Comptes et droits ; `IDENTITY` personnes → Personnes ;
-  catégorie `GAME` → Jeux et `TEAM` → Équipes, depuis le 8 novembre 2026, `FUNCTION` → Fonctions, depuis le 9 ; `PASSAGE` → Parcours, le même jour, rattaché à la fiche de la personne, qui n’est nommée qu’à un lecteur du Répertoire ; `SYSTEM` → Paramètres) ; « Importants » = avertissement ou critique ;
+  catégorie `GAME` → Jeux et `TEAM` → Équipes, depuis le 8 novembre 2026, `FUNCTION` → Fonctions, depuis le 9 ; `PASSAGE` → Parcours, le même jour, rattaché à la fiche de la personne, qui n’est nommée qu’à un lecteur du Répertoire ; `LEGAL_ENTITY` → Entités et `FINANCIAL_ACCOUNT` → Trésorerie, depuis le 10 novembre 2026, le nom et les valeurs d’un compte n’apparaissant qu’avec `financial_accounts:view` (sinon « Compte financier » et « Valeur masquée ») ; `SYSTEM` → Paramètres) ; « Importants » = avertissement ou critique ;
   « Échecs » = résultat en échec ; recherche par nom ou identifiant (trois
   caractères minimum). Filtres dans l’URL, comme les autres listes.
 - **Pagination** par curseur (stable quand de nouveaux faits arrivent), 50 par

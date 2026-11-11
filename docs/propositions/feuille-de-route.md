@@ -14,7 +14,7 @@ Décisions du propriétaire du 7 novembre 2026, qui remplacent le plan du 9 octo
 
 ## État réel et lecture du plan
 
-Les comptes et leur sécurité, le répertoire, les paramètres techniques, le journal d’activité et la page Jeux, la fiche de chaque jeu, les équipes de chaque jeu et leur fiche (pôle Esport, 8 novembre 2026), leur Roster, le Parcours d’une fiche et Bureau & staff (pôle Structure, 9 novembre 2026) existent. Les paramètres actuels ne constituent pas un profil juridique métier. La navigation rapide de l’en-tête donne un accès direct aux pages autorisées ; elle ne parcourt pas encore de dossiers métier. Le module partenaires a été retiré le 21 septembre 2026 et le module notifications le 9 octobre 2026. Les migrations historiques ne prouvent pas qu’un modèle ou un écran est encore présent.
+Les comptes et leur sécurité, le répertoire, les paramètres techniques, le journal d’activité et la page Jeux, la fiche de chaque jeu, les équipes de chaque jeu et leur fiche (pôle Esport, 8 novembre 2026), leur Roster, le Parcours d’une fiche et Bureau & staff (pôle Structure, 9 novembre 2026), les entités (page Entités et fiche de chaque entité) et les comptes (pôle Finances, 10 novembre 2026) existent. Les paramètres actuels ne constituent pas un profil juridique métier. La navigation rapide de l’en-tête donne un accès direct aux pages autorisées ; elle ne parcourt pas encore de dossiers métier. Le module partenaires a été retiré le 21 septembre 2026 et le module notifications le 9 octobre 2026. Les migrations historiques ne prouvent pas qu’un modèle ou un écran est encore présent.
 
 - La feuille de route ne décrit que **ce qui reste à construire** (décision du propriétaire du 8 novembre 2026 : « tout ce qui est déjà en place peut être retiré »). Un chantier sur un module existant ne nomme que son reste à faire ; une page ou un onglet déjà livrés n’apparaissent sur la page que pour ce qu’un chantier doit encore leur ajouter.
 - Le plan se lit par pôle. Les étapes sont un **ordre suggéré** pour aider à l’implémentation, sans dates promises : **le propriétaire choisit le prochain chantier** (décision du 7 novembre 2026 : « je ne veux pas que ce soit par étape mais par pôle ; les étapes, c’est plus pour aider à l’implémentation, mais c’est moi qui choisirais »). Chaque étape reste courte et livre un ensemble utilisable.
@@ -120,8 +120,13 @@ Ouvrir le site aux managers et garder le registre dans la durée.
 
 Suivre les comptes et l’argent réellement reçu ou versé.
 
-- **Entités juridiques & périmètres** (Structure) : Page Entités (la période avant l’association, l’association, l’entité principale) et fiche de chaque entité : identité, identifiants, paramètres fiscaux datés, dirigeants, assurances ; règle de déduction de l’entité pour toute la trésorerie, avant les comptes.
-- **Comptes & rapprochement** (Finances) : Exercices, comptes bancaires et caisses, titulaire, devise, soldes initiaux et relevés.
+Faits donnés par le propriétaire le 10 novembre 2026 : l’association a
+**plusieurs comptes** ; les opérations sont saisies par **le bureau**, pas
+seulement par le trésorier ; un suivi existe ailleurs (tableur), **sans urgence
+à le reprendre**.
+
+- **Entités juridiques & périmètres** (Structure) : Fiche de chaque entité : paramètres fiscaux datés, dirigeants ↗ lus dans Bureau & staff, assurances et finances ↗. La page Entités, l’identité de chaque entité, l’entité principale et la règle de déduction pour les comptes sont livrées le 10 novembre 2026.
+- **Comptes & rapprochement** (Finances) : Relevés et rapprochement de chaque compte. Les comptes bancaires, en ligne et caisses, leur entité titulaire et leur solde de départ sont livrés le 10 novembre 2026, en euro seulement ; les exercices passent à Contrôles & clôtures, les dates suffisant jusque-là (proposition acceptée le même jour).
 - **Organisations & contacts** (Relations) : Identité de l’organisation, interlocuteurs du répertoire et relations datées.
 - **Opérations & règlements** (Finances) : Encaissements, décaissements, virements, catégories, moyens de paiement, justificatifs et affectations aux sommes dues ; lien vers une personne, une organisation, un tournoi ou une adhésion.
 
@@ -133,7 +138,7 @@ Couvrir factures, frais, subventions, adhésions et contrôles.
 - **Facturation & achats** (Finances) : Factures clients/fournisseurs, pièces, échéances et règlements ; émission ou import selon l’outil retenu.
 - **Notes de frais & remboursements** (Finances) : Dossier, lignes de frais, justificatifs, décision et règlement.
 - **Subventions & dons** (Finances) : Dossiers de subvention, échéances et versements ; dons et reçus.
-- **Contrôles & clôtures** (Finances) : Validations, pièces manquantes, historique, exports et clôture d’exercice.
+- **Contrôles & clôtures** (Finances) : Exercices de chaque entité (depuis Comptes & rapprochement, 10 novembre 2026), validations, pièces manquantes, historique, exports et clôture d’exercice.
 
 ## 5. Tournois & suivi
 
@@ -297,13 +302,15 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 
 | Page | Onglet | Contenu | État |
 | --- | --- | --- | --- |
-| **Comptes** | Comptes | Comptes bancaires et caisses, avec leur solde. | Étape 3 |
-|  | Exercices | Exercices ouverts et clôturés ; la clôture se fait ici. | Étape 3 |
+| **Comptes** | — | Première page du pôle Finances (10 novembre 2026). À venir (étape 3) : les onglets Catégories et Moyens de paiement avec les opérations ; (étape 4) Exercices avec la clôture. | Livré |
+|  | Comptes | Chaque compte bancaire, compte en ligne ou caisse, avec son établissement, son solde de départ et sa date, ouvert ou clôturé ; l’entité titulaire seulement quand il y en a plusieurs ; ajout en fenêtre, l’entité déduite de la date. | Livré |
+|  | Exercices | Exercices ouverts et clôturés ; la clôture se fait ici. | Étape 4 |
 |  | Catégories | Catégories d’opération : cotisations, sponsoring, cashprize… | Étape 3 |
 |  | Moyens de paiement | Virement, espèces, carte… | Étape 3 |
-| **Fiche compte** | Mouvements | Opérations de ce compte. | Étape 3 |
+| **Fiche compte** | — | Ouverte par le nom d’un compte. À venir (étape 3) : les onglets Mouvements, avec les opérations, et Relevés. | Livré |
+|  | Mouvements | Opérations de ce compte et son solde du jour. | Étape 3 |
 |  | Relevés | Relevés et rapprochement. | Étape 3 |
-|  | Informations | Titulaire, devise, solde initial. | Étape 3 |
+|  | Informations | Nom, type, établissement, solde de départ et sa date, clôture, modifiés sur place ; l’entité titulaire, fixée à l’ouverture, en lecture. | Livré |
 | **Opérations** | — | Liste, sans onglet : encaissements, décaissements et virements. Recettes et dépenses sont des filtres. | Étape 3 |
 | **Fiche opération** | Opération | Date, montant, moyen de paiement, compte, catégorie ; lien vers une personne, un jeu ou une équipe, une organisation, un tournoi ou une adhésion. | Étape 3 |
 |  | Affectations | À quelles sommes dues elle se rapporte. | Étape 3 |
@@ -352,8 +359,9 @@ Six chantiers n’ont pas de page à eux, pour ne pas en créer d’inutile : **
 |  | Effectif | Le roster de la structure : qui est là et qui arrive, le bureau élu puis le staff (graphistes, monteurs, bénévoles…), dans l’ordre des fonctions, avec statut, début, fin et durée ; un passage s’ajoute, se corrige, se termine ou change de fonction avec la même fenêtre que dans le Roster d’une équipe. | Livré |
 |  | Anciens membres | Les passages terminés, jamais mêlés à l’Effectif : par année de fin, la plus récente d’abord ; recherche et filtre Bureau ou Staff ; un ancien membre s’ajoute ici avec ses deux dates, depuis 2014. | Livré |
 |  | Fonctions | Fonctions de la structure, type Bureau (mandats élus : président, trésorier, secrétaire) ou Staff (graphiste, monteur, community manager, bénévole) ; rangées par glisser-déposer ; ajouter, renommer, rendre inactive, comme les fonctions d’un jeu ; fonctions courantes en un clic quand la liste est vide. | Livré |
-| **Entités** | — | Liste, sans onglet : la suite des formes juridiques de la structure, dans le temps : « Avant l’association » (depuis 2014, sans entité), l’association, demain peut-être une société ; chacune avec sa forme, ses dates, son état et la pastille « Principale ». | Étape 3 |
-| **Fiche entité** | Identité | Dénomination, forme, dates, identifiants, siège, entité principale ; paramètres fiscaux datés (TVA, reçus de dons), appliqués d’office à ses actes. | Étape 3 |
+| **Entités** | — | Liste, sans onglet, la plus ancienne en premier : la période d’avant l’association (forme « Sans forme juridique »), l’association, demain peut-être une société ; chacune avec sa forme, sa période, son état calculé et la pastille « Principale » ; ajout en fenêtre. | Livré |
+| **Fiche entité** | — | Ouverte par le nom d’une entité. À venir (étape 3) : les onglets Dirigeants ↗, Assurances et Finances ↗. | Livré |
+|  | Identité | Dénomination, forme, période, numéro RNA, SIRET, siège et entité principale, modifiés sur place. À venir (étape 3) : les paramètres fiscaux datés (TVA, reçus de dons), appliqués d’office à ses actes. | Livré |
 |  | Dirigeants ↗ | Les mandats de son bureau ou de sa direction, avec leurs dates. Lu ici, se modifie dans Bureau & staff. | Étape 3 |
 |  | Assurances | Assurances, affiliations, licences, marque, et leurs échéances. | Étape 3 |
 |  | Documents | Statuts et pièces officielles. | Étape 7 |

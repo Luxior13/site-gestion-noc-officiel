@@ -147,7 +147,7 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     doneWhen:
       'Chaque compte, exercice, facture et contrat a une entité, trouvée sans saisie tant qu’une seule existe ; changer de forme ne réécrit rien.',
     firstRelease:
-      'Page Entités (la période avant l’association, l’association, l’entité principale) et fiche de chaque entité : identité, identifiants, paramètres fiscaux datés, dirigeants, assurances ; règle de déduction de l’entité pour toute la trésorerie, avant les comptes.',
+      'Fiche de chaque entité : paramètres fiscaux datés, dirigeants ↗ lus dans Bureau & staff, assurances et finances ↗. La page Entités, l’identité de chaque entité, l’entité principale et la règle de déduction pour les comptes sont livrées le 10 novembre 2026.',
     id: 'legal-entities',
     later:
       'À la deuxième entité : entité porteuse de chaque équipe, entité des fonctions du Bureau, filtre Entité des Finances ; remplacement ou coexistence et transferts documentés.',

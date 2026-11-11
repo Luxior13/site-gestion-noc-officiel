@@ -378,6 +378,33 @@ Structure.
 | `staff:view` | voir l’Effectif de la structure (personnes, fonctions, dates ; le lien vers une fiche suit `persons:view`), ses anciens membres et ses fonctions | — | défaut | Non |
 | `staff:manage` | ajouter, corriger, terminer, changer de fonction et supprimer un passage de la structure, et chercher pour cela une fiche du Répertoire par son nom ; ajouter, modifier, rendre active ou non, ordonner par glisser-déposer et supprimer une fonction de la structure jamais utilisée | `staff:view` | sensible | Non |
 
+### Entités et comptes
+
+Pages Entités (pôle Structure) et Comptes (premier pôle Finances), livrées le
+10 novembre 2026 (« ok pour moi »). Chaque page a ses deux permissions, comme
+Bureau & staff : le bureau saisit la trésorerie, pas seulement le trésorier
+(réponse du propriétaire du même jour), et chacun reçoit ce qu’il gère.
+Accordables individuellement à un USER ; preset `false` pour USER et `true`
+pour ADMIN, sans retrait possible ; le compte racine les possède
+implicitement. Rangées dans l’éditeur sous Structure › Entités et Finances ›
+Comptes ; le pôle Finances (`finance`) entre dans `PERMISSION_POLES` avec elles.
+
+| Clé canonique | Action couverte | Dépend de | Risque | Step-up à l'usage |
+| --- | --- | --- | --- | --- |
+| `entities:view` | voir les entités, leur forme, leurs dates, leurs identifiants, leur siège et l’entité principale | — | défaut | Non |
+| `entities:manage` | ajouter, corriger et supprimer une entité, choisir l’entité principale | `entities:view` | sensible | Non |
+| `financial_accounts:view` | voir les comptes, leur établissement, leur entité, leur solde de départ et leur clôture ; lire leurs valeurs dans le journal d’activité | — | sensible | Non |
+| `financial_accounts:manage` | ouvrir, corriger, clôturer et supprimer un compte | `financial_accounts:view` | sensible | Non |
+
+Le nom `financial_accounts` évite toute confusion avec `account:*`, le compte
+de connexion de chacun. L’entité d’un compte se lit avec le compte, sans
+`entities:view`. Chaque mutation relit le droit sous verrou : toutes les
+entités `FOR UPDATE` pour une entité (la marque principale passe d’une ligne à
+l’autre), `FOR SHARE` pour un compte (la période de son entité ne bouge pas
+pendant l’écriture). Le journal montre à tout lecteur qu’un compte a changé,
+mais son nom et ses valeurs seulement avec `financial_accounts:view`
+(« Compte financier », « Valeur masquée »).
+
 ### Page Sponsors & partenaires (planifiée)
 
 Le module a été retiré le 21 septembre 2026 et sera reconstruit plus tard. Ses
@@ -431,6 +458,8 @@ pas en droits délégables individuellement.
 | `/administration`                                    | route de support redirigeant vers les utilisateurs                                                                                                         |
 | `/esport/jeux`                                       | `games:view` pour lire ; `games:manage` pour ajouter, modifier et supprimer un jeu ; `teams:view` et `teams:manage` pour les équipes (`/api/equipes`) ; l’API refait le contrôle dans sa transaction |
 | `/esport/jeux/[id]`                                  | `games:view` pour lire le jeu et ses fonctions ; `games:manage` pour les modifier (`/api/jeux/[id]/fonctions`) ; le nombre d’équipes avec `teams:view` |
+| `/structure/entites` et `/structure/entites/[id]`    | `entities:view` pour lire (`/api/structure/entites`) ; `entities:manage` pour ajouter, modifier, rendre principale ou supprimer ; l’API refait le contrôle dans sa transaction |
+| `/finances/comptes` et `/finances/comptes/[id]`      | `financial_accounts:view` pour lire les comptes et les entités qui peuvent en tenir (`/api/finances/comptes`) ; `financial_accounts:manage` pour ouvrir, modifier, clôturer ou supprimer ; l’API refait le contrôle dans sa transaction |
 | `/structure/bureau-staff`                            | `staff:view` pour lire l’Effectif, les anciens membres et les fonctions (`/api/structure`) ; `staff:manage` pour les modifier ; la recherche d’une fiche (`/api/passages/personnes`) accepte `teams:manage` ou `staff:manage` ; l’API refait le contrôle dans sa transaction |
 | `/systeme/utilisateurs`                       | `users:view`                                                                                                                                               |
 | `/systeme/utilisateurs/nouveau`               | `users:create`, donc aussi `users:view`                                                                                                                    |
@@ -540,7 +569,9 @@ pas des permissions effectives :
   `documents:update`, `documents:approve`, `documents:archive`, `legal:view`,
   `contracts:view`, `contracts:update`, `incidents:view`, `incidents:update` ;
 - trésorerie : `treasury:view`, `treasury:edit`, `treasury:validate`,
-  `treasury:export`, `treasury:audit`, `treasury:archives` ;
+  `treasury:export`, `treasury:audit`, `treasury:archives` (noms d’un ancien
+  plan : les pages livrées du pôle Finances ont leurs propres droits par page,
+  `financial_accounts:*` depuis le 10 novembre 2026) ;
 - système futur : `system:validate`, `system:archives`, `system:automation`,
   `backups:view`.
 

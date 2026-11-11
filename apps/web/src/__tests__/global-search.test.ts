@@ -71,7 +71,8 @@ describe('global page search', () => {
       rankSearchResults(catalog, normalizeSearchText('compte')).map(
         (item) => item.href,
       ),
-    ).toEqual(['/mon-compte', '/systeme/utilisateurs']);
+      // The bank accounts are « Comptes » too (10 November 2026).
+    ).toEqual(['/mon-compte', '/finances/comptes', '/systeme/utilisateurs']);
     expect(
       rankSearchResults(catalog, normalizeSearchText('SYSTÈME')).map(
         (item) => item.href,

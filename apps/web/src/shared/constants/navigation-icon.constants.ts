@@ -12,6 +12,7 @@ import {
   History,
   Home,
   Key,
+  Landmark,
   LayoutDashboard,
   type LucideIcon,
   Search,
@@ -39,6 +40,8 @@ const NAVIGATION_ICONS = {
   Home,
   // Same icons as the Mon compte tabs found by the quick navigation.
   Key,
+  // Entités, in the Structure pole (10 November 2026).
+  Landmark,
   LayoutDashboard,
   Search,
   Settings,
