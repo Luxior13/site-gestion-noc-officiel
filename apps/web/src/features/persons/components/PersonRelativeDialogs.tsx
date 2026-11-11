@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import React, { type FC, useState } from 'react';
 
+import { PhoneCountrySelect } from '$components/forms/PhoneCountrySelect';
 import { personDetailPath } from '$constants/routes.constants';
-import { CountryFlag } from '$ui/country-flag';
 import { Input } from '$ui/input';
 import { Label } from '$ui/label';
 import {
@@ -14,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '$ui/select';
-import { PHONE_COUNTRY_OPTIONS } from '$utils/phone-country-options';
 
 import { searchPersonSuggestionsRequest } from '../person.api';
 import {
@@ -164,26 +163,16 @@ export const EmergencyContactDialog: FC<
           />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor={`${ID}-country`} required>
+          <Label htmlFor={`${ID}-country`} id={`${ID}-country-label`} required>
             Pays
           </Label>
-          <Select
+          <PhoneCountrySelect
             disabled={busy}
-            onValueChange={setCountryCode}
+            id={`${ID}-country`}
+            labelId={`${ID}-country-label`}
+            onChange={setCountryCode}
             value={countryCode}
-          >
-            <SelectTrigger className="w-full min-w-0" id={`${ID}-country`}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {PHONE_COUNTRY_OPTIONS.map(([code, label]) => (
-                <SelectItem key={code} value={code}>
-                  <CountryFlag code={code} />
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          />
         </div>
         <div className="space-y-1.5">
           <Label htmlFor={`${ID}-phone`} required>

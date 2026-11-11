@@ -40,6 +40,12 @@ export type OperationItem = Readonly<{
 
 type OperationCounts = Readonly<Record<'ALL' | OperationKind, number>>;
 
+/** Money received and paid under the fixed filters, search aside. */
+export type OperationTotals = Readonly<{
+  expenseCents: number;
+  incomeCents: number;
+}>;
+
 export type OperationsPage = Readonly<{
   /** Per kind, under the other filters: the numbers of the quick filters. */
   counts: OperationCounts;
@@ -47,14 +53,30 @@ export type OperationsPage = Readonly<{
   page: number;
   total: number;
   totalPages: number;
+  /** What a team, a game or a person received and paid (11 November). */
+  totals: OperationTotals;
+}>;
+
+/** A game's money, team by team, then the game itself (11 November 2026). */
+export type GameFinanceRow = Readonly<{
+  expenseCents: number;
+  incomeCents: number;
+  isActive: boolean;
+  /** Null for the operations of the whole game. */
+  teamId: string | null;
+  teamName: string | null;
 }>;
 
 export type OperationFilters = Readonly<{
   accountId?: string;
+  /** A game's operations, its teams' included. */
+  gameId?: string;
   kind?: OperationKind;
   organizationId?: string;
   page: number;
+  personId?: string;
   q?: string;
+  teamId?: string;
 }>;
 
 /** What a window or a record sends. */

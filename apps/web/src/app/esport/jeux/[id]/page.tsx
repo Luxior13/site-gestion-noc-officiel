@@ -2,7 +2,10 @@ import type { Metadata } from 'next';
 import React from 'react';
 
 import { FEATURES } from '$constants/feature-registry.constants';
-import { GameDetailPage } from '$features/games/components/GameDetailPage';
+import {
+  GameDetailPage,
+  type GameDetailSection,
+} from '$features/games/components/GameDetailPage';
 import { pageTitle } from '$utils/page-title.utils';
 
 // Each page names itself in the browser tab (WCAG 2.4.2).
@@ -25,12 +28,10 @@ export default async function GameRoute({
   ]);
 
   // Functions first (9 November 2026); any other value opens them too.
-  return (
-    <GameDetailPage
-      activeSection={
-        query.section === 'informations' ? 'informations' : 'fonctions'
-      }
-      gameId={id}
-    />
-  );
+  const activeSection: GameDetailSection =
+    query.section === 'informations' || query.section === 'finances'
+      ? query.section
+      : 'fonctions';
+
+  return <GameDetailPage activeSection={activeSection} gameId={id} />;
 }

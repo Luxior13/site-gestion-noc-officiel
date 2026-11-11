@@ -3,6 +3,7 @@ import { apiFetchJson, jsonRequest } from '$utils/api.utils';
 
 import { OPERATION_KIND_SLUGS } from './operation.constants';
 import type {
+  GameFinanceRow,
   OperationChoices,
   OperationFilters,
   OperationInput,
@@ -23,6 +24,9 @@ const queryOf = (filters: OperationFilters): string => {
   if (filters.accountId) params.set('compte', filters.accountId);
   if (filters.organizationId)
     params.set('organisation', filters.organizationId);
+  if (filters.teamId) params.set('equipe', filters.teamId);
+  if (filters.gameId) params.set('jeu', filters.gameId);
+  if (filters.personId) params.set('personne', filters.personId);
   const search = params.toString();
 
   return search ? `?${search}` : '';
@@ -36,6 +40,16 @@ export const fetchOperations = (
     cache: 'no-store',
     signal,
   });
+
+/** A game's money, team by team, then the game itself. */
+export const fetchGameFinances = (
+  gameId: string,
+  signal?: AbortSignal,
+): Promise<GameFinanceRow[]> =>
+  apiFetchJson<GameFinanceRow[]>(
+    `${OPERATIONS_API}/jeux/${encodeURIComponent(gameId)}`,
+    { cache: 'no-store', signal },
+  );
 
 export const fetchOperation = (
   id: string,

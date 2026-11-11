@@ -28,6 +28,7 @@ import {
 } from '$ui/table';
 import { formatApproximateDate } from '$utils/approximate-date.utils';
 import { cn } from '$utils/css.utils';
+import { formatEuros } from '$utils/money.utils';
 
 import { fetchOperations } from '../operation.api';
 import {
@@ -38,7 +39,7 @@ import {
 } from '../operation.constants';
 import { operationDetails, operationLineTitle } from '../operation.ui';
 import type { OperationItem, OperationsPage } from '../types/operation.types';
-import { OperationAmount } from './OperationAmount';
+import { OperationAmount, ResultAmount } from './OperationAmount';
 
 const OPERATION_NOUN = ['opération', 'opérations'] as const;
 
@@ -70,12 +71,58 @@ type Props = {
   action?: ReactNode;
   /** Said when nothing was entered yet. */
   emptyDescription?: string;
+  /** A game's operations, its teams' included. */
+  gameId?: string;
   /** A tab that only reads names first where the operations are kept. */
   notice?: string;
   /** The operations an organisation paid or was paid. */
   organizationId?: string;
+  /** The operations a record of the Répertoire paid or was paid. */
+  personId?: string;
   /** A new value reads the first page again: after an addition. */
   reloadKey?: number;
+  /** The operations of a team. */
+  teamId?: string;
+  /**
+   * What the tab sums up above its list: a team's or a game's money in and
+   * out and their result, or what a person paid and was paid.
+   */
+  totals?: 'person' | 'result';
+};
+
+/**
+ * « Entrées + 650,00 € · Sorties − 150,00 € · Résultat + 500,00 € », or
+ * what a person paid the structure and was paid by it.
+ */
+const TotalsLine: FC<{
+  expenseCents: number;
+  incomeCents: number;
+  mode: 'person' | 'result';
+}> = ({ expenseCents, incomeCents, mode }) => {
+  const figure = (label: string, value: ReactNode): ReactNode => (
+    <span className="flex items-baseline gap-1.5">
+      <span className="text-muted-foreground text-xs">{label}</span>
+      <span className="text-sm font-semibold tabular-nums">{value}</span>
+    </span>
+  );
+
+  return (
+    <p
+      aria-label="Totaux"
+      className="mb-3 flex flex-wrap items-baseline gap-x-5 gap-y-1"
+    >
+      {figure(
+        mode === 'person' ? 'Reçu de cette personne' : 'Entrées',
+        <span className="text-success">+ {formatEuros(incomeCents)}</span>,
+      )}
+      {figure(
+        mode === 'person' ? 'Versé à cette personne' : 'Sorties',
+        `− ${formatEuros(expenseCents)}`,
+      )}
+      {mode === 'result' &&
+        figure('Résultat', <ResultAmount cents={incomeCents - expenseCents} />)}
+    </p>
+  );
 };
 
 /**
@@ -87,9 +134,13 @@ export const OperationsList: FC<Props> = ({
   accountId,
   action,
   emptyDescription,
+  gameId,
   notice,
   organizationId,
+  personId,
   reloadKey = 0,
+  teamId,
+  totals,
 }) => {
   const showAccount = !accountId;
   const [query, setQuery] = useState('');
@@ -118,10 +169,13 @@ export const OperationsList: FC<Props> = ({
     fetchOperations(
       {
         accountId,
+        gameId,
         kind: kind ?? undefined,
         organizationId,
         page,
+        personId,
         q: search || undefined,
+        teamId,
       },
       controller.signal,
     )
@@ -140,7 +194,18 @@ export const OperationsList: FC<Props> = ({
       });
 
     return (): void => controller.abort();
-  }, [accountId, attempt, kind, organizationId, page, reloadKey, search]);
+  }, [
+    accountId,
+    attempt,
+    gameId,
+    kind,
+    organizationId,
+    page,
+    personId,
+    reloadKey,
+    search,
+    teamId,
+  ]);
 
   const isFiltered = Boolean(search) || kind !== null;
   const reset = (): void => {
@@ -177,11 +242,20 @@ export const OperationsList: FC<Props> = ({
   const toolbar = (
     <div className="w-full">
       {notice && <p className="text-muted-foreground mb-3 text-xs">{notice}</p>}
+      {totals &&
+        data &&
+        (data.totals.incomeCents > 0 || data.totals.expenseCents > 0) && (
+          <TotalsLine
+            expenseCents={data.totals.expenseCents}
+            incomeCents={data.totals.incomeCents}
+            mode={totals}
+          />
+        )}
       <div className="flex flex-wrap items-center gap-3">
         <form
           aria-label="Rechercher et filtrer les opérations"
           autoComplete="off"
-          className={cn(directoryStyles.filterForm, 'min-w-0 flex-1')}
+          className={cn(directoryStyles.filterForm, 'min-w-0 flex-1 basis-60')}
           onSubmit={(event) => event.preventDefault()}
           role="search"
         >
@@ -209,9 +283,11 @@ export const OperationsList: FC<Props> = ({
               }}
               pressed={kind === null}
             />
-            {/* A transfer never names an organisation: no filter there. */}
+            {/* A transfer names no payer nor team: no filter there. */}
             {OPERATION_KINDS.filter(
-              (filter) => !organizationId || filter !== 'TRANSFER',
+              (filter) =>
+                filter !== 'TRANSFER' ||
+                !(organizationId || teamId || gameId || personId),
             ).map((filter) => (
               <QuickFilter
                 // A closed list of three kinds.

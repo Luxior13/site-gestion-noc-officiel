@@ -30,10 +30,12 @@ import {
   OPERATIONS_PAGE_SIZE,
 } from '../operation.constants';
 import type {
+  GameFinanceRow,
   OperationFilters,
   OperationInput,
   OperationItem,
   OperationsPage,
+  OperationTotals,
 } from '../types/operation.types';
 
 export type OperationActor = Readonly<{
@@ -397,24 +399,54 @@ const writeData = (
   toAccountId: input.toAccountId,
 });
 
+/** What the operations name: an account, an organisation, a team… */
+const fixedWhereOf = (
+  filters: Omit<OperationFilters, 'kind' | 'page' | 'q'>,
+): Prisma.FinancialOperationWhereInput[] => [
+  filters.accountId
+    ? {
+        OR: [
+          { accountId: filters.accountId },
+          { toAccountId: filters.accountId },
+        ],
+      }
+    : {},
+  filters.organizationId ? { organizationId: filters.organizationId } : {},
+  filters.teamId ? { teamId: filters.teamId } : {},
+  // A game's section: the game itself and each of its teams.
+  filters.gameId
+    ? {
+        OR: [{ gameId: filters.gameId }, { team: { gameId: filters.gameId } }],
+      }
+    : {},
+  filters.personId ? { personId: filters.personId } : {},
+];
+
 const whereOf = (
   filters: Omit<OperationFilters, 'kind' | 'page'>,
 ): Prisma.FinancialOperationWhereInput => ({
   AND: [
-    filters.accountId
-      ? {
-          OR: [
-            { accountId: filters.accountId },
-            { toAccountId: filters.accountId },
-          ],
-        }
-      : {},
-    filters.organizationId ? { organizationId: filters.organizationId } : {},
+    ...fixedWhereOf(filters),
     ...getSearchTerms(filters.q ?? '').map((term) => ({
       searchText: { contains: term },
     })),
   ],
 });
+
+/** Money received and paid under the fixed filters: a transfer is neither. */
+const readTotals = async (
+  where: Prisma.FinancialOperationWhereInput,
+): Promise<OperationTotals> => {
+  const sums = await prisma.financialOperation.groupBy({
+    _sum: { amountCents: true },
+    by: ['kind'],
+    where: { AND: [where, { kind: { in: ['INCOME', 'EXPENSE'] } }] },
+  });
+  const sumOf = (kind: 'EXPENSE' | 'INCOME'): number =>
+    sums.find((sum) => sum.kind === kind)?._sum.amountCents ?? 0;
+
+  return { expenseCents: sumOf('EXPENSE'), incomeCents: sumOf('INCOME') };
+};
 
 /**
  * A page of operations, the latest first, with the number of each kind
@@ -426,13 +458,14 @@ export const listOperations = async (
 ): Promise<OperationsPage> => {
   const base = whereOf(filters);
   const where = filters.kind ? { AND: [base, { kind: filters.kind }] } : base;
-  const [groups, total] = await Promise.all([
+  const [groups, total, totals] = await Promise.all([
     prisma.financialOperation.groupBy({
       _count: { _all: true },
       by: ['kind'],
       where: base,
     }),
     prisma.financialOperation.count({ where }),
+    readTotals({ AND: fixedWhereOf(filters) }),
   ]);
   const totalPages = Math.max(1, Math.ceil(total / OPERATIONS_PAGE_SIZE));
   const page = Math.min(filters.page, totalPages);
@@ -457,7 +490,58 @@ export const listOperations = async (
     page,
     total,
     totalPages,
+    totals,
   };
+};
+
+/**
+ * A game's money, its whole section (11 November 2026): each team, active
+ * first in the dragged order, then the operations of the game itself.
+ */
+export const getGameFinances = async (
+  gameId: string,
+): Promise<GameFinanceRow[]> => {
+  const [game, teams, sums, own] = await Promise.all([
+    prisma.game.findUnique({ select: { id: true }, where: { id: gameId } }),
+    prisma.team.findMany({
+      orderBy: [{ isActive: 'desc' }, { position: 'asc' }, { name: 'asc' }],
+      select: { id: true, isActive: true, name: true },
+      where: { gameId },
+    }),
+    prisma.financialOperation.groupBy({
+      _sum: { amountCents: true },
+      by: ['teamId', 'kind'],
+      where: { kind: { in: ['INCOME', 'EXPENSE'] }, team: { gameId } },
+    }),
+    prisma.financialOperation.groupBy({
+      _sum: { amountCents: true },
+      by: ['kind'],
+      where: { gameId, kind: { in: ['INCOME', 'EXPENSE'] } },
+    }),
+  ]);
+  if (!game) throw serviceErrors.notFound('Ce jeu n’existe plus.');
+  const teamSum = (teamId: string, kind: 'EXPENSE' | 'INCOME'): number =>
+    sums.find((sum) => sum.teamId === teamId && sum.kind === kind)?._sum
+      .amountCents ?? 0;
+  const ownSum = (kind: 'EXPENSE' | 'INCOME'): number =>
+    own.find((sum) => sum.kind === kind)?._sum.amountCents ?? 0;
+
+  return [
+    ...teams.map((team) => ({
+      expenseCents: teamSum(team.id, 'EXPENSE'),
+      incomeCents: teamSum(team.id, 'INCOME'),
+      isActive: team.isActive,
+      teamId: team.id,
+      teamName: team.name,
+    })),
+    {
+      expenseCents: ownSum('EXPENSE'),
+      incomeCents: ownSum('INCOME'),
+      isActive: true,
+      teamId: null,
+      teamName: null,
+    },
+  ];
 };
 
 export const getOperation = async (

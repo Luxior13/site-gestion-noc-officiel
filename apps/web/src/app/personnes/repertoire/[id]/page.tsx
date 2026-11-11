@@ -37,8 +37,8 @@ export default async function PersonPage({
       ? 'coordonnees'
       : query.section === 'en-ligne'
         ? 'en-ligne'
-        : query.section === 'parcours'
-          ? 'parcours'
+        : query.section === 'parcours' || query.section === 'finances'
+          ? query.section
           : 'identite';
   const capabilities = getPersonCapabilities(user);
   let initialPerson: PersonDetail | undefined;

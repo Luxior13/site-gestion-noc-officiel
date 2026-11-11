@@ -31,3 +31,24 @@ export const OperationAmount: FC<{
     </span>
   );
 };
+
+/**
+ * Money received less money paid (11 November 2026): « + » in green as an
+ * entry, « − » in red as a negative balance, nothing on zero.
+ */
+export const ResultAmount: FC<{ cents: number; className?: string }> = ({
+  cents,
+  className,
+}) => (
+  <span
+    className={cn(
+      'whitespace-nowrap tabular-nums',
+      cents > 0 && 'text-success',
+      cents < 0 && 'text-destructive',
+      className,
+    )}
+  >
+    {cents > 0 ? '+ ' : cents < 0 ? '− ' : ''}
+    {formatEuros(Math.abs(cents))}
+  </span>
+);

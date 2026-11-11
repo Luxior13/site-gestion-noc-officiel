@@ -1,6 +1,6 @@
 'use client';
 
-import { Archive, Info, RefreshCw, Users } from 'lucide-react';
+import { Archive, Info, ReceiptText, RefreshCw, Users } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import React, {
@@ -21,6 +21,7 @@ import { FEATURES } from '$constants/feature-registry.constants';
 import { gameDetailPath, teamDetailPath } from '$constants/routes.constants';
 import { useUser } from '$context/UserContext';
 import { getGameCapabilities } from '$features/games/game.permissions';
+import { getOperationCapabilities } from '$features/operations/operation.permissions';
 import type { PassagePlaceView } from '$features/passages/components/PassageLines';
 import type { TeamPeopleCounts } from '$features/passages/passage.ui';
 import { getPersonCapabilities } from '$features/persons/person.permissions';
@@ -45,6 +46,11 @@ const FormerMembersSection = dynamic(() =>
     (module) => module.FormerMembersSection,
   ),
 );
+const FinancesTab = dynamic(() =>
+  import('$features/operations/components/FinancesTab').then(
+    (module) => module.FinancesTab,
+  ),
+);
 const TeamInformationSection = dynamic(() =>
   import('./TeamInformationSection').then(
     (module) => module.TeamInformationSection,
@@ -53,13 +59,14 @@ const TeamInformationSection = dynamic(() =>
 
 const GAMES_HREF = FEATURES.games.href;
 
-type TeamDetailSection = 'anciens' | 'informations' | 'roster';
+export type TeamDetailSection =
+  'anciens' | 'finances' | 'informations' | 'roster';
 
 /**
  * What a team is first: its roster, what is there and coming (owner,
- * 9 November 2026), then its former members, never mixed with it; its
- * information last. Tournois ↗, Entraînements, Finances ↗ and Partenaires ↗
- * will come before it.
+ * 9 November 2026), then its former members, never mixed with it; its money,
+ * read here and entered in Finances (11 November 2026); its information
+ * last. Tournois ↗, Entraînements and Partenaires ↗ will come before it.
  */
 const TEAM_DETAIL_SECTIONS: readonly PageSection<TeamDetailSection>[] = [
   { icon: <Users className="size-4" />, id: 'roster', label: 'Roster' },
@@ -67,6 +74,12 @@ const TEAM_DETAIL_SECTIONS: readonly PageSection<TeamDetailSection>[] = [
     icon: <Archive className="size-4" />,
     id: 'anciens',
     label: 'Anciens membres',
+  },
+  {
+    icon: <ReceiptText className="size-4" />,
+    id: 'finances',
+    label: 'Finances',
+    managedIn: 'Finances',
   },
   {
     icon: <Info className="size-4" />,
@@ -108,6 +121,12 @@ const TeamDetailContent: FC<ContentProps> = ({ activeSection, teamId }) => {
   const { userData } = useUser();
   const { canManageTeams, canViewTeams } = getGameCapabilities(userData);
   const persons = getPersonCapabilities(userData);
+  const canViewOperations = getOperationCapabilities(userData).canView;
+  // Without the operations, their tab is not offered.
+  const section: TeamDetailSection =
+    activeSection === 'finances' && !canViewOperations
+      ? 'roster'
+      : activeSection;
   const [team, setTeam] = useState<TeamDetail | null>(null);
   const [informationDirty, setInformationDirty] = useState(false);
   const setPeopleCounts = useCallback((counts: TeamPeopleCounts): void => {
@@ -211,8 +230,8 @@ const TeamDetailContent: FC<ContentProps> = ({ activeSection, teamId }) => {
 
     return (
       <EntityDetailLayout
-        activeSection={activeSection}
-        ariaLiveLabel={`Section ${TEAM_DETAIL_SECTIONS.find((section) => section.id === activeSection)?.label ?? 'Roster'} affichée`}
+        activeSection={section}
+        ariaLiveLabel={`Section ${TEAM_DETAIL_SECTIONS.find((entry) => entry.id === section)?.label ?? 'Roster'} affichée`}
         condensedAside={<TeamState team={team} />}
         dirtySections={informationDirty ? ['informations'] : []}
         heroDescription={<TeamContext team={team} />}
@@ -221,16 +240,18 @@ const TeamDetailContent: FC<ContentProps> = ({ activeSection, teamId }) => {
         heroTitle={team.name}
         navigationAriaLabel="Navigation de la fiche équipe"
         sectionHref={sectionHrefOf(team.id)}
-        sections={TEAM_DETAIL_SECTIONS.map((section) =>
+        sections={TEAM_DETAIL_SECTIONS.filter(
+          (entry) => entry.id !== 'finances' || canViewOperations,
+        ).map((entry) =>
           // The people there today; the people gone.
-          section.id === 'roster'
-            ? { ...section, count: team.memberCount }
-            : section.id === 'anciens'
-              ? { ...section, count: team.formerCount }
-              : section,
+          entry.id === 'roster'
+            ? { ...entry, count: team.memberCount }
+            : entry.id === 'anciens'
+              ? { ...entry, count: team.formerCount }
+              : entry,
         )}
       >
-        {activeSection === 'roster' ? (
+        {section === 'roster' ? (
           <section aria-label="Roster">
             <RosterSection
               key={team.id}
@@ -241,7 +262,12 @@ const TeamDetailContent: FC<ContentProps> = ({ activeSection, teamId }) => {
               place={place}
             />
           </section>
-        ) : activeSection === 'anciens' ? (
+        ) : section === 'finances' ? (
+          <FinancesTab
+            key={team.id}
+            target={{ teamId: team.id, type: 'team' }}
+          />
+        ) : section === 'anciens' ? (
           <section aria-label="Anciens membres">
             <FormerMembersSection
               key={team.id}
@@ -323,7 +349,8 @@ const TeamDetailContent: FC<ContentProps> = ({ activeSection, teamId }) => {
 
 /**
  * Record of a team (8 November 2026), opened from its line on the Jeux page:
- * its roster, then its information (9 November 2026).
+ * its roster, its former members, its finances (11 November 2026), then its
+ * information.
  */
 export const TeamDetailPage: FC<ContentProps> = ({ activeSection, teamId }) => {
   const { authorizationRevision, userData } = useUser();

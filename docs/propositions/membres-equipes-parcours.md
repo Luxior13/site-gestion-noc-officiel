@@ -105,14 +105,15 @@ identifiants de jeu, finances) le fait en `ON DELETE RESTRICT`, jamais en
   actives ou archivées, chacune avec ses équipes en dessous ; une équipe ouvre sa
   fiche en un clic, le nom du jeu ouvre la fiche jeu (décision du 8 novembre 2026).
 - `/esport/jeux/[id]` (ouverte le 8 novembre 2026, onglets Fonctions et Informations le 9) : fiche jeu, onglets Fonctions (livré ; aucun réglage d’accès, décision du 10 novembre 2026), Finances ↗ (celles de ce
-  jeu) et Informations ; l’onglet Équipes est retiré le
+  jeu et de ses équipes, livré le 11 novembre 2026) et Informations ; l’onglet Équipes est retiré le
   8 novembre 2026, les équipes s’affichent et s’ajoutent sous chaque jeu de la
   page Jeux.
 - `/esport/equipes/[id]` (ouverte le 8 novembre 2026 avec ses informations seules, sans barre d’onglets) : fiche équipe, sous son jeu, onglets Roster (membres
   actuels et à venir), Anciens membres (passages terminés, par année de fin ;
   séparés le 9 novembre 2026, sans sélecteur « À une date »), Tournois ↗,
   Entraînements,
-  Finances ↗ (invisible pour un manager), Partenaires ↗ et Informations (nom,
+  Finances ↗ (invisible pour un manager, livré le 11 novembre 2026),
+  Partenaires ↗ et Informations (nom,
   archivage ; anciens noms non gardés, 10 novembre 2026).
 - Page Bureau & staff (pôle Structure, `/structure/bureau-staff`, livrée le
   9 novembre 2026, [fiche](../pages/structure/bureau-staff.md)) : onglet

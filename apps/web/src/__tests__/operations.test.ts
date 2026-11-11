@@ -138,11 +138,22 @@ describe('operations (11 November 2026)', () => {
       }),
     ).toEqual({
       accountId: undefined,
+      gameId: undefined,
       kind: 'EXPENSE',
       organizationId: undefined,
       page: 2,
+      personId: undefined,
       q: 'maillot',
+      teamId: undefined,
     });
+    // The Finances tab of a team, a game or a record (11 November 2026).
+    const id = '7f1c3f4e-2b1a-4c7e-9d2f-0a1b2c3d4e5f';
+    expect(
+      operationQuerySchema.parse({ equipe: id, jeu: id, personne: id }),
+    ).toMatchObject({ gameId: id, personId: id, teamId: id });
+    expect(
+      operationQuerySchema.safeParse({ equipe: 'x'.repeat(129) }).success,
+    ).toBe(false);
   });
 
   it('signs an amount as the structure, or one account, sees it', () => {

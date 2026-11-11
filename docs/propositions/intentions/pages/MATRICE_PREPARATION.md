@@ -11,8 +11,8 @@ Référence révisée le 7 novembre 2026. Les chantiers proviennent du [catalogu
 | `/mon-compte` | Profil, autorisations et sécurité du compte livrés | Outils globaux |
 | `/recherche` | Page retirée le 9 octobre 2026 ; navigation rapide conservée ; redirige vers l’accueil | Outils globaux |
 | `/personnes/repertoire`, `/nouveau`, `/[id]` sous ce chemin | Liste, création et fiche Personne livrées ; `/membres/repertoire/*` y redirige depuis le 8 novembre 2026 | Personnes |
-| `/esport/jeux/[id]` | Fiche jeu ouverte le 8 novembre 2026 (Fonctions et Informations depuis le 9 novembre 2026 ; Finances ↗ à venir) | Esport |
-| `/esport/equipes/[id]` | Fiche équipe ouverte le 8 novembre 2026 (Roster, Anciens membres et Informations depuis le 9 novembre 2026 ; Tournois ↗, Entraînements, Finances ↗, Partenaires ↗ à venir) | Esport |
+| `/esport/jeux/[id]` | Fiche jeu ouverte le 8 novembre 2026 (Fonctions et Informations depuis le 9 novembre 2026 ; Finances ↗ depuis le 11 novembre 2026) | Esport |
+| `/esport/equipes/[id]` | Fiche équipe ouverte le 8 novembre 2026 (Roster, Anciens membres et Informations depuis le 9 novembre 2026 ; Finances ↗ depuis le 11 novembre 2026 ; Tournois ↗, Entraînements, Partenaires ↗ à venir) | Esport |
 | `/esport/jeux` | Page Jeux livrée le 8 novembre 2026, avec les équipes sous chaque jeu | Esport |
 | `/finances/comptes`, `/[id]` sous ce chemin | Page Comptes et fiche compte livrées le 10 novembre 2026 (solde de départ ; opérations à venir) | Finances |
 | `/finances/operations`, `/[id]` sous ce chemin | Page Opérations et fiche opération livrées le 11 novembre 2026, avec les onglets Catégories et Moyens de paiement de Comptes et Mouvements d’un compte (justificatifs à venir) | Finances |

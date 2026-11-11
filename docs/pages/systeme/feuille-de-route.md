@@ -164,7 +164,10 @@ Sources : [décisions produit](../../propositions/feuille-de-route.md),
   fiche opération, onglets Catégories et Moyens de paiement de Comptes,
   Mouvements d’un compte et Règlements ↗ d’une organisation en place ; le
   chantier Opérations & règlements garde les justificatifs et les onglets
-  Finances ↗ des fiches jeu, équipe et personne.
+  Finances ↗ des fiches jeu, équipe et personne, livrés le même jour : il ne
+  garde plus que les justificatifs. L’onglet Finances ↗ de la fiche personne
+  attend encore les adhésions (étape 4), celui de la fiche équipe le budget
+  (étape 9).
 - 25 octobre 2026 : la page reste ouverte à tout compte connecté et figure
   dans la section « Projet » du pôle Système, plus sous « Administration »
   ([DRT-04](../../audits/2026-10-25-coherence-des-droits.md)).

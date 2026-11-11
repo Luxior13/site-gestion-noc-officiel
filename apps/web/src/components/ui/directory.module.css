@@ -323,6 +323,11 @@
   text-align: left;
 }
 
+/* A numeric column (amount, balance) keeps its header over its figures. */
+.directory .table th:global(.text-right) {
+  text-align: right;
+}
+
 .directory .table th:first-child {
   padding-left: 16px;
 }

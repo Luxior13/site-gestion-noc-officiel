@@ -415,7 +415,7 @@ sous Finances › Opérations.
 
 | Clé canonique | Action couverte | Dépend de | Risque | Step-up à l'usage |
 | --- | --- | --- | --- | --- |
-| `operations:view` | voir les opérations, leurs montants, leur catégorie et qui a payé ou reçu, ici, dans l’onglet Mouvements d’un compte et Règlements ↗ d’une organisation ; lire leurs valeurs dans le journal | — | sensible | Non |
+| `operations:view` | voir les opérations, leurs montants, leur catégorie et qui a payé ou reçu, ici, dans l’onglet Mouvements d’un compte, Règlements ↗ d’une organisation et Finances ↗ des fiches jeu, équipe et personne (11 novembre 2026, sans suivre la portée Esport) ; lire leurs valeurs dans le journal | — | sensible | Non |
 | `operations:manage` | saisir, corriger ou supprimer une entrée, une sortie ou un virement | `operations:view` | sensible | Non |
 
 La fiche du Répertoire qui a payé ou reçu suit `persons:view`, comme pour un

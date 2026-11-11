@@ -10,7 +10,7 @@
 | Espace | Finances, section « Trésorerie », après Comptes |
 | Gabarit visé | [A. Liste de gestion](../../design/gabarits.md#a-liste-de-gestion) : recherche, filtres rapides « Sens » avec leurs nombres, 25 par page côté serveur |
 | État d’harmonisation | Aligné — voir [Harmonisation](../../design/harmonisation.md#état-par-page) |
-| Point d’entrée | [page.tsx](../../../apps/web/src/app/finances/operations/page.tsx) → [OperationsPage](../../../apps/web/src/features/operations/components/OperationsPage.tsx), [OperationsList](../../../apps/web/src/features/operations/components/OperationsList.tsx) (partagée avec l’onglet Mouvements d’un compte et Règlements ↗ d’une organisation), [OperationDialog](../../../apps/web/src/features/operations/components/OperationDialog.tsx), [OperationFields](../../../apps/web/src/features/operations/components/OperationFields.tsx) |
+| Point d’entrée | [page.tsx](../../../apps/web/src/app/finances/operations/page.tsx) → [OperationsPage](../../../apps/web/src/features/operations/components/OperationsPage.tsx), [OperationsList](../../../apps/web/src/features/operations/components/OperationsList.tsx) (partagée avec l’onglet Mouvements d’un compte, Règlements ↗ d’une organisation et, par [FinancesTab](../../../apps/web/src/features/operations/components/FinancesTab.tsx), Finances ↗ des fiches jeu, équipe et personne), [OperationDialog](../../../apps/web/src/features/operations/components/OperationDialog.tsx), [OperationFields](../../../apps/web/src/features/operations/components/OperationFields.tsx) |
 | Contrôle d’accès | `operations:view` pour la liste ; `operations:manage` pour « Ajouter une opération » ; `persons:view` en plus pour choisir ou voir une fiche du Répertoire qui a payé ou reçu ; l’API refait le contrôle dans la transaction ([permissions](../../domaines/permissions.md#opérations)) |
 | Chargement / erreur dédiés | `loading.tsx` ; squelette de liste ; « Chargement impossible » avec « Réessayer » ; « Accès refusé » ; titre d’onglet « Opérations · Noctambule » |
 
@@ -74,6 +74,15 @@ les valeurs ne se lisent qu’avec `operations:view` ; sinon « Opération » et
 - Un virement relie deux comptes de la même entité ; il n’est ni une entrée
   ni une sortie ; une opération ne précède pas l’ouverture de son compte ni
   ne suit sa clôture.
+- Onglets Finances ↗ des fiches [jeu](../esport/jeu.md),
+  [équipe](../esport/equipe.md) et [personne](../personnes/repertoire/fiche-finances.md)
+  (11 novembre 2026, « passe au 2 des finances ») : la même liste, filtrée
+  (`equipe`, `jeu` qui compte aussi ses équipes, `personne`), avec ses
+  totaux d’entrées et de sorties sous ces seuls filtres, jamais la recherche
+  ni le sens ; un résultat (entrées moins sorties) pour une équipe et, par
+  équipe, pour un jeu ; « reçu de » et « versé à » pour une personne. Pas de
+  filtre Virements : un virement ne nomme ni équipe, ni jeu, ni personne.
+  Résultat en vert avec « + », en rouge avec « − », comme un solde négatif.
 
 ## Points ouverts
 
@@ -90,6 +99,11 @@ qu’une opération nomme reste, Répertoire réservé à qui le lit) ; parcours
 réel sur build de production (listes courantes, fenêtre refusée puis
 remplie, sortie et virement saisis, filtre Entrées, fiche modifiée), captures
 relues à 1 440 et 390 px. Reprise avec les justificatifs.
+
+11 novembre 2026, onglets Finances ↗ : `operations` (paramètres `equipe`,
+`jeu`, `personne`) ; `operations-postgres` (filtres et totaux d’une équipe,
+d’un jeu et d’une fiche, recherche sans effet sur les totaux, détail d’un jeu
+par équipe, jeu inconnu 404, lecteur des jeux sans les opérations 403).
 
 ## Historique
 

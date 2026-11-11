@@ -103,7 +103,7 @@ export const OPERATIONS_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     doneWhen:
       'Engagement, somme due et règlement sont distincts ; les corrections sont tracées.',
     firstRelease:
-      'Justificatifs de chaque opération (avec le stockage des fichiers), onglets Finances ↗ des fiches jeu, équipe et personne. Les entrées, sorties, virements, catégories, moyens de paiement, le solde du jour et l’onglet Règlements ↗ d’une organisation sont livrés le 11 novembre 2026.',
+      'Justificatifs de chaque opération (avec le stockage des fichiers). Les entrées, sorties, virements, catégories, moyens de paiement, le solde du jour, l’onglet Règlements ↗ d’une organisation et les onglets Finances ↗ des fiches jeu, équipe et personne sont livrés le 11 novembre 2026.',
     id: 'payments',
     later:
       'Vues cotisations, sponsoring, dons et subventions ; paiements partiels et relances.',

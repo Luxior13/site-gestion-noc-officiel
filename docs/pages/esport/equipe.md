@@ -6,9 +6,9 @@
 
 | Élément | Valeur |
 | --- | --- |
-| Route | `/esport/equipes/[id]` (Roster), `?section=anciens` (Anciens membres) et `?section=informations` |
+| Route | `/esport/equipes/[id]` (Roster), `?section=anciens` (Anciens membres), `?section=finances` (11 novembre 2026) et `?section=informations` |
 | Espace | Esport ; « Jeux » reste l’entrée courante de la navigation (`matchHrefs` de la fonctionnalité `games`) |
-| Gabarit visé | [B. Fiche à sections](../../design/gabarits.md#b-fiche-à-sections), onglets Roster, Anciens membres et Informations depuis le 9 novembre 2026 |
+| Gabarit visé | [B. Fiche à sections](../../design/gabarits.md#b-fiche-à-sections), onglets Roster, Anciens membres et Informations depuis le 9 novembre 2026, Finances ↗ depuis le 11 novembre 2026 ([onglet en lecture](../../design/gabarits.md#onglets-dune-fiche)) |
 | État d’harmonisation | Aligné — voir [Harmonisation](../../design/harmonisation.md#état-par-page) |
 | Point d’entrée | [page.tsx](../../../apps/web/src/app/esport/equipes/%5Bid%5D/page.tsx) → [TeamDetailPage](../../../apps/web/src/features/teams/components/TeamDetailPage.tsx) → [RosterSection](../../../apps/web/src/features/passages/components/RosterSection.tsx), [FormerMembersSection](../../../apps/web/src/features/passages/components/FormerMembersSection.tsx), tous deux sur [PassageLines](../../../apps/web/src/features/passages/components/PassageLines.tsx) et `useRoster`, [PassageDialog](../../../apps/web/src/features/passages/components/PassageDialog.tsx), partagés avec l’Effectif de [Bureau & staff](../structure/bureau-staff.md) depuis le 9 novembre 2026 (le lieu, équipe ou structure, est un paramètre) ; [TeamInformationSection](../../../apps/web/src/features/teams/components/TeamInformationSection.tsx) |
 | Contrôle d’accès | `teams:view` pour voir l’équipe et son Roster ; `teams:manage` pour la modifier, la supprimer, ajouter, corriger et supprimer des passages et chercher une fiche du Répertoire à y ajouter ; le lien vers la fiche d’une personne suit `persons:view`, celui de création d’une fiche `persons:create` ; l’API refait le contrôle dans la transaction ([permissions](../../domaines/permissions.md#page-jeux)). Hors de la [portée Esport](../../domaines/permissions.md#portée-esport) du compte, « Équipe introuvable », pour la fiche comme pour son Roster (10 novembre 2026) |
@@ -31,9 +31,10 @@ Composition, de haut en bas :
    « Inactive », ligne « Valorant · depuis septembre 2023 », puis la barre
    d’onglets **Roster** (avec le nombre de personnes présentes aujourd’hui,
    chacune une fois), **Anciens membres** (le nombre de personnes qui ont un
-   passage terminé) et **Informations**. Roster garde l’adresse simple ; les
-   autres ajoutent `?section=anciens` ou `?section=informations`. Chaque onglet charge son code
-   à la demande.
+   passage terminé), **Finances ↗** (pour qui lit les opérations) et
+   **Informations**. Roster garde l’adresse simple ; les autres ajoutent
+   `?section=anciens`, `?section=finances` ou `?section=informations`. Chaque
+   onglet charge son code à la demande.
 3. **Roster** (`RosterSection`) : ce qui est là et ce qui arrive, jamais
    les anciens (« je ne veux pas mélanger les anciens avec les en cours et à
    venir, car sur le très long terme ça fera bordel ; le but est de voir ce
@@ -117,6 +118,18 @@ Composition, de haut en bas :
      (« Cette personne a déjà cette fonction dans l’équipe sur cette
      période. »), fin avant le début, fonction d’un autre jeu ; version
      dépassée : le message et « Recharger le Roster ».
+4. bis **Finances ↗** (`FinancesTab`, 11 novembre 2026), en lecture : la
+   liste partagée des opérations (`OperationsList`) de l’équipe, avec la
+   ligne de tête « Les opérations se saisissent dans Finances › Opérations :
+   chaque ligne ouvre son opération. », puis, dès qu’il y a de l’argent,
+   « Entrées + 600,00 € · Sorties − 150,00 € · Résultat + 450,00 € »
+   (résultat en vert avec « + », en rouge avec « − » ; ces totaux ignorent
+   la recherche et le filtre), recherche, « Ouvrir les opérations », filtres
+   Toutes, Entrées, Sorties (pas de Virements : un virement ne nomme pas
+   d’équipe), 25 par page. Vide : « Aucune opération pour l’instant ».
+   `operations:view` seul l’ouvre : sans lui, ni onglet ni contenu,
+   l’adresse ouvre le Roster ; un manager ne l’a pas par défaut. La
+   trésorerie ne suit pas la portée Esport.
 5. **Informations** (`TeamInformationSection`), modifiées sur place : une
    carte « Équipe » avec Nom, Création et Active ; le jeu, fixé à la création,
    est dans l’en-tête. Barre d’enregistrement commune ; un brouillon marque
@@ -170,6 +183,11 @@ seul un lecteur du Répertoire voit, par la fiche.
   avec « Cette fiche figure dans 2 passages d’un Roster ».
 - Ordre prévu des onglets : Roster, Anciens membres, Tournois ↗,
   Entraînements, Finances ↗, Partenaires ↗, Informations ([feuille de route](../../propositions/feuille-de-route.md)).
+  Finances ↗ est livré le 11 novembre 2026 (« passe au 2 des finances ») :
+  l’argent se lit ici et se saisit dans [Opérations](../finances/operations.md),
+  sans droit nouveau ; données `GET /api/finances/operations?equipe=[id]`
+  ([API](../../systeme/api.md)). L’enveloppe de budget comparée au réalisé
+  viendra avec Budget & pilotage (étape 9).
 - Livré le 9 novembre 2026 : l’onglet Parcours de la fiche personne, qui lit
   ces passages ([fiche](../personnes/repertoire/fiche-parcours.md)) ; le même
   jour, l’Effectif de [Bureau & staff](../structure/bureau-staff.md), composé
@@ -183,6 +201,10 @@ seul un lecteur du Répertoire voit, par la fiche.
   poste en jeu.
 
 ## Preuves et limites
+
+Finances ↗, le 11 novembre 2026 : `operations-postgres` (opérations d’une
+équipe et leurs totaux, inchangés par la recherche). Banc réel sur build de
+production : voir la [fiche Opérations](../finances/operations.md#vérifications-et-prochaine-reprise).
 
 Le 9 novembre 2026, Roster : `passages` (contrat du formulaire, fin à la fin de
 sa période, Roster à une date, membres comptés une fois, libellés des périodes,

@@ -4,6 +4,7 @@ import {
   AtSign,
   Clock3,
   Globe,
+  ReceiptText,
   RefreshCw,
   Route,
   UserRound,
@@ -27,6 +28,7 @@ import { personDetailPath } from '$constants/routes.constants';
 import { useUser } from '$context/UserContext';
 import { JournalHistoryLink } from '$features/audit/components/JournalHistoryLink';
 import { getGameCapabilities } from '$features/games/game.permissions';
+import { getOperationCapabilities } from '$features/operations/operation.permissions';
 import {
   type JourneyReach,
   journeySourcesOf,
@@ -57,6 +59,11 @@ const PersonIdentitySection = dynamic(() =>
     (module) => module.PersonIdentitySection,
   ),
 );
+const FinancesTab = dynamic(() =>
+  import('$features/operations/components/FinancesTab').then(
+    (module) => module.FinancesTab,
+  ),
+);
 const PersonJourneySection = dynamic(() =>
   import('$features/passages/components/PersonJourneySection').then(
     (module) => module.PersonJourneySection,
@@ -72,7 +79,7 @@ type PersonDetailPageProps = {
 };
 
 export type PersonDetailSection =
-  'coordonnees' | 'en-ligne' | 'identite' | 'parcours';
+  'coordonnees' | 'en-ligne' | 'finances' | 'identite' | 'parcours';
 
 const PERSON_DETAIL_SECTIONS: readonly PageSection<PersonDetailSection>[] = [
   {
@@ -91,6 +98,14 @@ const PERSON_DETAIL_SECTIONS: readonly PageSection<PersonDetailSection>[] = [
   // Read here, kept in each team's Roster and the structure's Effectif
   // (9 November 2026); its sources follow the reader's rights.
   { icon: <Route className="size-4" />, id: 'parcours', label: 'Parcours' },
+  // What the person paid and was paid, read here and entered in Finances
+  // (11 November 2026); the membership fees will join it.
+  {
+    icon: <ReceiptText className="size-4" />,
+    id: 'finances',
+    label: 'Finances',
+    managedIn: 'Finances',
+  },
 ];
 
 const DetailSkeleton: FC = () => (
@@ -143,11 +158,14 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
     structure: getStaffCapabilities(userData).canView,
     teams: getGameCapabilities(userData).canViewTeams,
   };
+  const canViewOperations = getOperationCapabilities(userData).canView;
   const allowed = (section: PersonDetailSection): boolean =>
     section === 'identite' ||
     (section === 'coordonnees' || section === 'en-ligne'
       ? canViewContact
-      : reach.teams || reach.structure);
+      : section === 'finances'
+        ? canViewOperations
+        : reach.teams || reach.structure);
   const activeSection = allowed(requestedSection)
     ? requestedSection
     : 'identite';
@@ -359,6 +377,11 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
               />
             )}
           </section>
+        ) : activeSection === 'finances' ? (
+          <FinancesTab
+            key={person.id}
+            target={{ personId: person.id, type: 'person' }}
+          />
         ) : activeSection === 'parcours' ? (
           <section aria-label="Parcours">
             <PersonJourneySection

@@ -1,6 +1,6 @@
 import React, { type FC } from 'react';
 
-import { CountryFlag } from '$ui/country-flag';
+import { PhoneCountrySelect } from '$components/forms/PhoneCountrySelect';
 import { Input } from '$ui/input';
 import { Label } from '$ui/label';
 import {
@@ -11,7 +11,6 @@ import {
   SelectValue,
 } from '$ui/select';
 import { Switch } from '$ui/switch';
-import { PHONE_COUNTRY_OPTIONS } from '$utils/phone-country-options';
 
 import {
   getPersonSocialNetwork,
@@ -263,33 +262,24 @@ export const PhoneFields: FC<PhoneFieldsProps> = ({
       className={`grid gap-4 ${layout === 'grid' ? 'sm:grid-cols-2' : 'grid-cols-1'}`}
     >
       <div className="space-y-1.5">
-        <Label htmlFor={`${idPrefix}-country`} required>
+        <Label
+          htmlFor={`${idPrefix}-country`}
+          id={`${idPrefix}-country-label`}
+          required
+        >
           Pays
         </Label>
-        <Select
+        <PhoneCountrySelect
+          aria-describedby={
+            countryError ? `${idPrefix}-country-error` : undefined
+          }
+          aria-invalid={Boolean(countryError)}
           disabled={disabled}
-          onValueChange={(countryCode) => onChange({ ...value, countryCode })}
+          id={`${idPrefix}-country`}
+          labelId={`${idPrefix}-country-label`}
+          onChange={(countryCode) => onChange({ ...value, countryCode })}
           value={value.countryCode}
-        >
-          <SelectTrigger
-            aria-describedby={
-              countryError ? `${idPrefix}-country-error` : undefined
-            }
-            aria-invalid={Boolean(countryError)}
-            className="w-full min-w-0"
-            id={`${idPrefix}-country`}
-          >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {PHONE_COUNTRY_OPTIONS.map(([code, label]) => (
-              <SelectItem key={code} value={code}>
-                <CountryFlag code={code} />
-                {label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        />
         <FieldError id={`${idPrefix}-country-error`} message={countryError} />
       </div>
       <div className="space-y-1.5">

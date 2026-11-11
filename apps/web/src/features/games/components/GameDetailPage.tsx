@@ -1,6 +1,6 @@
 'use client';
 
-import { Info, RefreshCw, UserCog } from 'lucide-react';
+import { Info, ReceiptText, RefreshCw, UserCog } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import React, {
@@ -20,6 +20,7 @@ import { AccessDeniedState, PageState } from '$components/layout/PageState';
 import { FEATURES } from '$constants/feature-registry.constants';
 import { gameDetailPath } from '$constants/routes.constants';
 import { useUser } from '$context/UserContext';
+import { getOperationCapabilities } from '$features/operations/operation.permissions';
 import { PageCanvas, PageShell } from '$ui/page-shell';
 import { StatusBadge } from '$ui/status-badge';
 import { ApiClientError } from '$utils/api.utils';
@@ -37,6 +38,11 @@ const MemberFunctionsSection = dynamic(() =>
     (module) => module.MemberFunctionsSection,
   ),
 );
+const FinancesTab = dynamic(() =>
+  import('$features/operations/components/FinancesTab').then(
+    (module) => module.FinancesTab,
+  ),
+);
 const GameInformationSection = dynamic(() =>
   import('./GameInformationSection').then(
     (module) => module.GameInformationSection,
@@ -45,14 +51,21 @@ const GameInformationSection = dynamic(() =>
 
 const GAMES_HREF = FEATURES.games.href;
 
-type GameDetailSection = 'fonctions' | 'informations';
+export type GameDetailSection = 'finances' | 'fonctions' | 'informations';
 
 /**
  * What the game is first, its information last (owner, 9 November 2026), as
- * a team keeps its information last; Finances ↗ will come between them.
+ * a team keeps its information last; between them, its money and its teams',
+ * read here and entered in Finances (11 November 2026).
  */
 const GAME_DETAIL_SECTIONS: readonly PageSection<GameDetailSection>[] = [
   { icon: <UserCog className="size-4" />, id: 'fonctions', label: 'Fonctions' },
+  {
+    icon: <ReceiptText className="size-4" />,
+    id: 'finances',
+    label: 'Finances',
+    managedIn: 'Finances',
+  },
   {
     icon: <Info className="size-4" />,
     id: 'informations',
@@ -105,6 +118,12 @@ const GameDetailContent: FC<ContentProps> = ({ activeSection, gameId }) => {
   const router = useRouter();
   const { userData } = useUser();
   const { canManage, canView, canViewTeams } = getGameCapabilities(userData);
+  const canViewOperations = getOperationCapabilities(userData).canView;
+  // Without the operations, their tab is not offered.
+  const section: GameDetailSection =
+    activeSection === 'finances' && !canViewOperations
+      ? 'fonctions'
+      : activeSection;
   const [game, setGame] = useState<GameItem | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -198,8 +217,8 @@ const GameDetailContent: FC<ContentProps> = ({ activeSection, gameId }) => {
 
     return (
       <EntityDetailLayout
-        activeSection={activeSection}
-        ariaLiveLabel={`Section ${activeSection === 'fonctions' ? 'Fonctions' : 'Informations'} affichée`}
+        activeSection={section}
+        ariaLiveLabel={`Section ${GAME_DETAIL_SECTIONS.find((entry) => entry.id === section)?.label ?? 'Fonctions'} affichée`}
         condensedAside={<GameState game={game} />}
         dirtySections={informationDirty ? ['informations'] : []}
         heroDescription={<GameContext game={game} showTeams={canViewTeams} />}
@@ -208,13 +227,15 @@ const GameDetailContent: FC<ContentProps> = ({ activeSection, gameId }) => {
         heroTitle={game.name}
         navigationAriaLabel="Navigation de la fiche jeu"
         sectionHref={sectionHrefOf(game.id)}
-        sections={GAME_DETAIL_SECTIONS.map((section) =>
-          section.id === 'fonctions'
-            ? { ...section, count: game.functionCount }
-            : section,
+        sections={GAME_DETAIL_SECTIONS.filter(
+          (entry) => entry.id !== 'finances' || canViewOperations,
+        ).map((entry) =>
+          entry.id === 'fonctions'
+            ? { ...entry, count: game.functionCount }
+            : entry,
         )}
       >
-        {activeSection === 'fonctions' ? (
+        {section === 'fonctions' ? (
           <section aria-label="Fonctions">
             <MemberFunctionsSection
               key={game.id}
@@ -224,6 +245,11 @@ const GameDetailContent: FC<ContentProps> = ({ activeSection, gameId }) => {
               subject={`d’une équipe de ${game.name}`}
             />
           </section>
+        ) : section === 'finances' ? (
+          <FinancesTab
+            key={game.id}
+            target={{ gameId: game.id, linkTeams: canViewTeams, type: 'game' }}
+          />
         ) : (
           <section aria-label="Informations" className="space-y-5">
             <GameInformationSection
@@ -279,8 +305,7 @@ const GameDetailContent: FC<ContentProps> = ({ activeSection, gameId }) => {
 
 /**
  * Record of a game (8 November 2026), opened from its line on the Jeux page:
- * its functions, then its information (9 November 2026); its finances will
- * come between them.
+ * its functions, its finances (11 November 2026), then its information.
  */
 export const GameDetailPage: FC<ContentProps> = ({ activeSection, gameId }) => {
   const { authorizationRevision, userData } = useUser();

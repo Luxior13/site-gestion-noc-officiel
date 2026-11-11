@@ -6,12 +6,12 @@
 
 | Élément | Valeur |
 | --- | --- |
-| Route | `/esport/jeux/[id]` (Fonctions) et `/esport/jeux/[id]?section=informations` |
+| Route | `/esport/jeux/[id]` (Fonctions), `?section=finances` (11 novembre 2026) et `?section=informations` |
 | Espace | Esport ; « Jeux » reste l’entrée courante de la navigation (préfixe `/esport/jeux`) |
-| Gabarit visé | [B. Fiche à sections](../../design/gabarits.md#b-fiche-à-sections), onglets Fonctions puis Informations depuis le 9 novembre 2026 |
+| Gabarit visé | [B. Fiche à sections](../../design/gabarits.md#b-fiche-à-sections), onglets Fonctions puis Informations depuis le 9 novembre 2026, Finances ↗ entre eux depuis le 11 novembre 2026 ([onglet en lecture](../../design/gabarits.md#onglets-dune-fiche)) |
 | État d’harmonisation | Aligné — voir [Harmonisation](../../design/harmonisation.md#état-par-page) |
-| Point d’entrée | [page.tsx](../../../apps/web/src/app/esport/jeux/%5Bid%5D/page.tsx) → [GameDetailPage](../../../apps/web/src/features/games/components/GameDetailPage.tsx) → [MemberFunctionsSection](../../../apps/web/src/features/member-functions/components/MemberFunctionsSection.tsx) et [MemberFunctionDialog](../../../apps/web/src/features/member-functions/components/MemberFunctionDialog.tsx) ; [GameInformationSection](../../../apps/web/src/features/games/components/GameInformationSection.tsx) |
-| Contrôle d’accès | `games:view` pour voir le jeu et ses fonctions ; `games:manage` pour modifier et supprimer le jeu, ajouter, modifier et supprimer ses fonctions ; le nombre d’équipes s’affiche avec `teams:view` ; l’API refait le contrôle dans la transaction ([permissions](../../domaines/permissions.md#page-jeux)). Hors de la [portée Esport](../../domaines/permissions.md#portée-esport) du compte, « introuvable » ; avec une portée d’équipes, le jeu et ses fonctions se lisent sans se modifier et le nombre d’équipes ne compte que celles de la portée (10 novembre 2026) |
+| Point d’entrée | [page.tsx](../../../apps/web/src/app/esport/jeux/%5Bid%5D/page.tsx) → [GameDetailPage](../../../apps/web/src/features/games/components/GameDetailPage.tsx) → [MemberFunctionsSection](../../../apps/web/src/features/member-functions/components/MemberFunctionsSection.tsx) et [MemberFunctionDialog](../../../apps/web/src/features/member-functions/components/MemberFunctionDialog.tsx) ; [FinancesTab](../../../apps/web/src/features/operations/components/FinancesTab.tsx) ; [GameInformationSection](../../../apps/web/src/features/games/components/GameInformationSection.tsx) |
+| Contrôle d’accès | `games:view` pour voir le jeu et ses fonctions ; `games:manage` pour modifier et supprimer le jeu, ajouter, modifier et supprimer ses fonctions ; le nombre d’équipes s’affiche avec `teams:view` ; l’onglet Finances ↗ avec `operations:view` (sans lui, ni onglet ni contenu, l’adresse ouvre Fonctions ; le nom d’une équipe n’y est un lien qu’avec `teams:view`) ; l’API refait le contrôle dans la transaction ([permissions](../../domaines/permissions.md#page-jeux)). La trésorerie ne suit pas la portée Esport : qui lit les opérations les lit toutes. Hors de la [portée Esport](../../domaines/permissions.md#portée-esport) du compte, « introuvable » ; avec une portée d’équipes, le jeu et ses fonctions se lisent sans se modifier et le nombre d’équipes ne compte que celles de la portée (10 novembre 2026) |
 | Chargement / erreur dédiés | `loading.tsx` (squelette de fiche) ; « Jeu introuvable » ; « Chargement impossible » avec « Réessayer » ; « Accès refusé » avec retour aux jeux ; liste des fonctions : trois lignes squelettes, puis « Les fonctions ne peuvent pas être chargées » avec « Réessayer » ; titre d’onglet « Fiche jeu · Jeux · Noctambule » |
 
 ## État courant
@@ -31,9 +31,10 @@ Composition, de haut en bas :
    (`GameAvatar`, en attendant l’image du jeu), nom, pastille « Actif » ou
    « Inactif », ligne « VAL · depuis le 15 mars 2021 · 3 équipes » (le nombre
    d’équipes pour qui les voit), puis la barre d’onglets **Fonctions** (avec
-   leur nombre) et **Informations**. Fonctions garde l’adresse simple ;
-   Informations ajoute `?section=informations`. Un brouillon des informations
-   marque leur onglet. Finances ↗ viendra entre les deux. Chaque onglet charge
+   leur nombre), **Finances ↗** (pour qui lit les opérations) et
+   **Informations**. Fonctions garde l’adresse simple ; les autres ajoutent
+   `?section=finances` ou `?section=informations`. Un brouillon des
+   informations marque leur onglet. Chaque onglet charge
    son code à la demande (`next/dynamic`, comme la fiche personne) : le
    glisser-déposer ne pèse que sur Fonctions, et la page passe de 318 à
    276 Kio compressés au budget de performance (9 novembre 2026).
@@ -72,6 +73,20 @@ Composition, de haut en bas :
    fonction créée par erreur, jamais utilisée, se supprime. Version dépassée,
    fonction disparue ou déjà utilisée : le message du serveur et « Recharger la
    liste » à la place de l’action.
+4. bis **Finances ↗** (`FinancesTab`, 11 novembre 2026), en lecture : dès
+   qu’il y a de l’argent, une carte « Par équipe » : un tableau Équipe,
+   Entrées, Sorties, Résultat avec les équipes actives dans leur ordre (même
+   sans argent), une équipe inactive marquée « inactive » si elle a de
+   l’argent, « Hors équipe » pour les opérations du jeu lui-même (licence,
+   matériel commun) s’il y en a, puis la ligne **Total** ; le nom d’une
+   équipe ouvre l’onglet Finances de sa fiche. Sur téléphone, Entrées et
+   Sorties passent sous le nom. Résultat positif en vert avec « + », négatif
+   en rouge avec « − ». Dessous, la liste partagée des opérations
+   (`OperationsList`) de toute la section, jeu et équipes : ligne de tête
+   « Les opérations se saisissent dans Finances › Opérations : chaque ligne
+   ouvre son opération. », recherche, « Ouvrir les opérations », filtres
+   Toutes, Entrées, Sorties (pas de Virements), 25 par page. Vide : « Aucune
+   opération pour l’instant ».
 5. **Informations** (`GameInformationSection`, titre réservé aux lecteurs
    d’écran), modifiées sur place comme celles d’une équipe : carte « Jeu » avec
    Nom (aide « Renommer sert à corriger une faute ; un nouveau jeu (CS2 après
@@ -104,9 +119,16 @@ fonctions retirées avec lui).
 
 - Un jeu s’ouvre sur sa fiche, jamais dans une fenêtre ; la fenêtre ne sert qu’à
   le créer (8 novembre 2026, règle « élément qui aura des onglets »).
-- Onglets, dans l’ordre : Fonctions, Finances ↗ (étape 3), puis Informations,
-  comme la fiche équipe garde ses informations en dernier
+- Onglets, dans l’ordre : Fonctions, Finances ↗, puis Informations, comme
+  la fiche équipe garde ses informations en dernier
   ([feuille de route](../../propositions/feuille-de-route.md)).
+- Finances ↗ (11 novembre 2026, « passe au 2 des finances ») : l’argent se
+  lit ici et se saisit dans [Opérations](../finances/operations.md) ; le
+  total de la section, détaillé par équipe, et ses opérations ; aucun droit
+  nouveau (`operations:view`). Données : `GET /api/finances/operations?jeu=[id]`
+  (opérations du jeu ou d’une de ses équipes, avec les totaux) et
+  `GET /api/finances/operations/jeux/[id]` (le détail par équipe)
+  ([API](../../systeme/api.md)).
 - Fonctions (9 novembre 2026, « ok go tes recommandations ») : une fonction n’a
   pas de fiche, elle s’ajoute et se modifie en fenêtre ; trois champs (Nom,
   Type, Active) ; types Joueur et Encadrement, liste fixe dans le code ; les
@@ -147,6 +169,12 @@ fonctions retirées avec lui).
   dans la fiche.
 
 ## Preuves et limites
+
+Finances ↗, le 11 novembre 2026 : `operations-postgres` (opérations du jeu et
+de ses équipes, jamais d’un autre jeu, sans virement ; détail par équipe,
+actives d’abord dans leur ordre, inactive ensuite, puis « Hors équipe » ; jeu
+inconnu 404 ; sans `operations:view` 403). Banc réel sur build de production :
+voir la [fiche Opérations](../finances/operations.md#vérifications-et-prochaine-reprise).
 
 Ordre par glisser-déposer, le 9 novembre 2026 : `sortable-list` (poignées
 nommées, annonce en français, lecture sans poignée, poignées inertes pendant

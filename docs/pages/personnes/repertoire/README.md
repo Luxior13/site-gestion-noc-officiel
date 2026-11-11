@@ -16,6 +16,7 @@ personne n’est ni un compte utilisateur, ni une adhésion, ni un rôle.
 | `/personnes/repertoire/[id]` | `?section=coordonnees` | [Personne — Coordonnées](fiche-coordonnees.md) | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections) | Aligné |
 | `/personnes/repertoire/[id]` | `?section=en-ligne` | [Personne — En ligne](fiche-en-ligne.md) | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections) | Aligné |
 | `/personnes/repertoire/[id]` | `?section=parcours` | [Personne — Parcours](fiche-parcours.md) | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections), onglet en lecture | Aligné |
+| `/personnes/repertoire/[id]` | `?section=finances` | [Personne — Finances](fiche-finances.md) | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections), onglet en lecture | Aligné |
 
 Alias historiques `/personnes` et `/vie-interne/repertoire` : redirections
 vers la liste (voir les [routes](../../../systeme/routes.md)).
@@ -44,7 +45,8 @@ structure » dans le journal (AC-32).
   nationalité `persons:update`, coordonnées, contacts d’urgence, représentants
   légaux et onglet En ligne (autres pseudos, réseaux, comptes de jeu)
   `persons:view_contact` / `persons:update_contact`, suppression
-  `persons:delete`, parcours `persons:view` et `teams:view` ou `staff:view` ; contrôles
+  `persons:delete`, parcours `persons:view` et `teams:view` ou `staff:view`,
+  finances `persons:view` et `operations:view` (11 novembre 2026) ; contrôles
   serveur sous `/api/personnes`. Référence :
   [page Répertoire](../../../domaines/permissions.md#page-répertoire).
 - **Cadre de la fiche** : [PersonDetailPage](../../../../apps/web/src/features/persons/components/PersonDetailPage.tsx)
@@ -65,7 +67,9 @@ structure » dans le journal (AC-32).
   pseudos sont livrés le 10 novembre 2026, dans l’onglet En ligne.
 - **Onglets depuis le 10 novembre 2026** : Identité (champs principaux),
   Coordonnées (joindre la personne ou ses proches), En ligne (la reconnaître :
-  autres pseudos, réseaux, comptes de jeu), Parcours ↗.
+  autres pseudos, réseaux, comptes de jeu), Parcours ↗, puis Finances ↗
+  (11 novembre 2026, [fiche](fiche-finances.md)) : l’argent qui nomme la
+  personne, saisi dans Opérations.
 - **Compléments du 10 novembre 2026** : nationalité dans Identité, contacts
   d’urgence et représentants légaux dans Coordonnées ; la fiche d’un
   représentant ne se supprime pas tant qu’elle représente quelqu’un. Restent

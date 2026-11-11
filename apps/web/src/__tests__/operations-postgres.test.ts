@@ -33,6 +33,7 @@ import {
   GET as GET_OPERATION,
   PATCH as PATCH_OPERATION,
 } from '$app/api/finances/operations/[id]/route';
+import { GET as GET_GAME_FINANCES } from '$app/api/finances/operations/jeux/[id]/route';
 import {
   GET as GET_OPERATIONS,
   POST as POST_OPERATION,
@@ -41,6 +42,7 @@ import { DELETE as DELETE_ORGANIZATION } from '$app/api/relations/organisations/
 import { PERMISSIONS } from '$constants/permissions.constants';
 import type { FinancialAccountsOverview } from '$features/financial-accounts/types/financial-account.types';
 import type {
+  GameFinanceRow,
   OperationItem,
   OperationsPage,
 } from '$features/operations/types/operation.types';
@@ -512,6 +514,153 @@ describe.skipIf(!target)('Operations on fully migrated PostgreSQL', () => {
     expect(created[3]?.description).toBe(
       `Opération ajoutée : Virement : Compte courant → PayPal, ${formatEuros(20_000)}`,
     );
+  });
+
+  it('reads the money of a team, a game and a person, with their totals', async () => {
+    const game = (name: string): Promise<{ id: string }> =>
+      db.game.create({
+        data: {
+          firstOpenedOn: new Date('2021-03-15T00:00:00Z'),
+          name,
+          normalizedName: name.toLowerCase(),
+        },
+      });
+    const valorant = await game('Valorant');
+    const league = await game('League of Legends');
+    const team = (
+      name: string,
+      position: number,
+      isActive = true,
+    ): Promise<{ id: string }> =>
+      db.team.create({
+        data: {
+          foundedOn: new Date('2021-03-15T00:00:00Z'),
+          gameId: valorant.id,
+          isActive,
+          name,
+          normalizedName: name.toLowerCase(),
+          position,
+        },
+      });
+    const academy = await team('Academy', 0, false);
+    const main = await team('Main', 2);
+    const bench = await team('Bench', 1);
+    await operation({
+      amountCents: 60_000,
+      categoryId: await categoryId('Gains de tournois'),
+      kind: 'INCOME',
+      label: 'Gain 2e place',
+      teamId: main.id,
+    });
+    await operation({
+      amountCents: 5_000,
+      categoryId: await categoryId('Inscriptions aux tournois'),
+      label: 'Inscription',
+      teamId: main.id,
+    });
+    await operation({
+      amountCents: 10_000,
+      categoryId: await categoryId('Gains reversés aux joueurs'),
+      label: 'Part du gain',
+      personId: kaiz.id,
+      teamId: main.id,
+    });
+    await operation({
+      amountCents: 2_000,
+      categoryId: await categoryId('Matériel'),
+      label: 'Souris',
+      teamId: academy.id,
+    });
+    await operation({
+      amountCents: 3_000,
+      categoryId: await categoryId('Services et abonnements'),
+      gameId: valorant.id,
+      label: 'Licence',
+    });
+    await operation({
+      amountCents: 9_000,
+      categoryId: await categoryId('Matériel'),
+      gameId: league.id,
+      label: 'Casques',
+    });
+    await operation({
+      amountCents: 3_000,
+      categoryId: await categoryId('Cotisations'),
+      kind: 'INCOME',
+      label: 'Cotisation',
+      personId: kaiz.id,
+    });
+    await operation({ kind: 'TRANSFER', toAccountId: paypal.id });
+
+    // A team: its operations, what came in and went out, search aside.
+    const ofMain = await operations(`?equipe=${main.id}`);
+    expect(ofMain.total).toBe(3);
+    expect(ofMain.totals).toEqual({
+      expenseCents: 15_000,
+      incomeCents: 60_000,
+    });
+    const searched = await operations(`?equipe=${main.id}&q=part`);
+    expect(searched.total).toBe(1);
+    expect(searched.totals).toEqual(ofMain.totals);
+    // A game: its own and its teams', never another game's.
+    const ofValorant = await operations(`?jeu=${valorant.id}`);
+    expect(ofValorant.total).toBe(5);
+    expect(ofValorant.counts.TRANSFER).toBe(0);
+    expect(ofValorant.totals).toEqual({
+      expenseCents: 5_000 + 10_000 + 2_000 + 3_000,
+      incomeCents: 60_000,
+    });
+    // A person: what the structure received from them and paid them.
+    expect((await operations(`?personne=${kaiz.id}`)).totals).toEqual({
+      expenseCents: 10_000,
+      incomeCents: 3_000,
+    });
+
+    // Team by team: active first in their order, then the game itself.
+    const finances = async (
+      id: string,
+    ): Promise<{ body: Body; status: number }> =>
+      call(
+        GET_GAME_FINANCES(
+          request(`/api/finances/operations/jeux/${id}`),
+          idParams(id),
+        ),
+      );
+    const rows = (await finances(valorant.id)).body.data as GameFinanceRow[];
+    expect(rows).toEqual([
+      {
+        expenseCents: 0,
+        incomeCents: 0,
+        isActive: true,
+        teamId: bench.id,
+        teamName: 'Bench',
+      },
+      {
+        expenseCents: 15_000,
+        incomeCents: 60_000,
+        isActive: true,
+        teamId: main.id,
+        teamName: 'Main',
+      },
+      {
+        expenseCents: 2_000,
+        incomeCents: 0,
+        isActive: false,
+        teamId: academy.id,
+        teamName: 'Academy',
+      },
+      {
+        expenseCents: 3_000,
+        incomeCents: 0,
+        isActive: true,
+        teamId: null,
+        teamName: null,
+      },
+    ]);
+    expect((await finances(randomUUID())).status).toBe(404);
+    // Without the operations, nothing.
+    await signIn({ [PERMISSIONS.GAMES.VIEW]: true });
+    expect((await finances(valorant.id)).status).toBe(403);
   });
 
   it('refuses what the treasury cannot hold, in the service and the base', async () => {

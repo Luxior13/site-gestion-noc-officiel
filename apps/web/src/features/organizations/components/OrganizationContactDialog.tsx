@@ -5,6 +5,7 @@ import { RotateCcw } from 'lucide-react';
 import React, { type FC, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { PhoneCountrySelect } from '$components/forms/PhoneCountrySelect';
 import { PersonPicker } from '$features/persons/components/PersonPicker';
 import {
   FieldError,
@@ -12,18 +13,9 @@ import {
 } from '$features/persons/components/PersonRecordDialog';
 import type { PersonRef } from '$features/persons/types/person.types';
 import { Button } from '$ui/button';
-import { CountryFlag } from '$ui/country-flag';
 import { Input } from '$ui/input';
 import { Label } from '$ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '$ui/select';
 import { ApiClientError } from '$utils/api.utils';
-import { PHONE_COUNTRY_OPTIONS } from '$utils/phone-country-options';
 
 import {
   mutateOrganizationContact,
@@ -332,24 +324,16 @@ export const OrganizationContactDialog: FC<Props> = ({
           <FieldError id={`${ID}-email-error`} message={errors.email} />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor={`${ID}-country`}>Pays du numéro</Label>
-          <Select
+          <Label htmlFor={`${ID}-country`} id={`${ID}-country-label`}>
+            Pays du numéro
+          </Label>
+          <PhoneCountrySelect
             disabled={busy}
-            onValueChange={setPhoneCountry}
+            id={`${ID}-country`}
+            labelId={`${ID}-country-label`}
+            onChange={setPhoneCountry}
             value={phoneCountry}
-          >
-            <SelectTrigger className="w-full min-w-0" id={`${ID}-country`}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {PHONE_COUNTRY_OPTIONS.map(([code, label]) => (
-                <SelectItem key={code} value={code}>
-                  <CountryFlag code={code} />
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          />
         </div>
         <div className="space-y-1.5">
           <Label htmlFor={`${ID}-phone`}>Téléphone</Label>

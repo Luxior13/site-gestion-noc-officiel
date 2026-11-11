@@ -137,19 +137,28 @@ const kindOfSlug = (slug: string | undefined): OperationKind | undefined =>
   // eslint-disable-next-line security/detect-object-injection
   OPERATION_KINDS.find((kind) => OPERATION_KIND_SLUGS[kind] === slug);
 
-/** The list's query: page, kind, search, account or organisation. */
+/**
+ * The list's query: page, kind, search, and what the operations name (an
+ * account, an organisation, a team, a game or a person).
+ */
 export const operationQuerySchema = z
   .object({
     compte: id.optional(),
+    equipe: id.optional(),
+    jeu: id.optional(),
     organisation: id.optional(),
     page: z.coerce.number().int().min(1).max(10_000).default(1),
+    personne: id.optional(),
     q: z.string().trim().max(120).optional(),
     sens: z.enum(['entrees', 'sorties', 'virements']).optional(),
   })
   .transform((value) => ({
     accountId: value.compte,
+    gameId: value.jeu,
     kind: kindOfSlug(value.sens),
     organizationId: value.organisation,
     page: value.page,
+    personId: value.personne,
     q: value.q || undefined,
+    teamId: value.equipe,
   }));

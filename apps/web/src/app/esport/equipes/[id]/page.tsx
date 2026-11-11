@@ -2,7 +2,10 @@ import type { Metadata } from 'next';
 import React from 'react';
 
 import { FEATURES } from '$constants/feature-registry.constants';
-import { TeamDetailPage } from '$features/teams/components/TeamDetailPage';
+import {
+  TeamDetailPage,
+  type TeamDetailSection,
+} from '$features/teams/components/TeamDetailPage';
 import { pageTitle } from '$utils/page-title.utils';
 
 // Each page names itself in the browser tab (WCAG 2.4.2).
@@ -25,14 +28,12 @@ export default async function TeamRoute({
   ]);
 
   // The roster first (9 November 2026); any other value opens it too.
-  return (
-    <TeamDetailPage
-      activeSection={
-        query.section === 'informations' || query.section === 'anciens'
-          ? query.section
-          : 'roster'
-      }
-      teamId={id}
-    />
-  );
+  const activeSection: TeamDetailSection =
+    query.section === 'informations' ||
+    query.section === 'anciens' ||
+    query.section === 'finances'
+      ? query.section
+      : 'roster';
+
+  return <TeamDetailPage activeSection={activeSection} teamId={id} />;
 }

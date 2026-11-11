@@ -90,14 +90,17 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         upcoming: 'Les tournois joués.',
       },
       // Adhésions and Finances in one tab since En ligne opened (10 November
-      // 2026, proposed to the owner): eight tabs at most on a record.
+      // 2026, proposed to the owner): eight tabs at most on a record. The
+      // operations are read there since 11 November 2026.
       {
         chantier: 'person-relationships',
         label: 'Finances',
         managedIn: 'Adhésions et Finances',
-        phase: 4,
+        phase: null,
         summary:
-          'Adhésions par campagne et état de cotisation ; cotisations réglées, remboursements et gains versés.',
+          'Pour qui consulte les opérations : celles qui nomment la personne (cotisations réglées, remboursements, gains versés), en lecture, avec ce qui a été reçu d’elle et versé à elle ; chaque ligne ouvre son opération.',
+        upcoming:
+          'Ses adhésions par campagne et son état de cotisation, avec les Adhésions (étape 4).',
       },
       {
         chantier: 'documents',
@@ -133,8 +136,6 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'esport',
-    // What it still gains is its Finances tab, with the treasury.
-    chantier: 'payments',
     name: 'Fiche jeu',
     phase: null,
     summary:
@@ -147,12 +148,11 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'Premier onglet : les fonctions de ce jeu (Joueur, Remplaçant, Coach…), type Joueur ou Encadrement, active ou non, avec leur nombre de passages ; rangées par glisser-déposer selon leur importance, actives ou non, ordre repris partout ; ajout et modification en fenêtre, fonctions courantes en un clic quand la liste est vide ; une fonction inactive reste choisissable pour un passage ancien.',
       },
       {
-        chantier: 'payments',
         label: 'Finances',
         managedIn: 'Finances',
-        phase: 3,
+        phase: null,
         summary:
-          'Total de la section : ses équipes, plus les opérations liées au jeu lui-même (licence, matériel commun) ; détaillé par équipe.',
+          'Pour qui consulte les opérations : le total de la section, détaillé par équipe, plus les opérations liées au jeu lui-même (licence, matériel commun), puis la liste de ces opérations, en lecture ; chaque ligne ouvre son opération.',
       },
       {
         label: 'Informations',
@@ -161,7 +161,6 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'Dernier onglet : nom, nom court, première ouverture, actif, modifiés sur place ; zone dangereuse, qui explique « rendez-le inactif » quand le jeu a des équipes.',
       },
     ],
-    upcoming: 'L’onglet Finances ↗, entre Fonctions et Informations.',
   },
   {
     area: 'esport',
@@ -204,12 +203,14 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'Séances : date, type (entraînement, scrim, bootcamp), présents, objectif ou débrief court ; nombre de séances et de présents par saison, pour le bilan et les subventions. Un manager remplit celles de son équipe.',
       },
       {
-        chantier: 'payments',
+        chantier: 'budget',
         label: 'Finances',
         managedIn: 'Finances',
-        phase: 3,
+        phase: null,
         summary:
-          'Ce que l’équipe coûte et rapporte : inscriptions, gains, déplacements et autres opérations liées à l’équipe ; enveloppe de budget comparée au réalisé. Invisible pour un manager.',
+          'Pour qui consulte les opérations, droit qu’un manager n’a pas : ce que l’équipe coûte et rapporte (inscriptions, gains, déplacements…), entrées, sorties et résultat, puis la liste de ces opérations, en lecture ; chaque ligne ouvre son opération.',
+        upcoming:
+          'Son enveloppe de budget comparée au réalisé, avec le budget (étape 9).',
       },
       {
         chantier: 'partnerships',

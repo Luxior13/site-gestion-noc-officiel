@@ -38,6 +38,7 @@ Règles communes du pôle (10 novembre 2026, sur les réponses du propriétaire)
 | --- | --- | --- |
 | Comptes | [comptes.md](comptes.md) | `/finances/comptes` : les comptes, leur solde du jour et leur état ; ouverture en fenêtre ; onglets Catégories et Moyens de paiement |
 | Fiche compte | [compte.md](compte.md) | `/finances/comptes/[id]` : onglets Mouvements (ses opérations) et Informations (modifiées sur place, clôture, entité titulaire en lecture) |
+| Onglets Finances ↗ (11 novembre 2026) | [jeu](../esport/jeu.md), [équipe](../esport/equipe.md), [personne](../personnes/repertoire/fiche-finances.md) | La liste des opérations qui les nomment, en lecture, avec leurs totaux ; le détail par équipe pour un jeu |
 | Opérations | [operations.md](operations.md) | `/finances/operations` : entrées, sorties et virements, recherche et filtres par sens ; ajout en fenêtre |
 | Fiche opération | [operation.md](operation.md) | `/finances/operations/[id]` : l’opération modifiée sur place, le sens fixé |
 
