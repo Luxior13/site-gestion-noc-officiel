@@ -167,7 +167,13 @@ Sources : [décisions produit](../../propositions/feuille-de-route.md),
   Finances ↗ des fiches jeu, équipe et personne, livrés le même jour : il ne
   garde plus que les justificatifs. L’onglet Finances ↗ de la fiche personne
   attend encore les adhésions (étape 4), celui de la fiche équipe le budget
-  (étape 9).
+  (étape 9). Le même jour, la page Tournois, la fiche tournoi, l’onglet
+  Tournois ↗ d’une équipe et les tournois joués du Parcours sont livrés ; le
+  chantier Tournois garde le déplacement lié, le règlement en pièce jointe et
+  la fin des inscriptions au calendrier ; Gains et Suivi gardent leurs
+  chantiers. Le 12 novembre 2026, la fiche tournoi ne garde que ce qui aide à
+  préparer un tournoi (dates facultatives ; circuit, dépôt du roster et
+  check-in retirés).
 - 25 octobre 2026 : la page reste ouverte à tout compte connecté et figure
   dans la section « Projet » du pôle Système, plus sous « Administration »
   ([DRT-04](../../audits/2026-10-25-coherence-des-droits.md)).

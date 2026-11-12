@@ -12,8 +12,9 @@ Référence révisée le 7 novembre 2026. Les chantiers proviennent du [catalogu
 | `/recherche` | Page retirée le 9 octobre 2026 ; navigation rapide conservée ; redirige vers l’accueil | Outils globaux |
 | `/personnes/repertoire`, `/nouveau`, `/[id]` sous ce chemin | Liste, création et fiche Personne livrées ; `/membres/repertoire/*` y redirige depuis le 8 novembre 2026 | Personnes |
 | `/esport/jeux/[id]` | Fiche jeu ouverte le 8 novembre 2026 (Fonctions et Informations depuis le 9 novembre 2026 ; Finances ↗ depuis le 11 novembre 2026) | Esport |
-| `/esport/equipes/[id]` | Fiche équipe ouverte le 8 novembre 2026 (Roster, Anciens membres et Informations depuis le 9 novembre 2026 ; Finances ↗ depuis le 11 novembre 2026 ; Tournois ↗, Entraînements, Partenaires ↗ à venir) | Esport |
+| `/esport/equipes/[id]` | Fiche équipe ouverte le 8 novembre 2026 (Roster, Anciens membres et Informations depuis le 9 novembre 2026 ; Tournois ↗ et Finances ↗ depuis le 11 novembre 2026 ; Entraînements, Partenaires ↗ à venir) | Esport |
 | `/esport/jeux` | Page Jeux livrée le 8 novembre 2026, avec les équipes sous chaque jeu | Esport |
+| `/esport/tournois`, `/[id]` sous ce chemin | Page Tournois et fiche tournoi livrées le 11 novembre 2026 (Informations, Participants avec line-up et classement, Finances ↗) ; Gains et Suivi à venir | Esport |
 | `/finances/comptes`, `/[id]` sous ce chemin | Page Comptes et fiche compte livrées le 10 novembre 2026 (solde de départ ; opérations à venir) | Finances |
 | `/finances/operations`, `/[id]` sous ce chemin | Page Opérations et fiche opération livrées le 11 novembre 2026, avec les onglets Catégories et Moyens de paiement de Comptes et Mouvements d’un compte (justificatifs à venir) | Finances |
 | `/relations/organisations`, `/[id]` sous ce chemin | Page Organisations et fiche organisation livrées le 11 novembre 2026 (Identité, Contacts ; Règlements ↗ avec les opérations) | Relations |
@@ -111,7 +112,7 @@ Les références suivantes préservent le périmètre des anciennes propositions
 | `/tresorerie/exports-finance` | Finances → Contrôles & clôtures | 4 |
 | `/tresorerie/journal-financier` | Finances → Contrôles & clôtures | 4 |
 | `/tresorerie/archives-finance` | Finances → Contrôles & clôtures | 4 |
-| `/sport-team-control/tournois-matchs` | Esport → Tournois | 5 |
+| `/sport-team-control/tournois-matchs` | Esport → Tournois (`/esport/tournois`, livrée le 11 novembre 2026 ; gains et Suivi à l’étape 5) | 5 |
 | `/bureau-juridique/incidents-sanctions` | Structure → Suivi, incidents & sanctions | 5 |
 | `/vie-interne/calendrier-interne` | Aujourd’hui → Calendrier du bureau | 6 |
 | `/vie-interne/reunions` | Structure → Réunions & décisions | 6 |

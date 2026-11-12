@@ -47,7 +47,9 @@ tournoi) :
    a qu’un d’ouvert). Pour une entrée ou une sortie : Libellé, Catégorie (de
    ce sens), Moyen de paiement (« Non précisé »), Payé par / Payé à : une
    organisation ou une fiche du Répertoire, l’une ou l’autre, Équipe ou jeu
-   concerné, Note. Pour un virement : Compte d’arrivée (de la même entité) et
+   concerné, Tournoi (facultatif, menu à recherche, le plus récent en
+   premier, limité au jeu de l’équipe ou du jeu choisi, 11 novembre 2026),
+   Note. Pour un virement : Compte d’arrivée (de la même entité) et
    Note. La fenêtre se ferme sur « Opération ajoutée » et la liste se
    recharge, prête pour la suivante.
 
@@ -56,7 +58,7 @@ tournoi) :
 « Opération ajoutée » (`FINANCIAL_OPERATION_CREATE`, catégorie
 `FINANCIAL_OPERATION`, filtre « Trésorerie ») avec Sens, Date, Montant,
 Compte, Vers le compte, Libellé, Catégorie, Moyen de paiement, Organisation,
-Fiche du Répertoire (son nom), Équipe ou jeu, Note en clair. Le libellé et
+Fiche du Répertoire (son nom), Équipe ou jeu, Tournoi, Note en clair. Le libellé et
 les valeurs ne se lisent qu’avec `operations:view` ; sinon « Opération » et
 « Valeur masquée ».
 

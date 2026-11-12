@@ -50,6 +50,7 @@ const TYPE_FILTERS: Record<
   security: { stream: { in: ['AUTHENTICATION', 'SECURITY'] } },
   settings: { action: 'SYSTEM_SETTING_UPDATE' },
   teams: { category: 'TEAM' },
+  tournaments: { category: 'TOURNAMENT' },
   treasury: {
     category: {
       in: ['FINANCIAL_ACCOUNT', 'FINANCIAL_OPERATION', 'TREASURY_CHOICE'],

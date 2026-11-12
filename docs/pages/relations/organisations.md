@@ -18,7 +18,9 @@
 
 Le bureau y retrouve toute organisation avec laquelle la structure travaille,
 quel que soit son rôle, et en ajoute une. Les opérations la choisiront comme
-celle qui paie ou qui reçoit ; les tournois, comme leur organisateur.
+celle qui paie ou qui reçoit ; les tournois, comme leur organisateur. Un
+organisateur tapé dans un tournoi s’ajoute ici sans passer par cette page
+(12 novembre 2026).
 
 ## Composition actuelle
 
@@ -50,7 +52,9 @@ Livrée le 11 novembre 2026 (« oui go ») :
 « Organisation ajoutée » (`ORGANIZATION_CREATE`, catégorie `ORGANIZATION`,
 filtre « Organisations ») avec Nom et Types. Le nom et les valeurs ne se lisent
 dans le journal qu’avec `organizations:view` ; sinon « Organisation » et
-« Valeur masquée ».
+« Valeur masquée ». Un organisateur tapé dans un tournoi laisse la même
+« Organisation ajoutée » (Types « Organisateur »), ou « Organisation
+modifiée » quand une organisation de ce nom reçoit le type.
 
 ## Décisions retenues
 
@@ -62,6 +66,10 @@ dans le journal qu’avec `organizations:view` ; sinon « Organisation » et
   la structure), choisis par cases dans la fenêtre et la fiche.
 - Pas de pagination : la liste est chargée en entier et filtrée dans la page ;
   à revoir au-delà de quelques centaines d’organisations.
+- 12 novembre 2026 : un organisateur s’ajoute aussi depuis le champ
+  Organisateur d’un tournoi, pour qui gère les organisations ; une
+  organisation du même nom reçoit le type au lieu d’un doublon
+  ([fiche tournoi](../esport/tournoi.md#décisions-retenues)).
 
 ## Points ouverts
 
@@ -80,3 +88,4 @@ contrôle mobile de l’E2E. Reprise avec les opérations.
 ## Historique
 
 - 11 novembre 2026 : création de la page.
+- 12 novembre 2026 : ajout d’un organisateur depuis un tournoi.

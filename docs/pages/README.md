@@ -23,7 +23,7 @@ mention « Suivi à compléter ».
 | Aujourd’hui | [Accueil — Mon travail](accueil.md) | `/` ; l’alias `/tableau-de-bord` y redirige |
 | Hors cadre | [Connexion](connexion.md) | `/login`, double authentification |
 | Compte personnel | [Mon compte](mon-compte/README.md) | Profil, Autorisations et Sécurité |
-| Esport | [esport/](esport/README.md) | Jeux : les sections de la structure et leurs équipes ; fiche jeu ; fiche équipe |
+| Esport | [esport/](esport/README.md) | Jeux : les sections de la structure et leurs équipes ; fiche jeu ; fiche équipe ; Tournois et fiche tournoi |
 | Finances | [finances/](finances/README.md) | Comptes : les comptes bancaires, en ligne et caisses, avec leur solde du jour, catégories et moyens de paiement ; fiche compte ; Opérations et fiche opération |
 | Personnes | [personnes/](personnes/README.md) | Répertoire : liste de référence, création, fiche à trois sections |
 | Relations | [relations/](relations/README.md) | Organisations : sponsors, partenaires, fournisseurs, clients, organisateurs et financeurs publics dans une seule liste ; fiche organisation (Identité, Contacts) |

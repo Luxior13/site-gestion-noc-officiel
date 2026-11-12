@@ -45,6 +45,7 @@ export type OperationDraft = {
   paymentMethodId: string;
   person: PersonRef | null;
   toAccountId: string;
+  tournamentId: string;
 };
 
 type OperationField =
@@ -59,7 +60,8 @@ type OperationField =
   | 'organizationId'
   | 'paymentMethodId'
   | 'personId'
-  | 'toAccountId';
+  | 'toAccountId'
+  | 'tournamentId';
 export type OperationErrors = Partial<Record<OperationField, string>>;
 
 const FIELDS: readonly OperationField[] = [
@@ -75,6 +77,7 @@ const FIELDS: readonly OperationField[] = [
   'paymentMethodId',
   'personId',
   'toAccountId',
+  'tournamentId',
 ];
 
 /** The server's messages, by field: `teamId` and `gameId` are one field. */
@@ -128,6 +131,7 @@ export const newOperationDraft = (
     paymentMethodId: '',
     person: null,
     toAccountId: '',
+    tournamentId: '',
   };
 };
 
@@ -146,6 +150,7 @@ export const operationDraftOf = (item: OperationItem): OperationDraft => ({
   paymentMethodId: item.paymentMethod?.id ?? '',
   person: item.person,
   toAccountId: item.toAccount?.id ?? '',
+  tournamentId: item.tournament?.id ?? '',
 });
 
 /**
@@ -195,8 +200,25 @@ export const operationInputOf = (
       ...(canLinkPersons ? { personId: draft.person?.id ?? null } : {}),
       teamId: assignmentKind === 'team' ? (assignmentId ?? null) : null,
       toAccountId: draft.toAccountId || null,
+      tournamentId: draft.tournamentId || null,
     },
   };
+};
+
+/** The game of « team:… » or « game:… »; null for none. */
+const assignmentGameOf = (
+  choices: OperationChoices,
+  assignment: string,
+): string | null => {
+  const [kind, id] = assignment.split(':');
+  if (kind === 'game') return id ?? null;
+  if (kind === 'team')
+    return (
+      choices.games.find((game) => game.teams.some((team) => team.id === id))
+        ?.id ?? null
+    );
+
+  return null;
 };
 
 type Props = {
@@ -291,6 +313,25 @@ export const OperationFields: FC<Props> = ({
         })),
       ],
     })),
+  ];
+  // The tournaments of the chosen team's or game's, the latest first.
+  const assignmentGame = assignmentGameOf(choices, draft.assignment);
+  const tournamentGroups: SearchSelectGroup[] = [
+    {
+      options: [
+        { label: 'Aucun', value: '' },
+        ...choices.tournaments
+          .filter(
+            (tournament) =>
+              !assignmentGame || tournament.gameId === assignmentGame,
+          )
+          .map((tournament) => ({
+            label: tournament.name,
+            note: `${tournament.gameName} · ${tournament.datesLabel}`,
+            value: tournament.id,
+          })),
+      ],
+    },
   ];
   const payer = draft.kind === 'INCOME' ? 'Payé par' : 'Payé à';
 
@@ -590,7 +631,18 @@ export const OperationFields: FC<Props> = ({
               groups={assignmentGroups}
               id={`${ID}-assignment`}
               labelId={`${ID}-assignment-label`}
-              onValueChange={(assignment) => onChange({ assignment })}
+              onValueChange={(assignment) => {
+                // A tournament of another game no longer fits.
+                const game = assignmentGameOf(choices, assignment);
+                const tournament = choices.tournaments.find(
+                  (entry) => entry.id === draft.tournamentId,
+                );
+                onChange(
+                  tournament && game && tournament.gameId !== game
+                    ? { assignment, tournamentId: '' }
+                    : { assignment },
+                );
+              }}
               placeholder="Aucune"
               searchLabel="Rechercher une équipe ou un jeu"
               value={draft.assignment}
@@ -605,6 +657,38 @@ export const OperationFields: FC<Props> = ({
             <FieldError
               id={`${ID}-assignment-error`}
               message={errors.assignment}
+            />
+          </div>
+          <div className="min-w-0 space-y-1.5 sm:col-span-2">
+            <Label htmlFor={`${ID}-tournament`} id={`${ID}-tournament-label`}>
+              Tournoi
+            </Label>
+            <SearchSelect
+              aria-describedby={describedBy(
+                `${ID}-tournament-hint`,
+                errors.tournamentId && `${ID}-tournament-error`,
+              )}
+              aria-invalid={Boolean(errors.tournamentId)}
+              disabled={disabled}
+              emptyText="Aucun tournoi trouvé"
+              groups={tournamentGroups}
+              id={`${ID}-tournament`}
+              labelId={`${ID}-tournament-label`}
+              onValueChange={(tournamentId) => onChange({ tournamentId })}
+              placeholder="Aucun"
+              searchLabel="Rechercher un tournoi"
+              value={draft.tournamentId}
+            />
+            <p
+              className="text-muted-foreground text-xs"
+              id={`${ID}-tournament-hint`}
+            >
+              Facultatif : une inscription, un gain, un déplacement ; elle se
+              lira dans les finances du tournoi.
+            </p>
+            <FieldError
+              id={`${ID}-tournament-error`}
+              message={errors.tournamentId}
             />
           </div>
         </>

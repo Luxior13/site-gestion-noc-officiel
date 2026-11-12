@@ -100,6 +100,13 @@ export const NAV_SPACES: NavigationSpace[] = [
         label: 'Sections',
         position: 'top',
       },
+      {
+        // Opened with the tournaments (11 November 2026).
+        id: 'competition',
+        items: [featureNavigation(FEATURES.tournaments)],
+        label: 'Compétition',
+        position: 'top',
+      },
     ],
     summary: 'Quelles équipes, quels tournois',
     tone: 'esport',

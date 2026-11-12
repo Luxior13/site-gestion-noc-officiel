@@ -37,12 +37,13 @@ export const counterpartyLabel = (item: OperationItem): string | null =>
   item.person?.displayName ??
   (item.personLinked ? 'Une fiche du Répertoire' : null);
 
-/** « Matériel · LDLC · Noctambule Academy (Valorant) ». */
+/** « Matériel · LDLC · Noctambule Academy (Valorant) · Lyon e-Sport 2027 ». */
 export const operationDetails = (item: OperationItem): string =>
   [
     item.category?.name,
     counterpartyLabel(item),
     item.assignment ? assignmentLabel(item.assignment) : null,
+    item.tournament?.name,
   ]
     .filter(Boolean)
     .join(' · ');

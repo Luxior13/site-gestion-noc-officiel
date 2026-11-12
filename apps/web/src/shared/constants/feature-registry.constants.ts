@@ -284,6 +284,35 @@ export const FEATURES = {
     permissionMode: 'all',
     requiredPermissions: [PERMISSIONS.SETTINGS.VIEW],
   }),
+  // The tournaments, second page of the Esport pole (11 November 2026).
+  tournaments: defineFeature({
+    audit: {
+      pageKey: 'tournaments',
+      pageLabel: 'Tournois',
+      poleKey: 'esport',
+      poleLabel: 'Esport',
+    },
+    availability: 'live',
+    description:
+      'Les tournois de la structure : équipes engagées, line-up et classement.',
+    href: PAGE_PATHS.tournaments,
+    icon: 'Trophy',
+    id: 'tournaments',
+    keywords: [
+      'compétition',
+      'compétitions',
+      'tournoi',
+      'line-up',
+      'lineup',
+      'classement',
+      'organisateur',
+      'LAN',
+      'circuit',
+    ],
+    label: 'Tournois',
+    permissionMode: 'all',
+    requiredPermissions: [PERMISSIONS.TOURNAMENTS.VIEW],
+  }),
   users: defineFeature({
     audit: {
       pageKey: 'users',

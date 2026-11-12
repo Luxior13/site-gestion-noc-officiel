@@ -7,8 +7,11 @@ import { Buffer } from 'node:buffer';
 // account reaches in the Esport pole; v15, the same day: the legal entities
 // and their financial accounts. v16 (11 November 2026): the organisations and
 // their contacts; v17, the same day: the lists of the treasury and the
-// operations.
-export const DATABASE_BACKUP_FORMAT_VERSION = 17;
+// operations; v18, the same day: the tournaments, their engaged teams and
+// line-ups, and the tournament an operation names; v19 (12 November 2026):
+// a tournament's optional dates, edition and link, without circuit,
+// roster deadline nor check-in.
+export const DATABASE_BACKUP_FORMAT_VERSION = 19;
 export const DATABASE_BACKUP_BATCH_SIZE = 500;
 export const MAX_DATABASE_BACKUP_BYTES = 2 * 1024 * 1024 * 1024;
 export const MAX_BACKUP_LINE_BYTES = 16 * 1024 * 1024;
@@ -197,8 +200,29 @@ export const DATABASE_BACKUP_TABLES = [
     property: 'organizationContacts',
     tableName: 'OrganizationContact',
   },
+  // The tournaments (11 November 2026) after their game and organiser,
+  // their engaged teams, then the records of their line-ups.
+  {
+    cursorColumn: 'id',
+    cursorKind: 'text',
+    property: 'tournaments',
+    tableName: 'Tournament',
+  },
+  {
+    cursorColumn: 'id',
+    cursorKind: 'text',
+    property: 'tournamentEntries',
+    tableName: 'TournamentEntry',
+  },
+  {
+    cursorColumn: 'id',
+    cursorKind: 'text',
+    property: 'tournamentLineupMembers',
+    tableName: 'TournamentLineupMember',
+  },
   // The operations (11 November 2026) after all they name: accounts, the
-  // values of the lists, organisations, records, teams and games.
+  // values of the lists, organisations, records, teams, games and
+  // tournaments.
   {
     cursorColumn: 'id',
     cursorKind: 'text',

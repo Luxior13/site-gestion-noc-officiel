@@ -22,6 +22,7 @@ import { ErrorCode } from '$types/api.types';
 import type { SessionType, UserType } from '$types/auth.types';
 import { normalizeSearchText } from '$utils/search-text.utils';
 
+import { ORGANIZATION_KINDS } from '../organization.constants';
 import { kindsLabel } from '../organization.ui';
 import type {
   OrganizationContactItem,
@@ -29,6 +30,7 @@ import type {
   OrganizationDetail,
   OrganizationInput,
   OrganizationItem,
+  OrganizerAdded,
 } from '../types/organization.types';
 
 export type OrganizationActor = Readonly<{
@@ -76,7 +78,7 @@ const contactsLabel = (count: number): string =>
   count > 1 ? `ses ${count} contacts` : 'son contact';
 
 const WITH_COUNTS = {
-  _count: { select: { contacts: true, operations: true } },
+  _count: { select: { contacts: true, operations: true, tournaments: true } },
 } as const;
 type OrganizationRow = Prisma.OrganizationGetPayload<{
   include: typeof WITH_COUNTS;
@@ -259,6 +261,36 @@ export const getOrganization = (
   reader: OrganizationReader,
 ): Promise<OrganizationDetail> => readOrganizationDetail(prisma, id, reader);
 
+/** A new organisation from its name and kinds, traced; returns its id. */
+const insertOrganization = async (
+  transaction: Prisma.TransactionClient,
+  input: OrganizationCreateInput,
+  actorId: string,
+): Promise<string> => {
+  const full: OrganizationInput = {
+    ...input,
+    address: null,
+    siretNumber: null,
+    website: null,
+  };
+  const created = await transaction.organization.create({
+    data: writeData(full),
+    select: { id: true },
+  });
+  const after = auditValues(full);
+  await auditOrganization(transaction, {
+    action: 'ORGANIZATION_CREATE',
+    actorId,
+    after: pick(after, ['name', 'kinds']),
+    before: null,
+    changes: ['name', 'kinds'],
+    description: `Organisation ajoutée : ${input.name}`,
+    organization: { id: created.id, name: input.name },
+  });
+
+  return created.id;
+};
+
 /** Adds an organisation from its name and kinds; its record does the rest. */
 export const createOrganization = async (
   input: OrganizationCreateInput,
@@ -267,32 +299,75 @@ export const createOrganization = async (
   try {
     return await prisma.$transaction(async (transaction) => {
       const reader = await authorizeOrganizationChange(transaction, context);
-      const full: OrganizationInput = {
-        ...input,
-        address: null,
-        siretNumber: null,
-        website: null,
-      };
-      const created = await transaction.organization.create({
-        data: writeData(full),
-        select: { id: true },
-      });
-      const after = auditValues(full);
-      await auditOrganization(transaction, {
-        action: 'ORGANIZATION_CREATE',
-        actorId: context.actor.id,
-        after: pick(after, ['name', 'kinds']),
-        before: null,
-        changes: ['name', 'kinds'],
-        description: `Organisation ajoutée : ${input.name}`,
-        organization: { id: created.id, name: input.name },
-      });
+      const id = await insertOrganization(transaction, input, context.actor.id);
 
-      return readOrganizationDetail(transaction, created.id, reader);
+      return readOrganizationDetail(transaction, id, reader);
     });
   } catch (error) {
     if (isPrismaUniqueConstraintError(error))
       throw fieldError('name', DUPLICATE_NAME, 409);
+    throw error;
+  }
+};
+
+/**
+ * The organiser typed in a tournament (owner, 12 November 2026: « si la
+ * fiche existe elle est proposée, sinon […] créer la fiche avec le type
+ * organisateur »): the organisation of that name, case and accents
+ * ignored, given the kind Organisateur when it lacks it, or a new one of
+ * that kind; its record does the rest.
+ */
+export const addOrganizer = async (
+  name: string,
+  context: OrganizationActor,
+): Promise<OrganizerAdded> => {
+  try {
+    return await prisma.$transaction(async (transaction) => {
+      await authorizeOrganizationChange(transaction, context);
+      const previous = await transaction.organization.findUnique({
+        select: { id: true, kinds: true, name: true, version: true },
+        where: { normalizedName: normalizeSearchText(name) },
+      });
+      if (!previous) {
+        const id = await insertOrganization(
+          transaction,
+          { kinds: ['ORGANIZER'], name },
+          context.actor.id,
+        );
+
+        return { organizer: { id, name }, outcome: 'created' };
+      }
+      const organizer = { id: previous.id, name: previous.name };
+      if (previous.kinds.includes('ORGANIZER'))
+        return { organizer, outcome: 'existing' };
+      const kinds = ORGANIZATION_KINDS.filter(
+        (kind) => kind === 'ORGANIZER' || previous.kinds.includes(kind),
+      );
+      const result = await transaction.organization.updateMany({
+        data: { kinds, version: { increment: 1 } },
+        where: { id: previous.id, version: previous.version },
+      });
+      if (result.count !== 1) throw organizationChanged();
+      await auditOrganization(transaction, {
+        action: 'ORGANIZATION_UPDATE',
+        actorId: context.actor.id,
+        after: { kinds: kindsLabel(kinds) },
+        before: { kinds: kindsLabel(previous.kinds) },
+        changes: ['kinds'],
+        description: `Organisation modifiée : ${previous.name}`,
+        organization: organizer,
+      });
+
+      return { organizer, outcome: 'kind-added' };
+    });
+  } catch (error) {
+    // Added meanwhile under that name: a second try finds it.
+    if (isPrismaUniqueConstraintError(error))
+      throw fieldError(
+        'name',
+        'Cette organisation vient d’être ajoutée : réessayez.',
+        409,
+      );
     throw error;
   }
 };
@@ -363,6 +438,11 @@ export const deleteOrganization = async (
     if (previous._count.operations > 0)
       throw serviceErrors.conflict(
         'Cette organisation a des opérations : elle reste, pour l’historique de la trésorerie.',
+      );
+    // An organiser stays with its tournaments (11 November 2026).
+    if (previous._count.tournaments > 0)
+      throw serviceErrors.conflict(
+        'Cette organisation a organisé des tournois : elle reste, pour leur historique.',
       );
     const result = await transaction.organization.deleteMany({
       where: { id, version: expectedVersion },

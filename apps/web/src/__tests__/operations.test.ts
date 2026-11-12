@@ -72,6 +72,7 @@ const item = (changes: Partial<OperationItem> = {}): OperationItem => ({
   person: null,
   personLinked: false,
   toAccount: null,
+  tournament: null,
   updatedAt: '2026-11-10T12:00:00.000Z',
   version: 1,
   ...changes,
@@ -192,6 +193,7 @@ describe('operations (11 November 2026)', () => {
       incomeCategories: [],
       organizations: [],
       paymentMethods: [],
+      tournaments: [],
     };
     const draft = newOperationDraft(choices, '2026-11-10');
     // The only open account is chosen by itself.

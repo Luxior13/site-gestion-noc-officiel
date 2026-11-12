@@ -27,7 +27,8 @@ Livrée le 11 novembre 2026 :
    est dite « Une fiche du Répertoire est liée » et garde son lien.
 3. Pour qui consulte seulement, la même carte en lecture : Date, Montant,
    Compte (lien vers sa fiche), Libellé, Catégorie, Moyen de paiement, Payé
-   par / Payé à (lien vers la fiche du Répertoire), Équipe ou jeu, Note.
+   par / Payé à (lien vers la fiche du Répertoire), Équipe ou jeu, Tournoi
+   (11 novembre 2026), Note.
 4. Zone dangereuse « Supprimer l’opération » : une opération saisie par
    erreur, ou dans le mauvais sens, se supprime puis se saisit à nouveau.
 

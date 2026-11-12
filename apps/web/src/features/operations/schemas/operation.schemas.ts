@@ -52,6 +52,7 @@ const fields = {
   personId: optionalId.optional(),
   teamId: optionalId,
   toAccountId: optionalId,
+  tournamentId: optionalId.default(null),
 };
 
 type Shape = Readonly<{
@@ -65,6 +66,7 @@ type Shape = Readonly<{
   personId?: string | null;
   teamId: string | null;
   toAccountId: string | null;
+  tournamentId: string | null;
 }>;
 
 /**
@@ -111,6 +113,7 @@ const forKind = <Value extends Shape>(value: Value): Value =>
         paymentMethodId: null,
         personId: null,
         teamId: null,
+        tournamentId: null,
       }
     : { ...value, toAccountId: null };
 
@@ -151,6 +154,7 @@ export const operationQuerySchema = z
     personne: id.optional(),
     q: z.string().trim().max(120).optional(),
     sens: z.enum(['entrees', 'sorties', 'virements']).optional(),
+    tournoi: id.optional(),
   })
   .transform((value) => ({
     accountId: value.compte,
@@ -161,4 +165,5 @@ export const operationQuerySchema = z
     personId: value.personne,
     q: value.q || undefined,
     teamId: value.equipe,
+    tournamentId: value.tournoi,
   }));

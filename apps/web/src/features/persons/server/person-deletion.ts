@@ -100,6 +100,12 @@ export const deletePerson = async (input: {
       where: { personId: input.personId },
     });
     if (passages > 0) throw personErrors.hasPassages(passages);
+    // A record in a line-up stays (11 November 2026;
+    // `TournamentLineupMember_personId_fkey` refuses it too).
+    const lineups = await transaction.tournamentLineupMember.count({
+      where: { personId: input.personId },
+    });
+    if (lineups > 0) throw personErrors.hasTournaments(lineups);
     // A record that paid or was paid stays (11 November 2026;
     // `FinancialOperation_personId_fkey` refuses it too).
     const operations = await transaction.financialOperation.count({

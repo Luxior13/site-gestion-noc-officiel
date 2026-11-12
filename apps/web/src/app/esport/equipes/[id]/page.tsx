@@ -31,7 +31,8 @@ export default async function TeamRoute({
   const activeSection: TeamDetailSection =
     query.section === 'informations' ||
     query.section === 'anciens' ||
-    query.section === 'finances'
+    query.section === 'finances' ||
+    query.section === 'tournois'
       ? query.section
       : 'roster';
 

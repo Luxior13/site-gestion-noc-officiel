@@ -57,6 +57,7 @@ export const handlePersonApiError = async (
       case 'PERSON_GUARDIAN_CONFLICT':
       case 'PERSON_HAS_OPERATIONS':
       case 'PERSON_HAS_PASSAGES':
+      case 'PERSON_HAS_TOURNAMENTS':
       case 'PERSON_NICKNAME_CONFLICT':
         return correlated(apiError(ErrorCode.CONFLICT, error.message, 409));
       case 'PERSON_FEATURE_NOT_CONFIGURED':

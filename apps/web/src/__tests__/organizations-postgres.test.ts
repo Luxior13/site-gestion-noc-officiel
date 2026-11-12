@@ -22,6 +22,7 @@ import {
   GET as GET_ORGANIZATION,
   PATCH as PATCH_ORGANIZATION,
 } from '$app/api/relations/organisations/[id]/route';
+import { POST as ADD_ORGANIZER } from '$app/api/relations/organisations/organisateurs/route';
 import { GET as SEARCH_PERSONS } from '$app/api/relations/organisations/personnes/route';
 import {
   GET as GET_ORGANIZATIONS,
@@ -31,6 +32,7 @@ import { PERMISSIONS } from '$constants/permissions.constants';
 import type {
   OrganizationDetail,
   OrganizationItem,
+  OrganizerAdded,
 } from '$features/organizations/types/organization.types';
 import { getPersonDisplayName } from '$features/persons/person.ui';
 import type { PersonSuggestions } from '$features/persons/types/person.types';
@@ -371,6 +373,71 @@ describe.skipIf(!target)('Organisations on fully migrated PostgreSQL', () => {
       pageKey: 'organizations',
       poleKey: 'legal',
     });
+  });
+
+  it('adds a typed organiser, or gives the kind to the organisation of that name', async () => {
+    const addOrganizer = (
+      name: unknown,
+    ): Promise<{ body: Body; status: number }> =>
+      call(
+        ADD_ORGANIZER(
+          request('/api/relations/organisations/organisateurs', 'POST', {
+            name,
+          }),
+        ),
+      );
+    const ldlc = await organization('LDLC', ['SPONSOR']);
+
+    // A new name: a record of kind Organisateur.
+    const created = await addOrganizer('  Lyon Gaming ');
+    expect(created.status, JSON.stringify(created.body.error)).toBe(201);
+    const lyon = created.body.data as OrganizerAdded;
+    expect(lyon).toMatchObject({
+      organizer: { name: 'Lyon Gaming' },
+      outcome: 'created',
+    });
+    expect(await detail(lyon.organizer.id)).toMatchObject({
+      kinds: ['ORGANIZER'],
+      version: 1,
+    });
+    // The same name again, case and accents ignored: the same record.
+    const again = await addOrganizer('lyon gaming');
+    expect(again.status).toBe(200);
+    expect(again.body.data).toEqual({
+      organizer: lyon.organizer,
+      outcome: 'existing',
+    });
+    // A sponsor that organises: its record gains the kind, in the order of
+    // the list, nothing else.
+    const sponsor = await addOrganizer('ldlc');
+    expect(sponsor.status).toBe(200);
+    expect(sponsor.body.data).toEqual({
+      organizer: { id: ldlc.id, name: 'LDLC' },
+      outcome: 'kind-added',
+    });
+    expect(await detail(ldlc.id)).toMatchObject({
+      kinds: ['SPONSOR', 'ORGANIZER'],
+      version: 2,
+    });
+    expect((await addOrganizer('   ')).status).toBe(400);
+
+    const events = await journal();
+    expect(events.map(({ description }) => description)).toEqual([
+      'Organisation ajoutée : LDLC',
+      'Organisation ajoutée : Lyon Gaming',
+      'Organisation modifiée : LDLC',
+    ]);
+    expect(events[2]?.metadata).toMatchObject({
+      after: { kinds: 'Sponsor, Organisateur' },
+      before: { kinds: 'Sponsor' },
+      changes: ['kinds'],
+      organizationId: ldlc.id,
+    });
+
+    // Who only reads the organisations adds none.
+    await signIn({ [PERMISSIONS.ORGANIZATIONS.VIEW]: true });
+    expect((await addOrganizer('Toornament')).status).toBe(403);
+    expect(await db.organization.count()).toBe(2);
   });
 
   it('adds contacts by name or by their record, never the same record twice', async () => {

@@ -51,6 +51,8 @@ import {
   PERSON_SECTION_LABELS,
   STEP_UP_FAILURE_REASONS,
   TEAM_FIELD_LABELS,
+  TOURNAMENT_ENTRY_FIELD_LABELS,
+  TOURNAMENT_FIELD_LABELS,
   TREASURY_CHOICE_FIELD_LABELS,
   USER_FIELD_LABELS,
 } from './audit-journal.labels';
@@ -71,6 +73,8 @@ type ReaderRights = {
   canViewOrganizations: boolean;
   canViewPersonContacts: boolean;
   canViewPersons: boolean;
+  /** The tournaments and their line-ups (11 November 2026). */
+  canViewTournaments: boolean;
   canViewUserContacts: boolean;
   canViewUsers: boolean;
   isProtected: boolean;
@@ -86,6 +90,7 @@ export const getReaderRights = (reader: JournalReader): ReaderRights => {
     canViewOrganizations: can(PERMISSIONS.ORGANIZATIONS.VIEW),
     canViewPersonContacts: can(PERMISSIONS.PERSONS.VIEW_CONTACT),
     canViewPersons: can(PERMISSIONS.PERSONS.VIEW),
+    canViewTournaments: can(PERMISSIONS.TOURNAMENTS.VIEW),
     canViewUserContacts: can(PERMISSIONS.USERS.VIEW_CONTACT),
     canViewUsers: can(PERMISSIONS.USERS.VIEW),
     isProtected: reader.isProtected,
@@ -275,6 +280,30 @@ const maskUnlessAllowed = (
     ? changes
     : changes.map(({ label }) => ({ after: MASKED, before: MASKED, label }));
 
+/**
+ * A tournament's values are readable; the names of a line-up stay with who
+ * reads the tournaments or the Répertoire (11 November 2026).
+ */
+const projectTournamentChanges = (
+  row: JournalRow,
+  metadata: Record<string, unknown>,
+  rights: ReaderRights,
+): JournalChange[] => {
+  const changes = projectReadableChanges(
+    metadata,
+    row.action.startsWith('TOURNAMENT_ENTRY_')
+      ? TOURNAMENT_ENTRY_FIELD_LABELS
+      : TOURNAMENT_FIELD_LABELS,
+  );
+  if (rights.canViewTournaments || rights.canViewPersons) return changes;
+
+  return changes.map((change) =>
+    change.label === 'Line-up'
+      ? { ...change, after: MASKED, before: MASKED }
+      : change,
+  );
+};
+
 const permissionLabels = (value: unknown): string | null => {
   if (!Array.isArray(value) || value.length === 0) return null;
 
@@ -405,6 +434,7 @@ const typeLabelOf = (row: AuditLog): string => {
   )
     return 'Trésorerie';
   if (row.category === 'ORGANIZATION') return 'Organisations';
+  if (row.category === 'TOURNAMENT') return 'Tournois';
   if (row.stream === 'AUTHENTICATION' || row.stream === 'SECURITY')
     return 'Sécurité';
   if (row.category === 'USER' || row.category === 'PERMISSION')
@@ -501,6 +531,21 @@ const subjectOf = (
   // An organisation and its contacts stay with who may see the organisations.
   if (row.category === 'ORGANIZATION')
     return organizationSubject(row, metadata, rights.canViewOrganizations);
+  // « Tournoi : Lyon e-Sport 2027 (Valorant) », « Participation :
+  // Noctambule Valorant, Lyon e-Sport 2027 ».
+  if (
+    row.category === 'TOURNAMENT' &&
+    typeof metadata.tournamentName === 'string'
+  ) {
+    if (row.action.startsWith('TOURNAMENT_ENTRY_'))
+      return typeof metadata.teamName === 'string'
+        ? `Participation : ${metadata.teamName}, ${metadata.tournamentName}`
+        : `Participation : ${metadata.tournamentName}`;
+
+    return typeof metadata.gameName === 'string'
+      ? `Tournoi : ${metadata.tournamentName} (${metadata.gameName})`
+      : `Tournoi : ${metadata.tournamentName}`;
+  }
   if (row.category === 'TEAM' && typeof metadata.teamName === 'string')
     return typeof metadata.gameName === 'string'
       ? `Équipe : ${metadata.teamName} (${metadata.gameName})`
@@ -629,7 +674,9 @@ export const projectJournalEvent = (
                               ),
                               rights.canViewOrganizations,
                             )
-                          : projectUserChanges(row, metadata, rights);
+                          : row.category === 'TOURNAMENT'
+                            ? projectTournamentChanges(row, metadata, rights)
+                            : projectUserChanges(row, metadata, rights);
 
   return {
     actor:

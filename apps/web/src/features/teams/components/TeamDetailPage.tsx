@@ -1,6 +1,13 @@
 'use client';
 
-import { Archive, Info, ReceiptText, RefreshCw, Users } from 'lucide-react';
+import {
+  Archive,
+  Info,
+  ReceiptText,
+  RefreshCw,
+  Trophy,
+  Users,
+} from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import React, {
@@ -25,6 +32,7 @@ import { getOperationCapabilities } from '$features/operations/operation.permiss
 import type { PassagePlaceView } from '$features/passages/components/PassageLines';
 import type { TeamPeopleCounts } from '$features/passages/passage.ui';
 import { getPersonCapabilities } from '$features/persons/person.permissions';
+import { getTournamentCapabilities } from '$features/tournaments/tournament.permissions';
 import { PageCanvas, PageShell } from '$ui/page-shell';
 import { StatusBadge } from '$ui/status-badge';
 import { ApiClientError } from '$utils/api.utils';
@@ -46,6 +54,11 @@ const FormerMembersSection = dynamic(() =>
     (module) => module.FormerMembersSection,
   ),
 );
+const TournamentHistory = dynamic(() =>
+  import('$features/tournaments/components/TournamentHistory').then(
+    (module) => module.TournamentHistory,
+  ),
+);
 const FinancesTab = dynamic(() =>
   import('$features/operations/components/FinancesTab').then(
     (module) => module.FinancesTab,
@@ -60,13 +73,14 @@ const TeamInformationSection = dynamic(() =>
 const GAMES_HREF = FEATURES.games.href;
 
 export type TeamDetailSection =
-  'anciens' | 'finances' | 'informations' | 'roster';
+  'anciens' | 'finances' | 'informations' | 'roster' | 'tournois';
 
 /**
  * What a team is first: its roster, what is there and coming (owner,
- * 9 November 2026), then its former members, never mixed with it; its money,
- * read here and entered in Finances (11 November 2026); its information
- * last. Tournois ↗, Entraînements and Partenaires ↗ will come before it.
+ * 9 November 2026), then its former members, never mixed with it; the
+ * tournaments it played and its money, read here and kept in Tournois and
+ * Finances (11 November 2026); its information last. Entraînements and
+ * Partenaires ↗ will come before it.
  */
 const TEAM_DETAIL_SECTIONS: readonly PageSection<TeamDetailSection>[] = [
   { icon: <Users className="size-4" />, id: 'roster', label: 'Roster' },
@@ -74,6 +88,12 @@ const TEAM_DETAIL_SECTIONS: readonly PageSection<TeamDetailSection>[] = [
     icon: <Archive className="size-4" />,
     id: 'anciens',
     label: 'Anciens membres',
+  },
+  {
+    icon: <Trophy className="size-4" />,
+    id: 'tournois',
+    label: 'Tournois',
+    managedIn: 'Tournois',
   },
   {
     icon: <ReceiptText className="size-4" />,
@@ -122,11 +142,14 @@ const TeamDetailContent: FC<ContentProps> = ({ activeSection, teamId }) => {
   const { canManageTeams, canViewTeams } = getGameCapabilities(userData);
   const persons = getPersonCapabilities(userData);
   const canViewOperations = getOperationCapabilities(userData).canView;
-  // Without the operations, their tab is not offered.
-  const section: TeamDetailSection =
-    activeSection === 'finances' && !canViewOperations
-      ? 'roster'
-      : activeSection;
+  const canViewTournaments = getTournamentCapabilities(userData).canView;
+  // Without the operations or the tournaments, their tab is not offered.
+  const offered = (entry: TeamDetailSection): boolean =>
+    (entry !== 'finances' || canViewOperations) &&
+    (entry !== 'tournois' || canViewTournaments);
+  const section: TeamDetailSection = offered(activeSection)
+    ? activeSection
+    : 'roster';
   const [team, setTeam] = useState<TeamDetail | null>(null);
   const [informationDirty, setInformationDirty] = useState(false);
   const setPeopleCounts = useCallback((counts: TeamPeopleCounts): void => {
@@ -240,15 +263,14 @@ const TeamDetailContent: FC<ContentProps> = ({ activeSection, teamId }) => {
         heroTitle={team.name}
         navigationAriaLabel="Navigation de la fiche équipe"
         sectionHref={sectionHrefOf(team.id)}
-        sections={TEAM_DETAIL_SECTIONS.filter(
-          (entry) => entry.id !== 'finances' || canViewOperations,
-        ).map((entry) =>
-          // The people there today; the people gone.
-          entry.id === 'roster'
-            ? { ...entry, count: team.memberCount }
-            : entry.id === 'anciens'
-              ? { ...entry, count: team.formerCount }
-              : entry,
+        sections={TEAM_DETAIL_SECTIONS.filter((entry) => offered(entry.id)).map(
+          (entry) =>
+            // The people there today; the people gone.
+            entry.id === 'roster'
+              ? { ...entry, count: team.memberCount }
+              : entry.id === 'anciens'
+                ? { ...entry, count: team.formerCount }
+                : entry,
         )}
       >
         {section === 'roster' ? (
@@ -260,6 +282,15 @@ const TeamDetailContent: FC<ContentProps> = ({ activeSection, teamId }) => {
               canViewPersons={persons.canView}
               onCountsChange={setPeopleCounts}
               place={place}
+            />
+          </section>
+        ) : section === 'tournois' ? (
+          <section aria-label="Tournois" className="space-y-3">
+            <h2 className="sr-only">Tournois</h2>
+            <TournamentHistory
+              key={team.id}
+              standalone
+              target={{ teamId: team.id }}
             />
           </section>
         ) : section === 'finances' ? (

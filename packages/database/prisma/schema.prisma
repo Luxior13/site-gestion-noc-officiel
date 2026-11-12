@@ -298,6 +298,12 @@ enum AuditAction {
   TREASURY_CHOICE_UPDATE
   TREASURY_CHOICE_DELETE
   TREASURY_CHOICE_REORDER
+  TOURNAMENT_CREATE
+  TOURNAMENT_UPDATE
+  TOURNAMENT_DELETE
+  TOURNAMENT_ENTRY_CREATE
+  TOURNAMENT_ENTRY_UPDATE
+  TOURNAMENT_ENTRY_DELETE
   /// Historical only. The partner module was removed from the application on
   /// 2026-09-21; these values stay declared so older journal entries remain
   /// readable. No code produces them anymore.
@@ -330,6 +336,7 @@ enum AuditCategory {
   ORGANIZATION
   FINANCIAL_OPERATION
   TREASURY_CHOICE
+  TOURNAMENT
   /// Historical only, kept for the same reason as `AuditAction.PARTNER_*`.
   PARTNER
 }
@@ -480,6 +487,7 @@ model Person {
   passages             PersonPassage[]
   organizationContacts OrganizationContact[]
   financialOperations  FinancialOperation[]
+  tournamentLineups    TournamentLineupMember[]
 
   @@index([createdAt, id])
   @@index([updatedAt, id])
@@ -680,6 +688,7 @@ model Game {
   functions            MemberFunction[]
   financialOperations  FinancialOperation[]
   esportScopeItems     UserEsportScopeItem[]
+  tournaments          Tournament[]
 
   @@index([isActive, position])
 }
@@ -707,6 +716,7 @@ model Team {
   passages            PersonPassage[]
   esportScopeItems    UserEsportScopeItem[]
   financialOperations FinancialOperation[]
+  tournamentEntries   TournamentEntry[]
 
   @@unique([gameId, normalizedName])
   @@index([gameId, isActive, position])
@@ -913,6 +923,10 @@ model FinancialOperation {
   team            Team?                  @relation(fields: [teamId], references: [id], onDelete: Restrict)
   gameId          String?
   game            Game?                  @relation(fields: [gameId], references: [id], onDelete: Restrict)
+  /// The tournament it concerns, of its team's or game's (11 November 2026;
+  /// `FinancialOperation_tournament_check`, absent from this schema).
+  tournamentId    String?
+  tournament      Tournament?            @relation(fields: [tournamentId], references: [id], onDelete: Restrict)
   note            String?                @db.VarChar(500)
   /// Label and note normalised for the site's search.
   searchText      String                 @default("") @db.VarChar(700)
@@ -929,6 +943,7 @@ model FinancialOperation {
   @@index([personId])
   @@index([teamId])
   @@index([gameId])
+  @@index([tournamentId])
 }
 
 /// What an organisation is to the structure (11 November 2026); several at
@@ -957,6 +972,96 @@ model Organization {
   updatedAt      DateTime              @updatedAt
   contacts       OrganizationContact[]
   operations     FinancialOperation[]
+  tournaments    Tournament[]
+}
+
+/// Played online or at a LAN, with its place (11 November 2026).
+enum TournamentFormat {
+  ONLINE
+  LAN
+}
+
+/// A tournament of a game (11 November 2026), with only what helps prepare it
+/// (12 November 2026): its organiser, format and place, dates when known (to
+/// the day, or to the month: the first day of it), rules, fee and closing of
+/// the registration; its state is computed from the dates. The migration adds
+/// the checks (place only at a LAN, a last day only with a day, the
+/// registration before the end) and keeps its game fixed
+/// (`Tournament_gameId_immutable`), absent from this schema.
+model Tournament {
+  id                     String               @id @default(cuid())
+  name                   String               @db.VarChar(120)
+  normalizedName         String               @db.VarChar(240)
+  /// « Saison 2 », « Split 1 », « 2027 »: tells apart two tournaments of a
+  /// name (12 November 2026).
+  edition                String?              @db.VarChar(40)
+  /// The edition in the search form; empty without one.
+  normalizedEdition      String               @default("") @db.VarChar(80)
+  gameId                 String
+  game                   Game                 @relation(fields: [gameId], references: [id], onDelete: Restrict)
+  organizerId            String?
+  organizer              Organization?        @relation(fields: [organizerId], references: [id], onDelete: Restrict)
+  format                 TournamentFormat     @default(ONLINE)
+  location               String?              @db.VarChar(200)
+  startOn                DateTime?            @db.Date
+  /// DAY or MONTH: « mars 2027 » is stored on 1 March 2027.
+  datePrecision          DatePrecision        @default(DAY)
+  endOn                  DateTime?            @db.Date
+  /// The tournament's page: registration, rules, bracket.
+  linkUrl                String?              @db.VarChar(500)
+  /// Per team; null when unknown, 0 when free.
+  entryFeeCents          Int?
+  registrationDeadlineOn DateTime?            @db.Date
+  /// Called off or withdrawn, kept for the history: an action of the record.
+  isCancelled            Boolean              @default(false)
+  /// Name, edition and place normalised for the site's search.
+  searchText             String               @default("") @db.VarChar(700)
+  version                Int                  @default(1)
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
+  entries                TournamentEntry[]
+  operations             FinancialOperation[]
+
+  /// A name and its edition once per game, so every tournament is told apart.
+  @@unique([gameId, normalizedName, normalizedEdition])
+  /// Undated first (`NULLS FIRST` in the migration).
+  @@index([startOn(sort: Desc)])
+  @@index([gameId])
+  @@index([organizerId])
+}
+
+/// One of our teams engaged in a tournament, a team of its game
+/// (`TournamentEntry_team_check`), with its final placement: one place, or a
+/// shared range (« 3e–4e »). Its line-up changes with its version.
+model TournamentEntry {
+  id            String                   @id @default(cuid())
+  tournamentId  String
+  tournament    Tournament               @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  teamId        String
+  team          Team                     @relation(fields: [teamId], references: [id], onDelete: Restrict)
+  placementFrom Int?
+  placementTo   Int?
+  version       Int                      @default(1)
+  createdAt     DateTime                 @default(now())
+  updatedAt     DateTime                 @updatedAt
+  lineup        TournamentLineupMember[]
+
+  @@unique([tournamentId, teamId])
+  @@index([teamId])
+}
+
+/// A person of the Répertoire in a line-up; their function is read from the
+/// team's Roster at the tournament's dates, a stand-in when none.
+model TournamentLineupMember {
+  id        String          @id @default(cuid())
+  entryId   String
+  entry     TournamentEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  personId  String
+  person    Person          @relation(fields: [personId], references: [id], onDelete: Restrict)
+  createdAt DateTime        @default(now())
+
+  @@unique([entryId, personId])
+  @@index([personId])
 }
 
 /// A person to reach at an organisation. Linked to a record of the Répertoire

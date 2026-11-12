@@ -12,7 +12,7 @@
 | Gabarit visé | [B. Fiche à sections](../../../design/gabarits.md#b-fiche-à-sections), [onglet en lecture](../../../design/gabarits.md#onglets-dune-fiche) |
 | État d’harmonisation | Aligné à sa création le 9 novembre 2026 — voir [Harmonisation](../../../design/harmonisation.md#état-par-page) |
 | Point d’entrée | [PersonDetailPage](../../../../apps/web/src/features/persons/components/PersonDetailPage.tsx) → [PersonJourneySection](../../../../apps/web/src/features/passages/components/PersonJourneySection.tsx), sur `GET /api/personnes/[id]/parcours` ([service](../../../../apps/web/src/features/passages/server/person-journey.service.ts)) |
-| Contrôle d’accès | `persons:view` (la fiche) et au moins un droit des listes d’où il se lit : `teams:view` (les Rosters des équipes), `staff:view` (l’Effectif de Bureau & staff, 9 novembre 2026) ; seuls les passages de ces listes sont rendus, ceux des équipes limités à la [portée Esport](../../../domaines/permissions.md#portée-esport) du lecteur (10 novembre 2026) ; sans l’un ni l’autre, l’onglet n’apparaît pas et l’API répond 403 ; aucun droit propre au parcours ([permissions](../../../domaines/permissions.md#page-répertoire)) |
+| Contrôle d’accès | `persons:view` (la fiche) et au moins un droit des listes d’où il se lit : `teams:view` (les Rosters des équipes), `staff:view` (l’Effectif de Bureau & staff, 9 novembre 2026) ; seuls les passages de ces listes sont rendus, ceux des équipes limités à la [portée Esport](../../../domaines/permissions.md#portée-esport) du lecteur (10 novembre 2026) ; les tournois joués avec `tournaments:view` (11 novembre 2026), dans la même portée ; sans aucun de ces droits, l’onglet n’apparaît pas et l’API répond 403 ; aucun droit propre au parcours ([permissions](../../../domaines/permissions.md#page-répertoire)) |
 | Chargement / erreur dédiés | section chargée à la demande ; trois lignes squelettes, puis « Le parcours ne peut pas être chargé » avec « Réessayer » ; fiche absente : 404 |
 
 ## Rôle et tâches principales
@@ -69,8 +69,13 @@ un passage se tient dans le Roster de son équipe.
 
 ## Points ouverts
 
-- Les tournois joués (étape 5) s’y ajouteront ; les passages de Bureau &
-  staff y sont depuis le 9 novembre 2026.
+- Les tournois joués y sont depuis le 11 novembre 2026 : un bloc
+  « Tournois » sous les passages (`TournamentHistory`), un tournoi par ligne
+  dont le line-up compte la personne, avec Dates, Tournoi, Équipe,
+  Classement et État, chaque ligne ouvrant le tournoi ; l’onglet se dit
+  alors « se modifie dans le Roster de chaque équipe, l’Effectif de
+  Bureau & staff et les tournois ». Les passages de Bureau & staff y sont
+  depuis le 9 novembre 2026.
 - Le statut « Dans la structure » se calcule depuis ces passages depuis le
   9 novembre 2026, « Ancien membre » (un passage terminé, aucun en cours)
   depuis le 10 ; tant que les membres actuels ne sont pas saisis, leur fiche

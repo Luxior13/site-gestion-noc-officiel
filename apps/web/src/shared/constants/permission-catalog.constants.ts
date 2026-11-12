@@ -8,6 +8,7 @@ import { createOrganizationsPermissionCategory } from '$constants/organizations-
 import { createPersonsPermissionCategory } from '$constants/persons-permission-category.constants';
 import { PAGE_PATHS } from '$constants/routes.constants';
 import { createStaffPermissionCategory } from '$constants/staff-permission-category.constants';
+import { createTournamentsPermissionCategory } from '$constants/tournaments-permission-category.constants';
 
 // Permission catalogue: keys, poles, items and editor categories. The rules
 // that evaluate them live in permissions.constants.ts, which re-exports this
@@ -81,6 +82,11 @@ export const PERMISSIONS = {
   TEAMS: {
     MANAGE: 'teams:manage',
     VIEW: 'teams:view',
+  },
+  // The tournaments, their engaged teams and line-ups (11 November 2026).
+  TOURNAMENTS: {
+    MANAGE: 'tournaments:manage',
+    VIEW: 'tournaments:view',
   },
   USERS: {
     CREATE: 'users:create',
@@ -464,6 +470,7 @@ export const ACCOUNT_PERMISSION_CATEGORIES: AccountPermissionCategory[] = [
 export const PERMISSION_CATEGORIES: PermissionCategory[] = [
   createPersonsPermissionCategory(PERMISSIONS.PERSONS),
   createGamesPermissionCategory(PERMISSIONS.GAMES, PERMISSIONS.TEAMS),
+  createTournamentsPermissionCategory(PERMISSIONS.TOURNAMENTS),
   createFinancialAccountsPermissionCategory(PERMISSIONS.FINANCIAL_ACCOUNTS),
   createOperationsPermissionCategory(PERMISSIONS.OPERATIONS),
   createOrganizationsPermissionCategory(PERMISSIONS.ORGANIZATIONS),

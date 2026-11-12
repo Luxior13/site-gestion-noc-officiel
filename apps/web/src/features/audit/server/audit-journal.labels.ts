@@ -77,6 +77,12 @@ export const JOURNAL_ACTION_LABELS: Record<AuditAction, string> = {
   TEAM_DELETE: 'Équipe supprimée',
   TEAM_REORDER: 'Ordre des équipes modifié',
   TEAM_UPDATE: 'Équipe modifiée',
+  TOURNAMENT_CREATE: 'Tournoi ajouté',
+  TOURNAMENT_DELETE: 'Tournoi supprimé',
+  TOURNAMENT_ENTRY_CREATE: 'Équipe engagée',
+  TOURNAMENT_ENTRY_DELETE: 'Équipe retirée d’un tournoi',
+  TOURNAMENT_ENTRY_UPDATE: 'Participation modifiée',
+  TOURNAMENT_UPDATE: 'Tournoi modifié',
   TREASURY_CHOICE_CREATE: 'Valeur de liste ajoutée',
   TREASURY_CHOICE_DELETE: 'Valeur de liste supprimée',
   TREASURY_CHOICE_REORDER: 'Ordre d’une liste modifié',
@@ -206,6 +212,7 @@ export const FINANCIAL_OPERATION_FIELD_LABELS: ReadonlyArray<
   ['organization', 'Organisation'],
   ['person', 'Fiche du Répertoire'],
   ['assignment', 'Équipe ou jeu'],
+  ['tournament', 'Tournoi'],
   ['note', 'Note'],
 ];
 
@@ -239,6 +246,31 @@ export const ORGANIZATION_CONTACT_FIELD_LABELS: ReadonlyArray<
   ['role', 'Fonction'],
   ['email', 'Email'],
   ['phone', 'Téléphone'],
+];
+
+/** Tournament fields recorded in `before` / `after`, in display order. */
+export const TOURNAMENT_FIELD_LABELS: ReadonlyArray<readonly [string, string]> =
+  [
+    ['name', 'Nom'],
+    ['edition', 'Édition'],
+    ['game', 'Jeu'],
+    ['organizer', 'Organisateur'],
+    ['format', 'Format'],
+    ['location', 'Lieu'],
+    ['dates', 'Dates'],
+    ['linkUrl', 'Lien du tournoi'],
+    ['entryFee', 'Frais d’inscription'],
+    ['registrationDeadline', 'Fin des inscriptions'],
+    ['cancelled', 'Annulé'],
+  ];
+
+/** What an engaged team holds: its line-up and placement. */
+export const TOURNAMENT_ENTRY_FIELD_LABELS: ReadonlyArray<
+  readonly [string, string]
+> = [
+  ['team', 'Équipe'],
+  ['lineup', 'Line-up'],
+  ['placement', 'Classement'],
 ];
 
 /** Account fields recorded in `before` / `after`, in display order. */

@@ -174,7 +174,9 @@ avec `teams:manage`, il gère le Roster de ses équipes ; sans `persons:view`, n
 Répertoire ni lien vers une fiche (nom, pseudo, fonction et dates seulement).
 Pour ajouter quelqu’un à son Roster, il cherche une fiche par nom ou pseudo dans
 tout le Répertoire, sans coordonnées (choix A du propriétaire, 10 novembre 2026).
-À l’étape 5, les tournois de son équipe suivront la même portée.
+Les tournois de son équipe suivent la même portée depuis le 11 novembre 2026
+([fiche tournoi](../pages/esport/tournoi.md)) : il les crée, l’équipe engagée
+demandée à la création, et en tient le line-up et le classement.
 
 **Scénarios vérifiés** le 10 novembre 2026 (suite `esport-scope-postgres`, banc
 réel sur build de production avec un vrai compte manager) : adresse d’une équipe

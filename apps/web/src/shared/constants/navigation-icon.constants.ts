@@ -21,6 +21,7 @@ import {
   Settings,
   Shield,
   ShieldCheck,
+  Trophy,
   UserCheck,
   UserPlus,
   Users,
@@ -53,6 +54,8 @@ const NAVIGATION_ICONS = {
   Settings,
   Shield,
   ShieldCheck,
+  // Tournois, in the Esport pole (11 November 2026).
+  Trophy,
   UserCheck,
   UserPlus,
   Users,

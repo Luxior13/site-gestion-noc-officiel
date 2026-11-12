@@ -17,6 +17,7 @@ export const PAGE_PATHS = {
   system: '/systeme',
   systemActivity: '/systeme/journal-activite',
   systemSettings: '/systeme/parametres',
+  tournaments: '/esport/tournois',
   users: '/systeme/utilisateurs',
 } as const;
 
@@ -130,6 +131,9 @@ export const TEAM_RECORDS_PATH = '/esport/equipes';
 
 export const teamDetailPath = (id: string): string =>
   `${TEAM_RECORDS_PATH}/${encodeURIComponent(id)}`;
+
+export const tournamentDetailPath = (id: string): string =>
+  `${PAGE_PATHS.tournaments}/${encodeURIComponent(id)}`;
 
 export const personDetailPath = (id: string): string =>
   `${PAGE_PATHS.persons}/${encodeURIComponent(id)}`;

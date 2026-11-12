@@ -4,6 +4,7 @@ export type PersonDomainErrorCode =
   | 'PERSON_FEATURE_NOT_CONFIGURED'
   | 'PERSON_GUARDIAN_CONFLICT'
   | 'PERSON_HAS_OPERATIONS'
+  | 'PERSON_HAS_TOURNAMENTS'
   | 'PERSON_HAS_PASSAGES'
   | 'PERSON_NICKNAME_CONFLICT'
   | 'PERSON_NOT_FOUND'
@@ -48,6 +49,12 @@ export const personErrors = {
     new PersonDomainError(
       'PERSON_HAS_PASSAGES',
       `Cette fiche figure dans ${count > 1 ? `${count} passages` : 'un passage'} d’un Roster : elle reste dans le registre et ne se supprime pas.`,
+    ),
+  /** A record in a line-up stays: the tournament keeps who played. */
+  hasTournaments: (count: number): PersonDomainError =>
+    new PersonDomainError(
+      'PERSON_HAS_TOURNAMENTS',
+      `Cette fiche figure dans le line-up ${count > 1 ? `de ${count} tournois` : 'd’un tournoi'} : elle reste dans le registre et ne se supprime pas.`,
     ),
   /** Another pseudo already there, or the main one (10 November 2026). */
   nicknameConflict: (message: string): PersonDomainError =>

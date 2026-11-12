@@ -326,7 +326,8 @@ describe('planned pages and tabs', () => {
     expect(
       page('Fiche jeu')?.tabs?.find((tab) => tab.label === 'Informations'),
     ).toMatchObject({ delivered: true, phase: null });
-    expect(page('Tournois')).toMatchObject({ delivered: false });
+    // Delivered on 11 November 2026: its tournaments, filtered.
+    expect(page('Tournois')).toMatchObject({ delivered: true, phase: null });
     expect(
       ROADMAP_PAGES.filter((entry) => entry.phase !== null).map(
         (entry) => entry.name,

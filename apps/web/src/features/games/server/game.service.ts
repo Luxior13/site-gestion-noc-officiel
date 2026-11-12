@@ -396,6 +396,11 @@ export const deleteGame = async (
         throw serviceErrors.conflict(
           'Ce jeu a des opérations : rendez-le inactif plutôt que de le supprimer.',
         );
+      // Its tournaments stay too (`Tournament_gameId_fkey`, 11 November 2026).
+      if ((await transaction.tournament.count({ where: { gameId: id } })) > 0)
+        throw serviceErrors.conflict(
+          'Ce jeu a des tournois : rendez-le inactif plutôt que de le supprimer.',
+        );
       const functions = await transaction.memberFunction.findMany({
         orderBy: { name: 'asc' },
         select: { name: true },

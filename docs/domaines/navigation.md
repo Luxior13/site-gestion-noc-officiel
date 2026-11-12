@@ -32,7 +32,7 @@ Révision du 8 novembre 2026, sur décision du propriétaire (« on peut encore 
 | --- | --- | --- |
 | Aujourd’hui | Qu’est-ce qui m’attend ? | Mon travail (avec mes rappels), tâches, calendrier du bureau |
 | Personnes | Qui est passé par la structure ? | Répertoire, fiche personne, adhésions, recrutement, arrivées, départs et passations, salariés |
-| Esport | Quelles équipes, quels tournois ? | Jeux, page d’accueil du pôle, avec les équipes sous chaque jeu ; fiche jeu (Finances, Fonctions ; les équipes restent sous chaque jeu de la page Jeux) ; fiche équipe (Roster, Tournois, Entraînements, Finances, Partenaires, Informations) ; tournois ; déplacements |
+| Esport | Quelles équipes, quels tournois ? | Jeux, page d’accueil du pôle, avec les équipes sous chaque jeu ; fiche jeu (Finances, Fonctions ; les équipes restent sous chaque jeu de la page Jeux) ; fiche équipe (Roster, Tournois, Entraînements, Finances, Partenaires, Informations) ; tournois, dans la section « Compétition » depuis le 11 novembre 2026 ; déplacements |
 | Finances | Où en est l’argent ? | Comptes (onglets Catégories et Moyens de paiement), opérations, factures, frais, subventions et dons, contrôles, budget |
 | Relations | Avec qui à l’extérieur ? | Organisations, partenariats, communication |
 | Structure | Qu’est-ce que l’association, qu’a-t-elle décidé et gardé ? | Bureau & staff (effectif et fonctions de la structure), entités juridiques (leur suite dans le temps et la fiche de chacune, 9 novembre 2026), chronologie, réunions et décisions, documents, contrats, incidents, matériel et abonnements (onglet Types de matériel), bilan annuel |

@@ -32,6 +32,7 @@ const SUITE_DATABASES = [
     variable: 'MEMBER_FUNCTIONS_TEST_DATABASE_URL',
   },
   { database: 'operations_test', variable: 'OPERATIONS_TEST_DATABASE_URL' },
+  { database: 'tournaments_test', variable: 'TOURNAMENTS_TEST_DATABASE_URL' },
   {
     database: 'organizations_test',
     variable: 'ORGANIZATIONS_TEST_DATABASE_URL',

@@ -475,6 +475,8 @@ describe('permission catalogue', () => {
       'games:manage',
       'teams:view',
       'teams:manage',
+      'tournaments:view',
+      'tournaments:manage',
       'financial_accounts:view',
       'financial_accounts:manage',
       'operations:view',
@@ -519,6 +521,7 @@ describe('permission catalogue', () => {
     expect(PERMISSION_CATEGORIES.map((category) => category.key)).toEqual([
       'persons',
       'games',
+      'tournaments',
       'financial-accounts',
       'operations',
       'organizations',
@@ -533,6 +536,7 @@ describe('permission catalogue', () => {
     ).toEqual([
       'persons',
       'games',
+      'tournaments',
       'financial-accounts',
       'operations',
       'organizations',
@@ -607,6 +611,7 @@ describe('permission catalogue', () => {
     expect(PERMISSION_CATEGORIES.map((category) => category.label)).toEqual([
       'Répertoire',
       'Jeux',
+      'Tournois',
       'Comptes',
       'Opérations',
       'Organisations',

@@ -7,6 +7,7 @@ import type {
   OrganizationDetail,
   OrganizationInput,
   OrganizationItem,
+  OrganizerAdded,
 } from './types/organization.types';
 
 const ORGANIZATIONS_API = '/api/relations/organisations';
@@ -40,6 +41,13 @@ export const createOrganizationRequest = (
   apiFetchJson<OrganizationDetail>(
     ORGANIZATIONS_API,
     jsonRequest('POST', input),
+  );
+
+/** A tournament's organiser by its name: found, given the kind, or added. */
+export const addOrganizerRequest = (name: string): Promise<OrganizerAdded> =>
+  apiFetchJson<OrganizerAdded>(
+    `${ORGANIZATIONS_API}/organisateurs`,
+    jsonRequest('POST', { name }),
   );
 
 export const updateOrganizationRequest = (

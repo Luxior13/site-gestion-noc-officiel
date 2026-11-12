@@ -6,7 +6,7 @@
 
 | Élément | Valeur |
 | --- | --- |
-| Route | `/esport/equipes/[id]` (Roster), `?section=anciens` (Anciens membres), `?section=finances` (11 novembre 2026) et `?section=informations` |
+| Route | `/esport/equipes/[id]` (Roster), `?section=anciens` (Anciens membres), `?section=tournois` et `?section=finances` (11 novembre 2026) et `?section=informations` |
 | Espace | Esport ; « Jeux » reste l’entrée courante de la navigation (`matchHrefs` de la fonctionnalité `games`) |
 | Gabarit visé | [B. Fiche à sections](../../design/gabarits.md#b-fiche-à-sections), onglets Roster, Anciens membres et Informations depuis le 9 novembre 2026, Finances ↗ depuis le 11 novembre 2026 ([onglet en lecture](../../design/gabarits.md#onglets-dune-fiche)) |
 | État d’harmonisation | Aligné — voir [Harmonisation](../../design/harmonisation.md#état-par-page) |
@@ -31,9 +31,10 @@ Composition, de haut en bas :
    « Inactive », ligne « Valorant · depuis septembre 2023 », puis la barre
    d’onglets **Roster** (avec le nombre de personnes présentes aujourd’hui,
    chacune une fois), **Anciens membres** (le nombre de personnes qui ont un
-   passage terminé), **Finances ↗** (pour qui lit les opérations) et
-   **Informations**. Roster garde l’adresse simple ; les autres ajoutent
-   `?section=anciens`, `?section=finances` ou `?section=informations`. Chaque
+   passage terminé), **Tournois ↗** (pour qui lit les tournois),
+   **Finances ↗** (pour qui lit les opérations) et **Informations**. Roster garde l’adresse simple ; les autres ajoutent
+   `?section=anciens`, `?section=tournois`, `?section=finances` ou
+   `?section=informations`. Chaque
    onglet charge son code à la demande.
 3. **Roster** (`RosterSection`) : ce qui est là et ce qui arrive, jamais
    les anciens (« je ne veux pas mélanger les anciens avec les en cours et à
@@ -118,7 +119,14 @@ Composition, de haut en bas :
      (« Cette personne a déjà cette fonction dans l’équipe sur cette
      période. »), fin avant le début, fonction d’un autre jeu ; version
      dépassée : le message et « Recharger le Roster ».
-4. bis **Finances ↗** (`FinancesTab`, 11 novembre 2026), en lecture : la
+4. bis **Tournois ↗** (`TournamentHistory`, 11 novembre 2026), en lecture :
+   la ligne « Les tournois se tiennent dans Esport › Tournois : chaque ligne
+   ouvre son tournoi. » et « Ouvrir les tournois », puis les tournois joués
+   par l’équipe, le plus récent en premier : Dates, Tournoi (nom, jeu et
+   organisateur), Classement (« 3e–4e »), État ; sous 56 rem, des cartes.
+   `tournaments:view` seul l’ouvre, dans la portée Esport du compte.
+   Vide : « Aucun tournoi pour l’instant ».
+4. ter **Finances ↗** (`FinancesTab`, 11 novembre 2026), en lecture : la
    liste partagée des opérations (`OperationsList`) de l’équipe, avec la
    ligne de tête « Les opérations se saisissent dans Finances › Opérations :
    chaque ligne ouvre son opération. », puis, dès qu’il y a de l’argent,
@@ -183,6 +191,8 @@ seul un lecteur du Répertoire voit, par la fiche.
   avec « Cette fiche figure dans 2 passages d’un Roster ».
 - Ordre prévu des onglets : Roster, Anciens membres, Tournois ↗,
   Entraînements, Finances ↗, Partenaires ↗, Informations ([feuille de route](../../propositions/feuille-de-route.md)).
+  Tournois ↗ est livré le 11 novembre 2026 avec les [tournois](tournois.md) :
+  ils se tiennent dans leur fiche, l’équipe les lit.
   Finances ↗ est livré le 11 novembre 2026 (« passe au 2 des finances ») :
   l’argent se lit ici et se saisit dans [Opérations](../finances/operations.md),
   sans droit nouveau ; données `GET /api/finances/operations?equipe=[id]`

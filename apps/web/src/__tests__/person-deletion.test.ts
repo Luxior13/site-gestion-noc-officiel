@@ -23,6 +23,7 @@ const mocks = vi.hoisted(() => {
     // A record in a roster stays (9 November 2026).
     personLegalGuardian: { count: vi.fn() },
     personPassage: { count: vi.fn() },
+    tournamentLineupMember: { count: vi.fn() },
   };
 
   return {
@@ -87,6 +88,7 @@ describe('synchronous person deletion', () => {
     mocks.transaction.person.deleteMany.mockResolvedValue({ count: 1 });
     mocks.transaction.personPassage.count.mockResolvedValue(0);
     mocks.transaction.financialOperation.count.mockResolvedValue(0);
+    mocks.transaction.tournamentLineupMember.count.mockResolvedValue(0);
     mocks.transaction.personLegalGuardian.count.mockResolvedValue(0);
     mocks.transaction.personDeletionTombstone.create.mockResolvedValue({
       personId: 'person-1',

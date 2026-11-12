@@ -69,6 +69,20 @@ public. Les gains se lisent sur la fiche tournoi ; l’argent reçu vit dans les
 [Finances](../propositions/feuille-de-route.md#3-socle-de-trésorerie), et un résultat sportif
 ne déclenche aucun encaissement.
 
+Livré le 11 novembre 2026 (lot 1, « ok go » sur trois choix) : le **classement**
+est une place ou une **fourchette** partagée (« 3e–4e », « 5e–8e ») ; le
+**line-up** se choisit parmi les membres du Roster de l’équipe aux dates du
+tournoi, et peut compter un **remplaçant ponctuel** du Répertoire, marqué
+« Hors Roster » : sa fonction se lit dans le Roster, jamais recopiée ; un
+tournoi annulé ou forfait garde sa ligne, marqué **« Annulé »**, l’état
+restant calculé depuis les dates. Depuis le 12 novembre 2026, un tournoi ne
+garde que ce qui aide à le préparer (le site public garde le reste) : ses
+dates sont facultatives, au jour ou au mois (« Date à fixer » sinon), et
+« Annuler le tournoi » est une action, pour celui que des opérations
+nomment. Deux tournois peuvent porter le même nom : une **édition** les
+distingue (« Saison 2 »), le couple nom + édition étant unique dans un jeu. Une fiche qui figure dans un line-up ne se
+supprime plus, comme une fiche qui a un passage ([fiche tournoi](../pages/esport/tournoi.md)).
+
 Le **suivi** réunit ce que le bureau sait d’une personne : notes, problèmes et bans.
 
 - Chaque entrée est datée, signée et rattachée à une fiche. Elle se saisit à son
@@ -84,7 +98,8 @@ Le **suivi** réunit ce que le bureau sait d’une personne : notes, problèmes 
   jamais une case « banni » sur la fiche. Lever un ban ne l’efface pas.
 - Une sanction de la structure en cours refuse l’inscription de la personne à un
   tournoi concerné, avec son motif : il faut d’abord la lever, et la levée est
-  tracée. Un ban externe sur le même jeu, le même organisateur ou le même circuit
+  tracée. Un ban externe sur le même jeu ou le même organisateur (le circuit d’un
+  tournoi n’est plus saisi depuis le 12 novembre 2026)
   avertit sans bloquer.
 - Le suivi est réservé aux personnes habilitées, par une autorisation dédiée. Un
   manager n’y a pas accès.

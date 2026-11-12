@@ -162,6 +162,15 @@ const AUDIT_EVENT_CLASSIFICATIONS = {
   [AuditAction.TREASURY_CHOICE_DELETE]: activity(AuditStream.SYSTEM),
   [AuditAction.TREASURY_CHOICE_REORDER]: activity(AuditStream.SYSTEM),
   [AuditAction.TREASURY_CHOICE_UPDATE]: activity(AuditStream.SYSTEM),
+  [AuditAction.TOURNAMENT_CREATE]: activity(AuditStream.SYSTEM),
+  [AuditAction.TOURNAMENT_DELETE]: activity(
+    AuditStream.SYSTEM,
+    AuditSeverity.WARNING,
+  ),
+  [AuditAction.TOURNAMENT_UPDATE]: activity(AuditStream.SYSTEM),
+  [AuditAction.TOURNAMENT_ENTRY_CREATE]: activity(AuditStream.SYSTEM),
+  [AuditAction.TOURNAMENT_ENTRY_DELETE]: activity(AuditStream.SYSTEM),
+  [AuditAction.TOURNAMENT_ENTRY_UPDATE]: activity(AuditStream.SYSTEM),
   [AuditAction.ORGANIZATION_CREATE]: activity(AuditStream.SYSTEM),
   [AuditAction.ORGANIZATION_DELETE]: activity(
     AuditStream.SYSTEM,

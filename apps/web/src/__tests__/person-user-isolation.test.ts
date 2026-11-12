@@ -36,7 +36,8 @@ describe('Person and User isolation contract', () => {
     // Its passages (9 November 2026) tie it to teams, its representatives
     // (10 November 2026) to other records, a contact of an organisation (11
     // November 2026) to its organisation, an operation (11 November 2026)
-    // to the money it paid or received, never to an account.
+    // to the money it paid or received, a line-up (11 November 2026) to a
+    // tournament, never to an account.
     expect(personRelations).toEqual([
       'PersonEmail',
       'PersonPhone',
@@ -48,6 +49,7 @@ describe('Person and User isolation contract', () => {
       'PersonPassage',
       'OrganizationContact',
       'FinancialOperation',
+      'TournamentLineupMember',
     ]);
     expect(personRelations).not.toContain('User');
     expect(userRelations).not.toContain('Person');

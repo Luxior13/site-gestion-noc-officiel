@@ -43,6 +43,16 @@ export type OrganizationCreateInput = Readonly<{
   name: string;
 }>;
 
+/**
+ * What became of a name typed as a tournament's organiser (12 November
+ * 2026): a new organisation, an existing one given the kind Organisateur,
+ * or one that already was.
+ */
+export type OrganizerAdded = Readonly<{
+  organizer: Readonly<{ id: string; name: string }>;
+  outcome: 'created' | 'existing' | 'kind-added';
+}>;
+
 export type OrganizationInput = OrganizationCreateInput &
   Readonly<{
     address: string | null;

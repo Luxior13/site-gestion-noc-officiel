@@ -81,13 +81,12 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'Autres pseudos (anciens, comptes secondaires, y compris ceux d’avant le site), réseaux sociaux (l’ID du compte pour Discord) et comptes de jeu par plateforme (Riot, Steam avec son ID…) : reconnaître une personne qui a changé de nom.',
       },
       {
-        chantier: 'competitions',
         label: 'Parcours',
-        managedIn: 'le Roster de chaque équipe et l’Effectif de Bureau & staff',
+        managedIn:
+          'le Roster de chaque équipe, l’Effectif de Bureau & staff et les tournois',
         phase: null,
         summary:
-          'En lecture : chaque passage dans une équipe ou dans la structure (Bureau & staff), en cours et à venir puis terminés, avec la fonction, le statut, le début, la fin et la durée. Chaque ligne ouvre sa page, ses anciens membres pour un passage terminé ; seules les listes que le lecteur peut voir.',
-        upcoming: 'Les tournois joués.',
+          'En lecture : chaque passage dans une équipe ou dans la structure (Bureau & staff), en cours et à venir puis terminés, avec la fonction, le statut, le début, la fin et la durée, puis les tournois joués avec l’équipe et le classement. Chaque ligne ouvre sa page, ses anciens membres pour un passage terminé ; seules les listes que le lecteur peut voir.',
       },
       // Adhésions and Finances in one tab since En ligne opened (10 November
       // 2026, proposed to the owner): eight tabs at most on a record. The
@@ -188,12 +187,11 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
           'Les passages terminés, jamais mêlés au Roster : par année de fin, la plus récente d’abord, avec début, fin et durée ; recherche et filtre Joueurs ou Encadrement ; un ancien membre s’ajoute ici avec ses deux dates.',
       },
       {
-        chantier: 'competitions',
         label: 'Tournois',
         managedIn: 'Tournois',
-        phase: 5,
+        phase: null,
         summary:
-          'Tournois joués par cette équipe, avec son classement. Un manager les voit et crée ceux de son équipe, sans les gains ni le Suivi.',
+          'Les tournois joués par cette équipe, le plus récent en premier, avec son classement et leur état ; chaque ligne ouvre son tournoi. Un manager les voit dans la portée de son compte.',
       },
       {
         chantier: 'sports-follow-up',
@@ -248,29 +246,43 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
   },
   {
     area: 'esport',
-    chantier: 'competitions',
+    // Delivered on 11 November 2026 (owner, « ok go »).
     name: 'Tournois',
-    phase: 5,
+    phase: null,
     summary:
-      'Liste, sans onglet : les tournois, filtrés par jeu, équipe, année et état (à venir, en cours, terminé, calculé depuis les dates) ; chaque ligne : nom, jeu, équipes, dates, état, classement. Création en fenêtre : nom, jeu, dates, organisateur. Un manager crée ceux de son équipe.',
+      'Liste, sans onglet : les tournois de la portée du compte, ceux sans date en tête, puis le plus récent en premier, filtrés par état (date à fixer, à venir, en cours, terminé, calculé depuis les dates, ou annulé), par jeu et par année, avec une recherche sur le nom, l’organisateur, le lieu et les équipes ; chaque ligne : dates, nom, jeu, nos équipes et leur classement, état. Création en fenêtre : seuls le nom et le jeu sont demandés ; l’édition (« Saison 2 », qui distingue deux tournois du même nom), les dates (au jour ou au mois), l’organisateur et l’équipe engagée si on les connaît, l’équipe obligatoire pour un compte qui ne voit que ses équipes : un manager crée ceux de son équipe.',
   },
   {
     area: 'esport',
-    chantier: 'competitions',
     name: 'Fiche tournoi',
-    phase: 5,
+    phase: null,
+    summary:
+      'Ouverte par le nom d’un tournoi sur la page Tournois, ou juste après son ajout.',
     tabs: [
       {
+        chantier: 'competitions',
         label: 'Informations',
-        phase: 5,
+        phase: null,
         summary:
-          'Nom, jeu, organisateur (sa fiche organisation), circuit ou ligue facultatif, en ligne ou LAN (lieu et déplacement lié), dates, règles du tournoi (lien ou pièce), frais d’inscription, échéances (inscription, dépôt du roster, check-in) reprises au calendrier ; état calculé depuis les dates.',
+          'Seulement ce qui aide à préparer le tournoi, le site public gardant le reste : nom et édition (« Saison 2 », nom + édition uniques par jeu), organisateur (sa fiche organisation, ajoutée en tapant son nom), en ligne ou LAN (avec le lieu), dates facultatives (au jour ou au mois) ; préparation : fin des inscriptions, frais d’inscription par équipe, lien du tournoi (inscription, règlement, bracket) ; modifiés sur place ; le jeu, fixé à la création, dans l’en-tête avec l’état calculé ; « Annuler le tournoi » quand des opérations le nomment, zone dangereuse pour un tournoi ajouté par erreur.',
+        upcoming:
+          'Le déplacement lié à une LAN, le règlement en pièce jointe et la fin des inscriptions reprise au calendrier du bureau.',
       },
       {
+        chantier: 'incidents',
         label: 'Participants',
-        phase: 5,
+        phase: null,
         summary:
-          'Pour chacune de nos équipes engagées : line-up (membres engagés, remplaçants compris) et classement final. Une sanction de la structure en cours refuse l’inscription, avec son motif ; un ban externe du même jeu, organisateur ou circuit avertit. Un manager remplit ceux de son équipe.',
+          'Pour chacune de nos équipes engagées : line-up pris dans son Roster aux dates du tournoi (joueurs cochés d’office), remplaçant ponctuel venu du Répertoire marqué « Hors Roster », et classement final, une place ou une fourchette (« 3e–4e »). Un manager remplit ceux de son équipe.',
+        upcoming:
+          'Une sanction de la structure en cours refusera l’inscription, avec son motif ; un ban externe du même jeu ou du même organisateur avertira (le circuit n’est plus saisi depuis le 12 novembre 2026), avec le Suivi.',
+      },
+      {
+        label: 'Finances',
+        managedIn: 'Finances',
+        phase: null,
+        summary:
+          'Pour qui consulte les opérations : celles qui nomment le tournoi (inscription, gains, déplacement), avec entrées, sorties et résultat, en lecture ; chaque ligne ouvre son opération.',
       },
       {
         chantier: 'prizes',

@@ -232,6 +232,8 @@ describe('navigation availability', () => {
       '/',
       '/personnes/repertoire',
       '/esport/jeux',
+      // The tournaments, second page of the Esport pole (11 November 2026).
+      '/esport/tournois',
       // First page of the Finances pole (10 November 2026).
       '/finances/comptes',
       // The money itself, beside the accounts (11 November 2026).

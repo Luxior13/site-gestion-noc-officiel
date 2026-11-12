@@ -83,11 +83,13 @@ type Props = {
   reloadKey?: number;
   /** The operations of a team. */
   teamId?: string;
+  /** The operations naming a tournament (11 November 2026). */
+  totals?: 'person' | 'result';
   /**
    * What the tab sums up above its list: a team's or a game's money in and
    * out and their result, or what a person paid and was paid.
    */
-  totals?: 'person' | 'result';
+  tournamentId?: string;
 };
 
 /**
@@ -141,6 +143,7 @@ export const OperationsList: FC<Props> = ({
   reloadKey = 0,
   teamId,
   totals,
+  tournamentId,
 }) => {
   const showAccount = !accountId;
   const [query, setQuery] = useState('');
@@ -176,6 +179,7 @@ export const OperationsList: FC<Props> = ({
         personId,
         q: search || undefined,
         teamId,
+        tournamentId,
       },
       controller.signal,
     )
@@ -205,6 +209,7 @@ export const OperationsList: FC<Props> = ({
     reloadKey,
     search,
     teamId,
+    tournamentId,
   ]);
 
   const isFiltered = Boolean(search) || kind !== null;
@@ -287,7 +292,13 @@ export const OperationsList: FC<Props> = ({
             {OPERATION_KINDS.filter(
               (filter) =>
                 filter !== 'TRANSFER' ||
-                !(organizationId || teamId || gameId || personId),
+                !(
+                  organizationId ||
+                  teamId ||
+                  gameId ||
+                  personId ||
+                  tournamentId
+                ),
             ).map((filter) => (
               <QuickFilter
                 // A closed list of three kinds.

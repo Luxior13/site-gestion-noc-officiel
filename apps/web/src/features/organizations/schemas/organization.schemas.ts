@@ -106,6 +106,11 @@ const organizationFields = {
 
 export const createOrganizationSchema = z.object(organizationFields).strict();
 
+/** A name typed as a tournament's organiser (12 November 2026). */
+export const organizerSchema = z
+  .object({ name: requiredNameSchema(ORGANIZATION_NAME_MAX_LENGTH) })
+  .strict();
+
 export const updateOrganizationSchema = z
   .object({
     ...organizationFields,

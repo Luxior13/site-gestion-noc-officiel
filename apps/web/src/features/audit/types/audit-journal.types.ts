@@ -13,6 +13,7 @@ export const JOURNAL_TYPES = [
   'teams',
   'functions',
   'passages',
+  'tournaments',
   'entities',
   'treasury',
   'organizations',
@@ -46,6 +47,7 @@ export const JOURNAL_TYPE_LABELS: Record<JournalType, string> = {
   security: 'Sécurité',
   settings: 'Paramètres',
   teams: 'Équipes',
+  tournaments: 'Tournois',
   treasury: 'Trésorerie',
 };
 

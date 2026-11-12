@@ -63,12 +63,12 @@ const validateLines = (
   return validator.finish();
 };
 
-test('validates the signed v17 format, ordered tables and exact counts', () => {
+test('validates the signed v19 format, ordered tables and exact counts', () => {
   const summary = validateLines(
     createBackupLines({ users: [{ id: 'user-1' }, { id: 'user-2' }] }),
   );
 
-  assert.equal(summary.manifest.formatVersion, 17);
+  assert.equal(summary.manifest.formatVersion, 19);
   assert.equal(summary.counts.users, 2);
   const tableNames: readonly string[] = DATABASE_BACKUP_TABLES.map(
     ({ tableName }) => tableName,

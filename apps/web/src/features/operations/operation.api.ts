@@ -27,6 +27,7 @@ const queryOf = (filters: OperationFilters): string => {
   if (filters.teamId) params.set('equipe', filters.teamId);
   if (filters.gameId) params.set('jeu', filters.gameId);
   if (filters.personId) params.set('personne', filters.personId);
+  if (filters.tournamentId) params.set('tournoi', filters.tournamentId);
   const search = params.toString();
 
   return search ? `?${search}` : '';

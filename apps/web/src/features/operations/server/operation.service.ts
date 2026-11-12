@@ -14,6 +14,7 @@ import {
   PERSON_REF_SELECT,
   toPersonRef,
 } from '$features/persons/server/person-suggestions';
+import { tournamentTitle } from '$features/tournaments/tournament.ui';
 import { createAuditLogWithHeaders } from '$server/audit-log';
 import { prisma } from '$server/prisma';
 import { ServiceError, serviceErrors } from '$server/service-error';
@@ -59,6 +60,7 @@ type AuditValues = Readonly<{
   paymentMethod: string | null;
   person: string | null;
   toAccount: string | null;
+  tournament: string | null;
 }>;
 
 const fieldError = (
@@ -92,6 +94,7 @@ const INCLUDE = {
   person: { select: PERSON_REF_SELECT },
   team: { select: { game: { select: { name: true } }, id: true, name: true } },
   toAccount: { select: { id: true, name: true } },
+  tournament: { select: { edition: true, id: true, name: true } },
 } as const;
 type OperationRow = Prisma.FinancialOperationGetPayload<{
   include: typeof INCLUDE;
@@ -126,6 +129,9 @@ const toItem = (row: OperationRow, reader: OperationReader): OperationItem => ({
   person: reader.canViewPersons && row.person ? toPersonRef(row.person) : null,
   personLinked: row.personId !== null,
   toAccount: row.toAccount,
+  tournament: row.tournament
+    ? { id: row.tournament.id, name: tournamentTitle(row.tournament) }
+    : null,
   updatedAt: row.updatedAt.toISOString(),
   version: row.version,
 });
@@ -151,6 +157,7 @@ const auditValues = (row: OperationRow): AuditValues => ({
   paymentMethod: row.paymentMethod?.name ?? null,
   person: row.person ? getPersonDisplayName(row.person) : null,
   toAccount: row.toAccount?.name ?? null,
+  tournament: row.tournament ? tournamentTitle(row.tournament) : null,
 });
 
 const changedKeys = (
@@ -373,6 +380,29 @@ const checkReferences = async (
     }))
   )
     throw fieldError('assignment', 'Ce jeu n’existe plus.');
+  // The tournament of a team or a game is one of its game (11 November
+  // 2026; `FinancialOperation_tournament_check` refuses it too).
+  if (input.tournamentId) {
+    const tournament = await transaction.tournament.findUnique({
+      select: { gameId: true },
+      where: { id: input.tournamentId },
+    });
+    if (!tournament)
+      throw fieldError('tournamentId', 'Ce tournoi n’existe plus.');
+    const gameId = input.teamId
+      ? (
+          await transaction.team.findUnique({
+            select: { gameId: true },
+            where: { id: input.teamId },
+          })
+        )?.gameId
+      : input.gameId;
+    if (gameId && gameId !== tournament.gameId)
+      throw fieldError(
+        'tournamentId',
+        'Choisissez un tournoi du jeu de l’équipe ou du jeu choisi.',
+      );
+  }
 
   return personId;
 };
@@ -397,6 +427,7 @@ const writeData = (
   ).slice(0, 700),
   teamId: input.teamId,
   toAccountId: input.toAccountId,
+  tournamentId: input.tournamentId ?? null,
 });
 
 /** What the operations name: an account, an organisation, a team… */
@@ -420,6 +451,7 @@ const fixedWhereOf = (
       }
     : {},
   filters.personId ? { personId: filters.personId } : {},
+  filters.tournamentId ? { tournamentId: filters.tournamentId } : {},
 ];
 
 const whereOf = (

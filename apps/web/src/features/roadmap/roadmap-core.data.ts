@@ -117,7 +117,7 @@ export const CORE_ROADMAP_ITEMS: readonly RoadmapItem[] = [
     doneWhen:
       'Un problème ou un ban reste relié à sa personne et à son tournoi ; un résultat sportif ne déclenche aucun encaissement ; un manager ne touche qu’aux tournois de son équipe, sans en voir les gains ni le suivi.',
     firstRelease:
-      'Liste filtrable (jeu, équipe, année, état calculé) ; fiche avec organisateur relié à sa fiche, circuit, en ligne ou LAN, règles, frais et échéances ; line-up et classement par équipe ; gains et suivi. Un manager crée et remplit les tournois de son équipe. Les rencontres restent sur le site public.',
+      'Le déplacement lié à une LAN (avec les Déplacements), le règlement en pièce jointe (avec le stockage des fichiers) et la fin des inscriptions reprise au calendrier du bureau. La page Tournois, la fiche (Informations, Participants avec line-up et classement, Finances ↗), l’onglet Tournois ↗ d’une équipe et les tournois joués du Parcours sont livrés le 11 novembre 2026 ; un manager crée et remplit les tournois de son équipe. Les gains et le Suivi ont leurs chantiers. Les rencontres restent sur le site public.',
     id: 'competitions',
     later: 'Licences et programmes d’éditeurs.',
     legacyHrefs: ['/sport-team-control/tournois-matchs'],

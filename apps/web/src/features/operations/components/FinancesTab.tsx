@@ -30,13 +30,16 @@ type Target =
   /** Each team links to its record for who may open it. */
   | { gameId: string; linkTeams: boolean; type: 'game' }
   | { personId: string; type: 'person' }
-  | { teamId: string; type: 'team' };
+  | { teamId: string; type: 'team' }
+  | { tournamentId: string; type: 'tournament' };
 
 const EMPTY_DESCRIPTIONS: Record<Target['type'], string> = {
   game: 'Les entrées et sorties d’argent affectées à ce jeu ou à l’une de ses équipes s’affichent ici.',
   person:
     'Les entrées et sorties d’argent qui nomment cette personne, payées par elle ou versées à elle, s’affichent ici.',
   team: 'Les entrées et sorties d’argent affectées à cette équipe s’affichent ici.',
+  tournament:
+    'Les entrées et sorties d’argent qui nomment ce tournoi (inscription, gains, déplacement) s’affichent ici.',
 };
 
 /** A row's name: a team, « Hors équipe » for the game's own money. */
@@ -206,7 +209,7 @@ const GameFinancesCard: FC<{ gameId: string; linkTeams: boolean }> = ({
 };
 
 /**
- * Finances ↗ of a team, a game or a record of the Répertoire (11 November
+ * Finances ↗ of a team, a game, a tournament or a record of the Répertoire (11 November
  * 2026): the operations that name it, read here and entered in Finances ›
  * Opérations; what came in and went out above them, team by team for a game.
  */
@@ -234,9 +237,12 @@ export const FinancesTab: FC<{ target: Target }> = ({ target }) => (
       totals={
         target.type === 'person'
           ? 'person'
-          : target.type === 'team'
-            ? 'result'
-            : undefined
+          : target.type === 'game'
+            ? undefined
+            : 'result'
+      }
+      tournamentId={
+        target.type === 'tournament' ? target.tournamentId : undefined
       }
     />
   </section>

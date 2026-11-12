@@ -1,7 +1,7 @@
 'use client';
 
 import { Command as CommandPrimitive } from 'cmdk';
-import { CheckIcon, ChevronDownIcon, SearchIcon } from 'lucide-react';
+import { CheckIcon, ChevronDownIcon, PlusIcon, SearchIcon } from 'lucide-react';
 import React, {
   type FC,
   type KeyboardEvent,
@@ -60,11 +60,23 @@ export const filterSearchSelectGroups = (
     .filter((group) => group.options.length > 0);
 };
 
+/** The line that adds the typed name, apart from the choices' values. */
+const CREATE_VALUE = 'search-select-create';
+
 type Props = {
   'aria-describedby'?: string;
   'aria-invalid'?: boolean;
   /** The first field of a window takes the focus. */
   autoFocus?: boolean;
+  /**
+   * A choice added from its typed name (owner, 12 November 2026): the menu
+   * always opens on its search, and a name absent from the choices offers
+   * a last line, « Ajouter « Lyon Gaming » aux organisateurs ».
+   */
+  create?: Readonly<{
+    label: (name: string) => string;
+    onCreate: (name: string) => void;
+  }>;
   disabled?: boolean;
   /** « Aucune fonction trouvée », under a search that finds nothing. */
   emptyText: string;
@@ -85,12 +97,14 @@ type Props = {
  * its heading, keeps a bounded height and scrolls, and from eight choices
  * opens on a search field. Arrows, Entrée and Échap from the keyboard; the
  * chosen value carries a check. A short fixed list of the code keeps the
- * plain `Select`.
+ * plain `Select`. With a search, a letter typed on the field starts it and
+ * the first match is highlighted, so Entrée takes it.
  */
 export const SearchSelect: FC<Props> = ({
   'aria-describedby': describedBy,
   'aria-invalid': invalid,
   autoFocus,
+  create,
   disabled,
   emptyText,
   groups,
@@ -110,9 +124,26 @@ export const SearchSelect: FC<Props> = ({
   const rootRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const options = groups.flatMap((group) => group.options);
-  const searchable = options.length >= SEARCH_SELECT_SEARCH_FROM;
+  const searchable =
+    Boolean(create) || options.length >= SEARCH_SELECT_SEARCH_FROM;
   const selected = options.find((option) => option.value === value);
   const shown = filterSearchSelectGroups(groups, query);
+  const typed = query.trim();
+  // A name that is already a choice is chosen, not added twice.
+  const creatable =
+    typed !== '' &&
+    !options.some(
+      (option) =>
+        normalizeSearchText(option.label) === normalizeSearchText(typed),
+    );
+
+  const search = (next: string): void => {
+    setQuery(next);
+    setActive(
+      filterSearchSelectGroups(groups, next)[0]?.options[0]?.value ??
+        CREATE_VALUE,
+    );
+  };
 
   const toggle = (next: boolean): void => {
     if (next) {
@@ -127,11 +158,24 @@ export const SearchSelect: FC<Props> = ({
     setOpen(false);
   };
 
-  // The arrows open the menu too, as a native choice does.
+  // The arrows open the menu too, as a native choice does; a letter starts
+  // the search, as in a text field.
   const openFromKeyboard = (event: KeyboardEvent<HTMLButtonElement>): void => {
-    if (!open && ['ArrowDown', 'ArrowUp'].includes(event.key)) {
+    if (open) return;
+    if (['ArrowDown', 'ArrowUp'].includes(event.key)) {
       event.preventDefault();
       toggle(true);
+    } else if (
+      searchable &&
+      event.key.length === 1 &&
+      event.key !== ' ' &&
+      !event.altKey &&
+      !event.ctrlKey &&
+      !event.metaKey
+    ) {
+      event.preventDefault();
+      setOpen(true);
+      search(event.key);
     }
   };
 
@@ -188,7 +232,15 @@ export const SearchSelect: FC<Props> = ({
         onOpenAutoFocus={(event) => {
           // The search when there is one, otherwise the list for the arrows.
           event.preventDefault();
-          (inputRef.current ?? rootRef.current)?.focus();
+          const input = inputRef.current;
+          if (!input) {
+            rootRef.current?.focus();
+
+            return;
+          }
+          input.focus();
+          // After a letter typed on the field, the caret follows it.
+          input.setSelectionRange(input.value.length, input.value.length);
         }}
       >
         <CommandPrimitive
@@ -210,7 +262,7 @@ export const SearchSelect: FC<Props> = ({
               <CommandPrimitive.Input
                 aria-label={searchLabel}
                 className="placeholder:text-muted-foreground font-form h-10 w-full min-w-0 bg-transparent text-[16px] outline-none max-sm:h-11 lg:text-[13px]"
-                onValueChange={setQuery}
+                onValueChange={search}
                 placeholder={`${searchLabel}…`}
                 ref={inputRef}
                 value={query}
@@ -267,6 +319,28 @@ export const SearchSelect: FC<Props> = ({
                 ))}
               </CommandPrimitive.Group>
             ))}
+            {create && creatable && (
+              <CommandPrimitive.Group
+                className={cn(
+                  shown.length > 0 &&
+                    'border-border-divider mt-1 border-t pt-1',
+                )}
+              >
+                <CommandPrimitive.Item
+                  className="rounded-option text-primary-emphasis data-[selected=true]:bg-surface-tile-hover flex min-h-[34px] w-full cursor-default items-center gap-2 px-2 py-1.5 text-[12px] leading-5 outline-hidden select-none max-sm:min-h-11"
+                  onSelect={() => {
+                    setOpen(false);
+                    create.onCreate(typed);
+                  }}
+                  value={CREATE_VALUE}
+                >
+                  <PlusIcon aria-hidden="true" className="size-4 shrink-0" />
+                  <span className="min-w-0 [overflow-wrap:anywhere]">
+                    {create.label(typed)}
+                  </span>
+                </CommandPrimitive.Item>
+              </CommandPrimitive.Group>
+            )}
           </CommandPrimitive.List>
         </CommandPrimitive>
       </PopoverContent>

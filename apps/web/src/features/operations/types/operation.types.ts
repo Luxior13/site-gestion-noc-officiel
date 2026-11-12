@@ -34,6 +34,8 @@ export type OperationItem = Readonly<{
   /** Whether a record is linked, even when `person` is hidden. */
   personLinked: boolean;
   toAccount: NamedRef | null;
+  /** The tournament it concerns (11 November 2026). */
+  tournament: NamedRef | null;
   updatedAt: string;
   version: number;
 }>;
@@ -77,6 +79,7 @@ export type OperationFilters = Readonly<{
   personId?: string;
   q?: string;
   teamId?: string;
+  tournamentId?: string;
 }>;
 
 /** What a window or a record sends. */
@@ -95,6 +98,8 @@ export type OperationInput = Readonly<{
   personId?: string | null;
   teamId: string | null;
   toAccountId: string | null;
+  /** Of the team's or game's, when one is chosen. */
+  tournamentId?: string | null;
 }>;
 
 /** An account an operation may use. */
@@ -121,4 +126,7 @@ export type OperationChoices = Readonly<{
   incomeCategories: readonly ListChoice[];
   organizations: readonly NamedRef[];
   paymentMethods: readonly ListChoice[];
+  /** Undated, then the latest first, with their game and dates. */
+  tournaments: readonly (NamedRef &
+    Readonly<{ datesLabel: string; gameId: string; gameName: string }>)[];
 }>;

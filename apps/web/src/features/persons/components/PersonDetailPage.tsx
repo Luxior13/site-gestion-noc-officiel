@@ -34,6 +34,7 @@ import {
   journeySourcesOf,
 } from '$features/passages/journey-sources';
 import { getStaffCapabilities } from '$features/staff/staff.permissions';
+import { getTournamentCapabilities } from '$features/tournaments/tournament.permissions';
 import { PageCanvas, PageShell } from '$ui/page-shell';
 import { ApiClientError } from '$utils/api.utils';
 
@@ -62,6 +63,11 @@ const PersonIdentitySection = dynamic(() =>
 const FinancesTab = dynamic(() =>
   import('$features/operations/components/FinancesTab').then(
     (module) => module.FinancesTab,
+  ),
+);
+const TournamentHistory = dynamic(() =>
+  import('$features/tournaments/components/TournamentHistory').then(
+    (module) => module.TournamentHistory,
   ),
 );
 const PersonJourneySection = dynamic(() =>
@@ -159,13 +165,22 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
     teams: getGameCapabilities(userData).canViewTeams,
   };
   const canViewOperations = getOperationCapabilities(userData).canView;
+  // The tournaments played join the Parcours (11 November 2026).
+  const canViewTournaments = getTournamentCapabilities(userData).canView;
   const allowed = (section: PersonDetailSection): boolean =>
     section === 'identite' ||
     (section === 'coordonnees' || section === 'en-ligne'
       ? canViewContact
       : section === 'finances'
         ? canViewOperations
-        : reach.teams || reach.structure);
+        : reach.teams || reach.structure || canViewTournaments);
+  // « le Roster de chaque équipe, l’Effectif de Bureau & staff et les tournois ».
+  const journeySources = [
+    journeySourcesOf(reach).replace(' et ', ', '),
+    canViewTournaments ? 'les tournois' : '',
+  ]
+    .filter(Boolean)
+    .join(' et ');
   const activeSection = allowed(requestedSection)
     ? requestedSection
     : 'identite';
@@ -337,7 +352,7 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
           allowed(section.id),
         ).map((section) =>
           section.id === 'parcours'
-            ? { ...section, managedIn: journeySourcesOf(reach) }
+            ? { ...section, managedIn: journeySources }
             : // A tab says how many entries it holds (27 October 2026; split
               // with En ligne on 10 November).
               section.id === 'coordonnees'
@@ -383,12 +398,21 @@ const PersonDetailContent: FC<PersonDetailPageProps> = ({
             target={{ personId: person.id, type: 'person' }}
           />
         ) : activeSection === 'parcours' ? (
-          <section aria-label="Parcours">
-            <PersonJourneySection
-              key={person.id}
-              personId={person.id}
-              reach={reach}
-            />
+          <section aria-label="Parcours" className="space-y-5">
+            {(reach.teams || reach.structure) && (
+              <PersonJourneySection
+                key={person.id}
+                personId={person.id}
+                reach={reach}
+              />
+            )}
+            {canViewTournaments && (
+              <TournamentHistory
+                key={`tournaments-${person.id}`}
+                standalone={false}
+                target={{ personId: person.id }}
+              />
+            )}
           </section>
         ) : activeSection === 'en-ligne' ? (
           <section aria-label="En ligne" className="space-y-5">

@@ -355,7 +355,7 @@ tenue dans un Roster (Manager, Coach…) n’ouvre jamais rien.
 | --- | --- |
 | Stockage | `User.esportScope` (`ALL`, `GAMES`, `TEAMS`) et `UserEsportScopeItem` (un jeu ou une équipe par ligne) ; seules les lignes du type choisi comptent ; une liste vide n’ouvre rien, jamais tout |
 | Administrateur | Toujours `ALL` (contrainte `User_esportScope_admin_check`) ; une promotion remet la portée à « Tous les jeux » |
-| Application | Relue à chaque requête et dans chaque mutation, sous le verrou du compte (`$server/esport-scope`) : listes des jeux et équipes, fiche d’un jeu et ses fonctions, fiche d’une équipe et son Roster, Parcours d’une fiche, totaux (nombre d’équipes d’un jeu) |
+| Application | Relue à chaque requête et dans chaque mutation, sous le verrou du compte (`$server/esport-scope`) : listes des jeux et équipes, fiche d’un jeu et ses fonctions, fiche d’une équipe et son Roster, Parcours d’une fiche, totaux (nombre d’équipes d’un jeu) ; tournois (11 novembre 2026) : ceux des jeux choisis, ou ceux où une équipe choisie est engagée, et seulement ces équipes |
 | Hors portée | Répond « introuvable » (404), comme un identifiant inventé : le compte n’apprend rien de ce qu’il ne voit pas |
 | Tout un jeu | Modifier un jeu ou ses fonctions, ajouter une équipe, ordonner ses équipes : seulement avec ce jeu entier dans la portée (`ALL` ou `GAMES`) ; une portée d’équipes reçoit un refus (403) quel que soit le jeu |
 | Tous les jeux | Ajouter un jeu ou ordonner les jeux : seulement avec `ALL` |
@@ -405,6 +405,27 @@ pendant l’écriture). Le journal montre à tout lecteur qu’un compte a chang
 mais son nom et ses valeurs seulement avec `financial_accounts:view`
 (« Compte financier », « Valeur masquée »).
 
+### Tournois
+
+Page Tournois du pôle Esport, livrée le 11 novembre 2026 (« ok go » sur le
+lot 1). Deux permissions, comme les autres pages ; preset `false` pour USER
+et `true` pour ADMIN ; le compte racine les possède implicitement. Rangées
+dans l’éditeur sous Esport › Tournois. La [portée Esport](#portée-esport)
+dit lesquels : un manager dont la portée est son équipe crée et remplit les
+tournois de cette équipe (décision du 8 novembre 2026), l’équipe engagée
+étant alors demandée à la création.
+
+| Clé canonique | Action couverte | Dépend de | Risque | Step-up à l'usage |
+| --- | --- | --- | --- | --- |
+| `tournaments:view` | voir les tournois de sa portée, leurs informations, les équipes engagées, leur line-up (les noms, comme un Roster) et leur classement ; l’onglet Tournois ↗ d’une équipe ; avec `persons:view`, les tournois joués du Parcours d’une fiche | — | défaut | Non |
+| `tournaments:manage` | ajouter, modifier ou supprimer un tournoi, engager ou retirer une équipe, tenir son line-up et son classement, et chercher pour cela une fiche du Répertoire par son nom (un remplaçant ponctuel) | `tournaments:view` | sensible | Non |
+
+Règles : une équipe engagée est dans la portée (sinon « introuvable ») ; un
+compte d’équipes choisies ne supprime un tournoi que si toutes ses équipes
+engagées sont les siennes (403 sinon). L’onglet Finances ↗ d’un tournoi suit
+`operations:view`. Le journal masque les noms d’un line-up à qui n’a ni
+`tournaments:view` ni `persons:view`.
+
 ### Opérations
 
 Page Opérations du pôle Finances, livrée le 11 novembre 2026 (« ok go »). Le
@@ -452,6 +473,13 @@ montre à tout lecteur qu’une organisation ou un contact a changé, mais leurs
 noms et valeurs seulement avec `organizations:view` (« Organisation »,
 « Contact d’une organisation », « Valeur masquée ») ; la fiche reliée n’y est
 jamais nommée (« Liée »).
+
+Un organisateur tapé dans un tournoi (12 novembre 2026,
+`/api/relations/organisations/organisateurs`) demande `organizations:manage` :
+la fenêtre et la fiche d’un tournoi ne proposent « Ajouter « X » aux
+organisateurs » qu’à qui gère aussi les organisations, seul à pouvoir corriger
+la fiche ajoutée ; un manager des tournois choisit parmi les organisateurs
+existants.
 
 ### Page Partenariats (planifiée)
 
@@ -508,10 +536,11 @@ pas en droits délégables individuellement.
 | `/administration`                                    | route de support redirigeant vers les utilisateurs                                                                                                         |
 | `/esport/jeux`                                       | `games:view` pour lire ; `games:manage` pour ajouter, modifier et supprimer un jeu ; `teams:view` et `teams:manage` pour les équipes (`/api/equipes`) ; l’API refait le contrôle dans sa transaction |
 | `/esport/jeux/[id]`                                  | `games:view` pour lire le jeu et ses fonctions ; `games:manage` pour les modifier (`/api/jeux/[id]/fonctions`) ; le nombre d’équipes avec `teams:view` |
+| `/esport/tournois` et `/esport/tournois/[id]` | `tournaments:view` pour lire (`/api/tournois`), dans la portée Esport ; `tournaments:manage` pour ajouter, modifier, supprimer, engager une équipe, lire son Roster aux dates (`/api/tournois/[id]/candidats`), les choix (`/api/tournois/choix`) et chercher un remplaçant (`/api/tournois/personnes`) ; l’onglet Finances ↗ avec `operations:view` ; l’API refait le contrôle dans sa transaction |
 | `/structure/entites` et `/structure/entites/[id]`    | `entities:view` pour lire (`/api/structure/entites`) ; `entities:manage` pour ajouter, modifier, rendre principale ou supprimer ; l’API refait le contrôle dans sa transaction |
 | `/finances/comptes` et `/finances/comptes/[id]`      | `financial_accounts:view` pour lire les comptes et les entités qui peuvent en tenir (`/api/finances/comptes`) ; `financial_accounts:manage` pour ouvrir, modifier, clôturer ou supprimer ; l’API refait le contrôle dans sa transaction |
 | `/finances/operations` et `/finances/operations/[id]` | `operations:view` pour lire (`/api/finances/operations`) ; `operations:manage` pour saisir, modifier ou supprimer, et lire ce que propose la fenêtre (`/api/finances/operations/choix`) ; `persons:view` en plus pour relier une fiche du Répertoire ; l’API refait le contrôle dans sa transaction |
-| `/relations/organisations` et `/relations/organisations/[id]` | `organizations:view` pour lire (`/api/relations/organisations`) ; `organizations:manage` pour ajouter, modifier, supprimer une organisation et gérer ses contacts ; `persons:view` en plus pour relier ou voir la fiche du Répertoire d’un contact ; l’API refait le contrôle dans sa transaction |
+| `/relations/organisations` et `/relations/organisations/[id]` | `organizations:view` pour lire (`/api/relations/organisations`) ; `organizations:manage` pour ajouter, modifier, supprimer une organisation et gérer ses contacts, et pour ajouter un organisateur tapé dans un tournoi (`/api/relations/organisations/organisateurs`) ; `persons:view` en plus pour relier ou voir la fiche du Répertoire d’un contact ; l’API refait le contrôle dans sa transaction |
 | `/structure/bureau-staff`                            | `staff:view` pour lire l’Effectif, les anciens membres et les fonctions (`/api/structure`) ; `staff:manage` pour les modifier ; la recherche d’une fiche (`/api/passages/personnes`) accepte `teams:manage` ou `staff:manage` ; l’API refait le contrôle dans sa transaction |
 | `/systeme/utilisateurs`                       | `users:view`                                                                                                                                               |
 | `/systeme/utilisateurs/nouveau`               | `users:create`, donc aussi `users:view`                                                                                                                    |
