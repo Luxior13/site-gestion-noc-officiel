@@ -417,13 +417,14 @@ tournois de cette équipe (décision du 8 novembre 2026), l’équipe engagée
 
 | Clé canonique | Action couverte | Dépend de | Risque | Step-up à l'usage |
 | --- | --- | --- | --- | --- |
-| `tournaments:view` | voir les tournois de sa portée, leurs informations, les équipes engagées, leur line-up (les noms, comme un Roster) et leur classement ; l’onglet Tournois ↗ d’une équipe ; avec `persons:view`, les tournois joués du Parcours d’une fiche | — | défaut | Non |
-| `tournaments:manage` | ajouter, modifier ou supprimer un tournoi, engager ou retirer une équipe, tenir son line-up et son classement, et chercher pour cela une fiche du Répertoire par son nom (un remplaçant ponctuel) | `tournaments:view` | sensible | Non |
+| `tournaments:view` | voir les tournois de sa portée, leurs informations, les équipes engagées et leur classement ; l’onglet Tournois ↗ d’une équipe ; avec `persons:view`, les tournois des équipes d’une fiche pendant qu’elle y était, dans son Parcours | — | défaut | Non |
+| `tournaments:manage` | ajouter, modifier ou supprimer un tournoi, engager ou retirer une équipe et tenir son classement | `tournaments:view` | sensible | Non |
 
 Règles : une équipe engagée est dans la portée (sinon « introuvable ») ; un
 compte d’équipes choisies ne supprime un tournoi que si toutes ses équipes
 engagées sont les siennes (403 sinon). L’onglet Finances ↗ d’un tournoi suit
-`operations:view`. Le journal masque les noms d’un line-up à qui n’a ni
+`operations:view`. Le journal masque les noms d’un line-up, dans les
+événements écrits jusqu’au 13 novembre 2026, à qui n’a ni
 `tournaments:view` ni `persons:view`.
 
 ### Opérations
@@ -536,7 +537,7 @@ pas en droits délégables individuellement.
 | `/administration`                                    | route de support redirigeant vers les utilisateurs                                                                                                         |
 | `/esport/jeux`                                       | `games:view` pour lire ; `games:manage` pour ajouter, modifier et supprimer un jeu ; `teams:view` et `teams:manage` pour les équipes (`/api/equipes`) ; l’API refait le contrôle dans sa transaction |
 | `/esport/jeux/[id]`                                  | `games:view` pour lire le jeu et ses fonctions ; `games:manage` pour les modifier (`/api/jeux/[id]/fonctions`) ; le nombre d’équipes avec `teams:view` |
-| `/esport/tournois` et `/esport/tournois/[id]` | `tournaments:view` pour lire (`/api/tournois`), dans la portée Esport ; `tournaments:manage` pour ajouter, modifier, supprimer, engager une équipe, lire son Roster aux dates (`/api/tournois/[id]/candidats`), les choix (`/api/tournois/choix`) et chercher un remplaçant (`/api/tournois/personnes`) ; l’onglet Finances ↗ avec `operations:view` ; l’API refait le contrôle dans sa transaction |
+| `/esport/tournois` et `/esport/tournois/[id]` | `tournaments:view` pour lire (`/api/tournois`), dans la portée Esport ; `tournaments:manage` pour ajouter, modifier, supprimer, engager une équipe et lire les choix (`/api/tournois/choix`) ; l’onglet Finances ↗ avec `operations:view` ; l’API refait le contrôle dans sa transaction |
 | `/structure/entites` et `/structure/entites/[id]`    | `entities:view` pour lire (`/api/structure/entites`) ; `entities:manage` pour ajouter, modifier, rendre principale ou supprimer ; l’API refait le contrôle dans sa transaction |
 | `/finances/comptes` et `/finances/comptes/[id]`      | `financial_accounts:view` pour lire les comptes et les entités qui peuvent en tenir (`/api/finances/comptes`) ; `financial_accounts:manage` pour ouvrir, modifier, clôturer ou supprimer ; l’API refait le contrôle dans sa transaction |
 | `/finances/operations` et `/finances/operations/[id]` | `operations:view` pour lire (`/api/finances/operations`) ; `operations:manage` pour saisir, modifier ou supprimer, et lire ce que propose la fenêtre (`/api/finances/operations/choix`) ; `persons:view` en plus pour relier une fiche du Répertoire ; l’API refait le contrôle dans sa transaction |

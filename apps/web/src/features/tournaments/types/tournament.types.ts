@@ -1,5 +1,3 @@
-import type { PersonRef } from '$features/persons/types/person.types';
-
 import type {
   TournamentDatePrecision,
   TournamentFormat,
@@ -44,19 +42,11 @@ export type TournamentItem = Readonly<{
 }>;
 
 /**
- * A person of a line-up. Their function is read from the team's Roster at
- * the tournament's dates; none there: a stand-in.
+ * One of our teams engaged, with its placement (13 November 2026: who
+ * played is not kept, the team's Roster tells it).
  */
-export type TournamentLineupMemberItem = Readonly<{
-  function: Readonly<{ kind: 'PLAYER' | 'STAFF'; name: string }> | null;
-  person: PersonRef;
-}>;
-
 export type TournamentEntryItem = TournamentEntrySummary &
-  Readonly<{
-    lineup: readonly TournamentLineupMemberItem[];
-    version: number;
-  }>;
+  Readonly<{ version: number }>;
 
 export type TournamentDetail = Omit<TournamentItem, 'entries'> &
   Readonly<{
@@ -100,15 +90,11 @@ export type TournamentInput = Readonly<{
   startOn: string | null;
 }>;
 
-/** An engaged team's line-up (records of the Répertoire) and placement. */
+/** An engaged team's placement. */
 export type TournamentEntryInput = Readonly<{
-  lineup: readonly string[];
   placementFrom: number | null;
   placementTo: number | null;
 }>;
-
-/** A member of the team's Roster at the tournament's dates. */
-export type TournamentLineupCandidate = TournamentLineupMemberItem;
 
 /** What the windows of the tournaments propose. */
 export type TournamentChoices = Readonly<{

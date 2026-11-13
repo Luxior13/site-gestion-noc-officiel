@@ -62,8 +62,9 @@ Une correction modifie le passage ; elle ne crée pas une nouvelle identité. To
 ## Tournois et suivi d’une personne
 
 Un **tournoi** est un dossier de la structure : qui y a participé, ce qu’il a
-rapporté, ce qui s’y est mal passé. Line-up, classement final et gains se notent
-par équipe engagée ; l’organisateur est une fiche organisation ; l’état (à venir,
+rapporté, ce qui s’y est mal passé. Classement final et gains se notent
+par équipe engagée ; qui a joué se lit dans le Roster daté de l’équipe
+(13 novembre 2026, plus de line-up) ; l’organisateur est une fiche organisation ; l’état (à venir,
 en cours, terminé) se calcule depuis les dates (décision du 8 novembre 2026). Rencontres et résultats restent sur le site
 public. Les gains se lisent sur la fiche tournoi ; l’argent reçu vit dans les
 [Finances](../propositions/feuille-de-route.md#3-socle-de-trésorerie), et un résultat sportif
@@ -71,17 +72,16 @@ ne déclenche aucun encaissement.
 
 Livré le 11 novembre 2026 (lot 1, « ok go » sur trois choix) : le **classement**
 est une place ou une **fourchette** partagée (« 3e–4e », « 5e–8e ») ; le
-**line-up** se choisit parmi les membres du Roster de l’équipe aux dates du
-tournoi, et peut compter un **remplaçant ponctuel** du Répertoire, marqué
-« Hors Roster » : sa fonction se lit dans le Roster, jamais recopiée ; un
+line-up, livré le même jour puis retiré le 13 novembre 2026, n’est plus
+gardé : le tournoi garde ses équipes engagées, le Parcours d’une personne
+calcule les tournois de ses équipes pendant qu’elle y était ; un
 tournoi annulé ou forfait garde sa ligne, marqué **« Annulé »**, l’état
 restant calculé depuis les dates. Depuis le 12 novembre 2026, un tournoi ne
 garde que ce qui aide à le préparer (le site public garde le reste) : ses
 dates sont facultatives, au jour ou au mois (« Date à fixer » sinon), et
 « Annuler le tournoi » est une action, pour celui que des opérations
 nomment. Deux tournois peuvent porter le même nom : une **édition** les
-distingue (« Saison 2 »), le couple nom + édition étant unique dans un jeu. Une fiche qui figure dans un line-up ne se
-supprime plus, comme une fiche qui a un passage ([fiche tournoi](../pages/esport/tournoi.md)).
+distingue (« Saison 2 »), le couple nom + édition étant unique dans un jeu ([fiche tournoi](../pages/esport/tournoi.md)).
 
 Le **suivi** réunit ce que le bureau sait d’une personne : notes, problèmes et bans.
 

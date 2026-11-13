@@ -264,7 +264,10 @@ export const TOURNAMENT_FIELD_LABELS: ReadonlyArray<readonly [string, string]> =
     ['cancelled', 'Annulé'],
   ];
 
-/** What an engaged team holds: its line-up and placement. */
+/**
+ * What an engaged team holds: its placement, and its line-up in the events
+ * written until 13 November 2026, when line-ups stopped being kept.
+ */
 export const TOURNAMENT_ENTRY_FIELD_LABELS: ReadonlyArray<
   readonly [string, string]
 > = [

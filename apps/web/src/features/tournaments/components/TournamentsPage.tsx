@@ -217,7 +217,7 @@ const TournamentsList: FC<{
       description={
         isFiltered
           ? undefined
-          : 'Chaque tournoi garde ses équipes engagées, leur line-up et leur classement.'
+          : 'Chaque tournoi garde ses équipes engagées et leur classement.'
       }
       icon={<Trophy aria-hidden="true" className="size-5" />}
       layout="panel"
@@ -474,7 +474,7 @@ const TournamentsContent: FC<{
             </Button>
           ) : undefined
         }
-        description="Les tournois de la structure, le plus récent en premier : nos équipes engagées, leur line-up et leur classement."
+        description="Les tournois de la structure, le plus récent en premier : nos équipes engagées et leur classement."
         icon={<Trophy aria-hidden="true" />}
         title={FEATURES.tournaments.label}
       />

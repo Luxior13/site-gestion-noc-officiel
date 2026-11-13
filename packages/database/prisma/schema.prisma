@@ -487,7 +487,6 @@ model Person {
   passages             PersonPassage[]
   organizationContacts OrganizationContact[]
   financialOperations  FinancialOperation[]
-  tournamentLineups    TournamentLineupMember[]
 
   @@index([createdAt, id])
   @@index([updatedAt, id])
@@ -1032,36 +1031,22 @@ model Tournament {
 
 /// One of our teams engaged in a tournament, a team of its game
 /// (`TournamentEntry_team_check`), with its final placement: one place, or a
-/// shared range (« 3e–4e »). Its line-up changes with its version.
+/// shared range (« 3e–4e »). Who played is not kept (13 November 2026): the
+/// team's Roster at the tournament's dates tells it.
 model TournamentEntry {
-  id            String                   @id @default(cuid())
+  id            String     @id @default(cuid())
   tournamentId  String
-  tournament    Tournament               @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   teamId        String
-  team          Team                     @relation(fields: [teamId], references: [id], onDelete: Restrict)
+  team          Team       @relation(fields: [teamId], references: [id], onDelete: Restrict)
   placementFrom Int?
   placementTo   Int?
-  version       Int                      @default(1)
-  createdAt     DateTime                 @default(now())
-  updatedAt     DateTime                 @updatedAt
-  lineup        TournamentLineupMember[]
+  version       Int        @default(1)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
   @@unique([tournamentId, teamId])
   @@index([teamId])
-}
-
-/// A person of the Répertoire in a line-up; their function is read from the
-/// team's Roster at the tournament's dates, a stand-in when none.
-model TournamentLineupMember {
-  id        String          @id @default(cuid())
-  entryId   String
-  entry     TournamentEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
-  personId  String
-  person    Person          @relation(fields: [personId], references: [id], onDelete: Restrict)
-  createdAt DateTime        @default(now())
-
-  @@unique([entryId, personId])
-  @@index([personId])
 }
 
 /// A person to reach at an organisation. Linked to a record of the Répertoire

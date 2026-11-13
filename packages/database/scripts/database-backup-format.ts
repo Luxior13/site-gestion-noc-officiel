@@ -10,8 +10,10 @@ import { Buffer } from 'node:buffer';
 // operations; v18, the same day: the tournaments, their engaged teams and
 // line-ups, and the tournament an operation names; v19 (12 November 2026):
 // a tournament's optional dates, edition and link, without circuit,
-// roster deadline nor check-in.
-export const DATABASE_BACKUP_FORMAT_VERSION = 19;
+// roster deadline nor check-in; v20, the same day: the roles held in a
+// tournament by each person of a line-up; v21 (13 November 2026): no
+// line-up any more, a tournament keeps its engaged teams only.
+export const DATABASE_BACKUP_FORMAT_VERSION = 21;
 export const DATABASE_BACKUP_BATCH_SIZE = 500;
 export const MAX_DATABASE_BACKUP_BYTES = 2 * 1024 * 1024 * 1024;
 export const MAX_BACKUP_LINE_BYTES = 16 * 1024 * 1024;
@@ -201,7 +203,7 @@ export const DATABASE_BACKUP_TABLES = [
     tableName: 'OrganizationContact',
   },
   // The tournaments (11 November 2026) after their game and organiser,
-  // their engaged teams, then the records of their line-ups.
+  // then their engaged teams.
   {
     cursorColumn: 'id',
     cursorKind: 'text',
@@ -213,12 +215,6 @@ export const DATABASE_BACKUP_TABLES = [
     cursorKind: 'text',
     property: 'tournamentEntries',
     tableName: 'TournamentEntry',
-  },
-  {
-    cursorColumn: 'id',
-    cursorKind: 'text',
-    property: 'tournamentLineupMembers',
-    tableName: 'TournamentLineupMember',
   },
   // The operations (11 November 2026) after all they name: accounts, the
   // values of the lists, organisations, records, teams, games and

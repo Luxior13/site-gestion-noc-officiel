@@ -54,8 +54,6 @@ export const TOURNAMENT_NAME_MAX_LENGTH = 120;
 export const TOURNAMENT_EDITION_MAX_LENGTH = 40;
 export const TOURNAMENT_LOCATION_MAX_LENGTH = 200;
 export const TOURNAMENT_LINK_MAX_LENGTH = 500;
-/** A line-up holds a team and its staff, never a crowd. */
-export const TOURNAMENT_LINEUP_MAX = 30;
 /** The last place a final ranking may give. */
 export const TOURNAMENT_PLACEMENT_MAX = 10_000;
 

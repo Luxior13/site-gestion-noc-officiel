@@ -8,10 +8,10 @@
 | --- | --- |
 | Route | `/esport/tournois/[id]` (Informations), `?section=participants` et `?section=finances` |
 | Espace | Esport ; « Tournois » reste l’entrée courante de la navigation |
-| Gabarit visé | [B. Fiche à sections](../../design/gabarits.md#b-fiche-à-sections) : Informations modifiées sur place, Participants en cartes, Finances ↗ en lecture ([onglet en lecture](../../design/gabarits.md#onglets-dune-fiche)) |
+| Gabarit visé | [B. Fiche à sections](../../design/gabarits.md#b-fiche-à-sections) : Informations modifiées sur place, Participants en une carte de rubrique, Finances ↗ en lecture ([onglet en lecture](../../design/gabarits.md#onglets-dune-fiche)) |
 | État d’harmonisation | Aligné — voir [Harmonisation](../../design/harmonisation.md#état-par-page) |
 | Point d’entrée | [page.tsx](../../../apps/web/src/app/esport/tournois/%5Bid%5D/page.tsx) → [TournamentDetailPage](../../../apps/web/src/features/tournaments/components/TournamentDetailPage.tsx) → [TournamentInformationSection](../../../apps/web/src/features/tournaments/components/TournamentInformationSection.tsx), [TournamentParticipantsSection](../../../apps/web/src/features/tournaments/components/TournamentParticipantsSection.tsx) et [TournamentEntryDialog](../../../apps/web/src/features/tournaments/components/TournamentEntryDialog.tsx), [FinancesTab](../../../apps/web/src/features/operations/components/FinancesTab.tsx) |
-| Contrôle d’accès | `tournaments:view` pour lire ; `tournaments:manage` pour modifier, supprimer, engager une équipe et tenir son line-up ; hors de la [portée Esport](../../domaines/permissions.md#portée-esport) du compte, « introuvable » ; Finances ↗ avec `operations:view` ; le nom d’une fiche du line-up est un lien avec `persons:view`, celui d’une équipe avec `teams:view`, celui de l’organisateur avec `organizations:view` ([permissions](../../domaines/permissions.md#tournois)) |
+| Contrôle d’accès | `tournaments:view` pour lire ; `tournaments:manage` pour modifier, supprimer, engager une équipe et tenir son classement ; hors de la [portée Esport](../../domaines/permissions.md#portée-esport) du compte, « introuvable » ; Finances ↗ avec `operations:view` ; le nom d’une équipe est un lien avec `teams:view`, celui de l’organisateur avec `organizations:view` ([permissions](../../domaines/permissions.md#tournois)) |
 | Chargement / erreur dédiés | `loading.tsx` (squelette de fiche) ; « Tournoi introuvable » ; « Chargement impossible » avec « Réessayer » ; « Accès refusé » avec retour aux tournois ; titre d’onglet « Fiche tournoi · Tournois · Noctambule » |
 
 ## Composition actuelle
@@ -51,33 +51,32 @@ Livrée le 11 novembre 2026 (« ok go » sur le lot 1 et ses trois choix) :
    supprime avec ses équipes engagées ; avec des opérations, à la place du
    bouton, « Ce tournoi a 2 opérations : il reste… Annulez-le plutôt que de
    le supprimer. ».
-4. **Participants** (`TournamentParticipantsSection`) : « 2 équipes
-   engagées » et « Engager une équipe » ; une carte par équipe (titre lien
-   vers sa fiche, pastille du classement « 3e–4e » ou « Classement à venir »,
-   « Modifier ») ; dessous, le line-up : avatar, nom (lien vers la fiche pour
-   qui lit le Répertoire), et à droite la fonction tenue dans le Roster de
-   l’équipe aux dates du tournoi, ou « Hors Roster » pour un remplaçant
-   ponctuel. Vide : « Aucune équipe engagée » avec « Engager une équipe ».
-5. **Fenêtre d’une équipe engagée** (`TournamentEntryDialog`) : Équipe (les
-   équipes du jeu pas encore engagées, à l’engagement seulement), **Line-up**
-   (les membres du Roster aux dates du tournoi, cases à cocher par blocs
-   Joueurs, Encadrement, Remplaçants ponctuels ; les joueurs cochés d’office
-   à l’engagement), « Ajouter un remplaçant ponctuel » (recherche d’une fiche
-   du Répertoire, comme pour un Roster), **Classement final** : Place et « à
-   la place » (« 3 à 4 pour 3e–4e, 5 à 8 pour un Top 8 ; vide tant que le
-   tournoi n’est pas fini »). « Retirer l’équipe » à gauche, confirmé à part.
-   Version dépassée : le message et « Actualiser le tournoi ».
+4. **Participants** (`TournamentParticipantsSection`), une seule carte de
+   rubrique « 2 équipes engagées », « Engager une équipe » sur son bandeau ;
+   une ligne par équipe : son nom (lien vers sa fiche pour qui lit les
+   équipes), la pastille du classement (« 3e–4e » ou « Classement à
+   venir ») et « Modifier ». Qui a joué n’est pas gardé (13 novembre 2026) :
+   le Roster de l’équipe, daté, et le site public le disent. Vide : « Aucune
+   équipe engagée » avec « Engager une équipe ».
+5. **Fenêtre d’une équipe engagée** (`TournamentEntryDialog`) : à
+   l’engagement, l’**Équipe** (menu à recherche des équipes du jeu pas
+   encore engagées ; choisie d’office s’il n’en reste qu’une), et c’est tout
+   tant que le tournoi n’est pas fini (« son classement se saisira dans
+   « Modifier », une fois le tournoi fini ») ; **Classement final** : Place
+   et « à la place » (« 3 à 4 pour 3e–4e, 5 à 8 pour un Top 8 ; vide tant que
+   le tournoi n’est pas fini »), dans « Modifier », et à l’engagement
+   seulement d’un tournoi terminé. « Retirer l’équipe » à gauche, confirmé à
+   part. Version dépassée : le message et « Actualiser le tournoi ».
 6. **Finances ↗** (`FinancesTab`) : les opérations qui nomment le tournoi,
    avec « Entrées · Sorties · Résultat », en lecture, comme les fiches jeu et
    équipe.
 
-Données : tables `Tournament`, `TournamentEntry`, `TournamentLineupMember`,
-colonne `FinancialOperation.tournamentId` ([données](../../systeme/donnees.md)) ;
+Données : tables `Tournament`, `TournamentEntry`, colonne
+`FinancialOperation.tournamentId` ([données](../../systeme/donnees.md)) ;
 `GET/POST /api/tournois`, `GET/PATCH/DELETE /api/tournois/[id]`,
 `POST /api/tournois/[id]/participants`,
 `PATCH/DELETE /api/tournois/[id]/participants/[entryId]`,
-`GET /api/tournois/[id]/candidats`, `GET /api/tournois/choix`,
-`GET /api/tournois/personnes` ([API](../../systeme/api.md)).
+`GET /api/tournois/choix` ([API](../../systeme/api.md)).
 
 ## Traces dans le journal
 
@@ -87,9 +86,10 @@ Organisateur, Format, Lieu, Dates (« Date à fixer », « mai 2027 », « 15 �
 mars 2027 »), Lien du tournoi, Frais d’inscription, Fin des inscriptions,
 Annulé. « Équipe engagée »,
 « Participation modifiée », « Équipe retirée d’un tournoi », sujet
-« Participation : Noctambule Valorant, Lyon e-Sport 2027 », champs Équipe,
-Line-up (les noms, masqués à qui ne lit ni les tournois ni le Répertoire),
-Classement. Tout dans la transaction de l’écriture. Un organisateur ajouté
+« Participation : Noctambule Valorant, Lyon e-Sport 2027 », champs Équipe
+et Classement. Les événements écrits jusqu’au 13 novembre 2026 gardent leur
+champ Line-up (les noms, masqués à qui ne lit ni les tournois ni le
+Répertoire). Tout dans la transaction de l’écriture. Un organisateur ajouté
 depuis le champ se lit sous le type « Organisations » : « Organisation
 ajoutée » (Nom, Types) ou « Organisation modifiée » (Types : « Sponsor » →
 « Sponsor, Organisateur »).
@@ -99,10 +99,9 @@ ajoutée » (Nom, Types) ou « Organisation modifiée » (Types : « Sponsor » 
 - 11 novembre 2026, « ok go » sur trois choix :
   - **classement en fourchette** : une place, ou une place partagée
     (« 3e–4e », « 5e–8e » pour un Top 8), deux nombres en base ;
-  - **line-up pris dans le Roster** aux dates du tournoi (un passage commencé
-    avant la fin et pas fini avant le début), plus un **remplaçant ponctuel**
-    choisi dans le Répertoire, marqué « Hors Roster » ; la fonction affichée
-    se lit dans le Roster, jamais recopiée ;
+  - **line-up pris dans le Roster** aux dates du tournoi, avec un
+    remplaçant ponctuel du Répertoire (retiré le 13 novembre 2026 : plus de
+    line-up, voir plus bas) ;
   - **« Annulé »** plutôt qu’un état de plus : l’état reste calculé
     depuis les dates.
 - 12 novembre 2026 (« le but est de mettre le moins d’informations… le
@@ -113,9 +112,8 @@ ajoutée » (Nom, Types) ou « Organisation modifiée » (Types : « Sponsor » 
   et sans date le tournoi est « Date à fixer », en tête de liste ; le circuit,
   le dépôt du roster et le check-in sont retirés ; « Annulé » quitte les
   champs pour une action « Annuler le tournoi », proposée seulement quand le
-  tournoi ne se supprime plus (des opérations le nomment). Sans date, le
-  line-up se choisit dans le Roster du jour ; au mois, dans celui du mois.
-  La note interne du staff est à discuter.
+  tournoi ne se supprime plus (des opérations le nomment). La note interne
+  du staff est à discuter.
 - 12 novembre 2026 (« il faut bien les reconnaître », « deux tournois peuvent
   avoir le même nom, saison 1 et saison 2 », puis « ok go ») : une **Édition**
   facultative distingue deux tournois du même nom ; dans un même jeu, le nom
@@ -141,13 +139,32 @@ ajoutée » (Nom, Types) ou « Organisation modifiée » (Types : « Sponsor » 
   organisations : lui seul pourrait corriger une faute de frappe dans la
   fiche ajoutée ; un manager des tournois choisit parmi les organisateurs
   existants (question PREF-Q13).
+- 12 novembre 2026 : le classement n’est demandé à l’engagement que d’un
+  tournoi terminé ; avant, il attend « Modifier ». Le même jour, le line-up
+  avait été revu deux fois (l’équipe d’abord puis un menu « Ajouter au
+  line-up » avec avatars ; puis des rôles du tournoi enregistrés et
+  modifiables) : retiré le lendemain.
+- 13 novembre 2026 (« sur un site comme ça, on a besoin de mettre les
+  joueurs sur les tournois, seulement les équipes ne suffisent pas ? […]
+  pour éviter de remplir trop de choses inutilement et de mettre à jour tout
+  le temps, ce qu’on veut c’est juste les tournois et équipes prévus », puis
+  « ok go ») : **un tournoi garde ses équipes engagées et leur classement,
+  plus de line-up**. Le site sert à la trésorerie et à la traçabilité ; qui
+  était dans l’équipe à ces dates se lit dans son Roster daté, et le site
+  public montre les joueurs. Les line-ups et leurs rôles sont supprimés
+  (migration `20261113090000_tournament_without_lineup`) ; le journal garde
+  leurs traces passées. Le Parcours d’une personne liste les tournois de
+  ses équipes pendant qu’elle y était, calculés, sans saisie. Quand un
+  besoin réel viendra (rembourser un déplacement par personne, partager des
+  gains, autoriser un mineur en LAN), les personnes se rattacheront au
+  déplacement ou au partage, pas au tournoi.
 - Ordre des onglets : ce qu’est le tournoi (Informations), puis nos équipes,
   puis son argent ; Gains et Suivi s’ajouteront (lot 2).
 - Le jeu d’un tournoi est fixé à sa création, comme celui d’une équipe
   (`Tournament_gameId_immutable`) ; une équipe engagée est une équipe de ce
   jeu (`TournamentEntry_team_check`), une fois par tournoi.
-- Ce qu’un tournoi nomme reste : une fiche d’un line-up, une équipe engagée,
-  un jeu, un organisateur ne se suppriment plus (`ON DELETE RESTRICT`, et le
+- Ce qu’un tournoi nomme reste : une équipe engagée, un jeu, un
+  organisateur ne se suppriment plus (`ON DELETE RESTRICT`, et le
   service le dit) ; un tournoi qui a des opérations reste aussi.
 - Portée Esport : un compte qui ne voit que des équipes choisies voit les
   tournois où l’une d’elles est engagée, et seulement ces équipes ; il ne
@@ -158,12 +175,16 @@ ajoutée » (Nom, Types) ou « Organisation modifiée » (Types : « Sponsor » 
 ## Points ouverts
 
 - Lot 2 : onglet Gains (annoncé, confirmé, répartition) et onglet Suivi
-  (problèmes et bans), puis le refus d’inscrire une personne sanctionnée.
+  (problèmes et bans). Le refus d’inscrire une personne sanctionnée est à
+  repenser sans line-up (13 novembre 2026) : par exemple avertir quand un
+  membre du Roster de l’équipe aux dates du tournoi est sanctionné.
 - Le déplacement lié à une LAN, le règlement en pièce jointe et la fin des
   inscriptions au calendrier viendront avec leurs modules.
 - Une note interne pour le staff (logistique, contact, rappels) : proposée
   le 12 novembre 2026, à discuter (« on en parle après »).
 - Pas de bouton « Historique » (le journal filtre par type « Tournois »).
+- Afficher sur la carte de chaque équipe son Roster aux dates du tournoi, en
+  lecture seule, sans saisie : proposé le 13 novembre 2026, pas demandé.
 
 ## Vérifications et prochaine reprise
 
@@ -215,9 +236,40 @@ tournoi créé avec son organisateur ; lettre tapée sur le champ fermé ; sur l
 fiche, « ldlc » qui donne le type au sponsor LDLC, barre d’enregistrement
 ouverte ; journal des organisations.
 
+12 novembre 2026, line-up : `tournament-lineup-field` (ordre joueurs,
+encadrement, « Hors Roster » ; « Retirer … du line-up » ; Roster vide et
+chargement). Captures réelles à 1 440 et 390 px : équipe seule à
+l’ouverture, line-up rempli des joueurs avec avatars, menu (Encadrement,
+« Tapez un nom pour chercher hors du Roster »), recherche « gue » qui
+propose Guest hors Roster, pris à Entrée, Lena ajoutée, Nova retirée (focus
+sur la ligne suivante), carte enregistrée, fenêtre « Modifier » avec le
+classement, tournoi terminé avec le classement et un Roster vide.
+
+12 novembre 2026, rôles du tournoi : `tournament-lineup-field` (joueurs du
+Roster d’office avec leurs rôles, puce « Choisir son rôle », ordre par
+rôle) ; `tournaments` (un rôle au moins, chacun une fois) ;
+`tournaments-postgres` : candidats avec toutes leurs fonctions (« Coach,
+Analyste ») et fonctions du jeu, rôles enregistrés et lus dans l’ordre du
+jeu, rôle changé pour le tournoi tracé (« Kaiz (Joueur) » → « Kaiz
+(Coach) »), même line-up dans un autre ordre sans changement, personne sans
+rôle et fonction d’un autre jeu refusées par le service, puis par la base
+(`TournamentLineupRole_function_game`), fonction qui a servi gardée.
+
+13 novembre 2026, sans line-up : `tournaments` (un line-up envoyé est
+refusé, schémas stricts) ; `tournaments-postgres` : participation avec son
+seul classement, line-up refusé (400), Parcours calculé (Kaiz, dans
+l’équipe aux dates, retrouve le tournoi ; Nova, partie avant, et une fiche
+sans équipe, aucun), journal « Classement » seul ; la chaîne des migrations
+(création puis suppression des tables du line-up) s’applique sur une base
+neuve ; 23 suites et 335 tests SQL ; `database-backup-format` en v21.
+
 ## Historique
 
 - 11 novembre 2026 : création de la fiche (lot 1 des tournois).
 - 12 novembre 2026 : moins de champs, dates facultatives, « Annuler le
   tournoi » en action ; puis l’Édition et le Lien du tournoi ; puis
-  l’Organisateur tapé, ajouté sans quitter le tournoi.
+  l’Organisateur tapé, ajouté sans quitter le tournoi ; puis le line-up en
+  liste avec avatars et menu « Ajouter au line-up » ; puis les rôles du
+  tournoi, enregistrés et modifiables, et le menu qui se coche en une fois.
+- 13 novembre 2026 : plus de line-up ; Participants en une carte, une ligne
+  par équipe ; fenêtre réduite à l’équipe et au classement.

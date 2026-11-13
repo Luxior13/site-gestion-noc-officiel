@@ -9,7 +9,6 @@ import {
   TOURNAMENT_DATE_PRECISIONS,
   TOURNAMENT_EDITION_MAX_LENGTH,
   TOURNAMENT_FORMATS,
-  TOURNAMENT_LINEUP_MAX,
   TOURNAMENT_LINK_MAX_LENGTH,
   TOURNAMENT_LOCATION_MAX_LENGTH,
   TOURNAMENT_NAME_MAX_LENGTH,
@@ -218,12 +217,6 @@ const placement = z
   .nullable();
 
 const entryFields = {
-  lineup: z
-    .array(id)
-    .max(TOURNAMENT_LINEUP_MAX, `${TOURNAMENT_LINEUP_MAX} personnes au plus`)
-    .refine((ids) => new Set(ids).size === ids.length, {
-      message: 'Une personne figure une seule fois',
-    }),
   placementFrom: placement,
   placementTo: placement,
 };
@@ -250,12 +243,15 @@ const checkPlacement = (value: EntryShape, context: z.RefinementCtx): void => {
 };
 
 /** Engaging a team: the team, then its line-up and placement if known. */
+// Strict: a line-up is no longer kept (13 November 2026), one sent is refused.
 export const tournamentEntryCreateSchema = z
   .object({ ...entryFields, teamId: id })
+  .strict()
   .superRefine(checkPlacement);
 
 export const tournamentEntryUpdateSchema = z
   .object({ ...entryFields, expectedVersion: z.number().int().min(1) })
+  .strict()
   .superRefine(checkPlacement);
 
 /** The list read for a team's record or a person's Parcours. */
@@ -263,6 +259,3 @@ export const tournamentQuerySchema = z.object({
   equipe: id.optional(),
   personne: id.optional(),
 });
-
-/** The Roster of a team at the tournament's dates. */
-export const tournamentCandidatesQuerySchema = z.object({ equipe: id });

@@ -71,7 +71,8 @@ un passage se tient dans le Roster de son équipe.
 
 - Les tournois joués y sont depuis le 11 novembre 2026 : un bloc
   « Tournois » sous les passages (`TournamentHistory`), un tournoi par ligne
-  dont le line-up compte la personne, avec Dates, Tournoi, Équipe,
+  où l’une de ses équipes était engagée pendant qu’elle y avait un passage,
+  calculé depuis le 13 novembre 2026 (plus de line-up), avec Dates, Tournoi, Équipe,
   Classement et État, chaque ligne ouvrant le tournoi ; l’onglet se dit
   alors « se modifie dans le Roster de chaque équipe, l’Effectif de
   Bureau & staff et les tournois ». Les passages de Bureau & staff y sont

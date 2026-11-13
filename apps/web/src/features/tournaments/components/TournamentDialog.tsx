@@ -224,7 +224,7 @@ export const TournamentDialog: FC<Props> = ({
             <DialogTitle>Ajouter un tournoi</DialogTitle>
             <DialogDescription>
               Seuls le nom et le jeu sont demandés ; la fiche s’ouvre ensuite
-              pour la préparation et le line-up.
+              pour la préparation et les équipes engagées.
             </DialogDescription>
           </DialogHeader>
           <div className="min-h-0 space-y-4 overflow-y-auto px-4 py-4 sm:px-5">

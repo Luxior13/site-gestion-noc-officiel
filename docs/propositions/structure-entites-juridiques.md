@@ -41,7 +41,7 @@ lequel choisir ».
 ## Règle 1 — le registre n’a pas d’entité
 
 Personnes, comptes de connexion, jeux, équipes, fonctions, passages, tournois
-(participation, line-up, classement), entraînements, suivi et chronologie ne
+(participation, classement), entraînements, suivi et chronologie ne
 portent **aucune** entité. Un passage de 2016 n’a pas à dire quelle association
 existait : il n’y en avait pas. Un changement de forme ne touche donc jamais le
 registre, ni ses pages.

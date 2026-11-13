@@ -176,7 +176,7 @@ Pour ajouter quelqu’un à son Roster, il cherche une fiche par nom ou pseudo d
 tout le Répertoire, sans coordonnées (choix A du propriétaire, 10 novembre 2026).
 Les tournois de son équipe suivent la même portée depuis le 11 novembre 2026
 ([fiche tournoi](../pages/esport/tournoi.md)) : il les crée, l’équipe engagée
-demandée à la création, et en tient le line-up et le classement.
+demandée à la création, et en tient le classement.
 
 **Scénarios vérifiés** le 10 novembre 2026 (suite `esport-scope-postgres`, banc
 réel sur build de production avec un vrai compte manager) : adresse d’une équipe

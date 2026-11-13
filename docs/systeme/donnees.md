@@ -5,8 +5,8 @@
 [Guide de la base](../../packages/database/prisma/README.md) ·
 [Schéma Prisma](../../packages/database/prisma/schema.prisma)
 
-Relevé du 11 novembre 2026 dans `packages/database/prisma/schema.prisma` :
-**34 modèles, 21 énumérations, PostgreSQL**. Les migrations contiennent aussi
+Relevé du 13 novembre 2026 dans `packages/database/prisma/schema.prisma` :
+**33 modèles, 21 énumérations, PostgreSQL**. Les migrations contiennent aussi
 des contraintes `CHECK`, des déclencheurs et des index partiels absents du
 schéma Prisma : ne pas les retirer parce qu’ils n’y figurent pas. La revue
 complète du schéma est celle du [13 octobre 2026](../audits/2026-10-13-schema-prisma.md).
@@ -81,8 +81,7 @@ Colonnes : nombre de champs (relations comprises), nombre d’`@@index` et
 | `Organization` | 12 | 0 | `contacts`, opérations (11 novembre 2026) | Une organisation (11 novembre 2026) : nom unique (`normalizedName`), types `OrganizationKind[]` (Sponsor, Partenaire, Fournisseur, Client, Organisateur, Financeur public), un au moins, chacun une fois (contrainte `Organization_kinds_check` et fonction `organization_kinds_are_valid`, absentes de `schema.prisma`), site web en `http(s)://`, SIRET de 14 chiffres, adresse, version optimiste |
 | `OrganizationContact` | 12 | 2 | `organization` (`ON DELETE CASCADE`), `person` (facultative, `ON DELETE SET NULL`) | Une personne à joindre dans une organisation : nom (celui de la fiche du Répertoire quand une est reliée, gardé après sa suppression), fonction, email en minuscules, téléphone au format international ; une fiche reliée une fois par organisation (index partiel `OrganizationContact_organizationId_personId_key`) ; version optimiste propre, hors version de l’organisation |
 | `Tournament` | 24 | 4 | `game`, `organizer` (une organisation, facultative), toutes deux en `ON DELETE RESTRICT` ; `entries`, opérations | Un tournoi (11 novembre 2026) : nom et édition facultative (12 novembre 2026), le couple unique dans un jeu, casse et accents ignorés (`normalizedName`, `normalizedEdition`, index `Tournament_gameId_normalizedName_normalizedEdition_key`), jeu figé à la création (déclencheur `Tournament_gameId_immutable`), organisateur, format `TournamentFormat` (en ligne ou LAN, un lieu seulement pour une LAN), dates facultatives (12 novembre 2026 : `startOn` au jour ou au premier du mois selon `datePrecision`, `endOn` seulement avec un jour), lien du tournoi (`linkUrl`, inscription, règlement, bracket) en `http(s)://`, frais d’inscription en centimes par équipe, fin des inscriptions avant la fin, « Annulé », texte de recherche, version optimiste ; contraintes `Tournament_*_check`, absentes de `schema.prisma` |
-| `TournamentEntry` | 9 | 2 | `tournament` (`ON DELETE CASCADE`), `team` (`ON DELETE RESTRICT`) ; `lineup` | Une de nos équipes engagée, une fois par tournoi, équipe du jeu du tournoi (déclencheur `TournamentEntry_team_check`) ; classement en fourchette (`placementFrom`, `placementTo`, une place quand ils sont égaux, `TournamentEntry_placement_check`) ; version optimiste propre, qui couvre son line-up |
-| `TournamentLineupMember` | 5 | 2 | `entry` (`ON DELETE CASCADE`), `person` (`ON DELETE RESTRICT`) | Une fiche du Répertoire dans un line-up, une fois ; sa fonction se lit dans le Roster de l’équipe aux dates du tournoi, « Hors Roster » sans passage |
+| `TournamentEntry` | 8 | 2 | `tournament` (`ON DELETE CASCADE`), `team` (`ON DELETE RESTRICT`) | Une de nos équipes engagée, une fois par tournoi, équipe du jeu du tournoi (déclencheur `TournamentEntry_team_check`) ; classement en fourchette (`placementFrom`, `placementTo`, une place quand ils sont égaux, `TournamentEntry_placement_check`) ; version optimiste propre ; pas de line-up depuis le 13 novembre 2026 (tables `TournamentLineupMember` et `TournamentLineupRole` supprimées) |
 
 ### Système et préparation
 

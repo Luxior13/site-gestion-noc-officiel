@@ -273,9 +273,9 @@ export const MEMBERS_SITE_PLAN: readonly RoadmapPlannedPage[] = [
         label: 'Participants',
         phase: null,
         summary:
-          'Pour chacune de nos équipes engagées : line-up pris dans son Roster aux dates du tournoi (joueurs cochés d’office), remplaçant ponctuel venu du Répertoire marqué « Hors Roster », et classement final, une place ou une fourchette (« 3e–4e »). Un manager remplit ceux de son équipe.',
+          'Pour chacune de nos équipes engagées, son classement final, une place ou une fourchette (« 3e–4e ») ; pas de line-up (13 novembre 2026) : qui a joué se lit dans le Roster daté de l’équipe. Un manager engage son équipe.',
         upcoming:
-          'Une sanction de la structure en cours refusera l’inscription, avec son motif ; un ban externe du même jeu ou du même organisateur avertira (le circuit n’est plus saisi depuis le 12 novembre 2026), avec le Suivi.',
+          'Une sanction de la structure en cours (à repenser sans line-up : un membre du Roster de l’équipe aux dates du tournoi) avertira, avec son motif ; un ban externe du même jeu ou du même organisateur avertira (le circuit n’est plus saisi depuis le 12 novembre 2026), avec le Suivi.',
       },
       {
         label: 'Finances',

@@ -26,8 +26,8 @@ Demandé le 11 novembre 2026 (« je voudrais ajouter les tournois », puis
 Livrée le 11 novembre 2026 :
 
 1. Bandeau : « Tournois », la phrase « Les tournois de la structure, le plus
-   récent en premier : nos équipes engagées, leur line-up et leur
-   classement. », et « Ajouter un tournoi » pour qui gère.
+   récent en premier : nos équipes engagées et leur classement. », et
+   « Ajouter un tournoi » pour qui gère.
 2. Barre de la liste : recherche (nom, organisateur, lieu ou équipe),
    réinitialisation, menu « Toutes les années » ; filtres rapides **État**
    (Tous, Date à fixer, À venir, En cours, Terminés, Annulés) et **Jeu** (dès

@@ -52,8 +52,8 @@ const lineOf = (
 /**
  * The tournaments a team played, or a person (11 November 2026), the
  * latest first, in read only: Tournois ↗ of a team's record, and the
- * tournaments of a person's Parcours. Each line opens the tournament, where
- * its line-up and placement are kept.
+ * tournaments of a person's Parcours, those of the teams they were in at
+ * the time (13 November 2026). Each line opens the tournament.
  */
 export const TournamentHistory: FC<{
   /** A notice line and « Ouvrir les tournois », for a tab of its own. */
@@ -127,7 +127,7 @@ export const TournamentHistory: FC<{
       className="min-h-0 border-0 bg-transparent p-0"
       description={
         showTeam
-          ? 'Les tournois dont le line-up la compte s’affichent ici.'
+          ? 'Les tournois de ses équipes, pendant qu’elle y était, s’affichent ici.'
           : 'Les tournois où l’équipe est engagée s’affichent ici.'
       }
       icon={<Trophy aria-hidden="true" className="size-5" />}

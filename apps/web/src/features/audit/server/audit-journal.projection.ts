@@ -73,7 +73,7 @@ type ReaderRights = {
   canViewOrganizations: boolean;
   canViewPersonContacts: boolean;
   canViewPersons: boolean;
-  /** The tournaments and their line-ups (11 November 2026). */
+  /** The tournaments, and the line-ups of their older events. */
   canViewTournaments: boolean;
   canViewUserContacts: boolean;
   canViewUsers: boolean;
@@ -281,8 +281,9 @@ const maskUnlessAllowed = (
     : changes.map(({ label }) => ({ after: MASKED, before: MASKED, label }));
 
 /**
- * A tournament's values are readable; the names of a line-up stay with who
- * reads the tournaments or the Répertoire (11 November 2026).
+ * A tournament's values are readable; the names of a line-up, in the events
+ * written until 13 November 2026, stay with who reads the tournaments or
+ * the Répertoire (11 November 2026).
  */
 const projectTournamentChanges = (
   row: JournalRow,

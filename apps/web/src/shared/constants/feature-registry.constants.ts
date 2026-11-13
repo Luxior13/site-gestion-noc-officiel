@@ -294,7 +294,7 @@ export const FEATURES = {
     },
     availability: 'live',
     description:
-      'Les tournois de la structure : équipes engagées, line-up et classement.',
+      'Les tournois de la structure : équipes engagées et classement.',
     href: PAGE_PATHS.tournaments,
     icon: 'Trophy',
     id: 'tournaments',
@@ -302,8 +302,6 @@ export const FEATURES = {
       'compétition',
       'compétitions',
       'tournoi',
-      'line-up',
-      'lineup',
       'classement',
       'organisateur',
       'LAN',

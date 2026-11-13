@@ -9,12 +9,10 @@ type TournamentPermissionUser = Pick<
 export type TournamentCapabilities = Readonly<{
   /** A typed organiser absent from the organisations is added to them. */
   canAddOrganizers: boolean;
-  /** Adding, editing a tournament, engaging a team, holding its line-up. */
+  /** Adding, editing a tournament, engaging a team, its placement. */
   canManage: boolean;
   /** The organiser's record opens with the organisations. */
   canOpenOrganizations: boolean;
-  /** A record of a line-up opens with the Répertoire. */
-  canOpenPersons: boolean;
   /** A team's name opens its record. */
   canOpenTeams: boolean;
   canView: boolean;
@@ -52,7 +50,6 @@ export const getTournamentCapabilities = (
       permitted(PERMISSIONS.ORGANIZATIONS.MANAGE),
     canManage,
     canOpenOrganizations,
-    canOpenPersons: permitted(PERMISSIONS.PERSONS.VIEW),
     canOpenTeams:
       permitted(PERMISSIONS.GAMES.VIEW) && permitted(PERMISSIONS.TEAMS.VIEW),
     canView,

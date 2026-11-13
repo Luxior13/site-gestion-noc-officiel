@@ -21,7 +21,6 @@ import {
 
 import { POST as POST_OPERATION } from '$app/api/finances/operations/route';
 import { DELETE as DELETE_ORGANIZATION } from '$app/api/relations/organisations/[id]/route';
-import { GET as GET_CANDIDATES } from '$app/api/tournois/[id]/candidats/route';
 import {
   DELETE as DELETE_ENTRY,
   PATCH as PATCH_ENTRY,
@@ -40,7 +39,6 @@ import { PERMISSIONS } from '$constants/permissions.constants';
 import type {
   TournamentDetail,
   TournamentItem,
-  TournamentLineupCandidate,
 } from '$features/tournaments/types/tournament.types';
 import { mapUserToUserType } from '$server/user-projection';
 
@@ -114,6 +112,9 @@ describe.skipIf(!target)('Tournaments on fully migrated PostgreSQL', () => {
   let nova: Person;
   let lead: Person;
   let guest: Person;
+  let player: { id: string };
+  let coach: { id: string };
+  let analyst: { id: string };
   let startedAt = new Date();
 
   const login = (): string =>
@@ -215,7 +216,6 @@ describe.skipIf(!target)('Tournaments on fully migrated PostgreSQL', () => {
     call(
       POST_ENTRY(
         request(`/api/tournois/${id}/participants`, 'POST', {
-          lineup: [],
           placementFrom: null,
           placementTo: null,
           ...payload,
@@ -320,8 +320,9 @@ describe.skipIf(!target)('Tournaments on fully migrated PostgreSQL', () => {
           position,
         },
       });
-    const player = await fn('Joueur', 'PLAYER', 0);
-    const coach = await fn('Coach', 'STAFF', 0);
+    player = await fn('Joueur', 'PLAYER', 0);
+    coach = await fn('Coach', 'STAFF', 0);
+    analyst = await fn('Analyste', 'STAFF', 1);
     const passage = (
       personId: string,
       functionId: string,
@@ -342,6 +343,8 @@ describe.skipIf(!target)('Tournaments on fully migrated PostgreSQL', () => {
     // Gone before the tournament: not in its Roster then.
     await passage(nova.id, player.id, '2025-01-01', '2026-06-30');
     await passage(lead.id, coach.id, '2026-02-01');
+    // Coach and analyst of the team at once.
+    await passage(lead.id, analyst.id, '2026-02-01');
     startedAt = new Date();
     await signIn(HOLDER);
   });
@@ -350,65 +353,51 @@ describe.skipIf(!target)('Tournaments on fully migrated PostgreSQL', () => {
     connection.client = null;
   });
 
-  it('adds a tournament, engages a team with its line-up and placement, and traces each step', async () => {
+  it('adds a tournament, engages a team with its placement, and traces each step', async () => {
     const tournament = await created({
       organizerId: lyon.id,
       teamId: main.id,
     });
     expect(tournament).toMatchObject({
-      entries: [{ lineup: [], placementFrom: null, team: { id: main.id } }],
+      entries: [{ placementFrom: null, team: { id: main.id } }],
       format: 'ONLINE',
       game: { name: 'Valorant' },
       organizer: { name: 'Lyon e-Sport' },
     });
     const entryId = tournament.entries[0]?.id ?? '';
 
-    // The Roster at the tournament's dates: players first, the gone left out.
-    const candidates = (
-      await call(
-        GET_CANDIDATES(
-          request(`/api/tournois/${tournament.id}/candidats?equipe=${main.id}`),
-          idParams(tournament.id),
+    // Who played is not kept (13 November 2026): a line-up is refused.
+    const entryPatch = (
+      payload: Record<string, unknown>,
+    ): Promise<{ body: Body; status: number }> =>
+      call(
+        PATCH_ENTRY(
+          request(
+            `/api/tournois/${tournament.id}/participants/${entryId}`,
+            'PATCH',
+            payload,
+          ),
+          entryParams(tournament.id, entryId),
         ),
-      )
-    ).body.data as TournamentLineupCandidate[];
+      );
     expect(
-      candidates.map((member) => [
-        member.person.displayName,
-        member.function?.name,
-      ]),
-    ).toEqual([
-      ['Kaiz', 'Joueur'],
-      ['Lead', 'Coach'],
-    ]);
-
-    // A stand-in from the Répertoire, and a shared placement.
-    const updated = await call(
-      PATCH_ENTRY(
-        request(
-          `/api/tournois/${tournament.id}/participants/${entryId}`,
-          'PATCH',
-          {
-            expectedVersion: 1,
-            lineup: [guest.id, kaiz.id],
-            placementFrom: 3,
-            placementTo: 4,
-          },
-        ),
-        entryParams(tournament.id, entryId),
-      ),
-    );
+      (
+        await entryPatch({
+          expectedVersion: 1,
+          lineup: [kaiz.id],
+          placementFrom: 3,
+          placementTo: 4,
+        })
+      ).status,
+    ).toBe(400);
+    // A shared placement.
+    const updated = await entryPatch({
+      expectedVersion: 1,
+      placementFrom: 3,
+      placementTo: 4,
+    });
     expect(updated.status, JSON.stringify(updated.body.error)).toBe(200);
     const entry = (updated.body.data as TournamentDetail).entries[0];
-    expect(
-      entry?.lineup.map((member) => [
-        member.person.displayName,
-        member.function?.name ?? null,
-      ]),
-    ).toEqual([
-      ['Kaiz', 'Joueur'],
-      ['Guest', null],
-    ]);
     expect(entry).toMatchObject({
       placementFrom: 3,
       placementTo: 4,
@@ -424,7 +413,6 @@ describe.skipIf(!target)('Tournaments on fully migrated PostgreSQL', () => {
               'PATCH',
               {
                 expectedVersion: 1,
-                lineup: [],
                 placementFrom: null,
                 placementTo: null,
               },
@@ -469,20 +457,24 @@ describe.skipIf(!target)('Tournaments on fully migrated PostgreSQL', () => {
       201,
     );
 
-    // What a team played, whose line-up a person was in.
+    // What a team played; a person's, those of the teams they were in at
+    // the tournament's dates (13 November 2026).
     expect((await list(`?equipe=${main.id}`)).map(({ id }) => id)).toEqual([
       tournament.id,
     ]);
     // A person's tournaments stay with who reads the Répertoire.
     expect(
-      (await GET_TOURNAMENTS(request(`/api/tournois?personne=${guest.id}`)))
+      (await GET_TOURNAMENTS(request(`/api/tournois?personne=${kaiz.id}`)))
         .status,
     ).toBe(403);
     await signIn({ ...HOLDER, [PERMISSIONS.PERSONS.VIEW]: true });
-    const played = await list(`?personne=${guest.id}`);
+    const played = await list(`?personne=${kaiz.id}`);
     expect(
       played.map(({ entries }) => entries.map(({ team }) => team.id)),
     ).toEqual([[main.id]]);
+    // Gone before the tournament, or never in a team: none.
+    expect(await list(`?personne=${nova.id}`)).toEqual([]);
+    expect(await list(`?personne=${guest.id}`)).toEqual([]);
 
     const events = await journal();
     expect(events.map(({ action }) => action)).toEqual([
@@ -493,8 +485,9 @@ describe.skipIf(!target)('Tournaments on fully migrated PostgreSQL', () => {
       'TOURNAMENT_ENTRY_CREATE',
     ]);
     expect(events[2]?.metadata).toMatchObject({
-      after: { lineup: 'Guest, Kaiz', placement: '3e–4e' },
-      before: { lineup: null, placement: null },
+      after: { placement: '3e–4e' },
+      before: { placement: null },
+      changes: ['placement'],
       teamName: 'Noctambule Valorant',
       tournamentName: 'Lyon e-Sport 2027',
     });
@@ -503,7 +496,7 @@ describe.skipIf(!target)('Tournaments on fully migrated PostgreSQL', () => {
       before: { format: 'En ligne' },
     });
 
-    // Withdrawn: its line-up leaves with it, traced.
+    // Withdrawn, traced.
     const withdrawn = await call(
       DELETE_ENTRY(
         request(
@@ -515,20 +508,13 @@ describe.skipIf(!target)('Tournaments on fully migrated PostgreSQL', () => {
       ),
     );
     expect(withdrawn.status).toBe(200);
-    expect(await db.tournamentLineupMember.count()).toBe(0);
     expect((await journal()).at(-1)?.action).toBe('TOURNAMENT_ENTRY_DELETE');
   });
 
   it('keeps what a tournament names, in the service and the base', async () => {
     const tournament = await created({ organizerId: lyon.id, teamId: main.id });
     const entryId = tournament.entries[0]?.id ?? '';
-    await db.tournamentLineupMember.create({
-      data: { entryId, personId: kaiz.id },
-    });
-    // A record that played, a team engaged, a game and an organiser stay.
-    await expect(
-      db.person.delete({ where: { id: kaiz.id } }),
-    ).rejects.toThrow();
+    // A team engaged, a game and an organiser stay.
     await expect(db.team.delete({ where: { id: main.id } })).rejects.toThrow();
     await expect(
       db.game.delete({ where: { id: valorant.id } }),
@@ -701,19 +687,6 @@ describe.skipIf(!target)('Tournaments on fully migrated PostgreSQL', () => {
       startOn: null,
     });
     expect((await list()).map(({ id }) => id)).toEqual([undated.id, dated.id]);
-    // The line-up is then read in today's Roster: the current members.
-    const candidates = (
-      await call(
-        GET_CANDIDATES(
-          request(`/api/tournois/${undated.id}/candidats?equipe=${main.id}`),
-          idParams(undated.id),
-        ),
-      )
-    ).body.data as TournamentLineupCandidate[];
-    expect(candidates.map(({ person }) => person.displayName)).toEqual([
-      'Kaiz',
-      'Lead',
-    ]);
     const month = await call(
       PATCH_TOURNAMENT(
         request(`/api/tournois/${undated.id}`, 'PATCH', {

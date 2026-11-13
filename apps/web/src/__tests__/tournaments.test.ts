@@ -151,8 +151,8 @@ describe('tournaments (11 November 2026)', () => {
     ).toEqual(['entryFeeCents']);
   });
 
-  it('takes one place or a shared range, and each person once', () => {
-    const entry = { lineup: ['person-1'], teamId: 'team-1' };
+  it('takes one place or a shared range, and no line-up', () => {
+    const entry = { teamId: 'team-1' };
     expect(
       tournamentEntryCreateSchema.safeParse({
         ...entry,
@@ -178,16 +178,15 @@ describe('tournaments (11 November 2026)', () => {
         }),
       ),
     ).toEqual(['placementFrom']);
+    // Who played is not kept (13 November 2026): a line-up is refused.
     expect(
-      issues(
-        tournamentEntryUpdateSchema.safeParse({
-          expectedVersion: 1,
-          lineup: ['person-1', 'person-1'],
-          placementFrom: null,
-          placementTo: null,
-        }),
-      ),
-    ).toEqual(['lineup']);
+      tournamentEntryUpdateSchema.safeParse({
+        expectedVersion: 1,
+        lineup: ['person-1'],
+        placementFrom: null,
+        placementTo: null,
+      }).success,
+    ).toBe(false);
   });
 
   it('says a placement, a fee, the dates and the state as read', () => {
@@ -266,7 +265,6 @@ describe('tournaments (11 November 2026)', () => {
     expect(getTournamentCapabilities(manager)).toMatchObject({
       canAddOrganizers: false,
       canManage: true,
-      canOpenPersons: false,
       canView: true,
       canViewOperations: false,
       mustChooseTeam: true,

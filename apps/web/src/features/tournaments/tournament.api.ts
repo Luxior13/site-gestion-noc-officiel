@@ -1,4 +1,3 @@
-import type { PersonSuggestions } from '$features/persons/types/person.types';
 import { apiFetchJson, jsonRequest } from '$utils/api.utils';
 
 import type {
@@ -8,7 +7,6 @@ import type {
   TournamentEntryInput,
   TournamentInput,
   TournamentItem,
-  TournamentLineupCandidate,
 } from './types/tournament.types';
 
 const TOURNAMENTS_API = '/api/tournois';
@@ -75,17 +73,6 @@ export const deleteTournamentRequest = (
     jsonRequest('DELETE', { expectedVersion }),
   );
 
-/** The members of a team's Roster at the tournament's dates. */
-export const fetchLineupCandidates = (
-  id: string,
-  teamId: string,
-  signal?: AbortSignal,
-): Promise<TournamentLineupCandidate[]> =>
-  apiFetchJson<TournamentLineupCandidate[]>(
-    `${tournamentUrl(id)}/candidats?${new URLSearchParams({ equipe: teamId })}`,
-    { cache: 'no-store', signal },
-  );
-
 export const createTournamentEntryRequest = (
   id: string,
   input: TournamentEntryInput & { teamId: string },
@@ -111,14 +98,4 @@ export const deleteTournamentEntryRequest = (
   apiFetchJson<TournamentDetail | null>(
     entryUrl(id, entryId),
     jsonRequest('DELETE', { expectedVersion }),
-  );
-
-/** Records of the Répertoire to add as a stand-in. */
-export const searchTournamentPersonsRequest = (
-  query: string,
-  signal?: AbortSignal,
-): Promise<PersonSuggestions> =>
-  apiFetchJson<PersonSuggestions>(
-    `${TOURNAMENTS_API}/personnes?${new URLSearchParams({ q: query })}`,
-    { cache: 'no-store', signal },
   );

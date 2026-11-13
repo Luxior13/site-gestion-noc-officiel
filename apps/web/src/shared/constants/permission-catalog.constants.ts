@@ -83,7 +83,7 @@ export const PERMISSIONS = {
     MANAGE: 'teams:manage',
     VIEW: 'teams:view',
   },
-  // The tournaments, their engaged teams and line-ups (11 November 2026).
+  // The tournaments and their engaged teams (11 November 2026).
   TOURNAMENTS: {
     MANAGE: 'tournaments:manage',
     VIEW: 'tournaments:view',

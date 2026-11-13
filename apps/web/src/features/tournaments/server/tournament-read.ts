@@ -3,10 +3,6 @@ import 'server-only';
 import type { Prisma } from '@prisma/client';
 
 import { passageToday } from '$features/passages/server/passage-today';
-import {
-  PERSON_REF_SELECT,
-  toPersonRef,
-} from '$features/persons/server/person-suggestions';
 import type { EsportScope } from '$server/esport-scope';
 import { prisma } from '$server/prisma';
 import { type ServiceError, serviceErrors } from '$server/service-error';
@@ -17,8 +13,6 @@ import type {
   TournamentDetail,
   TournamentEntryItem,
   TournamentItem,
-  TournamentLineupCandidate,
-  TournamentLineupMemberItem,
 } from '../types/tournament.types';
 
 export const tournamentMissing = (): ServiceError =>
@@ -34,7 +28,7 @@ export const precisionOf = (value: string): 'DAY' | 'MONTH' =>
   value === 'MONTH' ? 'MONTH' : 'DAY';
 
 /**
- * The days a line-up is read in the Roster: the tournament's known period,
+ * The days a person counts in a team for a tournament: its known period,
  * its month, or today while it has no date (12 November 2026).
  */
 const rosterWindow = (
@@ -120,87 +114,7 @@ const toItem = (row: ItemRow): TournamentItem => ({
   startOn: dayOrNull(row.startOn),
 });
 
-const PERSON_SELECT = { ...PERSON_REF_SELECT, sortName: true } as const;
-type PersonRow = Prisma.PersonGetPayload<{ select: typeof PERSON_SELECT }>;
-type FunctionRow = Readonly<{
-  kind: 'BOARD' | 'PLAYER' | 'STAFF';
-  name: string;
-  position: number;
-}>;
-
-/** Players first, then staff, each in the order of the game's functions. */
-const functionRank = (row: FunctionRow | null): [number, number, string] =>
-  row ? [row.kind === 'PLAYER' ? 0 : 1, row.position, row.name] : [2, 0, ''];
-
-const compareMembers = (
-  left: { fn: FunctionRow | null; person: PersonRow },
-  right: { fn: FunctionRow | null; person: PersonRow },
-): number => {
-  const [a, b] = [functionRank(left.fn), functionRank(right.fn)];
-
-  return (
-    a[0] - b[0] ||
-    a[1] - b[1] ||
-    a[2].localeCompare(b[2], 'fr') ||
-    left.person.sortName.localeCompare(right.person.sortName, 'fr')
-  );
-};
-
-const toMember = (
-  fn: FunctionRow | null,
-  person: PersonRow,
-): TournamentLineupMemberItem => ({
-  function: fn && fn.kind !== 'BOARD' ? { kind: fn.kind, name: fn.name } : null,
-  person: toPersonRef(person),
-});
-
-/**
- * The functions held in the teams' Rosters during the tournament: a passage
- * begun before its end and not ended before its start. One per person and
- * team, the first in the game's order.
- */
-const readRosterFunctions = async (
-  client: Prisma.TransactionClient,
-  where: Readonly<{
-    endOn: Date;
-    personIds?: readonly string[];
-    startOn: Date;
-    teamIds: readonly string[];
-  }>,
-): Promise<
-  Map<string, { fn: FunctionRow; person: PersonRow; teamId: string }>
-> => {
-  const passages = await client.personPassage.findMany({
-    include: {
-      memberFunction: { select: { kind: true, name: true, position: true } },
-      person: { select: PERSON_SELECT },
-    },
-    where: {
-      OR: [{ endOn: null }, { endOn: { gte: where.startOn } }],
-      startOn: { lte: where.endOn },
-      teamId: { in: [...where.teamIds] },
-      ...(where.personIds ? { personId: { in: [...where.personIds] } } : {}),
-    },
-  });
-  const best = new Map<
-    string,
-    { fn: FunctionRow; person: PersonRow; teamId: string }
-  >();
-  for (const passage of passages) {
-    const key = `${passage.teamId ?? ''}:${passage.personId}`;
-    const current = best.get(key);
-    const next = {
-      fn: passage.memberFunction,
-      person: passage.person,
-      teamId: passage.teamId ?? '',
-    };
-    if (!current || compareMembers(next, current) < 0) best.set(key, next);
-  }
-
-  return best;
-};
-
-/** A tournament with its engaged teams, their line-up and placement. */
+/** A tournament with its engaged teams and their placement. */
 export const readTournamentDetail = async (
   client: Prisma.TransactionClient,
   id: string,
@@ -210,10 +124,7 @@ export const readTournamentDetail = async (
     include: {
       _count: { select: { operations: true } },
       entries: {
-        include: {
-          lineup: { include: { person: { select: PERSON_SELECT } } },
-          team: { select: TEAM_REF },
-        },
+        include: { team: { select: TEAM_REF } },
         orderBy: [{ team: { position: 'asc' } }, { team: { name: 'asc' } }],
         where: entryScopeWhere(scope),
       },
@@ -223,22 +134,8 @@ export const readTournamentDetail = async (
     where: { AND: [{ id }, tournamentScopeWhere(scope)] },
   });
   if (!row) throw tournamentMissing();
-  const functions = await readRosterFunctions(client, {
-    ...rosterWindow(row),
-    personIds: row.entries.flatMap((entry) =>
-      entry.lineup.map((member) => member.personId),
-    ),
-    teamIds: row.entries.map((entry) => entry.teamId),
-  });
   const entries: TournamentEntryItem[] = row.entries.map((entry) => ({
     id: entry.id,
-    lineup: entry.lineup
-      .map((member) => ({
-        fn: functions.get(`${entry.teamId}:${member.personId}`)?.fn ?? null,
-        person: member.person,
-      }))
-      .sort(compareMembers)
-      .map(({ fn, person }) => toMember(fn, person)),
     placementFrom: entry.placementFrom,
     placementTo: entry.placementTo,
     team: entry.team,
@@ -257,34 +154,84 @@ export const readTournamentDetail = async (
   };
 };
 
+const LIST_ORDER = [
+  // Undated first: they are to be scheduled.
+  { startOn: { nulls: 'first', sort: 'desc' } },
+  { name: 'asc' },
+  { id: 'asc' },
+] satisfies Prisma.TournamentOrderByWithRelationInput[];
+
+/**
+ * A person's tournaments (13 November 2026, no line-up kept): those where a
+ * team was engaged while the person had a passage in it, at the
+ * tournament's dates (its month, or today without a date). Only the lines
+ * of those teams.
+ */
+const listPersonTournaments = async (
+  scope: EsportScope,
+  personId: string,
+): Promise<TournamentItem[]> => {
+  const passages = await prisma.personPassage.findMany({
+    select: { endOn: true, startOn: true, teamId: true },
+    where: { personId, teamId: { not: null } },
+  });
+  const teamIds = [
+    ...new Set(passages.flatMap((passage) => passage.teamId ?? [])),
+  ];
+  if (teamIds.length === 0) return [];
+  const rows = await prisma.tournament.findMany({
+    include: itemInclude(scope, { teamId: { in: teamIds } }),
+    orderBy: LIST_ORDER,
+    where: {
+      AND: [
+        tournamentScopeWhere(scope),
+        {
+          entries: {
+            some: {
+              AND: [entryScopeWhere(scope), { teamId: { in: teamIds } }],
+            },
+          },
+        },
+      ],
+    },
+  });
+
+  return rows.flatMap((row) => {
+    const window = rosterWindow(row);
+    const entries = row.entries.filter((entry) =>
+      passages.some(
+        (passage) =>
+          passage.teamId === entry.teamId &&
+          passage.startOn <= window.endOn &&
+          (passage.endOn === null || passage.endOn >= window.startOn),
+      ),
+    );
+
+    return entries.length > 0 ? [toItem({ ...row, entries })] : [];
+  });
+};
+
 /**
  * The tournaments of the scope, the latest first: a few hundred over the
  * years, filtered on the page. For a team's record, those it played; for a
- * person's Parcours, those whose line-up holds them.
+ * person's Parcours, those of the teams they were in at the time.
  */
 export const listTournaments = async (
   scope: EsportScope,
   filters: Readonly<{ personId?: string; teamId?: string }> = {},
 ): Promise<TournamentItem[]> => {
-  // A team's record, or a person's Parcours, shows the line it concerns.
-  const entryWhere: Prisma.TournamentEntryWhereInput = {
-    ...(filters.teamId ? { teamId: filters.teamId } : {}),
-    ...(filters.personId
-      ? { lineup: { some: { personId: filters.personId } } }
-      : {}),
-  };
+  if (filters.personId) return listPersonTournaments(scope, filters.personId);
+  // A team's record shows the line it concerns.
+  const entryWhere: Prisma.TournamentEntryWhereInput = filters.teamId
+    ? { teamId: filters.teamId }
+    : {};
   const rows = await prisma.tournament.findMany({
     include: itemInclude(scope, entryWhere),
-    // Undated first: they are to be scheduled.
-    orderBy: [
-      { startOn: { nulls: 'first', sort: 'desc' } },
-      { name: 'asc' },
-      { id: 'asc' },
-    ],
+    orderBy: LIST_ORDER,
     where: {
       AND: [
         tournamentScopeWhere(scope),
-        filters.teamId || filters.personId
+        filters.teamId
           ? {
               entries: {
                 some: { AND: [entryScopeWhere(scope), entryWhere] },
@@ -343,38 +290,4 @@ export const getTournamentChoices = async (
     })),
     organizers,
   };
-};
-
-/**
- * The members of a team's Roster during the tournament, to choose its
- * line-up: one line per person, players first in the game's order.
- */
-export const getLineupCandidates = async (
-  tournamentId: string,
-  teamId: string,
-  scope: EsportScope,
-): Promise<TournamentLineupCandidate[]> => {
-  const tournament = await prisma.tournament.findFirst({
-    select: { datePrecision: true, endOn: true, gameId: true, startOn: true },
-    where: { AND: [{ id: tournamentId }, tournamentScopeWhere(scope)] },
-  });
-  if (!tournament) throw tournamentMissing();
-  const team = await prisma.team.findFirst({
-    select: { gameId: true, id: true },
-    where: { gameId: tournament.gameId, id: teamId },
-  });
-  if (
-    !team ||
-    (scope.kind === 'TEAMS' && !scope.ids.has(team.id)) ||
-    (scope.kind === 'GAMES' && !scope.ids.has(team.gameId))
-  )
-    throw serviceErrors.notFound('Cette équipe n’existe plus.');
-  const functions = await readRosterFunctions(prisma, {
-    ...rosterWindow(tournament),
-    teamIds: [teamId],
-  });
-
-  return [...functions.values()]
-    .sort(compareMembers)
-    .map(({ fn, person }) => toMember(fn, person));
 };

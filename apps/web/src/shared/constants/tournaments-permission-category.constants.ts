@@ -20,7 +20,7 @@ const permission = (
 
 /**
  * The tournaments of the structure, in the Esport pole (11 November 2026):
- * each tournament, its engaged teams, their line-up and placement. The
+ * each tournament, its engaged teams and their placement. The
  * account's Esport scope says which ones; a manager creates and fills those
  * of his team.
  */
@@ -30,7 +30,7 @@ export const createTournamentsPermissionCategory = (
   accessPermissionKey: keys.VIEW,
   assignment: 'delegable',
   description:
-    'Les tournois de la structure, les équipes engagées, leur line-up et leur classement.',
+    'Les tournois de la structure, les équipes engagées et leur classement.',
   icon: 'Trophy',
   key: 'tournaments',
   label: 'Tournois',
@@ -38,7 +38,7 @@ export const createTournamentsPermissionCategory = (
     permission({
       action: 'view',
       description:
-        'Consulter les tournois, leurs informations, les équipes engagées, leur line-up et leur classement',
+        'Consulter les tournois, leurs informations, les équipes engagées et leur classement',
       grantable: true,
       key: keys.VIEW,
       label: 'Consulter les tournois',
@@ -51,7 +51,7 @@ export const createTournamentsPermissionCategory = (
       action: 'manage',
       dependencies: [keys.VIEW],
       description:
-        'Ajouter, corriger ou supprimer un tournoi, engager une équipe, tenir son line-up et son classement, et chercher pour cela une fiche du Répertoire par son nom',
+        'Ajouter, corriger ou supprimer un tournoi, engager une équipe et tenir son classement',
       grantable: true,
       key: keys.MANAGE,
       label: 'Gérer les tournois',

@@ -106,8 +106,8 @@ const entriesNotice = (count: number): string =>
   count === 0
     ? ''
     : count === 1
-      ? ' Son équipe engagée et son line-up sont retirés avec lui.'
-      : ` Ses ${count} équipes engagées et leurs line-ups sont retirés avec lui.`;
+      ? ' Son équipe engagée est retirée avec lui.'
+      : ` Ses ${count} équipes engagées sont retirées avec lui.`;
 
 type ContentProps = {
   activeSection: TournamentDetailSection;
@@ -124,7 +124,6 @@ const TournamentDetailContent: FC<ContentProps> = ({
     canAddOrganizers,
     canManage,
     canOpenOrganizations,
-    canOpenPersons,
     canOpenTeams,
     canView,
     canViewOperations,
@@ -245,7 +244,6 @@ const TournamentDetailContent: FC<ContentProps> = ({
         {section === 'participants' ? (
           <TournamentParticipantsSection
             canManage={canManage}
-            canOpenPersons={canOpenPersons}
             canOpenTeams={canOpenTeams}
             onChange={(next) => {
               // Its last team of a scope of teams withdrawn: out of sight.
@@ -328,8 +326,8 @@ const TournamentDetailContent: FC<ContentProps> = ({
 
 /**
  * Record of a tournament (11 November 2026), opened from its line on the
- * Tournois page: its information, our teams engaged with their line-up and
- * placement, then its money.
+ * Tournois page: its information, our teams engaged with their placement,
+ * then its money.
  */
 export const TournamentDetailPage: FC<ContentProps> = ({
   activeSection,
