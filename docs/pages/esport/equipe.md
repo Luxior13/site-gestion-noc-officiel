@@ -122,7 +122,8 @@ Composition, de haut en bas :
 4. bis **Tournois ↗** (`TournamentHistory`, 11 novembre 2026), en lecture :
    la ligne « Les tournois se tiennent dans Esport › Tournois : chaque ligne
    ouvre son tournoi. » et « Ouvrir les tournois », puis les tournois joués
-   par l’équipe, le plus récent en premier : Dates, Tournoi (nom, jeu et
+   par l’équipe, le plus récent en premier : Dates (sur deux lignes, comme
+   la [page Tournois](tournois.md#composition-actuelle)), Tournoi (nom, jeu et
    organisateur), Classement (« 3e–4e »), État ; sous 56 rem, des cartes.
    `tournaments:view` seul l’ouvre, dans la portée Esport du compte.
    Vide : « Aucun tournoi pour l’instant ».

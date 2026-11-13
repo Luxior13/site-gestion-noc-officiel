@@ -44,6 +44,12 @@ Cadre privé (sidebar 264 px, header 56 px)
   jamais une colonne « Au » à part. Une liste montre d’abord ce qu’on vient y
   chercher (le solde du jour, une fois les opérations là) ; le point de
   départ reste sur la fiche (décision du 11 novembre 2026, page Comptes).
+- Une ligne garde la hauteur de ses deux lignes (nom et contexte) : une
+  cellule qui liste plusieurs éléments en montre deux au plus, les plus
+  utiles d’abord, et compte les autres en discret, « +1 », dit « et 1 autre
+  équipe » à un lecteur d’écran ; la liste complète est sur la fiche, et la
+  recherche porte sur tous (13 novembre 2026, Nos équipes des tournois :
+  « chaque équipe en plus fait augmenter la hauteur »).
 - Les colonnes dépendent des droits ; leurs seuils de passage en cartes sont
   propres à la liste (Utilisateurs : 48, 52, 56 ou 64 rem).
 - Quand on vient surtout pour les éléments d’une ligne, ils s’affichent sur des

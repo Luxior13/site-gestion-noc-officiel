@@ -19,8 +19,11 @@ import {
 import { getTournamentCapabilities } from '$features/tournaments/tournament.permissions';
 import {
   entryFeeLabel,
+  listedEntries,
   placementLabel,
+  tournamentDatesCell,
   tournamentDatesLabel,
+  tournamentDatesShortLabel,
   tournamentStateOn,
   tournamentTitle,
 } from '$features/tournaments/tournament.ui';
@@ -196,6 +199,29 @@ describe('tournaments (11 November 2026)', () => {
     expect(placementLabel({ placementFrom: null, placementTo: null })).toBe(
       null,
     );
+    // A list's line (13 November 2026): two teams, the best placed first,
+    // the others counted.
+    const team = (
+      id: string,
+      placementFrom: number | null,
+    ): { id: string; placementFrom: number | null } => ({ id, placementFrom });
+    expect(
+      listedEntries([
+        team('principale', 4),
+        team('secondaire', null),
+        team('academy', 8),
+        team('rookies', 2),
+      ]),
+    ).toEqual({
+      hidden: 2,
+      shown: [team('rookies', 2), team('principale', 4)],
+    });
+    expect(
+      listedEntries([team('principale', null), team('academy', null)]),
+    ).toEqual({
+      hidden: 0,
+      shown: [team('principale', null), team('academy', null)],
+    });
     // Two tournaments of a name, told apart by their edition.
     expect(tournamentTitle({ edition: 'Saison 2', name: 'Lyon e-Sport' })).toBe(
       'Lyon e-Sport · Saison 2',
@@ -220,6 +246,57 @@ describe('tournaments (11 November 2026)', () => {
     expect(
       tournamentDatesLabel({ ...details, endOn: null, startOn: null }),
     ).toBe('Date à fixer');
+    // A list's column (13 November 2026): the days, then the year and the
+    // length, never the year left alone on a line.
+    const cell = (
+      startOn: string | null,
+      endOn: string | null,
+    ): ReturnType<typeof tournamentDatesCell> =>
+      tournamentDatesCell({ datePrecision: 'DAY', endOn, startOn });
+    expect(cell('2026-10-29', '2026-11-06')).toEqual({
+      days: '29 oct. → 6 nov.',
+      detail: '2026 · 9 jours',
+    });
+    expect(cell('2027-03-15', '2027-03-17')).toEqual({
+      days: '15 → 17 mars',
+      detail: '2027 · 3 jours',
+    });
+    expect(cell('2026-12-28', '2027-01-03')).toEqual({
+      days: '28 déc. → 3 janv.',
+      detail: '2026 → 2027 · 7 jours',
+    });
+    expect(cell('2027-02-01', '2027-04-02')).toEqual({
+      days: '1er févr. → 2 avr.',
+      detail: '2027 · 2 mois',
+    });
+    expect(cell('2027-03-15', null)).toEqual({
+      days: '15 mars',
+      detail: '2027',
+    });
+    expect(
+      tournamentDatesCell({
+        datePrecision: 'MONTH',
+        endOn: null,
+        startOn: '2027-09-01',
+      }),
+    ).toEqual({ days: 'Septembre', detail: '2027 · jours à fixer' });
+    expect(cell(null, null)).toEqual({ days: 'Date à fixer', detail: null });
+    // A phone's card: one line, the year kept with its day.
+    const short = (startOn: string | null, endOn: string | null): string =>
+      tournamentDatesShortLabel({ datePrecision: 'DAY', endOn, startOn });
+    expect(short('2026-10-29', '2026-11-06')).toBe('29 oct. → 6 nov. 2026');
+    expect(short('2026-12-28', '2027-01-03')).toBe(
+      '28 déc. 2026 → 3 janv. 2027',
+    );
+    expect(short('2027-03-15', null)).toBe('15 mars 2027');
+    expect(
+      tournamentDatesShortLabel({
+        datePrecision: 'MONTH',
+        endOn: null,
+        startOn: '2027-09-01',
+      }),
+    ).toBe('septembre 2027');
+    expect(short(null, null)).toBe('Date à fixer');
     const tournament = { ...details, isCancelled: false };
     expect(tournamentStateOn(tournament, '2027-03-14')).toBe('upcoming');
     expect(tournamentStateOn(tournament, '2027-03-15')).toBe('ongoing');

@@ -60,14 +60,19 @@ import {
 } from '../tournament.constants';
 import { getTournamentCapabilities } from '../tournament.permissions';
 import {
+  listedEntries,
   placementLabel,
-  tournamentDatesLabel,
+  tournamentDatesShortLabel,
   tournamentStateOn,
   tournamentTitle,
   tournamentYear,
 } from '../tournament.ui';
 import type { TournamentItem } from '../types/tournament.types';
-import { TournamentAvatar, TournamentStateBadge } from './TournamentParts';
+import {
+  TournamentAvatar,
+  TournamentDates,
+  TournamentStateBadge,
+} from './TournamentParts';
 
 // The window loads when it opens.
 const TournamentDialog = dynamic(() =>
@@ -83,9 +88,13 @@ const LINE_FOCUS =
 const NAME_LINK =
   'text-foreground hover:text-primary-emphasis block min-w-0 outline-none after:absolute after:inset-0 hover:underline hover:underline-offset-[3px]';
 
-/** « Lyon e-Sport · LAN, Lyon ». */
-const tournamentContext = (tournament: TournamentItem): string =>
+/** « Lyon e-Sport · LAN, Lyon » ; on a phone's card, the game first. */
+const tournamentContext = (
+  tournament: TournamentItem,
+  withGame: boolean,
+): string =>
   [
+    withGame ? tournament.game.name : null,
     tournament.organizer?.name,
     tournament.format === 'LAN'
       ? tournament.location
@@ -96,13 +105,21 @@ const tournamentContext = (tournament: TournamentItem): string =>
     .filter(Boolean)
     .join(' · ');
 
-/** « Noctambule Valorant · 3e–4e », one line per engaged team. */
-const EngagedTeams: FC<{ tournament: TournamentItem }> = ({ tournament }) =>
-  tournament.entries.length === 0 ? (
-    <span className="text-muted-foreground">Aucune équipe</span>
-  ) : (
-    <ul className="space-y-0.5">
-      {tournament.entries.map((entry) => {
+/**
+ * « Noctambule Valorant · 3e–4e », one line per engaged team, two at most
+ * and « +1 » for the others (`listedEntries`).
+ */
+const EngagedTeams: FC<{ className?: string; tournament: TournamentItem }> = ({
+  className = 'space-y-0.5',
+  tournament,
+}) => {
+  if (tournament.entries.length === 0)
+    return <span className="text-muted-foreground">Aucune équipe</span>;
+  const { hidden, shown } = listedEntries(tournament.entries);
+
+  return (
+    <ul className={className}>
+      {shown.map((entry, index) => {
         const placement = placementLabel(entry);
 
         return (
@@ -114,13 +131,27 @@ const EngagedTeams: FC<{ tournament: TournamentItem }> = ({ tournament }) =>
                 {placement}
               </span>
             )}
+            {hidden > 0 && index === shown.length - 1 && (
+              <span className="text-muted-foreground ml-1.5 font-medium tabular-nums">
+                <span aria-hidden="true">+{hidden}</span>
+                <span className="sr-only">
+                  {hidden > 1
+                    ? `et ${hidden} autres équipes`
+                    : 'et 1 autre équipe'}
+                </span>
+              </span>
+            )}
           </li>
         );
       })}
     </ul>
   );
+};
 
-const TournamentName: FC<{ tournament: TournamentItem }> = ({ tournament }) => (
+const TournamentName: FC<{
+  tournament: TournamentItem;
+  withGame?: boolean;
+}> = ({ tournament, withGame = false }) => (
   <div className="min-w-0">
     <Link className={NAME_LINK} href={tournamentDetailPath(tournament.id)}>
       <span className="font-semibold [overflow-wrap:anywhere]">
@@ -128,7 +159,7 @@ const TournamentName: FC<{ tournament: TournamentItem }> = ({ tournament }) => (
       </span>
     </Link>
     <p className="text-muted-foreground mt-0.5 text-xs [overflow-wrap:anywhere]">
-      {tournamentContext(tournament)}
+      {tournamentContext(tournament, withGame)}
     </p>
   </div>
 );
@@ -176,8 +207,7 @@ const TournamentsList: FC<{
           includesSearchTerms(
             [
               tournamentTitle(tournament),
-              tournament.game.name,
-              tournamentContext(tournament),
+              tournamentContext(tournament, true),
               ...tournament.entries.map((entry) => entry.team.name),
             ].join(' '),
             terms,
@@ -351,7 +381,7 @@ const TournamentsList: FC<{
           </TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[190px]">Dates</TableHead>
+              <TableHead className="w-[170px]">Dates</TableHead>
               <TableHead>Tournoi</TableHead>
               <TableHead className="w-[140px]">Jeu</TableHead>
               <TableHead className="w-[230px]">Nos équipes</TableHead>
@@ -369,7 +399,7 @@ const TournamentsList: FC<{
               visible.map((tournament) => (
                 <TableRow className={LINE_FOCUS} key={tournament.id}>
                   <TableCell className="pointer-events-none">
-                    {tournamentDatesLabel(tournament)}
+                    <TournamentDates tournament={tournament} />
                   </TableCell>
                   <TableCell>
                     <div className="flex min-w-0 items-center gap-2.5">
@@ -381,7 +411,11 @@ const TournamentsList: FC<{
                     {tournament.game.name}
                   </TableCell>
                   <TableCell className="pointer-events-none">
-                    <EngagedTeams tournament={tournament} />
+                    {/* Two teams within the height of the Dates cell's lines. */}
+                    <EngagedTeams
+                      className="space-y-0.5 leading-[1.0625rem]"
+                      tournament={tournament}
+                    />
                   </TableCell>
                   <TableCell className="pointer-events-none">
                     <TournamentStateBadge
@@ -410,10 +444,10 @@ const TournamentsList: FC<{
                 <TournamentAvatar />
                 <div className="min-w-0 flex-1">
                   <h2 className="text-sm">
-                    <TournamentName tournament={tournament} />
+                    <TournamentName tournament={tournament} withGame />
                   </h2>
                   <p className="text-muted-foreground mt-1 text-xs">
-                    {tournamentDatesLabel(tournament)} · {tournament.game.name}
+                    {tournamentDatesShortLabel(tournament)}
                   </p>
                   <div className="mt-1.5 text-xs">
                     <EngagedTeams tournament={tournament} />

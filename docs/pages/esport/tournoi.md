@@ -181,7 +181,18 @@ ajoutée » (Nom, Types) ou « Organisation modifiée » (Types : « Sponsor » 
 - Le déplacement lié à une LAN, le règlement en pièce jointe et la fin des
   inscriptions au calendrier viendront avec leurs modules.
 - Une note interne pour le staff (logistique, contact, rappels) : proposée
-  le 12 novembre 2026, à discuter (« on en parle après »).
+  le 12 novembre 2026, à discuter (« on en parle après »). Le 13 novembre
+  2026, le propriétaire demande des notes « à des endroits stratégiques »,
+  et pour un tournoi « un système avec des points différents, et sur chaque
+  point on peut mettre un commentaire ». **Proposition, pas encore
+  décidée** : fondre la note et le Suivi du lot 2 dans un seul onglet
+  Suivi, une liste de points ajoutés au besoin (type : Logistique,
+  Organisation du tournoi, Équipe, Problème, Sanction ; équipe ou personne
+  facultative ; commentaire ; auteur et date automatiques ; un problème se
+  marque « réglé »), tracés au journal ; ni fil de réponses ni rubriques
+  fixes à remplir. Le même mécanisme servirait ensuite aux organisateurs et
+  partenaires, aux équipes, et, avec une autorisation à part, aux fiches du
+  Répertoire.
 - Pas de bouton « Historique » (le journal filtre par type « Tournois »).
 - Afficher sur la carte de chaque équipe son Roster aux dates du tournoi, en
   lecture seule, sans saisie : proposé le 13 novembre 2026, pas demandé.

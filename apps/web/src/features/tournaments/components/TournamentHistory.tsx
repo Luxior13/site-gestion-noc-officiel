@@ -30,12 +30,16 @@ import { cn } from '$utils/css.utils';
 import { fetchTournaments } from '../tournament.api';
 import {
   placementLabel,
-  tournamentDatesLabel,
+  tournamentDatesShortLabel,
   tournamentStateOn,
   tournamentTitle,
 } from '../tournament.ui';
 import type { TournamentItem } from '../types/tournament.types';
-import { TournamentAvatar, TournamentStateBadge } from './TournamentParts';
+import {
+  TournamentAvatar,
+  TournamentDates,
+  TournamentStateBadge,
+} from './TournamentParts';
 
 const LINE_FOCUS =
   'has-[a:focus-visible]:ring-ring relative has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-inset';
@@ -186,7 +190,7 @@ export const TournamentHistory: FC<{
             </TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[190px]">Dates</TableHead>
+                <TableHead className="w-[170px]">Dates</TableHead>
                 <TableHead>Tournoi</TableHead>
                 {showTeam && (
                   <TableHead className="w-[200px]">Équipe</TableHead>
@@ -212,7 +216,7 @@ export const TournamentHistory: FC<{
                   return (
                     <TableRow className={LINE_FOCUS} key={tournament.id}>
                       <TableCell className="pointer-events-none">
-                        {tournamentDatesLabel(tournament)}
+                        <TournamentDates tournament={tournament} />
                       </TableCell>
                       <TableCell>{name(tournament)}</TableCell>
                       {showTeam && (
@@ -259,7 +263,7 @@ export const TournamentHistory: FC<{
                   </div>
                   <p className="text-muted-foreground mt-1.5 text-xs">
                     {[
-                      tournamentDatesLabel(tournament),
+                      tournamentDatesShortLabel(tournament),
                       showTeam ? line?.team.name : null,
                       placement,
                     ]

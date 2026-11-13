@@ -71,6 +71,9 @@ const MONTHS = [
   'décembre',
 ] as const;
 
+/** « mars » for 3. */
+export const monthName = (month: number): string => MONTHS[month - 1] ?? '';
+
 /** « 2019 », « mars 2021 » or « 15 mars 2021 », as precisely as it is known. */
 export const formatApproximateDate = (value: ApproximateDate): string => {
   const parts = parseDateOnly(value.date);

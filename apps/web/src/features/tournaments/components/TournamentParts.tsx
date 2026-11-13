@@ -18,6 +18,7 @@ import {
   type TournamentDatePrecision,
   type TournamentState,
 } from '../tournament.constants';
+import { tournamentDatesCell } from '../tournament.ui';
 
 const STATE_TONES: Readonly<Record<TournamentState, StatusBadgeTone>> = {
   cancelled: 'warning',
@@ -38,6 +39,27 @@ export const TournamentStateBadge: FC<{ state: TournamentState }> = ({
     {TOURNAMENT_STATE_LABELS[state]}
   </StatusBadge>
 );
+
+/**
+ * The Dates cell of a list (13 November 2026), on the rhythm of the
+ * Tournoi cell beside it: the days, then the year and the length, discreet.
+ */
+export const TournamentDates: FC<{
+  tournament: Parameters<typeof tournamentDatesCell>[0];
+}> = ({ tournament }) => {
+  const { days, detail } = tournamentDatesCell(tournament);
+
+  return detail === null ? (
+    <span className="text-muted-foreground">{days}</span>
+  ) : (
+    <>
+      <span className="block">{days}</span>
+      <span className="text-muted-foreground mt-0.5 block text-xs">
+        {detail}
+      </span>
+    </>
+  );
+};
 
 /** A cup in the colours of the Esport pole, until a tournament has a logo. */
 export const TournamentAvatar: FC<{ className?: string }> = ({ className }) => (

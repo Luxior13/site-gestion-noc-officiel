@@ -1,7 +1,10 @@
 import {
   approximateDateEnd,
   formatApproximateDate,
+  formatApproximateDuration,
   formatApproximateRange,
+  monthName,
+  parseDateOnly,
 } from '$utils/approximate-date.utils';
 import { formatEuros } from '$utils/money.utils';
 
@@ -77,6 +80,109 @@ export const tournamentDatesLabel = (tournament: Dated): string => {
   );
 };
 
+const SHORT_MONTHS = [
+  'janv.',
+  'févr.',
+  'mars',
+  'avr.',
+  'mai',
+  'juin',
+  'juil.',
+  'août',
+  'sept.',
+  'oct.',
+  'nov.',
+  'déc.',
+] as const;
+
+type Day = Readonly<{ day: number; month: number; year: number }>;
+
+const dayNumber = (day: number): string => (day === 1 ? '1er' : String(day));
+
+/** « 29 oct. », « 1er nov. », its two words never parted. */
+const shortDay = (parts: Day): string =>
+  `${dayNumber(parts.day)} ${SHORT_MONTHS[parts.month - 1] ?? ''}`;
+
+/** The first and last days of a tournament known to the day, or null. */
+const dayBounds = (
+  tournament: Dated,
+): Readonly<{
+  endOn: string;
+  first: Day;
+  last: Day;
+  startOn: string;
+}> | null => {
+  if (!tournament.startOn || tournament.datePrecision === 'MONTH') return null;
+  const endOn = tournament.endOn ?? tournament.startOn;
+  const first = parseDateOnly(tournament.startOn);
+  const last = parseDateOnly(endOn);
+
+  return first && last
+    ? { endOn, first, last, startOn: tournament.startOn }
+    : null;
+};
+
+/** « 15 mars », « 15 → 17 mars », « 29 oct. → 6 nov. ». */
+const daysLabel = (first: Day, last: Day): string => {
+  const sameMonth = first.year === last.year && first.month === last.month;
+  if (sameMonth && first.day === last.day) return shortDay(first);
+
+  return `${sameMonth ? dayNumber(first.day) : shortDay(first)} → ${shortDay(last)}`;
+};
+
+/**
+ * The dates in a list's column (owner, 13 November 2026, the year left
+ * alone on a second line): the days on the first line, months shortened,
+ * « 29 oct. → 6 nov. », « 15 → 17 mars » ; under them, discreet, the year
+ * and how long it lasts, « 2026 · 9 jours », « 2026 → 2027 · 7 jours ».
+ * Known to the month: « Mars », « 2027 · jours à fixer ». Without a date,
+ * « Date à fixer » and no second line.
+ */
+export const tournamentDatesCell = (
+  tournament: Dated,
+): Readonly<{ days: string; detail: string | null }> => {
+  const month = tournament.startOn ? parseDateOnly(tournament.startOn) : null;
+  if (tournament.datePrecision === 'MONTH' && month) {
+    const name = monthName(month.month);
+
+    return {
+      days: name.charAt(0).toUpperCase() + name.slice(1),
+      detail: `${month.year} · jours à fixer`,
+    };
+  }
+  const bounds = dayBounds(tournament);
+  if (!bounds) return { days: 'Date à fixer', detail: null };
+  const { endOn, first, last, startOn } = bounds;
+  const days = daysLabel(first, last);
+  if (endOn === startOn) return { days, detail: String(first.year) };
+  const years =
+    first.year === last.year
+      ? String(first.year)
+      : `${first.year} → ${last.year}`;
+  const length = formatApproximateDuration(
+    { date: startOn, precision: 'DAY' },
+    { date: endOn, precision: 'DAY' },
+    endOn,
+  );
+
+  return { days, detail: length ? `${years} · ${length}` : years };
+};
+
+/**
+ * The same dates on one line, for a phone's card (13 November 2026):
+ * « 29 oct. → 6 nov. 2026 », « 28 déc. 2026 → 3 janv. 2027 », the year
+ * kept with its day; « septembre 2027 », « Date à fixer ».
+ */
+export const tournamentDatesShortLabel = (tournament: Dated): string => {
+  const bounds = dayBounds(tournament);
+  if (!bounds) return tournamentDatesLabel(tournament);
+  const { first, last } = bounds;
+
+  return first.year === last.year
+    ? `${daysLabel(first, last)} ${last.year}`
+    : `${shortDay(first)} ${first.year} → ${shortDay(last)} ${last.year}`;
+};
+
 /** « 15 mars 2027 », for a deadline. */
 export const dayLabel = (day: string): string =>
   formatApproximateDate({ date: day, precision: 'DAY' });
@@ -96,6 +202,30 @@ export const placementLabel = (
   return to === entry.placementFrom
     ? ordinal(to)
     : `${ordinal(entry.placementFrom)}–${ordinal(to)}`;
+};
+
+type Placed = Readonly<{ placementFrom: number | null }>;
+
+/** The best placed first, then those without a placement. */
+const placementRank = (entry: Placed): number =>
+  entry.placementFrom ?? Number.MAX_SAFE_INTEGER;
+
+/**
+ * The engaged teams a list's line shows (owner, 13 November 2026: « chaque
+ * équipe en plus fait augmenter la hauteur »): two at most, so a row keeps
+ * the two lines of its Dates and Tournoi cells; the best placed first, then
+ * those without a placement in their given order. The others are counted,
+ * « +1 » : the tournament's Participants lists them all, and the search
+ * still finds them.
+ */
+export const listedEntries = <Entry extends Placed>(
+  entries: readonly Entry[],
+): Readonly<{ hidden: number; shown: Entry[] }> => {
+  const shown = [...entries]
+    .sort((a, b) => placementRank(a) - placementRank(b))
+    .slice(0, 2);
+
+  return { hidden: entries.length - shown.length, shown };
 };
 
 /** « Gratuit », « 50,00 € par équipe ». */

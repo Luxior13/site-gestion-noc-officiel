@@ -303,7 +303,14 @@ gardées par le test `visible-wording-contracts` :
   « 28 septembre 2024 → 30 novembre 2025 ») ; une période d’un seul mois ou
   d’une seule année se dit une fois (« mars 2024 ») ; la flèche reste collée
   au début par une espace insécable, si bien qu’une période coupée ne commence
-  jamais une ligne par elle (`formatApproximateRange`) ;
+  jamais une ligne par elle (`formatApproximateRange`) ; dans une seule
+  colonne de tableau (13 novembre 2026, sur la liste des tournois où
+  l’année restait seule à la ligne), deux lignes voulues au rythme de la
+  cellule voisine : les jours en mois abrégés (« 29 oct. → 6 nov. »,
+  « 15 → 17 mars »), puis en petit texte discret l’année et la durée
+  (« 2026 · 9 jours », « 2026 → 2027 · 7 jours ») ; sur une carte de
+  téléphone, une ligne à part, « 29 oct. → 6 nov. 2026 », l’année collée
+  à son jour (`TournamentDates`, `tournamentDatesShortLabel`) ;
 - une durée (9 novembre 2026, « le temps entre le début et aujourd’hui, ou la
   date de fin si passé ») : jamais plus précise que ses dates. Une borne
   connue à l’année donne des années, « environ 3 ans » (« moins d’un an »
